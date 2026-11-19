@@ -3,6 +3,7 @@ import {
   addDays,
   DEFAULT_TOOL_RUN_QUOTA,
   isEntryDateAllowed,
+  isoDateSchema,
   type PublicToolDefinition,
   runToolBodySchema,
   runToolConfig,
@@ -41,6 +42,17 @@ async function loadPublishedTool(db: AppEnv["Variables"]["db"], slug: string) {
   }
   const parsed = toolConfigSchema.safeParse(JSON.parse(def.publishedConfigJson ?? "null"));
   return parsed.success ? { item, def, custom: null, config: parsed.data } : null;
+}
+
+/**
+ * Tool berdasarkan slug TANPA syarat terbit/tracker. Hanya untuk membaca & menghapus data milik
+ * user sendiri: data tetap milik user walau tool ditarik atau mode tracker dimatikan (UU PDP).
+ */
+async function findToolForOwnData(db: AppEnv["Variables"]["db"], slug: string) {
+  return db.query.contentItems.findFirst({
+    where: and(eq(schema.contentItems.type, "tool"), eq(schema.contentItems.slug, slug)),
+    columns: { id: true },
+  });
 }
 
 /**
@@ -183,9 +195,8 @@ export const tools = new Hono<AppEnv>()
   .get("/:slug/entries", async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
     const user = c.var.user!;
-    const tool = await loadPublishedTool(c.var.db, c.req.param("slug"));
+    const tool = await findToolForOwnData(c.var.db, c.req.param("slug"));
     if (!tool) return c.json({ error: "not_found" }, 404);
-    if (!tool.def.storesUserData) return c.json({ error: "not_a_tracker" }, 400);
 
     const days = Math.min(
       Math.max(Number(c.req.query("days") ?? 30) || 30, 1),
@@ -198,7 +209,7 @@ export const tools = new Hono<AppEnv>()
       .where(
         and(
           eq(schema.toolEntries.userId, user.id),
-          eq(schema.toolEntries.toolId, tool.item.id),
+          eq(schema.toolEntries.toolId, tool.id),
           gte(schema.toolEntries.entryDate, from),
         ),
       )
@@ -209,26 +220,28 @@ export const tools = new Hono<AppEnv>()
       from,
       to: todayWib(),
       entries,
-      streak: await readStreak(c.var.db, user.id, tool.item.id),
+      streak: await readStreak(c.var.db, user.id, tool.id),
     });
   })
 
   .delete("/:slug/entries/:date", async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
     const user = c.var.user!;
-    const tool = await loadPublishedTool(c.var.db, c.req.param("slug"));
+    const date = isoDateSchema.safeParse(c.req.param("date"));
+    if (!date.success) return c.json({ error: "invalid_date" }, 400);
+    const tool = await findToolForOwnData(c.var.db, c.req.param("slug"));
     if (!tool) return c.json({ error: "not_found" }, 404);
     const deleted = await c.var.db
       .delete(schema.toolEntries)
       .where(
         and(
           eq(schema.toolEntries.userId, user.id),
-          eq(schema.toolEntries.toolId, tool.item.id),
-          eq(schema.toolEntries.entryDate, c.req.param("date")),
+          eq(schema.toolEntries.toolId, tool.id),
+          eq(schema.toolEntries.entryDate, date.data),
         ),
       )
       .returning({ id: schema.toolEntries.id });
     if (deleted.length === 0) return c.json({ error: "not_found" }, 404);
-    const streak = await recomputeStreak(c.var.db, user.id, tool.item.id);
+    const streak = await recomputeStreak(c.var.db, user.id, tool.id);
     return c.json({ streak });
   });

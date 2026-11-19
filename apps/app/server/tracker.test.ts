@@ -147,6 +147,37 @@ describe("tracker", () => {
     expect(((await del.json()) as { streak: { current: number } }).streak.current).toBe(1);
   });
 
+  it("riwayat tetap bisa dibaca & dihapus walau tool ditarik ke draft", async () => {
+    const { admin, id, slug } = await setupTracker();
+    const u = await subscriber();
+    await save(slug, u.token, todayWib());
+    await call(`/api/v1/studio/content/${id}`, {
+      method: "PATCH",
+      token: admin.token,
+      ...json({ status: "draft" }),
+    });
+    const r = (await (await call(`/api/v1/tools/${slug}/entries`, { token: u.token })).json()) as {
+      entries: unknown[];
+    };
+    expect(r.entries).toHaveLength(1);
+    const del = await call(`/api/v1/tools/${slug}/entries/${todayWib()}`, {
+      method: "DELETE",
+      token: u.token,
+    });
+    expect(del.status).toBe(200);
+    expect((await save(slug, u.token, todayWib())).status).toBe(404);
+  });
+
+  it("tanggal tidak valid di URL hapus ditolak", async () => {
+    const { slug } = await setupTracker();
+    const u = await subscriber();
+    const r = await call(`/api/v1/tools/${slug}/entries/kemarin`, {
+      method: "DELETE",
+      token: u.token,
+    });
+    expect(r.status).toBe(400);
+  });
+
   it("tool biasa (bukan tracker) menolak entri", async () => {
     const { slug } = await setupTracker({ tracker: false });
     const u = await subscriber();
