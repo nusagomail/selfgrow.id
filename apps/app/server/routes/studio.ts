@@ -8,6 +8,7 @@ import {
   EMPTY_EBOOK_DOC,
   reorderChaptersBodySchema,
   saveChapterBodySchema,
+  toolConfigSchema,
   updateContentBodySchema,
 } from "@selfgrow/shared";
 import { Hono } from "hono";
@@ -127,6 +128,15 @@ export const studio = new Hono<AppEnv>()
       if (taken) return c.json({ error: "slug_taken" }, 409);
     }
 
+    // Tool: validasi & salin konfigurasi terbit SEBELUM status diubah, supaya penerbitan
+    // gagal tanpa efek samping bila konfigurasi tidak valid (review keamanan PR #8).
+    let toolPublish: { config: unknown } | null = null;
+    if (body.status === "published" && before.type === "tool") {
+      const published = await publishToolConfig(c.var.db, id);
+      if (!published.ok) return c.json({ error: "invalid_tool_config" }, 400);
+      toolPublish = { config: published.config };
+    }
+
     const now = new Date();
     const publishing = body.status === "published" && before.status !== "published";
     await c.var.db
@@ -141,6 +151,10 @@ export const studio = new Hono<AppEnv>()
     let version: number | undefined;
     if (body.status === "published" && before.type === "ebook") {
       version = await snapshotEbook(c.env.CONTENT, c.var.db, id, c.var.user?.id ?? null);
+    } else if (toolPublish) {
+      version = await recordVersion(c.env.CONTENT, c.var.db, id, c.var.user?.id ?? null, {
+        config: toolPublish.config,
+      });
     }
 
     await writeAudit(c, {
@@ -333,12 +347,30 @@ async function snapshotEbook(
       doc: await readDoc(bucket, ebookKeys.published(contentId, ch.id)),
     });
   }
+  return recordVersion(bucket, db, contentId, userId, { chapters: published });
+}
+
+/** Snapshot ke R2 `{type}s/{id}/versions/{n}.json` + baris content_versions. */
+export async function recordVersion(
+  bucket: R2Bucket,
+  db: AppEnv["Variables"]["db"],
+  contentId: string,
+  userId: string | null,
+  payload: Record<string, unknown>,
+) {
   const [{ next } = { next: 1 }] = await db
     .select({ next: sql<number>`coalesce(max(${schema.contentVersions.version}) + 1, 1)` })
     .from(schema.contentVersions)
     .where(eq(schema.contentVersions.contentId, contentId));
-  const key = ebookKeys.version(contentId, next);
-  await writeJson(bucket, key, { contentId, version: next, chapters: published });
+  const item = await db.query.contentItems.findFirst({
+    where: eq(schema.contentItems.id, contentId),
+    columns: { type: true },
+  });
+  const key =
+    item?.type === "ebook"
+      ? ebookKeys.version(contentId, next)
+      : `${item?.type ?? "content"}s/${contentId}/versions/${next}.json`;
+  await writeJson(bucket, key, { contentId, version: next, ...payload });
   await db.insert(schema.contentVersions).values({
     id: crypto.randomUUID(),
     contentId,
@@ -347,4 +379,21 @@ async function snapshotEbook(
     createdBy: userId,
   });
   return next;
+}
+
+/** Salin draft konfigurasi tool ke versi terbit, hanya bila valid. */
+async function publishToolConfig(db: AppEnv["Variables"]["db"], contentId: string) {
+  const def = await db.query.toolDefinitions.findFirst({
+    where: eq(schema.toolDefinitions.contentId, contentId),
+  });
+  if (!def) return { ok: false as const };
+  if (def.kind === "custom") return { ok: true as const, config: { moduleSlug: def.moduleSlug } };
+  const parsed = toolConfigSchema.safeParse(JSON.parse(def.configJson ?? "null"));
+  if (!parsed.success) return { ok: false as const };
+  const json = JSON.stringify(parsed.data);
+  await db
+    .update(schema.toolDefinitions)
+    .set({ publishedConfigJson: json })
+    .where(eq(schema.toolDefinitions.contentId, contentId));
+  return { ok: true as const, config: parsed.data };
 }

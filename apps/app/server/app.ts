@@ -13,6 +13,8 @@ import { health } from "./routes/health";
 import { library } from "./routes/library";
 import { me } from "./routes/me";
 import { studio } from "./routes/studio";
+import { studioTools } from "./routes/studio-tools";
+import { tools } from "./routes/tools";
 
 /**
  * API Hono, berdiri sendiri supaya bisa dipecah jadi Worker terpisah kapan saja (BLUEPRINT bagian 4).
@@ -45,7 +47,9 @@ api.on(["GET", "POST"], "/auth/*", (c) => c.var.auth.handler(c.req.raw));
 api.route("/me", me);
 api.route("/library", library);
 api.route("/ebooks", ebooks);
+api.route("/studio/tools", studioTools);
 api.route("/studio", studio);
+api.route("/tools", tools);
 api.route("/admin", admin);
 
 api.notFound((c) => c.json({ error: "not_found" }, 404));

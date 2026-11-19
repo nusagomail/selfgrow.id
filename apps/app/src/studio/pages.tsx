@@ -62,6 +62,8 @@ export function StudioHome() {
   const [slug, setSlug] = useState("");
   const [slugEdited, setSlugEdited] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [kind, setKind] = useState<"ebook" | "tool">("ebook");
+  const [preset, setPreset] = useState<"budget_503020" | "blank">("budget_503020");
   useAdminGuard(err);
 
   useEffect(() => {
@@ -75,11 +77,19 @@ export function StudioHome() {
     setBusy(true);
     setErr(null);
     try {
-      const { id } = await api<{ id: string }>("/studio/ebooks", {
-        method: "POST",
-        body: JSON.stringify({ title, slug }),
-      });
-      navigate({ to: "/studio/ebook/$id", params: { id } });
+      if (kind === "ebook") {
+        const { id } = await api<{ id: string }>("/studio/ebooks", {
+          method: "POST",
+          body: JSON.stringify({ title, slug }),
+        });
+        navigate({ to: "/studio/ebook/$id", params: { id } });
+      } else {
+        const { id } = await api<{ id: string }>("/studio/tools", {
+          method: "POST",
+          body: JSON.stringify({ title, slug, preset }),
+        });
+        navigate({ to: "/studio/tool/$id", params: { id } });
+      }
     } catch (e2) {
       setErr(e2);
       setBusy(false);
@@ -93,7 +103,17 @@ export function StudioHome() {
       </p>
       <h1>Studio</h1>
       <form className="card stack" onSubmit={create}>
-        <h2>Ebook baru</h2>
+        <h2>Konten baru</h2>
+        <div className="row-actions" role="radiogroup" aria-label="Jenis konten">
+          <label className="check">
+            <input type="radio" checked={kind === "ebook"} onChange={() => setKind("ebook")} />
+            Ebook
+          </label>
+          <label className="check">
+            <input type="radio" checked={kind === "tool"} onChange={() => setKind("tool")} />
+            Tool
+          </label>
+        </div>
         <label className="field">
           <span>Judul</span>
           <input
@@ -107,7 +127,7 @@ export function StudioHome() {
           />
         </label>
         <label className="field">
-          <span>Slug (alamat: /ebook/slug)</span>
+          <span>Slug (alamat: /{kind}/slug)</span>
           <input
             value={slug}
             required
@@ -118,8 +138,17 @@ export function StudioHome() {
             }}
           />
         </label>
+        {kind === "tool" && (
+          <label className="field">
+            <span>Mulai dari</span>
+            <select value={preset} onChange={(e) => setPreset(e.target.value as typeof preset)}>
+              <option value="budget_503020">Contoh: kalkulator anggaran 50/30/20</option>
+              <option value="blank">Kosong</option>
+            </select>
+          </label>
+        )}
         <button type="submit" className="btn btn-primary" disabled={busy || !title || !slug}>
-          {busy ? "Membuat…" : "Buat ebook"}
+          {busy ? "Membuat…" : kind === "ebook" ? "Buat ebook" : "Buat tool"}
         </button>
       </form>
 
@@ -141,6 +170,11 @@ export function StudioHome() {
               <span className="badge">{STATUS_LABEL[it.status] ?? it.status}</span>
               {it.type === "ebook" && (
                 <Link to="/studio/ebook/$id" params={{ id: it.id }} className="btn">
+                  Edit
+                </Link>
+              )}
+              {it.type === "tool" && (
+                <Link to="/studio/tool/$id" params={{ id: it.id }} className="btn">
                   Edit
                 </Link>
               )}

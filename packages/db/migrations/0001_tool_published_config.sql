@@ -1,0 +1,1 @@
+ALTER TABLE `tool_definitions` ADD `published_config_json` text;
