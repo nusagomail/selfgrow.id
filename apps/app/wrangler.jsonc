@@ -38,7 +38,11 @@
       "vars": {
         "ENVIRONMENT": "staging",
         "APP_URL": "",
-        "SITE_URL": ""
+        "SITE_URL": "",
+        // Cloudflare Access (D17): seluruh staging di balik Access, hanya pemilik akun.
+        // Bukan rahasia: AUD & team domain dipakai untuk memverifikasi JWT Access.
+        "ACCESS_TEAM_DOMAIN": "throbbing-glitter-55a4.cloudflareaccess.com",
+        "ACCESS_AUD": "633781c695d2defefb7a1d8ed04177bd8a5699af74a7986949b4256f13a0feaf"
       },
       "d1_databases": [
         {

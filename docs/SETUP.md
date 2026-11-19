@@ -20,10 +20,14 @@ Langkah di sini dikerjakan pemilik di dashboard layanan luar. Semua kode sudah s
 Dibutuhkan untuk staging dan production: D1 (`selfgrow-staging`), KV, Turnstile, Access.
 
 - **Turnstile**: dashboard → Turnstile → Add site → domain staging/production. Site key dipakai di frontend (`VITE_TURNSTILE_SITE_KEY`), secret key sebagai secret Worker `TURNSTILE_SECRET_KEY`.
-- **Access (D17)**: Zero Trust → Access → Applications → Self-hosted. Lindungi path berikut di domain app, dengan policy _Allow_ hanya untuk email pemilik:
-  - `/studio*`, `/admin*`, `/api/v1/studio/*`, `/api/v1/admin/*`
-
-  Lalu salin _Application Audience (AUD) tag_ ke variabel `ACCESS_AUD` dan domain tim (`<tim>.cloudflareaccess.com`) ke `ACCESS_TEAM_DOMAIN`.
+- **Access (D17)**: staging memakai Access tingkat Worker (sekali klik).
+  Workers & Pages → `selfgrow-app-staging` → **Access** → *Protect this Worker behind Access*,
+  scope **All traffic**, policy **Cloudflare account** (hanya anggota akun Cloudflare pemilik).
+  Team domain (`ACCESS_TEAM_DOMAIN`) dan *Application Audience (AUD) tag* (`ACCESS_AUD`) ditulis di
+  `apps/app/wrangler.jsonc` env `staging`; keduanya bukan rahasia. Worker tetap memverifikasi JWT
+  `Cf-Access-Jwt-Assertion` untuk `/api/v1/studio/*` dan `/api/v1/admin/*`.
+  Untuk production (domain `selfgrow.id`), cukup lindungi path `/studio*`, `/admin*`,
+  `/api/v1/studio/*`, `/api/v1/admin/*` karena halaman pelanggan harus publik.
 - **ADMIN_EMAILS**: email Google pemilik. Akun dengan email ini otomatis menjadi admin saat login pertama.
 
 ## 3. Deploy staging otomatis (GitHub Actions)
