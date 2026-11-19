@@ -3,11 +3,13 @@ import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ApiError, api } from "../lib/api";
 import { ToolForm } from "./form";
+import { TrackerPanel } from "./tracker";
 
 type ToolMeta = {
   tool: { id: string; slug: string; title: string; summary: string | null };
   definition: PublicToolDefinition;
   locked: boolean;
+  tracker: { today: string; streak: { current: number; longest: number } } | null;
 };
 
 export function ToolPage() {
@@ -40,19 +42,30 @@ export function ToolPage() {
       </p>
       <h1>{meta.tool.title}</h1>
       {meta.tool.summary && <p className="muted">{meta.tool.summary}</p>}
-      <div className="card">
-        <ToolForm
+      {meta.tracker ? (
+        <TrackerPanel
+          slug={meta.tool.slug}
           definition={meta.definition}
-          disabled={meta.locked}
-          disabledNote={<p className="muted small">Tool ini bisa dipakai setelah berlangganan.</p>}
-          run={(input) =>
-            api<ToolRunResult & { usage: { used: number; limit: number } }>(`/tools/${s}/run`, {
-              method: "POST",
-              body: JSON.stringify({ input }),
-            })
-          }
+          today={meta.tracker.today}
+          locked={meta.locked}
         />
-      </div>
+      ) : (
+        <div className="card">
+          <ToolForm
+            definition={meta.definition}
+            disabled={meta.locked}
+            disabledNote={
+              <p className="muted small">Tool ini bisa dipakai setelah berlangganan.</p>
+            }
+            run={(input) =>
+              api<ToolRunResult & { usage: { used: number; limit: number } }>(`/tools/${s}/run`, {
+                method: "POST",
+                body: JSON.stringify({ input }),
+              })
+            }
+          />
+        </div>
+      )}
     </main>
   );
 }

@@ -21,6 +21,7 @@ type ToolResponse = {
     config: ToolConfig | null;
     hasUnpublishedChanges: boolean;
     quotaPerMonth: number | null;
+    storesUserData: boolean;
     defaultQuota: number;
   };
 };
@@ -65,6 +66,7 @@ export function StudioTool() {
   const [data, setData] = useState<ToolResponse | null>(null);
   const [cfg, setCfg] = useState<ToolConfig | null>(null);
   const [quota, setQuota] = useState<string>("");
+  const [tracker, setTracker] = useState(false);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [notice, setNotice] = useState<string | null>(null);
   const [err, setErr] = useState<unknown>(null);
@@ -78,6 +80,7 @@ export function StudioTool() {
       setData(r);
       setCfg(r.tool.config);
       setQuota(r.tool.quotaPerMonth ? String(r.tool.quotaPerMonth) : "");
+      setTracker(r.tool.storesUserData);
       setDirty(false);
     } catch (e) {
       setErr(e);
@@ -104,7 +107,11 @@ export function StudioTool() {
     try {
       await api(`/studio/tools/${id}`, {
         method: "PUT",
-        body: JSON.stringify({ config: cfg, quotaPerMonth: quota ? Number(quota) : null }),
+        body: JSON.stringify({
+          config: cfg,
+          quotaPerMonth: quota ? Number(quota) : null,
+          storesUserData: tracker,
+        }),
       });
       setDirty(false);
       setNotice("Tersimpan sebagai draft. Pelanggan belum melihat perubahan sampai diterbitkan.");
@@ -226,6 +233,17 @@ export function StudioTool() {
                   update((c) => ({ ...c, submitLabel: e.target.value || undefined }))
                 }
               />
+            </label>
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={tracker}
+                onChange={(e) => {
+                  setTracker(e.target.checked);
+                  setDirty(true);
+                }}
+              />
+              Tracker harian: simpan isian pengguna per tanggal + streak
             </label>
             <label className="field">
               <span>Kuota pakai per pengguna per bulan (kosong = {data.tool.defaultQuota})</span>

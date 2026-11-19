@@ -12,6 +12,8 @@ export function ToolForm({
   run,
   disabled,
   disabledNote,
+  initial,
+  submitLabel,
 }: {
   definition: PublicToolDefinition;
   run: (
@@ -19,8 +21,17 @@ export function ToolForm({
   ) => Promise<ToolRunResult & { usage?: { used: number; limit: number } }>;
   disabled?: boolean;
   disabledNote?: React.ReactNode;
+  /** Isian awal (mis. entri tracker yang sudah tersimpan untuk tanggal terpilih). */
+  initial?: Record<string, unknown>;
+  submitLabel?: string;
 }) {
-  const [values, setValues] = useState<Record<string, string | boolean>>({});
+  const [values, setValues] = useState<Record<string, string | boolean>>(() =>
+    Object.fromEntries(
+      Object.entries(initial ?? {})
+        .filter(([, v]) => v !== null && v !== undefined)
+        .map(([k, v]) => [k, typeof v === "boolean" ? v : String(v)]),
+    ),
+  );
   const [result, setResult] = useState<
     (ToolRunResult & { usage?: { used: number; limit: number } }) | null
   >(null);
@@ -79,7 +90,7 @@ export function ToolForm({
           />
         ))}
         <button type="submit" className="btn btn-primary" disabled={busy || disabled}>
-          {busy ? "Menghitung…" : (definition.submitLabel ?? "Hitung")}
+          {busy ? "Memproses…" : (submitLabel ?? definition.submitLabel ?? "Hitung")}
         </button>
         {disabled && disabledNote}
       </form>

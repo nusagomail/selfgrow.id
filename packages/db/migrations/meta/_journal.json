@@ -15,6 +15,13 @@
       "when": 1795121993972,
       "tag": "0001_tool_published_config",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1795122943256,
+      "tag": "0002_tracker_unique_entry",
+      "breakpoints": true
     }
   ]
 }
