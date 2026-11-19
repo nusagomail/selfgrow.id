@@ -50,15 +50,17 @@ jobs:
         if: steps.gate.outputs.skip != 'true'
         run: pnpm lint && pnpm typecheck && pnpm test
 
+      # Sebelum build: setelah build, wrangler membaca config hasil build yang tidak
+      # dipakai oleh perintah d1, sehingga --env staging harus dipakai di sini.
+      - name: Migrasi D1 staging
+        if: steps.gate.outputs.skip != 'true'
+        working-directory: apps/app
+        run: npx wrangler d1 migrations apply DB --env staging --remote
+
       - name: Build app (staging)
         if: steps.gate.outputs.skip != 'true'
         working-directory: apps/app
         run: CLOUDFLARE_ENV=staging pnpm build
-
-      - name: Migrasi D1 staging
-        if: steps.gate.outputs.skip != 'true'
-        working-directory: apps/app
-        run: npx wrangler d1 migrations apply DB --remote
 
       - name: Deploy Worker
         if: steps.gate.outputs.skip != 'true'

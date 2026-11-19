@@ -14,11 +14,11 @@
   },
   // Nilai top-level = production, supaya deploy tanpa --env tetap aman (gagal tertutup).
   // Nilai lokal (ENVIRONMENT=local, APP_URL localhost) hanya di .dev.vars.
+  // ADMIN_EMAILS selalu lewat secret (tidak ditulis di repo).
   "vars": {
     "ENVIRONMENT": "production",
     "APP_URL": "https://app.selfgrow.id",
-    "SITE_URL": "https://selfgrow.id",
-    "ADMIN_EMAILS": ""
+    "SITE_URL": "https://selfgrow.id"
   },
   "d1_databases": [
     {
