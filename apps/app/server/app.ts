@@ -22,9 +22,12 @@ api.route("/health", health);
 
 api.use("*", contextMiddleware);
 // Lapisan tambahan anti-CSRF untuk mutasi berbasis cookie (Better Auth punya cek origin sendiri).
-// Klien bearer (mobile) tidak memakai cookie sehingga tidak rentan CSRF dan dilewati.
+// Klien bearer murni (mobile, tanpa cookie) tidak rentan CSRF dan dilewati. Bila ada cookie,
+// cek tetap jalan karena plugin bearer jatuh ke cookie saat token tidak valid.
 api.use("*", (c, next) => {
-  if (c.req.header("authorization")?.startsWith("Bearer ")) return next();
+  const bearerOnly =
+    c.req.header("authorization")?.startsWith("Bearer ") && !c.req.header("cookie");
+  if (bearerOnly) return next();
   return csrf({ origin: [c.env.APP_URL] })(c, next);
 });
 api.on(["GET", "POST"], "/auth/*", (c) => c.var.auth.handler(c.req.raw));
