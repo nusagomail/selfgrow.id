@@ -23,6 +23,8 @@ export interface Env {
 
   DB: D1Database;
   KV: KVNamespace;
+  /** File privat: isi bab ebook, template, aset (BLUEPRINT bagian 5). Tidak pernah publik. */
+  CONTENT: R2Bucket;
   ASSETS: Fetcher;
 }
 

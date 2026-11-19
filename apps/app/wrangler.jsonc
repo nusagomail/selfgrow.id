@@ -29,6 +29,7 @@
     }
   ],
   "kv_namespaces": [{ "binding": "KV", "id": "00000000000000000000000000000000" }],
+  "r2_buckets": [{ "binding": "CONTENT", "bucket_name": "selfgrow-local-content" }],
   "env": {
     // Staging (D15): alamat workers.dev, APP_URL kosong = pakai origin request.
     // ADMIN_EMAILS dan secret lain diset oleh workflow deploy-staging dari GitHub Secrets.
@@ -47,7 +48,8 @@
           "migrations_dir": "../../packages/db/migrations"
         }
       ],
-      "kv_namespaces": [{ "binding": "KV", "id": "a97fc98aff02439797d52c259b48a22f" }]
+      "kv_namespaces": [{ "binding": "KV", "id": "a97fc98aff02439797d52c259b48a22f" }],
+      "r2_buckets": [{ "binding": "CONTENT", "bucket_name": "selfgrow-staging-content" }]
     }
   }
 }

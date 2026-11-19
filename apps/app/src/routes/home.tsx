@@ -36,11 +36,19 @@ export function HomePage() {
           <p className="muted">Belum berlangganan.</p>
         )}
       </div>
-      <p style={{ marginTop: 16 }}>
+      <div className="row-actions" style={{ marginTop: 16 }}>
+        <Link to="/perpustakaan" className="btn btn-primary">
+          Perpustakaan
+        </Link>
         <Link to="/akun" className="btn">
           Akun & perangkat
         </Link>
-      </p>
+        {user.role === "admin" && (
+          <Link to="/studio" className="btn">
+            Studio
+          </Link>
+        )}
+      </div>
     </main>
   );
 }
