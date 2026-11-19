@@ -6,7 +6,7 @@ import type { AppEnv } from "../env";
 /** Menyiapkan db, auth, dan sesi (cookie atau bearer) untuk setiap request API. */
 export const contextMiddleware = createMiddleware<AppEnv>(async (c, next) => {
   const db = createDb(c.env.DB);
-  const auth = createAuth(c.env);
+  const auth = createAuth(c.env, c.req.url);
   c.set("db", db);
   c.set("auth", auth);
 

@@ -26,7 +26,24 @@ Dibutuhkan untuk staging dan production: D1 (`selfgrow-staging`), KV, Turnstile,
   Lalu salin _Application Audience (AUD) tag_ ke variabel `ACCESS_AUD` dan domain tim (`<tim>.cloudflareaccess.com`) ke `ACCESS_TEAM_DOMAIN`.
 - **ADMIN_EMAILS**: email Google pemilik. Akun dengan email ini otomatis menjadi admin saat login pertama.
 
-## 3. Secret Worker
+## 3. Deploy staging otomatis (GitHub Actions)
+
+Workflow `.github/workflows/deploy-staging.yml` men-deploy staging setiap ada merge ke `main`.
+Isi GitHub → repo `selfgrow.id` → **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Nama secret            | Isi                                                                                                                                               |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN` | Token dari Cloudflare: My Profile → API Tokens → Create Token → template **Edit Cloudflare Workers**, lalu tambahkan izin **Account → D1 → Edit** |
+| `GOOGLE_CLIENT_ID`     | Dari langkah 1                                                                                                                                    |
+| `GOOGLE_CLIENT_SECRET` | Dari langkah 1                                                                                                                                    |
+| `ADMIN_EMAILS`         | Email Google pemilik                                                                                                                              |
+
+`BETTER_AUTH_SECRET` dibuat otomatis oleh workflow (acak, tidak pernah ditampilkan).
+Setelah deploy pertama, alamat staging dan Redirect URI Google muncul di ringkasan run GitHub Actions. Tambahkan Redirect URI itu di Google Cloud Console (langkah 1.4).
+
+Database dan cache staging sudah dibuat di Cloudflare: D1 `selfgrow-staging` (APAC) dan KV `selfgrow-staging-kv`.
+
+## 4. Secret Worker manual (opsional)
 
 ```sh
 cd apps/app

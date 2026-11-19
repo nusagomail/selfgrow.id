@@ -2,7 +2,7 @@ import { env } from "cloudflare:test";
 import { createDb } from "@selfgrow/db";
 import { describe, expect, it } from "vitest";
 import { call, createUser, testEnv } from "../../test/helpers";
-import { canCreateSession, isAdminEmail, shouldBeAdmin } from "./auth";
+import { canCreateSession, isAdminEmail, resolveAppUrl, shouldBeAdmin } from "./auth";
 import { deviceLabelFromUserAgent } from "./device";
 import { enforceSessionLimit } from "./session-limit";
 
@@ -68,6 +68,27 @@ describe("perbaikan review keamanan", () => {
       .run();
     expect(await canCreateSession(db, u.id)).toBe(false);
     expect(await canCreateSession(db, "tidak-ada")).toBe(false);
+  });
+});
+
+describe("resolveAppUrl", () => {
+  it("memakai APP_URL bila diset", () => {
+    expect(resolveAppUrl({ APP_URL: "https://app.selfgrow.id", ENVIRONMENT: "production" })).toBe(
+      "https://app.selfgrow.id",
+    );
+  });
+  it("staging tanpa APP_URL memakai origin request", () => {
+    expect(
+      resolveAppUrl(
+        { APP_URL: "", ENVIRONMENT: "staging" },
+        "https://selfgrow-app-staging.contoh.workers.dev/api/v1/me",
+      ),
+    ).toBe("https://selfgrow-app-staging.contoh.workers.dev");
+  });
+  it("production tanpa APP_URL ditolak", () => {
+    expect(() =>
+      resolveAppUrl({ APP_URL: "", ENVIRONMENT: "production" }, "https://jahat.example/x"),
+    ).toThrow();
   });
 });
 

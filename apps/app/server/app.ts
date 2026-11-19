@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { csrf } from "hono/csrf";
 import { HTTPException } from "hono/http-exception";
 import { secureHeaders } from "hono/secure-headers";
+import { resolveAppUrl } from "./auth/auth";
 import type { AppEnv } from "./env";
 import { contextMiddleware } from "./middleware/context";
 import { admin } from "./routes/admin";
@@ -28,7 +29,7 @@ api.use("*", (c, next) => {
   const bearerOnly =
     c.req.header("authorization")?.startsWith("Bearer ") && !c.req.header("cookie");
   if (bearerOnly) return next();
-  return csrf({ origin: [c.env.APP_URL] })(c, next);
+  return csrf({ origin: [resolveAppUrl(c.env, c.req.url)] })(c, next);
 });
 api.on(["GET", "POST"], "/auth/*", (c) => c.var.auth.handler(c.req.raw));
 api.route("/me", me);

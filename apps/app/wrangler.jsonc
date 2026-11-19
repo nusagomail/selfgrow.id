@@ -30,13 +30,24 @@
   ],
   "kv_namespaces": [{ "binding": "KV", "id": "00000000000000000000000000000000" }],
   "env": {
+    // Staging (D15): alamat workers.dev, APP_URL kosong = pakai origin request.
+    // ADMIN_EMAILS dan secret lain diset oleh workflow deploy-staging dari GitHub Secrets.
     "staging": {
       "name": "selfgrow-app-staging",
       "vars": {
         "ENVIRONMENT": "staging",
-        "APP_URL": "https://selfgrow-app-staging.workers.dev",
-        "SITE_URL": "https://selfgrow-site-staging.workers.dev"
-      }
+        "APP_URL": "",
+        "SITE_URL": ""
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "selfgrow-staging",
+          "database_id": "344e2f0a-093b-410d-8def-7c036bacbe38",
+          "migrations_dir": "../../packages/db/migrations"
+        }
+      ],
+      "kv_namespaces": [{ "binding": "KV", "id": "a97fc98aff02439797d52c259b48a22f" }]
     }
   }
 }
