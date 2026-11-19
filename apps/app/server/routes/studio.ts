@@ -128,6 +128,15 @@ export const studio = new Hono<AppEnv>()
       if (taken) return c.json({ error: "slug_taken" }, 409);
     }
 
+    // Tool: validasi & salin konfigurasi terbit SEBELUM status diubah, supaya penerbitan
+    // gagal tanpa efek samping bila konfigurasi tidak valid (review keamanan PR #8).
+    let toolPublish: { config: unknown } | null = null;
+    if (body.status === "published" && before.type === "tool") {
+      const published = await publishToolConfig(c.var.db, id);
+      if (!published.ok) return c.json({ error: "invalid_tool_config" }, 400);
+      toolPublish = { config: published.config };
+    }
+
     const now = new Date();
     const publishing = body.status === "published" && before.status !== "published";
     await c.var.db
@@ -142,18 +151,9 @@ export const studio = new Hono<AppEnv>()
     let version: number | undefined;
     if (body.status === "published" && before.type === "ebook") {
       version = await snapshotEbook(c.env.CONTENT, c.var.db, id, c.var.user?.id ?? null);
-    } else if (body.status === "published" && before.type === "tool") {
-      const published = await publishToolConfig(c.var.db, id);
-      if (!published.ok) {
-        // Kembalikan status bila konfigurasi tidak valid (tool tidak boleh terbit setengah jadi).
-        await c.var.db
-          .update(schema.contentItems)
-          .set({ status: before.status, publishedAt: before.publishedAt })
-          .where(eq(schema.contentItems.id, id));
-        return c.json({ error: "invalid_tool_config" }, 400);
-      }
+    } else if (toolPublish) {
       version = await recordVersion(c.env.CONTENT, c.var.db, id, c.var.user?.id ?? null, {
-        config: published.config,
+        config: toolPublish.config,
       });
     }
 

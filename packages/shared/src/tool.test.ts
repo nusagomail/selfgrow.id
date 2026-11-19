@@ -29,6 +29,26 @@ describe("toolConfigSchema", () => {
     }
   });
 
+  it("menolak kunci bawaan JavaScript", () => {
+    for (const key of ["constructor", "prototype", "tostring"]) {
+      const r = toolConfigSchema.safeParse({
+        inputs: [{ key, label: "X", type: "text", required: false }],
+        computed: [{ key: "b", label: "B", formula: "1" }],
+      });
+      expect(r.success, key).toBe(false);
+    }
+  });
+
+  it("teks rekomendasi dibatasi panjangnya", () => {
+    const cfg = toolConfigSchema.parse({
+      inputs: [{ key: "t", label: "T", type: "text" }],
+      computed: [{ key: "x", label: "X", formula: "t", format: "text" }],
+      recommendations: [{ when: "true", text: "{{x}}".repeat(300) }],
+    });
+    const out = runToolConfig(cfg, { t: "a".repeat(2000) });
+    expect(out.recommendations[0]?.text.length).toBe(4000);
+  });
+
   it("menolak rumus tidak valid", () => {
     const r = toolConfigSchema.safeParse({
       inputs: [{ key: "a", label: "A", type: "number" }],

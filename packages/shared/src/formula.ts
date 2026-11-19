@@ -156,7 +156,8 @@ export function parseFormula(src: string): { logic: Logic; vars: string[] } {
     enter();
     try {
       const t = next();
-      if (t.t === "num" || t.t === "str") return t.v;
+      if (t.t === "num") return Number.isFinite(t.v) ? t.v : null;
+      if (t.t === "str") return t.v;
       if (t.t === "op" && t.v === "(") {
         const e = orExpr();
         expect(")");
@@ -299,14 +300,14 @@ export function evaluate(logic: Logic, data: Record<string, Value>): Value {
         if (a === null) return null;
         const d = Math.max(0, Math.min(6, Math.trunc(b ?? 0)));
         const f = 10 ** d;
-        return Math.round((a as number) * f) / f;
+        return finite(Math.round((a as number) * f) / f);
       }
       case "floor":
-        return a === null ? null : Math.floor(a as number);
+        return a === null ? null : finite(Math.floor(a as number));
       case "ceil":
-        return a === null ? null : Math.ceil(a as number);
+        return a === null ? null : finite(Math.ceil(a as number));
       case "abs":
-        return a === null ? null : Math.abs(a as number);
+        return a === null ? null : finite(Math.abs(a as number));
       case "cat":
         return vals
           .map((v) => (v === null ? "" : String(v)))

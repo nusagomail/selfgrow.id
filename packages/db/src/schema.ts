@@ -369,7 +369,8 @@ export const usageCounters = sqliteTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     period: text("period").notNull(),
-    metric: text("metric", { enum: ["downloads", "tool_runs", "ai_calls"] }).notNull(),
+    /** `downloads`, `ai_calls`, atau `tool_runs:{contentId}` (kuota per tool). */
+    metric: text("metric").notNull(),
     count: integer("count").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.userId, t.period, t.metric] })],

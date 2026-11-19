@@ -98,7 +98,8 @@ export const tools = new Hono<AppEnv>()
     }
 
     const limit = tool.def.quotaPerMonth ?? DEFAULT_TOOL_RUN_QUOTA;
-    const used = await consumeQuota(c.var.db, user.id, "tool_runs", limit);
+    // Kuota dihitung per tool (review keamanan PR #8): limit besar satu tool tidak membuka tool lain.
+    const used = await consumeQuota(c.var.db, user.id, `tool_runs:${tool.item.id}`, limit);
     if (used === null) return c.json({ error: "quota_exceeded", limit }, 429);
     return c.json({ ...result, usage: { used, limit } });
   });

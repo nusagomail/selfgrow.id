@@ -21,7 +21,18 @@ const keySchema = z
   .string()
   .regex(/^[a-z][a-z0-9_]{0,39}$/, "Kunci: huruf kecil, angka, garis bawah, diawali huruf");
 
-const RESERVED_KEYS = new Set(["true", "false", "null", ...Object.keys(FORMULA_FUNCTIONS)]);
+const RESERVED_KEYS = new Set([
+  "true",
+  "false",
+  "null",
+  "constructor",
+  "prototype",
+  "__proto__",
+  "hasownproperty",
+  "tostring",
+  "valueof",
+  ...Object.keys(FORMULA_FUNCTIONS),
+]);
 
 export const TOOL_INPUT_TYPES = ["number", "text", "select", "boolean"] as const;
 export const TOOL_OUTPUT_FORMATS = ["number", "currency_idr", "percent", "text"] as const;
@@ -142,6 +153,9 @@ export function toPublicDefinition(cfg: ToolConfig): PublicToolDefinition {
   };
 }
 
+/** Batas panjang teks rekomendasi setelah placeholder diganti (cegah respons raksasa). */
+const MAX_RECOMMENDATION_LENGTH = 4000;
+
 export interface ToolRunResult {
   results: { key: string; label: string; value: Value; display: string }[];
   recommendations: { text: string; variant: (typeof TOOL_VARIANTS)[number] }[];
@@ -212,10 +226,9 @@ export function runToolConfig(cfg: ToolConfig, rawInput: unknown): ToolRunResult
     if (hit !== null && hit !== false && hit !== 0 && hit !== "") {
       recommendations.push({
         variant: r.variant,
-        text: r.text.replace(
-          /\{\{\s*([a-z][a-z0-9_]*)\s*\}\}/g,
-          (_, k: string) => display[k] ?? "",
-        ),
+        text: r.text
+          .replace(/\{\{\s*([a-z][a-z0-9_]*)\s*\}\}/g, (_, k: string) => display[k] ?? "")
+          .slice(0, MAX_RECOMMENDATION_LENGTH),
       });
     }
   }

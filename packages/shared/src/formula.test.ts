@@ -25,6 +25,11 @@ describe("parseFormula + evaluate", () => {
     expect(run("a / b", { a: 1, b: 0 })).toBeNull();
   });
 
+  it("tidak pernah menghasilkan Infinity", () => {
+    expect(run(`round(${"9".repeat(400)})`)).toBeNull();
+    expect(run("abs(a * a)", { a: 1e200 })).toBeNull();
+  });
+
   it("mencatat variabel yang dipakai", () => {
     expect(parseFormula("gaji - (makan + kos)").vars.sort()).toEqual(["gaji", "kos", "makan"]);
   });

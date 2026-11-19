@@ -185,6 +185,41 @@ describe("menjalankan tool", () => {
     expect((await run()).status).toBe(429);
   });
 
+  it("kuota dihitung per tool: tool lain tidak ikut terkunci", async () => {
+    const a = await setupTool({ quota: 1 });
+    const b = await setupTool({ quota: 1 });
+    const u = await createUser();
+    await grantSubscription(u.id);
+    const run = (slug: string) =>
+      call(`/api/v1/tools/${slug}/run`, {
+        method: "POST",
+        token: u.token,
+        ...json({ input: INPUT }),
+      });
+    expect((await run(a.slug)).status).toBe(200);
+    expect((await run(a.slug)).status).toBe(429);
+    expect((await run(b.slug)).status).toBe(200);
+  });
+
+  it("penerbitan tool dengan konfigurasi rusak gagal tanpa mengubah status", async () => {
+    const { admin, id } = await setupTool({ publish: false });
+    await env.DB.prepare(
+      "UPDATE tool_definitions SET config_json = '{\"rusak\":1}' WHERE content_id = ?",
+    )
+      .bind(id)
+      .run();
+    const r = await call(`/api/v1/studio/content/${id}`, {
+      method: "PATCH",
+      token: admin.token,
+      ...json({ status: "published", title: "Judul baru" }),
+    });
+    expect(r.status).toBe(400);
+    const row = await env.DB.prepare("SELECT status, title FROM content_items WHERE id = ?")
+      .bind(id)
+      .first<{ status: string; title: string }>();
+    expect(row).toEqual({ status: "draft", title: "Kalkulator Anggaran" });
+  });
+
   it("draft Studio tidak dipakai pengguna sampai diterbitkan ulang", async () => {
     const { admin, id, slug } = await setupTool();
     const changed = structuredClone(TOOL_PRESETS.budget_503020);

@@ -1,7 +1,7 @@
 import type { Database } from "@selfgrow/db";
 import { schema, sql } from "@selfgrow/db";
 
-export type UsageMetric = "downloads" | "tool_runs" | "ai_calls";
+export type UsageMetric = "downloads" | "ai_calls" | `tool_runs:${string}`;
 
 /** Periode kuota bulanan (YYYY-MM, UTC+7 / WIB). */
 export function currentPeriod(now = new Date()) {
