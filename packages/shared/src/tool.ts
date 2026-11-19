@@ -243,11 +243,13 @@ export const createToolBodySchema = z.object({
   title: z.string().trim().min(1).max(200),
   slug: slugSchema,
   summary: z.string().trim().max(1000).optional(),
-  preset: z.enum(["blank", "budget_503020"]).default("blank"),
+  preset: z.enum(["blank", "budget_503020", "habit_daily"]).default("blank"),
 });
 
 export const saveToolBodySchema = z.object({
   config: toolConfigSchema,
+  /** true = tracker: setiap isian disimpan per tanggal + streak (D13). */
+  storesUserData: z.boolean().optional(),
   quotaPerMonth: z.number().int().min(1).max(100_000).nullable().optional(),
 });
 
@@ -267,7 +269,7 @@ export const DEFAULT_TOOL_RUN_QUOTA = 1000;
 // Contoh siap pakai di Studio
 // ---------------------------------------------------------------------------
 
-export const TOOL_PRESETS: Record<"blank" | "budget_503020", ToolConfig> = {
+export const TOOL_PRESETS: Record<"blank" | "budget_503020" | "habit_daily", ToolConfig> = {
   blank: {
     version: 1,
     inputs: [{ key: "angka", label: "Angka", type: "number", required: true }],
@@ -339,6 +341,69 @@ export const TOOL_PRESETS: Record<"blank" | "budget_503020", ToolConfig> = {
         when: "porsi_wajib <= 50",
         text: "Pengeluaran wajibmu masih di bawah 50%. Sisihkan {{tabungan}} di awal bulan sebelum belanja lain.",
         variant: "tip",
+      },
+    ],
+  },
+  habit_daily: {
+    version: 1,
+    intro: "Catat kebiasaan harianmu. Isi setiap hari untuk menjaga streak 🔥",
+    submitLabel: "Simpan hari ini",
+    inputs: [
+      {
+        key: "olahraga",
+        label: "Olahraga",
+        type: "number",
+        required: true,
+        min: 0,
+        max: 600,
+        unit: "menit",
+      },
+      {
+        key: "air",
+        label: "Minum air",
+        type: "number",
+        required: true,
+        min: 0,
+        max: 30,
+        unit: "gelas",
+      },
+      {
+        key: "mood",
+        label: "Mood hari ini",
+        type: "select",
+        required: true,
+        options: [
+          { value: "1", label: "😞 Buruk" },
+          { value: "2", label: "😐 Biasa" },
+          { value: "3", label: "🙂 Baik" },
+          { value: "4", label: "😄 Sangat baik" },
+        ],
+      },
+    ],
+    computed: [
+      {
+        key: "skor",
+        label: "Skor hari ini",
+        formula: "round(min(olahraga / 30, 1) * 40 + min(air / 8, 1) * 30 + mood / 4 * 30)",
+        format: "number",
+        show: true,
+      },
+    ],
+    recommendations: [
+      {
+        when: "olahraga < 30",
+        text: "Target olahraga 30 menit. Jalan kaki 10 menit setelah makan sudah membantu.",
+        variant: "tip",
+      },
+      {
+        when: "air < 8",
+        text: "Baru {{air}} gelas. Taruh botol minum di meja kerja supaya terlihat.",
+        variant: "tip",
+      },
+      {
+        when: "skor >= 80",
+        text: "Hari yang hebat! Skor {{skor}}. Pertahankan besok.",
+        variant: "info",
       },
     ],
   },

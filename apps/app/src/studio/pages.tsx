@@ -63,7 +63,7 @@ export function StudioHome() {
   const [slugEdited, setSlugEdited] = useState(false);
   const [busy, setBusy] = useState(false);
   const [kind, setKind] = useState<"ebook" | "tool">("ebook");
-  const [preset, setPreset] = useState<"budget_503020" | "blank">("budget_503020");
+  const [preset, setPreset] = useState<"budget_503020" | "habit_daily" | "blank">("budget_503020");
   useAdminGuard(err);
 
   useEffect(() => {
@@ -143,6 +143,7 @@ export function StudioHome() {
             <span>Mulai dari</span>
             <select value={preset} onChange={(e) => setPreset(e.target.value as typeof preset)}>
               <option value="budget_503020">Contoh: kalkulator anggaran 50/30/20</option>
+              <option value="habit_daily">Contoh: tracker kebiasaan harian</option>
               <option value="blank">Kosong</option>
             </select>
           </label>

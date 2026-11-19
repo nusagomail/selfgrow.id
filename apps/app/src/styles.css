@@ -334,3 +334,36 @@ select {
   overflow-wrap: break-word;
   font-variant-numeric: tabular-nums;
 }
+
+/* Tracker */
+.streak-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.streak {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  background: var(--surface);
+  text-align: center;
+}
+.streak-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+.chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.chart .bar {
+  fill: var(--primary);
+}
+.chart .bar-empty {
+  fill: var(--border);
+}
+.chart-label {
+  font-size: 9px;
+  fill: var(--muted);
+}

@@ -395,7 +395,8 @@ export const toolEntries = sqliteTable(
     dataJson: text("data_json").notNull(),
     createdAt: createdAt(),
   },
-  (t) => [index("tool_entries_user_tool_date_idx").on(t.userId, t.toolId, t.entryDate)],
+  // Satu entri per user per tool per tanggal (diisi ulang = diperbarui).
+  (t) => [uniqueIndex("tool_entries_user_tool_date_uq").on(t.userId, t.toolId, t.entryDate)],
 );
 
 export const programs = sqliteTable("programs", {

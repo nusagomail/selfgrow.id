@@ -59,6 +59,7 @@ export const studioTools = new Hono<AppEnv>()
         contentId: id,
         kind: "nocode",
         configJson: JSON.stringify(TOOL_PRESETS[preset]),
+        storesUserData: preset === "habit_daily",
       }),
     ]);
     await writeAudit(c, { action: "tool.create", target: `content:${id}`, after: body.data });
@@ -89,6 +90,7 @@ export const studioTools = new Hono<AppEnv>()
         config: def.configJson ? JSON.parse(def.configJson) : null,
         hasUnpublishedChanges: def.configJson !== def.publishedConfigJson,
         quotaPerMonth: def.quotaPerMonth,
+        storesUserData: def.storesUserData,
         defaultQuota: DEFAULT_TOOL_RUN_QUOTA,
       },
     });
@@ -112,6 +114,9 @@ export const studioTools = new Hono<AppEnv>()
         ...(body.data.quotaPerMonth !== undefined
           ? { quotaPerMonth: body.data.quotaPerMonth }
           : {}),
+        ...(body.data.storesUserData !== undefined
+          ? { storesUserData: body.data.storesUserData }
+          : {}),
       })
       .where(eq(schema.toolDefinitions.contentId, id));
     await c.var.db
@@ -124,6 +129,7 @@ export const studioTools = new Hono<AppEnv>()
       before: {
         config: def.configJson ? JSON.parse(def.configJson) : null,
         quota: def.quotaPerMonth,
+        storesUserData: def.storesUserData,
       },
       after: body.data,
     });
