@@ -13,14 +13,18 @@
     "db:migrate:staging": "wrangler d1 migrations apply DB --env staging --remote"
   },
   "dependencies": {
+    "@selfgrow/db": "workspace:*",
     "@selfgrow/shared": "workspace:*",
     "@tanstack/react-router": "^1.170.46",
+    "better-auth": "^1.7.26",
     "hono": "^4.13.19",
+    "jose": "^6.2.18",
     "react": "19.3.1",
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.70.1",
+    "@cloudflare/vitest-plugin": "^1.8.5",
     "@cloudflare/workers-types": "^5.20261119.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "^19.3.0",

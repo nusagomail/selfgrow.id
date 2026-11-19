@@ -38,6 +38,8 @@ Platform web berlangganan Rp100.000/user/bulan untuk menikmati konten buatan pla
 | D16 | Tabel auth (`users`, `sessions`, `accounts`) mengikuti skema Better Auth, dengan kolom tambahan bagian 6 (role, device\_label, deleted\_at, dll.) sebagai additional fields                     | Satu sumber identitas tanpa tabel ganda                                                                                                                                |
 | D17 | Cloudflare Access melindungi `/studio`, `/admin`, **dan** `/api/v1/studio/*`, `/api/v1/admin/*`                                                                                                 | SPA mengambil data lewat API, jadi path API juga harus di balik Access                                                                                                 |
 | D18 | Unduhan template disajikan lewat Worker dengan token sekali pakai berumur 5 menit (pengganti signed URL R2)                                                                                     | Tanpa kredensial S3 API di Worker, efek sama                                                                                                                           |
+| D19 | `content_items.type` ditambah `program`                                                                                                                                                         | Program bertahap (bagian 5) butuh slug, status, dan halaman etalase seperti konten lain; tabel `programs` merujuk `content_items`                                      |
+| D20 | Admin pertama ditentukan lewat variabel `ADMIN_EMAILS` saat akun dibuat; perubahan role berikutnya lewat `/admin` dan tercatat di `audit_log`                                                   | Tidak perlu akses database manual untuk bootstrap admin                                                                                                                |
 
 ## 3. Model bisnis & tahapan
 
@@ -478,10 +480,10 @@ Setelah launch, ritme rilis minimal: 1 ebook atau program baru per minggu, ditam
 ### Fase 1A — Fondasi
 
 - [ ] Monorepo pnpm, dua app (`site`, `app` + server), tiga paket, CI GitHub Actions, lingkungan local/staging/production
-- [ ] Skema D1 + migrasi awal (bagian 6), Drizzle
-- [ ] Better Auth + login Google, `sessions` dengan batas 2 perangkat
-- [ ] `entitlements` + middleware `requireActiveSubscription` + cache KV
-- [ ] Cloudflare Access untuk `/studio` dan `/admin`, `audit_log`
+- [x] Skema D1 + migrasi awal (bagian 6), Drizzle
+- [x] Better Auth + login Google, `sessions` dengan batas 2 perangkat
+- [x] `entitlements` + middleware `requireActiveSubscription` + cache KV
+- [ ] Cloudflare Access untuk `/studio` dan `/admin`, `audit_log` (kode verifikasi JWT + `audit_log` selesai; aplikasi Access dibuat saat setup staging, lihat `docs/SETUP.md`)
 
 Selesai bila: user bisa login, admin bisa masuk Studio, user tanpa langganan ditolak 403 di endpoint konten (dibuktikan test).
 

@@ -12,11 +12,23 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
   },
+  // Nilai top-level = production, supaya deploy tanpa --env tetap aman (gagal tertutup).
+  // Nilai lokal (ENVIRONMENT=local, APP_URL localhost) hanya di .dev.vars.
   "vars": {
-    "ENVIRONMENT": "local",
-    "APP_URL": "http://localhost:5173",
-    "SITE_URL": "http://localhost:4321"
+    "ENVIRONMENT": "production",
+    "APP_URL": "https://app.selfgrow.id",
+    "SITE_URL": "https://selfgrow.id",
+    "ADMIN_EMAILS": ""
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "selfgrow-local",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "../../packages/db/migrations"
+    }
+  ],
+  "kv_namespaces": [{ "binding": "KV", "id": "00000000000000000000000000000000" }],
   "env": {
     "staging": {
       "name": "selfgrow-app-staging",

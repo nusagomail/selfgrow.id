@@ -1,9 +1,7 @@
 import { healthResponseSchema } from "@selfgrow/shared";
 import { describe, expect, it } from "vitest";
+import { testEnv as env } from "../test/helpers";
 import { api } from "./app";
-import type { Env } from "./env";
-
-const env = { ENVIRONMENT: "local", APP_URL: "", SITE_URL: "" } as Env;
 
 describe("API /api/v1", () => {
   it("GET /api/v1/health mengembalikan status ok", async () => {
@@ -12,7 +10,7 @@ describe("API /api/v1", () => {
     expect(healthResponseSchema.parse(await res.json())).toEqual({
       status: "ok",
       version: "0.0.0",
-      environment: "local",
+      environment: "test",
     });
   });
 

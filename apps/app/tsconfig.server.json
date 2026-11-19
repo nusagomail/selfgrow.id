@@ -5,7 +5,7 @@
     "noEmit": false,
     "emitDeclarationOnly": true,
     "outDir": "node_modules/.tmp/server",
-    "types": ["@cloudflare/workers-types"]
+    "types": ["@cloudflare/workers-types", "@cloudflare/vitest-plugin/types"]
   },
-  "include": ["server", "vite.config.ts", "vitest.config.ts"]
+  "include": ["server", "test", "vite.config.ts", "vitest.config.ts"]
 }
