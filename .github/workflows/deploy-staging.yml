@@ -67,8 +67,13 @@ jobs:
         id: deploy
         working-directory: apps/app
         run: |
+          set -o pipefail
           npx wrangler deploy 2>&1 | tee deploy.log
           url=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          if [ -z "$url" ]; then
+            echo "::error::Deploy tidak menghasilkan alamat workers.dev. Daftarkan subdomain workers.dev di dashboard Cloudflare (Workers & Pages)."
+            exit 1
+          fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
 
       - name: Set secret Worker
@@ -97,7 +102,7 @@ jobs:
           fi
 
       - name: Smoke test
-        if: steps.gate.outputs.skip != 'true' && steps.deploy.outputs.url != ''
+        if: steps.gate.outputs.skip != 'true'
         run: |
           url="${{ steps.deploy.outputs.url }}"
           for i in 1 2 3 4 5 6; do
