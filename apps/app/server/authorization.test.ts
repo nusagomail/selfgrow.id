@@ -199,6 +199,41 @@ describe("admin & Studio", () => {
     expect(res.status).toBe(403);
   });
 
+  it("ENVIRONMENT=local di domain publik tidak melewati Access", async () => {
+    const { api } = await import("./app");
+    const adm = await createUser({ role: "admin" });
+    const res = await api.request(
+      "https://selfgrow-app.workers.dev/api/v1/admin/users",
+      { headers: { authorization: `Bearer ${adm.token}` } },
+      { ...env, ENVIRONMENT: "local" },
+    );
+    expect(res.status).toBe(403);
+  });
+
+  it("ENVIRONMENT=local di localhost boleh tanpa Access (dev lokal)", async () => {
+    const { api } = await import("./app");
+    const adm = await createUser({ role: "admin" });
+    const res = await api.request(
+      "http://localhost:5173/api/v1/admin/users",
+      { headers: { authorization: `Bearer ${adm.token}` } },
+      { ...env, ENVIRONMENT: "local" },
+    );
+    expect(res.status).toBe(200);
+  });
+
+  it("mutasi form lintas origin berbasis cookie ditolak (CSRF)", async () => {
+    const m = await createUser();
+    const res = await call(`/api/v1/admin/users/${m.id}/role`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        origin: "https://jahat.example",
+      },
+      body: "role=admin",
+    });
+    expect(res.status).toBe(403);
+  });
+
   it("di staging tanpa konfigurasi Access, admin ditolak (gagal tertutup)", async () => {
     const { api } = await import("./app");
     const adm = await createUser({ role: "admin" });

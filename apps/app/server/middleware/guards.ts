@@ -31,14 +31,17 @@ export const requireAdmin = createMiddleware<AppEnv>(async (c, next) => {
 
 const jwksCache = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
 
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+
 /**
  * Lapisan kedua di balik Cloudflare Access (D17): verifikasi JWT Access di header
- * `Cf-Access-Jwt-Assertion`. Di staging/production WAJIB terkonfigurasi (gagal = ditolak).
- * Di local/test dilewati karena tidak ada Access.
+ * `Cf-Access-Jwt-Assertion`. Gagal tertutup: hanya dilewati saat test, atau saat
+ * ENVIRONMENT=local DAN request benar-benar ke localhost (dev di mesin sendiri).
  */
 export const requireAccess = createMiddleware<AppEnv>(async (c, next) => {
   const { ENVIRONMENT, ACCESS_TEAM_DOMAIN, ACCESS_AUD } = c.env;
-  if (ENVIRONMENT === "local" || ENVIRONMENT === "test") return next();
+  if (ENVIRONMENT === "test") return next();
+  if (ENVIRONMENT === "local" && LOCAL_HOSTS.has(new URL(c.req.url).hostname)) return next();
 
   if (!ACCESS_TEAM_DOMAIN || !ACCESS_AUD) return c.json({ error: "forbidden" }, 403);
   const token = c.req.header("cf-access-jwt-assertion");

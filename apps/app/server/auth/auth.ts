@@ -1,4 +1,5 @@
-import { createDb, schema } from "@selfgrow/db";
+import type { Database } from "@selfgrow/db";
+import { createDb, eq, schema } from "@selfgrow/db";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { bearer, captcha } from "better-auth/plugins";
@@ -14,6 +15,23 @@ export function isAdminEmail(env: Pick<Env, "ADMIN_EMAILS">, email: string) {
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean)
     .includes(email.toLowerCase());
+}
+
+/** Admin otomatis hanya untuk email yang sudah diverifikasi Google (review keamanan PR #2). */
+export function shouldBeAdmin(
+  env: Pick<Env, "ADMIN_EMAILS">,
+  user: { email: string; emailVerified?: boolean | null },
+) {
+  return user.emailVerified === true && isAdminEmail(env, user.email);
+}
+
+/** Akun yang sudah dihapus tidak boleh membuat sesi baru. */
+export async function canCreateSession(db: Database, userId: string) {
+  const user = await db.query.users.findFirst({
+    where: eq(schema.users.id, userId),
+    columns: { deletedAt: true },
+  });
+  return Boolean(user) && !user?.deletedAt;
 }
 
 /**
@@ -76,15 +94,18 @@ export function createAuth(env: Env) {
       user: {
         create: {
           before: async (user) => ({
-            data: { ...user, role: isAdminEmail(env, user.email) ? "admin" : "member" },
+            data: { ...user, role: shouldBeAdmin(env, user) ? "admin" : "member" },
           }),
         },
       },
       session: {
         create: {
-          before: async (session) => ({
-            data: { ...session, deviceLabel: deviceLabelFromUserAgent(session.userAgent) },
-          }),
+          before: async (session) => {
+            if (!(await canCreateSession(db, session.userId))) return false;
+            return {
+              data: { ...session, deviceLabel: deviceLabelFromUserAgent(session.userAgent) },
+            };
+          },
           after: async (session) => {
             await enforceSessionLimit(db, session.userId);
           },

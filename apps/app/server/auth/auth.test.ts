@@ -2,7 +2,7 @@ import { env } from "cloudflare:test";
 import { createDb } from "@selfgrow/db";
 import { describe, expect, it } from "vitest";
 import { call, createUser, testEnv } from "../../test/helpers";
-import { isAdminEmail } from "./auth";
+import { canCreateSession, isAdminEmail, shouldBeAdmin } from "./auth";
 import { deviceLabelFromUserAgent } from "./device";
 import { enforceSessionLimit } from "./session-limit";
 
@@ -48,6 +48,26 @@ describe("login Google", () => {
       body: JSON.stringify({ email: "a@example.com", password: "rahasia123", name: "A" }),
     });
     expect(res.status).not.toBe(200);
+  });
+});
+
+describe("perbaikan review keamanan", () => {
+  it("admin otomatis hanya bila email sudah diverifikasi", () => {
+    const env = { ADMIN_EMAILS: "pemilik@example.com" };
+    expect(shouldBeAdmin(env, { email: "pemilik@example.com", emailVerified: true })).toBe(true);
+    expect(shouldBeAdmin(env, { email: "pemilik@example.com", emailVerified: false })).toBe(false);
+    expect(shouldBeAdmin(env, { email: "pemilik@example.com" })).toBe(false);
+  });
+
+  it("akun yang dihapus tidak bisa membuat sesi baru", async () => {
+    const u = await createUser();
+    const db = createDb(env.DB);
+    expect(await canCreateSession(db, u.id)).toBe(true);
+    await env.DB.prepare("UPDATE users SET deleted_at = ? WHERE id = ?")
+      .bind(Date.now(), u.id)
+      .run();
+    expect(await canCreateSession(db, u.id)).toBe(false);
+    expect(await canCreateSession(db, "tidak-ada")).toBe(false);
   });
 });
 
