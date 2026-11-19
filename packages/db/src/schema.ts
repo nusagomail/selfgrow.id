@@ -236,7 +236,10 @@ export const toolDefinitions = sqliteTable("tool_definitions", {
     .primaryKey()
     .references(() => contentItems.id, { onDelete: "cascade" }),
   kind: text("kind", { enum: ["nocode", "custom"] }).notNull(),
+  /** Draft konfigurasi (diedit Studio). */
   configJson: text("config_json"),
+  /** Konfigurasi yang dipakai pelanggan; disalin dari draft saat diterbitkan. */
+  publishedConfigJson: text("published_config_json"),
   moduleSlug: text("module_slug"),
   quotaPerMonth: integer("quota_per_month"),
   storesUserData: integer("stores_user_data", { mode: "boolean" }).notNull().default(false),

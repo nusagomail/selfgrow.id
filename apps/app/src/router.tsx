@@ -14,6 +14,8 @@ const rootRoute = createRootRoute({ component: () => <Outlet /> });
 // Studio (Tiptap) dan reader dimuat terpisah supaya bundle awal tetap kecil (BLUEPRINT bagian 10).
 const studio = () => import("./studio/pages");
 const reader = () => import("./reader/pages");
+const toolBuilder = () => import("./studio/tool-builder");
+const toolPage = () => import("./tools/page");
 
 const routeTree = rootRoute.addChildren([
   createRoute({ getParentRoute: () => rootRoute, path: "/", component: HomePage }),
@@ -38,6 +40,16 @@ const routeTree = rootRoute.addChildren([
     getParentRoute: () => rootRoute,
     path: "/studio",
     component: lazyRouteComponent(studio, "StudioHome"),
+  }),
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/studio/tool/$id",
+    component: lazyRouteComponent(toolBuilder, "StudioTool"),
+  }),
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/tools/$slug",
+    component: lazyRouteComponent(toolPage, "ToolPage"),
   }),
   createRoute({
     getParentRoute: () => rootRoute,

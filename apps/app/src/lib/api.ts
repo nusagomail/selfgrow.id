@@ -4,6 +4,8 @@ export class ApiError extends Error {
   constructor(
     public status: number,
     public code: string,
+    /** Isi respons error (mis. daftar `issues` validasi). */
+    public body?: unknown,
   ) {
     super(code);
   }
@@ -16,7 +18,7 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_BASE_PATH}${path}`, { ...init, headers });
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as { error?: string; code?: string };
-    throw new ApiError(res.status, body.error ?? body.code ?? "error");
+    throw new ApiError(res.status, body.error ?? body.code ?? "error", body);
   }
   if (res.status === 204) return undefined as T;
   return (await res.json()) as T;

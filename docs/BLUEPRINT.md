@@ -41,6 +41,8 @@ Platform web berlangganan Rp100.000/user/bulan untuk menikmati konten buatan pla
 | D19 | `content_items.type` ditambah `program`                                                                                                                                                         | Program bertahap (bagian 5) butuh slug, status, dan halaman etalase seperti konten lain; tabel `programs` merujuk `content_items`                                      |
 | D20 | Admin pertama ditentukan lewat variabel `ADMIN_EMAILS` saat akun dibuat; perubahan role berikutnya lewat `/admin` dan tercatat di `audit_log`                                                   | Tidak perlu akses database manual untuk bootstrap admin                                                                                                                |
 | D21 | Isi bab punya dua salinan di R2: `chapters/` (draft, autosave Studio) dan `published/` (yang dibaca pelanggan). Setiap penerbitan ebook membuat snapshot `versions/{n}.json` + baris `content_versions` | Autosave tidak pernah mengubah isi yang sedang dibaca pelanggan; riwayat versi bisa dipulihkan |
+| D22 | Tool no-code ditulis sebagai rumus mirip spreadsheet yang di-parse sendiri (tanpa library, tanpa `eval`) menjadi pohon JSON Logic dengan daftar operator tertutup. Yang disimpan hanya teks rumus; server mem-parse ulang saat simpan dan saat run. `tool_definitions` punya draft (`config_json`) dan versi terbit (`published_config_json`) | `json-logic-js` punya operator `method` yang bisa memanggil method objek; pemilik bukan programmer sehingga rumus lebih mudah daripada JSON; draft Studio tidak mengubah tool yang dipakai pelanggan |
+| D23 | Kuota run tool default 1.000 per user per bulan (bisa diatur per tool), dihitung atomik di `usage_counters`; input tidak valid tidak memotong kuota | Deteksi scraping/penyalahgunaan sesuai bagian 8 tanpa mengganggu pemakaian normal |
 
 ## 3. Model bisnis & tahapan
 
@@ -491,7 +493,7 @@ Selesai bila: user bisa login, admin bisa masuk Studio, user tanpa langganan dit
 ### Fase 1B — Studio & konten
 
 - [x] Ebook Studio (Tiptap, bab, versi, preview) + reader di `app` dengan progress dan bookmark
-- [ ] Tool Builder no-code (JSON Logic) + registry tool custom + `POST /v1/tools/:id/run`
+- [x] Tool Builder no-code (JSON Logic) + registry tool custom + `POST /v1/tools/:id/run`
 - [ ] Template Builder + generator DOCX/PDF/XLSX + kuota unduh, tool tracker dengan data user, program bertahap, streak, dan review mingguan
 - [ ] Perlindungan ebook: rate limit, deteksi scraping, watermark terlihat + forensik
 

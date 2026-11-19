@@ -275,3 +275,62 @@ textarea {
     opacity: 0.5;
   }
 }
+
+/* Fase 1B: Tool Builder & tools */
+select {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95rem;
+}
+.builder-item {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.builder-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .builder-row {
+    grid-template-columns: 160px 1fr 160px;
+  }
+}
+.builder-row .grow {
+  min-width: 0;
+}
+@media (min-width: 860px) {
+  .studio-grid:has(.builder-preview) {
+    grid-template-columns: 1fr 360px;
+  }
+  .builder-preview {
+    position: sticky;
+    top: 16px;
+    align-self: start;
+  }
+}
+.result-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+.result {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.result-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 4px;
+  overflow-wrap: break-word;
+  font-variant-numeric: tabular-nums;
+}
