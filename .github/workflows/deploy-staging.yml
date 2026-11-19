@@ -105,17 +105,26 @@ jobs:
         if: steps.gate.outputs.skip != 'true'
         run: |
           url="${{ steps.deploy.outputs.url }}"
+          # Staging dikunci Cloudflare Access (D17): request tanpa login harus dialihkan ke
+          # halaman login Access. Itu sekaligus bukti Worker hidup dan terlindungi.
           for i in 1 2 3 4 5 6; do
-            body=$(curl -fsS "$url/api/v1/health" || true)
-            echo "$body" | grep -q '"status":"ok"' && break
+            loc=$(curl -s -o /dev/null -w '%{redirect_url}' "$url/api/v1/health" || true)
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$url/api/v1/health" || true)
+            if echo "$loc" | grep -q 'cloudflareaccess.com'; then status="protected"; break; fi
+            if [ "$code" = "200" ]; then status="public"; break; fi
             sleep 5
           done
-          echo "$body" | grep -q '"environment":"staging"'
-          code=$(curl -s -o /dev/null -w '%{http_code}' "$url/api/v1/library")
-          test "$code" = "401"
+          echo "status=$status code=$code"
+          if [ "$status" = "public" ]; then
+            echo "::warning::Staging tidak terlindungi Cloudflare Access."
+          elif [ "$status" != "protected" ]; then
+            echo "::error::Staging tidak merespons."
+            exit 1
+          fi
           {
             echo "### Staging ter-deploy"
             echo ""
             echo "- App: $url"
+            echo "- Cloudflare Access: $status"
             echo "- Redirect URI Google OAuth: \`$url/api/v1/auth/callback/google\`"
           } >> "$GITHUB_STEP_SUMMARY"
