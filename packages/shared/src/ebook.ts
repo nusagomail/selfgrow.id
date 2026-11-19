@@ -1,0 +1,181 @@
+/**
+ * Format isi bab ebook (BLUEPRINT bagian 5): JSON Tiptap dengan daftar node & mark yang
+ * diizinkan. Semua isi bab divalidasi skema ini saat disimpan dari Studio, sehingga
+ * renderer hanya pernah menerima struktur yang dikenalnya (tanpa HTML mentah).
+ */
+import { z } from "zod";
+import { slugSchema } from "./schemas";
+
+const MAX_TEXT = 20_000;
+
+/** Hanya tautan http(s) dan mailto. Menolak `javascript:` dan skema lain. */
+export const safeHrefSchema = z
+  .string()
+  .max(2048)
+  .refine((v) => /^(https?:\/\/|mailto:)/i.test(v), "Tautan harus http(s) atau mailto");
+
+/** Gambar hanya dari aset platform sendiri (`/api/v1/assets/...`) atau https. */
+export const safeImageSrcSchema = z
+  .string()
+  .max(2048)
+  .refine((v) => /^(https:\/\/|\/api\/v1\/assets\/)/.test(v), "Sumber gambar tidak diizinkan");
+
+const markSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("bold") }),
+  z.object({ type: z.literal("italic") }),
+  z.object({ type: z.literal("underline") }),
+  z.object({ type: z.literal("strike") }),
+  z.object({ type: z.literal("code") }),
+  z.object({
+    type: z.literal("link"),
+    attrs: z.object({ href: safeHrefSchema }).passthrough(),
+  }),
+]);
+export type EbookMark = z.infer<typeof markSchema>;
+
+export const CALLOUT_VARIANTS = ["tip", "info", "warning"] as const;
+
+export type EbookNode =
+  | { type: "text"; text: string; marks?: EbookMark[] }
+  | { type: "paragraph"; content?: EbookNode[] }
+  | { type: "heading"; attrs: { level: 2 | 3 | 4 }; content?: EbookNode[] }
+  | { type: "bulletList"; content: EbookNode[] }
+  | { type: "orderedList"; attrs?: { start?: number }; content: EbookNode[] }
+  | { type: "listItem"; content: EbookNode[] }
+  | { type: "blockquote"; content: EbookNode[] }
+  | { type: "horizontalRule" }
+  | { type: "hardBreak" }
+  | { type: "image"; attrs: { src: string; alt?: string | null; title?: string | null } }
+  | {
+      type: "callout";
+      attrs: { variant: (typeof CALLOUT_VARIANTS)[number] };
+      content: EbookNode[];
+    };
+
+const text = z.object({
+  type: z.literal("text"),
+  text: z.string().max(MAX_TEXT),
+  marks: z.array(markSchema).max(10).optional(),
+});
+
+export const ebookNodeSchema: z.ZodType<EbookNode> = z.lazy(() =>
+  z.discriminatedUnion("type", [
+    text,
+    z.object({ type: z.literal("paragraph"), content: z.array(ebookNodeSchema).optional() }),
+    z.object({
+      type: z.literal("heading"),
+      attrs: z.object({ level: z.union([z.literal(2), z.literal(3), z.literal(4)]) }),
+      content: z.array(ebookNodeSchema).optional(),
+    }),
+    z.object({ type: z.literal("bulletList"), content: z.array(ebookNodeSchema) }),
+    z.object({
+      type: z.literal("orderedList"),
+      attrs: z.object({ start: z.number().int().min(0).optional() }).optional(),
+      content: z.array(ebookNodeSchema),
+    }),
+    z.object({ type: z.literal("listItem"), content: z.array(ebookNodeSchema) }),
+    z.object({ type: z.literal("blockquote"), content: z.array(ebookNodeSchema) }),
+    z.object({ type: z.literal("horizontalRule") }),
+    z.object({ type: z.literal("hardBreak") }),
+    z.object({
+      type: z.literal("image"),
+      attrs: z.object({
+        src: safeImageSrcSchema,
+        alt: z.string().max(500).nullish(),
+        title: z.string().max(500).nullish(),
+      }),
+    }),
+    z.object({
+      type: z.literal("callout"),
+      attrs: z.object({ variant: z.enum(CALLOUT_VARIANTS) }),
+      content: z.array(ebookNodeSchema),
+    }),
+  ]),
+) as z.ZodType<EbookNode>;
+
+export const ebookDocSchema = z.object({
+  type: z.literal("doc"),
+  content: z.array(ebookNodeSchema).max(5000),
+});
+export type EbookDoc = z.infer<typeof ebookDocSchema>;
+
+export const EMPTY_EBOOK_DOC: EbookDoc = { type: "doc", content: [{ type: "paragraph" }] };
+
+/** Jumlah kata dari dokumen, untuk `ebook_chapters.word_count`. */
+export function countWords(doc: EbookDoc): number {
+  let n = 0;
+  const walk = (nodes: EbookNode[] | undefined) => {
+    for (const node of nodes ?? []) {
+      if (node.type === "text") n += node.text.split(/\s+/).filter(Boolean).length;
+      else if ("content" in node) walk(node.content);
+    }
+  };
+  walk(doc.content);
+  return n;
+}
+
+// ---------------------------------------------------------------------------
+// Payload API Studio & reader
+// ---------------------------------------------------------------------------
+
+export const createEbookBodySchema = z.object({
+  title: z.string().trim().min(1).max(200),
+  slug: slugSchema,
+  summary: z.string().trim().max(1000).optional(),
+});
+
+export const updateContentBodySchema = z
+  .object({
+    title: z.string().trim().min(1).max(200),
+    slug: slugSchema,
+    summary: z.string().trim().max(1000).nullable(),
+    level: z.enum(["beginner", "intermediate", "advanced"]).nullable(),
+    status: z.enum(["draft", "published"]),
+  })
+  .partial();
+
+export const createChapterBodySchema = z.object({
+  title: z.string().trim().min(1).max(200),
+});
+
+export const saveChapterBodySchema = z
+  .object({
+    title: z.string().trim().min(1).max(200),
+    doc: ebookDocSchema,
+    isFreePreview: z.boolean(),
+    status: z.enum(["draft", "published"]),
+  })
+  .partial();
+
+export const reorderChaptersBodySchema = z.object({
+  chapterIds: z.array(z.string().min(1)).min(1).max(500),
+});
+
+export const progressBodySchema = z.object({
+  chapterId: z.string().min(1),
+  position: z.number().int().min(0).max(1_000_000),
+});
+
+export const bookmarkBodySchema = z.object({
+  chapterId: z.string().min(1),
+  note: z.string().trim().max(1000).optional(),
+});
+
+export interface ChapterSummary {
+  id: string;
+  title: string;
+  order: number;
+  isFreePreview: boolean;
+  status: "draft" | "published";
+  wordCount: number;
+}
+
+export interface EbookSummary {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  status: "draft" | "review" | "published";
+  publishedAt: string | null;
+  updatedAt: string;
+}

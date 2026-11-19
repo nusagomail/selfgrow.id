@@ -43,6 +43,8 @@ export async function grantSubscription(
       now,
     )
     .run();
+  // Seperti handler webhook: entitlement berubah -> cache KV dihapus.
+  await env.KV.delete(`ent:${userId}`);
 }
 
 export function call(path: string, init: RequestInit & { token?: string } = {}) {

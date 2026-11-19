@@ -7,6 +7,7 @@ import { resolveAppUrl } from "./auth/auth";
 import type { AppEnv } from "./env";
 import { contextMiddleware } from "./middleware/context";
 import { admin } from "./routes/admin";
+import { ebooks } from "./routes/ebooks";
 import { health } from "./routes/health";
 import { library } from "./routes/library";
 import { me } from "./routes/me";
@@ -34,6 +35,7 @@ api.use("*", (c, next) => {
 api.on(["GET", "POST"], "/auth/*", (c) => c.var.auth.handler(c.req.raw));
 api.route("/me", me);
 api.route("/library", library);
+api.route("/ebooks", ebooks);
 api.route("/studio", studio);
 api.route("/admin", admin);
 
