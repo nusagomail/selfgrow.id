@@ -1,0 +1,7 @@
+# Salin ke .dev.vars untuk development lokal. Jangan pernah commit .dev.vars.
+BETTER_AUTH_SECRET=ganti-dengan-string-acak-minimal-32-karakter
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+# Opsional di lokal. Wajib di production.
+TURNSTILE_SECRET_KEY=
+ADMIN_EMAILS=
