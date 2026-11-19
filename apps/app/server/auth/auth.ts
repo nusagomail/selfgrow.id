@@ -35,24 +35,35 @@ export async function canCreateSession(db: Database, userId: string) {
 }
 
 /**
+ * URL app. Production WAJIB eksplisit lewat APP_URL. Di staging boleh kosong: dipakai origin
+ * request (subdomain workers.dev, D15). Aman karena Cloudflare merutekan berdasarkan hostname.
+ */
+export function resolveAppUrl(env: Pick<Env, "APP_URL" | "ENVIRONMENT">, requestUrl?: string) {
+  if (env.APP_URL) return env.APP_URL;
+  if (env.ENVIRONMENT !== "production" && requestUrl) return new URL(requestUrl).origin;
+  throw new Error("APP_URL wajib diset");
+}
+
+/**
  * Better Auth (D4): hanya login Google, tanpa password.
  * - Akun dicocokkan lewat (provider, provider_account_id), bukan email: account linking dimatikan.
  * - Token bearer diterima selain cookie (WAJIB, siap untuk mobile).
  * - Turnstile di endpoint login bila TURNSTILE_SECRET_KEY diset.
  */
-export function createAuth(env: Env) {
+export function createAuth(env: Env, requestUrl?: string) {
   if (env.ENVIRONMENT === "production" && !env.TURNSTILE_SECRET_KEY) {
     throw new Error("TURNSTILE_SECRET_KEY wajib di production");
   }
   const db = createDb(env.DB);
-  const secure = env.APP_URL.startsWith("https://");
+  const appUrl = resolveAppUrl(env, requestUrl);
+  const secure = appUrl.startsWith("https://");
 
   return betterAuth({
     appName: "selfgrow",
-    baseURL: env.APP_URL,
+    baseURL: appUrl,
     basePath: AUTH_BASE_PATH,
     secret: env.BETTER_AUTH_SECRET,
-    trustedOrigins: [env.APP_URL, env.SITE_URL],
+    trustedOrigins: [appUrl, ...(env.SITE_URL ? [env.SITE_URL] : [])],
     database: drizzleAdapter(db, {
       provider: "sqlite",
       usePlural: true,
