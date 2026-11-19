@@ -250,6 +250,43 @@ describe("reader ebook", () => {
     expect(del.status).toBe(404);
   });
 
+  it("progres & bookmark tidak menerima bab draft", async () => {
+    const { slug, draft } = await setupEbook();
+    const u = await createUser();
+    await grantSubscription(u.id);
+    const p = await call(`/api/v1/ebooks/${slug}/progress`, {
+      method: "PUT",
+      token: u.token,
+      ...json({ chapterId: draft, position: 1 }),
+    });
+    expect(p.status).toBe(404);
+    const b = await call(`/api/v1/ebooks/${slug}/bookmarks`, {
+      method: "POST",
+      token: u.token,
+      ...json({ chapterId: draft }),
+    });
+    expect(b.status).toBe(404);
+  });
+
+  it("daftar isi tidak di-cache", async () => {
+    const { slug } = await setupEbook();
+    const u = await createUser();
+    const r = await call(`/api/v1/ebooks/${slug}`, { token: u.token });
+    expect(r.headers.get("cache-control")).toBe("private, no-store");
+  });
+
+  it("body lebih dari 2 MB ditolak 413", async () => {
+    const { admin, paid } = await setupEbook();
+    const big = "x".repeat(2 * 1024 * 1024 + 10);
+    const r = await call(`/api/v1/studio/chapters/${paid}`, {
+      method: "PUT",
+      token: admin.token,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ title: big }),
+    });
+    expect(r.status).toBe(413);
+  });
+
   it("perpustakaan hanya berisi konten terbit, untuk pelanggan", async () => {
     const pub = await setupEbook();
     const draft = await setupEbook({ publish: false });

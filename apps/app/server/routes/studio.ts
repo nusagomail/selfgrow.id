@@ -40,6 +40,10 @@ const toChapterSummary = (c: typeof schema.ebookChapters.$inferSelect): ChapterS
 /** Studio: dilindungi Cloudflare Access + role admin (D17). Semua aksi tercatat di audit_log. */
 export const studio = new Hono<AppEnv>()
   .use(requireAccess, requireAdmin)
+  .use(async (c, next) => {
+    await next();
+    c.header("Cache-Control", "private, no-store");
+  })
 
   .get("/content", async (c) => {
     const rows = await c.var.db

@@ -62,6 +62,40 @@ describe("ebookDocSchema", () => {
   });
 });
 
+describe("batas keamanan dokumen", () => {
+  it("menolak dokumen sangat dalam tanpa crash", () => {
+    let node: Record<string, unknown> = {
+      type: "paragraph",
+      content: [{ type: "text", text: "x" }],
+    };
+    for (let i = 0; i < 3000; i++) node = { type: "blockquote", content: [node] };
+    expect(ebookDocSchema.safeParse(doc([node])).success).toBe(false);
+  });
+
+  it("menolak gambar dengan path traversal", () => {
+    const src = "/api/v1/assets/../../studio/chapters/x";
+    expect(ebookDocSchema.safeParse(doc([{ type: "image", attrs: { src } }])).success).toBe(false);
+  });
+
+  it("atribut tautan tak dikenal dibuang", () => {
+    const parsed = ebookDocSchema.parse(
+      doc([
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "x",
+              marks: [{ type: "link", attrs: { href: "https://a.id", onclick: "alert(1)" } }],
+            },
+          ],
+        },
+      ]),
+    );
+    expect(JSON.stringify(parsed)).not.toContain("onclick");
+  });
+});
+
 describe("countWords", () => {
   it("menghitung kata di seluruh node", () => {
     const d = ebookDocSchema.parse(

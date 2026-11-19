@@ -159,7 +159,8 @@ export function StudioHome() {
 type SaveState = "idle" | "saving" | "saved" | "error";
 
 export function StudioEbook() {
-  const { id } = useParams({ from: "/studio/ebook/$id" });
+  const { id: rawId } = useParams({ from: "/studio/ebook/$id" });
+  const id = encodeURIComponent(rawId);
   const [item, setItem] = useState<EbookItem | null>(null);
   const [chapters, setChapters] = useState<ChapterSummary[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -360,7 +361,9 @@ function ChapterPanel({ chapterId, onChanged }: { chapterId: string; onChanged: 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    api<{ chapter: ChapterSummary; doc: EbookDoc }>(`/studio/chapters/${chapterId}`).then((r) => {
+    api<{ chapter: ChapterSummary; doc: EbookDoc }>(
+      `/studio/chapters/${encodeURIComponent(chapterId)}`,
+    ).then((r) => {
       setChapter(r.chapter);
       setDoc(r.doc);
     });
@@ -372,7 +375,7 @@ function ChapterPanel({ chapterId, onChanged }: { chapterId: string; onChanged: 
     pending.current = null;
     setSave("saving");
     try {
-      await api(`/studio/chapters/${chapterId}`, {
+      await api(`/studio/chapters/${encodeURIComponent(chapterId)}`, {
         method: "PUT",
         body: JSON.stringify({ doc: next }),
       });
@@ -407,7 +410,10 @@ function ChapterPanel({ chapterId, onChanged }: { chapterId: string; onChanged: 
     setChapter((c) => (c ? { ...c, ...patch } : c));
     try {
       await flush();
-      await api(`/studio/chapters/${chapterId}`, { method: "PUT", body: JSON.stringify(patch) });
+      await api(`/studio/chapters/${encodeURIComponent(chapterId)}`, {
+        method: "PUT",
+        body: JSON.stringify(patch),
+      });
       onChanged();
     } catch {
       setChapter(before);
@@ -418,7 +424,7 @@ function ChapterPanel({ chapterId, onChanged }: { chapterId: string; onChanged: 
   async function remove() {
     if (!window.confirm("Hapus bab ini? Tindakan ini tidak bisa dibatalkan.")) return;
     pending.current = null;
-    await api(`/studio/chapters/${chapterId}`, { method: "DELETE" });
+    await api(`/studio/chapters/${encodeURIComponent(chapterId)}`, { method: "DELETE" });
     onChanged();
   }
 

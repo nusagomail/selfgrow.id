@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, schema } from "@selfgrow/db";
+import { and, asc, desc, eq, schema, sql } from "@selfgrow/db";
 import { bookmarkBodySchema, progressBodySchema } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
@@ -21,8 +21,15 @@ async function findPublishedEbook(db: AppEnv["Variables"]["db"], slug: string) {
   });
 }
 
+const MAX_BOOKMARKS_PER_EBOOK = 500;
+
 export const ebooks = new Hono<AppEnv>()
   .use(requireAuth)
+  // Semua respons reader berisi data per user / konten berbayar: jangan pernah di-cache.
+  .use(async (c, next) => {
+    await next();
+    c.header("Cache-Control", "private, no-store");
+  })
 
   .get("/:slug", async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
@@ -106,6 +113,7 @@ export const ebooks = new Hono<AppEnv>()
       where: and(
         eq(schema.ebookChapters.id, body.data.chapterId),
         eq(schema.ebookChapters.contentId, ebook.id),
+        eq(schema.ebookChapters.status, "published"),
       ),
       columns: { id: true },
     });
@@ -159,10 +167,16 @@ export const ebooks = new Hono<AppEnv>()
       where: and(
         eq(schema.ebookChapters.id, body.data.chapterId),
         eq(schema.ebookChapters.contentId, ebook.id),
+        eq(schema.ebookChapters.status, "published"),
       ),
       columns: { id: true },
     });
     if (!chapter) return c.json({ error: "not_found" }, 404);
+    const [{ n } = { n: 0 }] = await c.var.db
+      .select({ n: sql<number>`count(*)` })
+      .from(schema.bookmarks)
+      .where(and(eq(schema.bookmarks.userId, user.id), eq(schema.bookmarks.contentId, ebook.id)));
+    if (n >= MAX_BOOKMARKS_PER_EBOOK) return c.json({ error: "bookmark_limit" }, 409);
     const id = crypto.randomUUID();
     await c.var.db.insert(schema.bookmarks).values({
       id,

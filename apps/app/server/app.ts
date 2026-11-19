@@ -1,5 +1,6 @@
 import { API_BASE_PATH } from "@selfgrow/shared";
 import { Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { csrf } from "hono/csrf";
 import { HTTPException } from "hono/http-exception";
 import { secureHeaders } from "hono/secure-headers";
@@ -22,6 +23,14 @@ export const api = new Hono<AppEnv>().basePath(API_BASE_PATH);
 api.use("*", secureHeaders());
 api.route("/health", health);
 
+// Batas ukuran body request (dokumen bab terbesar jauh di bawah ini).
+api.use(
+  "*",
+  bodyLimit({
+    maxSize: 2 * 1024 * 1024,
+    onError: (c) => c.json({ error: "payload_too_large" }, 413),
+  }),
+);
 api.use("*", contextMiddleware);
 // Lapisan tambahan anti-CSRF untuk mutasi berbasis cookie (Better Auth punya cek origin sendiri).
 // Klien bearer murni (mobile, tanpa cookie) tidak rentan CSRF dan dilewati. Bila ada cookie,

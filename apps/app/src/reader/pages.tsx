@@ -81,13 +81,14 @@ export function LibraryPage() {
 
 export function EbookToc() {
   const { slug } = useParams({ from: "/baca/$slug" });
+  const s = encodeURIComponent(slug);
   const [meta, setMeta] = useState<EbookMeta | null>(null);
   const [err, setErr] = useState<unknown>(null);
   useAuthRedirect(err);
 
   useEffect(() => {
-    api<EbookMeta>(`/ebooks/${slug}`).then(setMeta).catch(setErr);
-  }, [slug]);
+    api<EbookMeta>(`/ebooks/${s}`).then(setMeta).catch(setErr);
+  }, [s]);
 
   if (!meta) {
     return (
@@ -145,6 +146,8 @@ export function EbookToc() {
 
 export function ChapterReader() {
   const { slug, chapterId } = useParams({ from: "/baca/$slug/$chapterId" });
+  const s = encodeURIComponent(slug);
+  const ch = encodeURIComponent(chapterId);
   const [meta, setMeta] = useState<EbookMeta | null>(null);
   const [chapter, setChapter] = useState<{ title: string; doc: EbookDoc } | null>(null);
   const [err, setErr] = useState<unknown>(null);
@@ -152,19 +155,19 @@ export function ChapterReader() {
   useAuthRedirect(err);
 
   useEffect(() => {
-    api<EbookMeta>(`/ebooks/${slug}`).then(setMeta).catch(setErr);
-  }, [slug]);
+    api<EbookMeta>(`/ebooks/${s}`).then(setMeta).catch(setErr);
+  }, [s]);
 
   useEffect(() => {
     setChapter(null);
     setErr(null);
-    api<{ chapter: { title: string }; doc: EbookDoc }>(`/ebooks/${slug}/chapters/${chapterId}`)
+    api<{ chapter: { title: string }; doc: EbookDoc }>(`/ebooks/${s}/chapters/${ch}`)
       .then((r) => {
         setChapter({ title: r.chapter.title, doc: r.doc });
         window.scrollTo(0, 0);
       })
       .catch(setErr);
-  }, [slug, chapterId]);
+  }, [ch, s]);
 
   // Simpan progres (posisi gulir dalam persen x100) paling sering tiap 5 detik.
   useEffect(() => {
@@ -175,7 +178,7 @@ export function ChapterReader() {
       const el = document.documentElement;
       const max = Math.max(1, el.scrollHeight - el.clientHeight);
       const position = Math.round((el.scrollTop / max) * 10000);
-      void api(`/ebooks/${slug}/progress`, {
+      void api(`/ebooks/${s}/progress`, {
         method: "PUT",
         body: JSON.stringify({ chapterId, position }),
       }).catch(() => {});
@@ -195,7 +198,7 @@ export function ChapterReader() {
       window.removeEventListener("scroll", onScroll);
       if (timer) clearTimeout(timer);
     };
-  }, [chapter, slug, chapterId]);
+  }, [chapter, chapterId, s]);
 
   const idx = meta?.chapters.findIndex((c) => c.id === chapterId) ?? -1;
   const prev = idx > 0 ? meta?.chapters[idx - 1] : undefined;

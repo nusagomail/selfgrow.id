@@ -12,7 +12,7 @@ export interface RenderOptions {
 }
 
 const SAFE_HREF = /^(https?:\/\/|mailto:)/i;
-const SAFE_IMG = /^(https:\/\/|\/api\/v1\/assets\/)/;
+const SAFE_IMG = /^(https:\/\/[^\s]+|\/api\/v1\/assets\/[A-Za-z0-9_-]+)$/;
 
 function applyMarks(content: ReactNode, marks: EbookMark[] | undefined, key: string): ReactNode {
   let out = content;
@@ -90,7 +90,13 @@ function renderNode(node: EbookNode, opts: RenderOptions, key: string): ReactNod
       if (!SAFE_IMG.test(node.attrs.src)) return null;
       return (
         <figure key={key}>
-          <img src={node.attrs.src} alt={node.attrs.alt ?? ""} loading="lazy" decoding="async" />
+          <img
+            src={node.attrs.src}
+            alt={node.attrs.alt ?? ""}
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+          />
           {node.attrs.title ? <figcaption>{node.attrs.title}</figcaption> : null}
         </figure>
       );

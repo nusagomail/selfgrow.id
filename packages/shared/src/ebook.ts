@@ -14,11 +14,17 @@ export const safeHrefSchema = z
   .max(2048)
   .refine((v) => /^(https?:\/\/|mailto:)/i.test(v), "Tautan harus http(s) atau mailto");
 
-/** Gambar hanya dari aset platform sendiri (`/api/v1/assets/...`) atau https. */
+/**
+ * Gambar hanya dari aset platform sendiri (`/api/v1/assets/{id}`, tanpa path lain) atau https.
+ * Pola ketat mencegah path traversal ke endpoint lain (review keamanan PR #6).
+ */
 export const safeImageSrcSchema = z
   .string()
   .max(2048)
-  .refine((v) => /^(https:\/\/|\/api\/v1\/assets\/)/.test(v), "Sumber gambar tidak diizinkan");
+  .refine(
+    (v) => /^\/api\/v1\/assets\/[A-Za-z0-9_-]+$/.test(v) || /^https:\/\/[^\s]+$/.test(v),
+    "Sumber gambar tidak diizinkan",
+  );
 
 const markSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("bold") }),
@@ -28,7 +34,12 @@ const markSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("code") }),
   z.object({
     type: z.literal("link"),
-    attrs: z.object({ href: safeHrefSchema }).passthrough(),
+    attrs: z.object({
+      href: safeHrefSchema,
+      target: z.literal("_blank").nullish(),
+      rel: z.string().max(100).nullish(),
+      class: z.null().optional(),
+    }),
   }),
 ]);
 export type EbookMark = z.infer<typeof markSchema>;
@@ -93,11 +104,34 @@ export const ebookNodeSchema: z.ZodType<EbookNode> = z.lazy(() =>
   ]),
 ) as z.ZodType<EbookNode>;
 
-export const ebookDocSchema = z.object({
+/** Batas bentuk dokumen, dicek iteratif SEBELUM validasi rekursif (cegah stack overflow). */
+export const EBOOK_DOC_LIMITS = { maxDepth: 24, maxNodes: 20_000 } as const;
+
+export function checkDocShape(raw: unknown): boolean {
+  const stack: { node: unknown; depth: number }[] = [{ node: raw, depth: 0 }];
+  let count = 0;
+  while (stack.length > 0) {
+    const item = stack.pop() as { node: unknown; depth: number };
+    if (++count > EBOOK_DOC_LIMITS.maxNodes) return false;
+    if (item.depth > EBOOK_DOC_LIMITS.maxDepth) return false;
+    const content = (item.node as { content?: unknown } | null)?.content;
+    if (content === undefined) continue;
+    if (!Array.isArray(content)) return false;
+    for (const child of content) stack.push({ node: child, depth: item.depth + 1 });
+  }
+  return true;
+}
+
+const ebookDocInner = z.object({
   type: z.literal("doc"),
   content: z.array(ebookNodeSchema).max(5000),
 });
-export type EbookDoc = z.infer<typeof ebookDocSchema>;
+
+export const ebookDocSchema = z
+  .unknown()
+  .refine(checkDocShape, "Dokumen terlalu dalam atau terlalu besar")
+  .pipe(ebookDocInner);
+export type EbookDoc = z.infer<typeof ebookDocInner>;
 
 export const EMPTY_EBOOK_DOC: EbookDoc = { type: "doc", content: [{ type: "paragraph" }] };
 
