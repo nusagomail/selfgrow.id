@@ -122,7 +122,7 @@ export function ToolForm({
   );
 }
 
-function Field({
+export function Field({
   input: i,
   value,
   issue,

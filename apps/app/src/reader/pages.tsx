@@ -74,6 +74,11 @@ export function LibraryPage() {
               Pakai
             </Link>
           )}
+          {it.type === "template" && (
+            <Link to="/template/$slug" params={{ slug: it.slug }} className="btn btn-primary">
+              Gunakan
+            </Link>
+          )}
         </div>
       ))}
     </main>

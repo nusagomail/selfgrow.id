@@ -44,6 +44,8 @@ Platform web berlangganan Rp100.000/user/bulan untuk menikmati konten buatan pla
 | D22 | Tool no-code ditulis sebagai rumus mirip spreadsheet yang di-parse sendiri (tanpa library, tanpa `eval`) menjadi pohon JSON Logic dengan daftar operator tertutup. Yang disimpan hanya teks rumus; server mem-parse ulang saat simpan dan saat run. `tool_definitions` punya draft (`config_json`) dan versi terbit (`published_config_json`) | `json-logic-js` punya operator `method` yang bisa memanggil method objek; pemilik bukan programmer sehingga rumus lebih mudah daripada JSON; draft Studio tidak mengubah tool yang dipakai pelanggan |
 | D23 | Kuota run tool default 1.000 per user per bulan (bisa diatur per tool), dihitung atomik di `usage_counters`; input tidak valid tidak memotong kuota | Deteksi scraping/penyalahgunaan sesuai bagian 8 tanpa mengganggu pemakaian normal |
 | D24 | Tracker = tool no-code dengan `stores_user_data`. Satu entri per user per tool per tanggal WIB (diisi ulang = diperbarui), boleh mengisi sampai 7 hari ke belakang; streak dihitung ulang dari entri setiap ada perubahan. Riwayat bisa dibaca tanpa langganan aktif, menulis butuh langganan | Streak harus jujur tapi memaafkan lupa isi; data tetap milik user setelah berhenti berlangganan (UU PDP, bagian 5) |
+| D25 | Unduhan template dikirim langsung sebagai respons `POST /v1/templates/:slug/generate` (lampiran, `Cache-Control: private, no-store`), menggantikan token unduh di D18 | Tidak ada file atau URL yang tersimpan di mana pun, jadi lebih ketat daripada token 5 menit dan tanpa pembersihan R2 |
+| D26 | XLSX ditulis sendiri (fflate + XML minimal, semua teks inline string, sanitasi awalan `= + - @`), DOCX memakai `docx`, PDF memakai `pdf-lib` font standar (karakter di luar WinAnsi dibuang). Isi template = JSON editor yang sama dengan ebook; tabel ditambahkan ke skema ebook | Paket `xlsx` di npm berhenti di 0.18.5 dengan celah yang diketahui; satu editor untuk semua konten |
 
 ## 3. Model bisnis & tahapan
 
@@ -495,7 +497,7 @@ Selesai bila: user bisa login, admin bisa masuk Studio, user tanpa langganan dit
 
 - [x] Ebook Studio (Tiptap, bab, versi, preview) + reader di `app` dengan progress dan bookmark
 - [x] Tool Builder no-code (JSON Logic) + registry tool custom + `POST /v1/tools/:id/run`
-- [ ] Template Builder + generator DOCX/PDF/XLSX + kuota unduh, tool tracker dengan data user, program bertahap, streak, dan review mingguan (tool tracker + streak selesai)
+- [ ] Template Builder + generator DOCX/PDF/XLSX + kuota unduh, tool tracker dengan data user, program bertahap, streak, dan review mingguan (tool tracker + streak + Template Builder DOCX/PDF/XLSX + kuota unduh selesai)
 - [ ] Perlindungan ebook: rate limit, deteksi scraping, watermark terlihat + forensik
 
 Selesai bila: pemilik bisa membuat, menerbitkan, dan memperbarui satu ebook, satu tool, dan satu template dari Studio tanpa menyentuh kode.

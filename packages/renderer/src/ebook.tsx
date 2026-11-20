@@ -100,6 +100,25 @@ function renderNode(node: EbookNode, opts: RenderOptions, key: string): ReactNod
           {node.attrs.title ? <figcaption>{node.attrs.title}</figcaption> : null}
         </figure>
       );
+    case "table":
+      return (
+        <div key={key} className="table-wrap">
+          <table>
+            <tbody>{renderNodes(node.content, opts, key)}</tbody>
+          </table>
+        </div>
+      );
+    case "tableRow":
+      return <tr key={key}>{renderNodes(node.content, opts, key)}</tr>;
+    case "tableHeader":
+    case "tableCell": {
+      const Tag = node.type === "tableHeader" ? "th" : "td";
+      return (
+        <Tag key={key} colSpan={node.attrs?.colspan} rowSpan={node.attrs?.rowspan}>
+          {renderNodes(node.content, opts, key)}
+        </Tag>
+      );
+    }
     case "callout":
       return (
         <aside key={key} className={`callout callout-${node.attrs.variant}`} role="note">

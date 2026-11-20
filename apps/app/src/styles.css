@@ -390,3 +390,28 @@ select {
   justify-content: center;
   margin: 24px 0 8px;
 }
+
+/* Tabel di ebook, editor, dan template */
+.table-wrap {
+  overflow-x: auto;
+  margin: 16px 0;
+}
+.ebook-content table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+.ebook-content th,
+.ebook-content td {
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  vertical-align: top;
+  text-align: left;
+}
+.ebook-content th {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+.ebook-content td p,
+.ebook-content th p {
+  margin: 0;
+}

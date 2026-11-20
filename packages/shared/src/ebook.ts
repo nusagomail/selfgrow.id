@@ -61,6 +61,13 @@ export type EbookNode =
       type: "callout";
       attrs: { variant: (typeof CALLOUT_VARIANTS)[number] };
       content: EbookNode[];
+    }
+  | { type: "table"; content: EbookNode[] }
+  | { type: "tableRow"; content: EbookNode[] }
+  | {
+      type: "tableHeader" | "tableCell";
+      attrs?: { colspan?: number; rowspan?: number; colwidth?: number[] | null };
+      content: EbookNode[];
     };
 
 const text = z.object({
@@ -101,6 +108,21 @@ export const ebookNodeSchema: z.ZodType<EbookNode> = z.lazy(() =>
       attrs: z.object({ variant: z.enum(CALLOUT_VARIANTS) }),
       content: z.array(ebookNodeSchema),
     }),
+    z.object({ type: z.literal("table"), content: z.array(ebookNodeSchema).max(500) }),
+    z.object({ type: z.literal("tableRow"), content: z.array(ebookNodeSchema).max(30) }),
+    ...(["tableHeader", "tableCell"] as const).map((t) =>
+      z.object({
+        type: z.literal(t),
+        attrs: z
+          .object({
+            colspan: z.number().int().min(1).max(30).optional(),
+            rowspan: z.number().int().min(1).max(500).optional(),
+            colwidth: z.array(z.number().int().min(0).max(2000)).max(30).nullish(),
+          })
+          .optional(),
+        content: z.array(ebookNodeSchema),
+      }),
+    ),
   ]),
 ) as z.ZodType<EbookNode>;
 
