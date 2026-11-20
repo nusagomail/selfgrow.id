@@ -37,6 +37,8 @@ const toolBuilder = () => import("./studio/tool-builder");
 const toolPage = () => import("./tools/page");
 const templateBuilder = () => import("./studio/template-builder");
 const templatePage = () => import("./templates/page");
+const programBuilder = () => import("./studio/program-builder");
+const programPage = () => import("./programs/page");
 
 const routeTree = rootRoute.addChildren([
   createRoute({ getParentRoute: () => rootRoute, path: "/", component: HomePage }),
@@ -71,6 +73,16 @@ const routeTree = rootRoute.addChildren([
     getParentRoute: () => rootRoute,
     path: "/studio/template/$id",
     component: lazyRouteComponent(templateBuilder, "StudioTemplate"),
+  }),
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/studio/program/$id",
+    component: lazyRouteComponent(programBuilder, "StudioProgram"),
+  }),
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/program/$slug",
+    component: lazyRouteComponent(programPage, "ProgramPage"),
   }),
   createRoute({
     getParentRoute: () => rootRoute,

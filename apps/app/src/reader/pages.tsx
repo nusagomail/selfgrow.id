@@ -79,6 +79,11 @@ export function LibraryPage() {
               Gunakan
             </Link>
           )}
+          {it.type === "program" && (
+            <Link to="/program/$slug" params={{ slug: it.slug }} className="btn btn-primary">
+              Ikuti
+            </Link>
+          )}
         </div>
       ))}
     </main>

@@ -424,6 +424,22 @@ export const programEnrollments = sqliteTable(
   (t) => [uniqueIndex("program_enrollments_uq").on(t.userId, t.programId)],
 );
 
+/** Hari program yang sudah ditandai selesai oleh user. */
+export const programDayCompletions = sqliteTable(
+  "program_day_completions",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    programId: text("program_id")
+      .notNull()
+      .references(() => programs.contentId, { onDelete: "cascade" }),
+    day: integer("day").notNull(),
+    completedAt: integer("completed_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.programId, t.day] })],
+);
+
 export const streaks = sqliteTable(
   "streaks",
   {
