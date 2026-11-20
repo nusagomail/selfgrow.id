@@ -1,5 +1,24 @@
 import type { EbookDoc, EbookMark, EbookNode } from "@selfgrow/shared";
 
+/**
+ * Bersihkan teks untuk semua format file: buang karakter kontrol (kecuali baris baru),
+ * U+FFFE/U+FFFF, dan separuh karakter (surrogate tunggal) yang membuat Word/Excel menolak file.
+ */
+export function cleanText(s: string): string {
+  return (
+    s
+      // biome-ignore lint/suspicious/noControlCharactersInRegex: karakter kontrol sengaja dibuang
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\uFFFE\uFFFF]/g, "")
+      .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "")
+  );
+}
+
+/** Potong teks per karakter utuh (tidak membelah emoji). */
+export function sliceChars(s: string, max: number): string {
+  const chars = Array.from(s);
+  return chars.length <= max ? s : chars.slice(0, max).join("");
+}
+
 /** Potongan teks berformat untuk generator dokumen. */
 export interface Run {
   text: string;
@@ -26,7 +45,7 @@ const markFlags = (marks: EbookMark[] | undefined) => ({
 function runsOf(nodes: EbookNode[] | undefined): Run[] {
   const out: Run[] = [];
   for (const n of nodes ?? []) {
-    if (n.type === "text") out.push({ text: n.text, ...markFlags(n.marks) });
+    if (n.type === "text") out.push({ text: cleanText(n.text), ...markFlags(n.marks) });
     else if (n.type === "hardBreak") out.push({ text: "\n" });
     else if (n.type === "image")
       out.push({ text: `[Gambar${n.attrs.alt ? `: ${n.attrs.alt}` : ""}]` });

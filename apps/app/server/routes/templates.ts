@@ -5,6 +5,7 @@ import {
   fillTemplate,
   generateTemplateBodySchema,
   parseTemplateInput,
+  TemplateTooLargeError,
 } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
@@ -103,13 +104,21 @@ export const templates = new Hono<AppEnv>()
       );
     }
 
+    // Tolak lebih awal bila kuota habis, sebelum membuat file (hemat CPU, review keamanan PR #11).
+    if ((await downloadsUsed(c.var.db, user.id)) >= DEFAULT_DOWNLOAD_QUOTA) {
+      return c.json({ error: "quota_exceeded", limit: DEFAULT_DOWNLOAD_QUOTA }, 429);
+    }
+
+    let filled: ReturnType<typeof fillTemplate>;
+    try {
+      filled = fillTemplate(tpl.body, tpl.config, values);
+    } catch (e) {
+      if (e instanceof TemplateTooLargeError) return c.json({ error: "template_too_large" }, 413);
+      throw e;
+    }
     const meta = { title: tpl.item.title, userId: user.id, generatedAt: new Date() };
     const { CONTENT_TYPES, renderDocument } = await loadGenerators();
-    const bytes = await renderDocument(
-      body.data.format,
-      fillTemplate(tpl.body, tpl.config, values),
-      meta,
-    );
+    const bytes = await renderDocument(body.data.format, filled, meta);
 
     // Potong kuota hanya bila file berhasil dibuat.
     const used = await consumeQuota(c.var.db, user.id, "downloads", DEFAULT_DOWNLOAD_QUOTA);

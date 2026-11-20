@@ -100,6 +100,15 @@ export function checkTemplate(doc: EbookDoc, variables: ToolInput[]): string[] {
   return problems;
 }
 
+const MAX_TEXT_CHARS = 20_000;
+const MAX_FILLED_CHARS = 1_000_000;
+
+export class TemplateTooLargeError extends Error {
+  constructor() {
+    super("Hasil template terlalu besar");
+  }
+}
+
 export type TemplateValues = Record<string, string | number | boolean | null>;
 
 /** Validasi isian pelanggan dengan skema dari daftar variabel. */
@@ -132,7 +141,25 @@ const isTruthy = (v: TemplateValues[string]) =>
  */
 export function fillTemplate(doc: EbookDoc, cfg: TemplateConfig, values: TemplateValues): EbookDoc {
   const display = displayValues(cfg, values);
-  const replace = (text: string) => text.replace(PLACEHOLDER, (_, k: string) => display[k] ?? "");
+  // Ganti placeholder sambil menghitung panjang: berhenti di 20.000 karakter per teks, dan
+  // seluruh dokumen dibatasi 1 juta karakter (cegah ledakan ukuran, review keamanan PR #11).
+  let budget = MAX_FILLED_CHARS;
+  const replace = (text: string) => {
+    let out = "";
+    let last = 0;
+    for (const m of text.matchAll(PLACEHOLDER)) {
+      out += text.slice(last, m.index) + (display[m[1] as string] ?? "");
+      last = (m.index as number) + m[0].length;
+      if (out.length >= MAX_TEXT_CHARS) break;
+    }
+    if (out.length < MAX_TEXT_CHARS) out += text.slice(last);
+    out = Array.from(out.slice(0, MAX_TEXT_CHARS + 1))
+      .slice(0, MAX_TEXT_CHARS)
+      .join("");
+    budget -= out.length;
+    if (budget < 0) throw new TemplateTooLargeError();
+    return out;
+  };
 
   const fillNodes = (nodes: EbookNode[]): EbookNode[] => {
     const out: EbookNode[] = [];
@@ -158,7 +185,7 @@ export function fillTemplate(doc: EbookDoc, cfg: TemplateConfig, values: Templat
   };
 
   const fillNode = (n: EbookNode): EbookNode => {
-    if (n.type === "text") return { ...n, text: replace(n.text).slice(0, 20_000) };
+    if (n.type === "text") return { ...n, text: replace(n.text) };
     if ("content" in n && Array.isArray(n.content)) {
       return { ...n, content: fillNodes(n.content) } as EbookNode;
     }

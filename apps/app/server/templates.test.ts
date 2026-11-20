@@ -182,7 +182,9 @@ describe("unduh template", () => {
     )
       .bind(u.id, period)
       .run();
-    expect((await generate(slug, u.token, "xlsx")).status).toBe(429);
+    const r = await generate(slug, u.token, "xlsx");
+    expect(r.status).toBe(429);
+    expect(((await r.json()) as { error: string }).error).toBe("quota_exceeded");
   });
 
   it("draft Studio tidak dipakai sampai diterbitkan ulang", async () => {

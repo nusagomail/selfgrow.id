@@ -6,6 +6,7 @@ import {
   fillTemplate,
   parseTemplateInput,
   STARTER_TEMPLATE,
+  TemplateTooLargeError,
   templateConfigSchema,
 } from "./template";
 
@@ -80,6 +81,31 @@ describe("template", () => {
     const problems = checkTemplate(doc, cfg.variables);
     expect(problems.some((p) => p.includes("tidak_ada"))).toBe(true);
     expect(problems.some((p) => p.includes("belum ditutup"))).toBe(true);
+  });
+
+  it("hasil template yang meledak ukurannya ditolak", () => {
+    const big: EbookDoc = {
+      type: "doc",
+      content: Array.from({ length: 300 }, () => para("{{nama}}".repeat(1000))),
+    };
+    const input = parseTemplateInput(cfg, {
+      nama: "x".repeat(2000),
+      minggu: 1,
+      target: "t",
+      catatan: null,
+    });
+    expect(() => fillTemplate(big, cfg, input)).toThrow(TemplateTooLargeError);
+  });
+
+  it("teks hasil dipotong 20.000 karakter tanpa membangun string raksasa", () => {
+    const doc: EbookDoc = { type: "doc", content: [para("{{nama}}".repeat(4000))] };
+    const input = parseTemplateInput(cfg, {
+      nama: "y".repeat(2000),
+      minggu: 1,
+      target: "t",
+      catatan: null,
+    });
+    expect(texts(fillTemplate(doc, cfg, input))[0]?.length).toBe(20_000);
   });
 
   it("nama file aman", () => {

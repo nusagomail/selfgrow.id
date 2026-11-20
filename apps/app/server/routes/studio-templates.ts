@@ -9,6 +9,7 @@ import {
   previewTemplateBodySchema,
   STARTER_TEMPLATE,
   saveTemplateBodySchema,
+  TemplateTooLargeError,
   type z,
 } from "@selfgrow/shared";
 import { Hono } from "hono";
@@ -158,7 +159,13 @@ export const studioTemplates = new Hono<AppEnv>()
       where: eq(schema.contentItems.id, c.req.param("id")),
       columns: { title: true },
     });
-    const filled = fillTemplate(doc, config, values);
+    let filled: ReturnType<typeof fillTemplate>;
+    try {
+      filled = fillTemplate(doc, config, values);
+    } catch (e) {
+      if (e instanceof TemplateTooLargeError) return c.json({ error: "template_too_large" }, 413);
+      throw e;
+    }
     const meta = {
       title: item?.title ?? "Template",
       userId: c.var.user?.id ?? "admin",

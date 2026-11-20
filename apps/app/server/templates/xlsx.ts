@@ -1,6 +1,6 @@
 import type { EbookDoc } from "@selfgrow/shared";
 import { strToU8, zipSync } from "fflate";
-import { type DocMeta, plain, toBlocks } from "./walk";
+import { cleanText, type DocMeta, plain, sliceChars, toBlocks } from "./walk";
 
 /**
  * Penulis XLSX minimal (tanpa library spreadsheet): setiap tabel menjadi satu sheet, teks lain
@@ -9,7 +9,9 @@ import { type DocMeta, plain, toBlocks } from "./walk";
  * ke CSV / dibuka aplikasi lain).
  */
 export function sanitizeCell(value: string): string {
-  return /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  // Termasuk spasi/baris baru di depan dan versi full-width (＝ ＋ － ＠), yang dipangkas
+  // sebagian aplikasi impor CSV sebelum dievaluasi (review keamanan PR #11).
+  return /^[\s\u3000]*[=+\-@\uFF1D\uFF0B\uFF0D\uFF20]/.test(value) ? `'${value}` : value;
 }
 
 const esc = (s: string) =>
@@ -32,6 +34,19 @@ const colName = (i: number) => {
   return s;
 };
 
+/** Nama sheet yang diterima Excel: tanpa \\ / ? * [ ] :, tanpa ' di tepi, maks 31 karakter. */
+function sheetName(name: string, i: number): string {
+  const clean = sliceChars(
+    cleanText(name)
+      .replace(/[\\/?*[\]:]/g, " ")
+      .trim(),
+    31,
+  )
+    .replace(/^'+|'+$/g, "")
+    .trim();
+  return !clean || clean.toLowerCase() === "history" ? `Sheet${i + 1}` : clean;
+}
+
 type Sheet = { name: string; rows: { header: boolean; cells: string[] }[] };
 
 function sheetXml(sheet: Sheet): string {
@@ -44,8 +59,11 @@ function sheetXml(sheet: Sheet): string {
           const ref = `${colName(c)}${r + 1}`;
           const style = row.header ? ' s="1"' : "";
           // Angka murni (mis. 12 atau 1500.5) ditulis sebagai angka; selain itu teks.
-          if (/^-?\d{1,15}(\.\d+)?$/.test(raw.trim()) && !/^0\d/.test(raw.trim())) {
-            return `<c r="${ref}"${style}><v>${raw.trim()}</v></c>`;
+          // Angka hanya bila ditulis polos (1500 atau 1500,5 gaya Indonesia). "1.500" (pemisah ribuan)
+          // tetap teks supaya tidak terbaca 1,5 (review keamanan PR #11).
+          const t = raw.trim();
+          if (/^-?\d{1,15}(,\d{1,6})?$/.test(t) && !/^-?0\d/.test(t)) {
+            return `<c r="${ref}"${style}><v>${t.replace(",", ".")}</v></c>`;
           }
           if (raw === "") return `<c r="${ref}"${style}/>`;
           return `<c r="${ref}" t="inlineStr"${style}><is><t xml:space="preserve">${esc(sanitizeCell(raw))}</t></is></c>`;
@@ -78,8 +96,7 @@ export function renderXlsx(doc: EbookDoc, meta: DocMeta): Uint8Array {
     }
   }
   if (notes.rows.length > 0 || sheets.length === 0) sheets.unshift(notes);
-  if (sheets.length === 1 && sheets[0]?.name === "Tabel 1")
-    (sheets[0] as Sheet).name = meta.title.slice(0, 31) || "Sheet1";
+  if (sheets.length === 1 && sheets[0]?.name === "Tabel 1") (sheets[0] as Sheet).name = meta.title;
 
   const files: Record<string, Uint8Array> = {
     "[Content_Types].xml": strToU8(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -97,7 +114,7 @@ export function renderXlsx(doc: EbookDoc, meta: DocMeta): Uint8Array {
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets
       .map(
         (s, i) =>
-          `<sheet name="${esc(s.name.replace(/[\\/?*[\]:]/g, " ").slice(0, 31))}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`,
+          `<sheet name="${esc(sheetName(s.name, i))}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`,
       )
       .join("")}</sheets></workbook>`),
     "xl/_rels/workbook.xml.rels": strToU8(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
