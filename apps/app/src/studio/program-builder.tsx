@@ -56,7 +56,7 @@ export function StudioProgram() {
     load();
   }, [load]);
   useEffect(() => {
-    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk" });
+    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk", replace: true });
   }, [err, navigate]);
 
   const change = (fn: (s: ProgramDay[]) => ProgramDay[]) => {

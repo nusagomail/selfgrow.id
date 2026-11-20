@@ -14,7 +14,7 @@ export function LoginPage() {
   const onToken = useCallback((t: string | null) => setToken(t), []);
 
   useEffect(() => {
-    if (me.status === "ready") navigate({ to: "/" });
+    if (me.status === "ready") navigate({ to: "/", replace: true });
   }, [me, navigate]);
 
   const needsCaptcha = Boolean(TURNSTILE_SITE_KEY);

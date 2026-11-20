@@ -58,7 +58,7 @@ export function StudioTemplate() {
     load();
   }, [load]);
   useEffect(() => {
-    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk" });
+    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk", replace: true });
   }, [err, navigate]);
 
   const touch = () => {

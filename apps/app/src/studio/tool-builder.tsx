@@ -72,7 +72,7 @@ export function StudioTool() {
   }, [load]);
 
   useEffect(() => {
-    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk" });
+    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk", replace: true });
   }, [err, navigate]);
 
   const update = (fn: (c: ToolConfig) => ToolConfig) => {

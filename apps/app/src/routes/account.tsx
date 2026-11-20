@@ -14,7 +14,7 @@ export function AccountPage() {
     api<{ sessions: DeviceSession[] }>("/me/sessions")
       .then((r) => setSessions(r.sessions))
       .catch((e) => {
-        if (e instanceof ApiError && e.status === 401) navigate({ to: "/masuk" });
+        if (e instanceof ApiError && e.status === 401) navigate({ to: "/masuk", replace: true });
         else setError("Gagal memuat perangkat.");
       });
   }, [navigate]);
@@ -28,7 +28,7 @@ export function AccountPage() {
 
   async function logout() {
     await signOut().catch(() => {});
-    navigate({ to: "/masuk" });
+    navigate({ to: "/masuk", replace: true });
   }
 
   return (
