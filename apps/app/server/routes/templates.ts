@@ -10,7 +10,7 @@ import {
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireActiveSubscription, requireAuth } from "../middleware/guards";
-import { getSubscriptionStatus } from "../services/entitlements";
+import { getAccessStatus } from "../services/entitlements";
 import { rateLimit } from "../services/protection";
 import { type PublishedTemplate, readJson, templateKeys } from "../services/template-storage";
 import { consumeQuota, currentPeriod } from "../services/usage";
@@ -69,7 +69,7 @@ export const templates = new Hono<AppEnv>()
     const user = c.var.user!;
     const tpl = await loadPublishedTemplate(c.var.db, c.env.CONTENT, c.req.param("slug"));
     if (!tpl) return c.json({ error: "not_found" }, 404);
-    const sub = await getSubscriptionStatus(c.env.KV, c.var.db, user.id);
+    const sub = await getAccessStatus(c.env.KV, c.var.db, user);
     c.header("Cache-Control", "private, no-store");
     return c.json({
       template: { slug: tpl.item.slug, title: tpl.item.title, summary: tpl.item.summary },

@@ -8,7 +8,7 @@ import {
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireActiveSubscription, requireAuth } from "../middleware/guards";
-import { getSubscriptionStatus } from "../services/entitlements";
+import { getAccessStatus } from "../services/entitlements";
 import {
   findEnrollment,
   itemViews,
@@ -62,7 +62,7 @@ export const programs = new Hono<AppEnv>()
     if (!program) return c.json({ error: "not_found" }, 404);
     const [enrollment, sub] = await Promise.all([
       findEnrollment(c.var.db, user.id, program.item.id),
-      getSubscriptionStatus(c.env.KV, c.var.db, user.id),
+      getAccessStatus(c.env.KV, c.var.db, user),
     ]);
     const done = enrollment
       ? await completedDays(c.var.db, user.id, program.item.id)

@@ -17,7 +17,7 @@ import {
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireActiveSubscription, requireAuth } from "../middleware/guards";
-import { getSubscriptionStatus } from "../services/entitlements";
+import { getAccessStatus } from "../services/entitlements";
 import { rateLimit } from "../services/protection";
 import { readStreak, recomputeStreak } from "../services/streaks";
 import { consumeQuota } from "../services/usage";
@@ -75,7 +75,7 @@ export const tools = new Hono<AppEnv>()
     const definition: PublicToolDefinition = tool.custom
       ? tool.custom.definition
       : toPublicDefinition(tool.config);
-    const sub = await getSubscriptionStatus(c.env.KV, c.var.db, user.id);
+    const sub = await getAccessStatus(c.env.KV, c.var.db, user);
     return c.json({
       tool: {
         id: tool.item.id,

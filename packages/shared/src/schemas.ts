@@ -21,6 +21,10 @@ export const subscriptionStatusSchema = z.object({
   planId: z.string().nullable(),
   currentPeriodEnd: z.string().nullable(),
   inGracePeriod: z.boolean(),
+  /** Admin: akses penuh tanpa langganan (tidak mengubah data langganan). */
+  adminAccess: z.boolean().optional(),
+  /** Admin: tampilan yang sedang dipakai untuk meninjau aplikasi. */
+  adminView: z.enum(["subscriber", "visitor"]).optional(),
 });
 export type SubscriptionStatus = z.infer<typeof subscriptionStatusSchema>;
 
@@ -46,3 +50,8 @@ export const deviceSessionSchema = z.object({
 export type DeviceSession = z.infer<typeof deviceSessionSchema>;
 
 export const setRoleBodySchema = z.object({ role: z.enum(["member", "admin"]) });
+
+export const ADMIN_VIEWS = ["subscriber", "visitor"] as const;
+export type AdminView = (typeof ADMIN_VIEWS)[number];
+/** Admin: pilih tampilan aplikasi (pelanggan / pengunjung tanpa langganan). */
+export const adminViewBodySchema = z.object({ view: z.enum(ADMIN_VIEWS) });

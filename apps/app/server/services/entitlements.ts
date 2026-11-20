@@ -78,6 +78,42 @@ export async function getSubscriptionStatus(
   return computeSubscriptionStatus(await loadEntitlement(kv, db, userId), now);
 }
 
+export const adminViewKey = (userId: string) => `adminview:${userId}`;
+
+/**
+ * Status akses konten untuk user yang sedang login. Admin (pemilik) mendapat akses penuh tanpa
+ * langganan agar bisa meninjau konten dari sisi pelanggan, atau sengaja melihat tampilan
+ * pengunjung tanpa langganan. Data langganan di D1 tidak pernah diubah di sini (BLUEPRINT
+ * bagian 7: status langganan hanya diubah webhook Xendit).
+ */
+export async function getAccessStatus(
+  kv: KVNamespace,
+  db: Database,
+  user: { id: string; role?: string | null },
+  now: number = Date.now(),
+): Promise<SubscriptionStatus> {
+  if (user.role !== "admin") return getSubscriptionStatus(kv, db, user.id, now);
+  const view = (await kv.get(adminViewKey(user.id))) === "visitor" ? "visitor" : "subscriber";
+  if (view === "visitor") {
+    return {
+      active: false,
+      planId: null,
+      currentPeriodEnd: null,
+      inGracePeriod: false,
+      adminAccess: false,
+      adminView: "visitor",
+    };
+  }
+  return {
+    active: true,
+    planId: null,
+    currentPeriodEnd: null,
+    inGracePeriod: false,
+    adminAccess: true,
+    adminView: "subscriber",
+  };
+}
+
 /** Dipanggil handler webhook setelah entitlement berubah. */
 export function invalidateEntitlementCache(kv: KVNamespace, userId: string) {
   return kv.delete(entitlementCacheKey(userId));
