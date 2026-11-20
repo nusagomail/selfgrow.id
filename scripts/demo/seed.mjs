@@ -13,6 +13,7 @@ import { mkdtempSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { toDoc, words } from "./blocks.mjs";
 import { EBOOKS } from "./ebooks.mjs";
 
 const mode = process.argv.includes("--staging")
@@ -36,37 +37,6 @@ function uid(name) {
 }
 const q = (v) =>
   v === null ? "NULL" : typeof v === "number" ? String(v) : `'${String(v).replace(/'/g, "''")}'`;
-const text = (t) => [{ type: "text", text: t }];
-
-/** Blok sederhana → node Tiptap yang lolos ebookDocSchema. */
-function toNode(b) {
-  if (typeof b === "string") return { type: "paragraph", content: text(b) };
-  const [kind, value] = b;
-  if (kind === "h") return { type: "heading", attrs: { level: 2 }, content: text(value) };
-  if (kind === "ul" || kind === "ol") {
-    return {
-      type: kind === "ul" ? "bulletList" : "orderedList",
-      content: value.map((v) => ({
-        type: "listItem",
-        content: [{ type: "paragraph", content: text(v) }],
-      })),
-    };
-  }
-  if (kind === "tip") {
-    return {
-      type: "callout",
-      attrs: { variant: "tip" },
-      content: [{ type: "paragraph", content: text(value) }],
-    };
-  }
-  throw new Error(`Blok tidak dikenal: ${kind}`);
-}
-const words = (blocks) =>
-  JSON.stringify(blocks)
-    .replace(/[^\p{L}\p{N}\s]/gu, " ")
-    .split(/\s+/)
-    .filter(Boolean).length;
-
 function wrangler(args) {
   execFileSync("npx", ["wrangler", ...args], { stdio: ["ignore", "ignore", "inherit"] });
 }
@@ -94,7 +64,7 @@ EBOOKS.forEach((e, i) => {
     const chapterId = uid(`chapter:${e.slug}:${order}`);
     const draftKey = `ebooks/${contentId}/chapters/${chapterId}.json`;
     const publishedKey = `ebooks/${contentId}/published/${chapterId}.json`;
-    const doc = { type: "doc", content: ch.blocks.map(toNode) };
+    const doc = toDoc(ch.blocks);
     const file = join(work, `${chapterId}.json`);
     writeFileSync(file, JSON.stringify(doc));
     sql.push(

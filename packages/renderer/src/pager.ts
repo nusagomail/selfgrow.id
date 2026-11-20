@@ -1,7 +1,8 @@
 /**
- * Mesin halaman ebook (D37): isi bab ditata dalam kolom CSS selebar layar lalu digeser per
- * halaman, seperti membaca buku. Tanpa React dan tanpa dependency, dipakai reader di `app` dan
- * pratinjau bab gratis di `site`. Hanya mengatur gaya & transform; tidak pernah menulis HTML.
+ * Mesin halaman ebook (D37): isi bab ditata dalam kolom CSS selebar layar, lalu dibalik per
+ * halaman dengan efek kertas (lembar berputar pada tulang buku, mengikuti jari saat digeser).
+ * Tanpa React dan tanpa dependency, dipakai reader di `app` dan pratinjau bab gratis di `site`.
+ * Hanya mengatur gaya, transform, dan salinan DOM (cloneNode); tidak pernah menulis HTML.
  */
 
 export type PagerLayout = {
@@ -11,7 +12,7 @@ export type PagerLayout = {
   pad: number;
   /** Lebar teks tiap halaman (px). */
   colWidth: number;
-  /** Jarak geser antar halaman (px) = lebar layar / kolom. */
+  /** Lebar satu halaman (px) = lebar layar / kolom. */
   step: number;
 };
 
@@ -51,6 +52,9 @@ export type Pager = {
 
 const SWIPE_MIN_PX = 40;
 const DRAG_START_PX = 8;
+const TURN_MS = 620;
+/** Lembar yang sudah terbuka melewati batas ini saat jari dilepas akan diselesaikan. */
+const COMMIT_AT = 0.22;
 const INTERACTIVE = "a,button,input,select,textarea,summary,label,[role=button]";
 
 export function layoutFor(width: number, spreadMinWidth = 900): PagerLayout {
@@ -91,6 +95,76 @@ export function stateFor(screen: number, pages: number, cols: number): PagerStat
   return { screen: s, screens, first, last: Math.min(pages, first + cols - 1), pages, cols };
 }
 
+export type TurnPlan = {
+  /** Kolom (slot layar) tempat engsel lembar: lembar menempati slot ini saat sudut 0. */
+  leafSlot: number;
+  /** Halaman di muka & punggung lembar (null = kertas kosong). */
+  front: number;
+  back: number | null;
+  /** Slot yang ditahan menampilkan halaman lama selama lembar berputar. */
+  pin: { slot: number; page: number } | null;
+  /** Kapan alur teks di bawah lembar pindah ke layar tujuan. */
+  flowJumps: "start" | "end";
+};
+
+/**
+ * Rencana membalik satu lembar dari layar `screen` ke arah `dir`. Murni (tanpa DOM) supaya
+ * mudah diuji. Sudut lembar: maju 0 → -180 derajat, mundur -180 → 0 derajat.
+ */
+export function planTurn(screen: number, dir: 1 | -1, cols: number): TurnPlan {
+  const target = screen + dir;
+  const leafSlot = cols - 1;
+  if (cols === 1) {
+    return dir === 1
+      ? { leafSlot, front: screen, back: null, pin: null, flowJumps: "start" }
+      : { leafSlot, front: target, back: null, pin: null, flowJumps: "end" };
+  }
+  return dir === 1
+    ? {
+        // Halaman kanan berputar ke kiri; halaman kiri lama ditahan sampai tertutup.
+        leafSlot,
+        front: screen * 2 + 1,
+        back: target * 2,
+        pin: { slot: 0, page: screen * 2 },
+        flowJumps: "start",
+      }
+    : {
+        // Halaman kiri berputar kembali ke kanan; halaman kanan lama ditahan.
+        leafSlot,
+        front: target * 2 + 1,
+        back: screen * 2,
+        pin: { slot: 1, page: screen * 2 + 1 },
+        flowJumps: "start",
+      };
+}
+
+/**
+ * Sudut lembar (derajat) untuk kemajuan 0..1. Kemajuan dipetakan ke posisi tepi kertas
+ * (bukan sudut) supaya tepi lembar bergerak rata mengikuti jari, seperti kertas sungguhan.
+ */
+export function leafAngle(dir: 1 | -1, progress: number): number {
+  const p = Math.min(1, Math.max(0, progress));
+  const edge = dir === 1 ? 1 - 2 * p : 2 * p - 1;
+  return -(Math.acos(Math.min(1, Math.max(-1, edge))) * 180) / Math.PI;
+}
+
+const easeOut = (t: number) => 1 - (1 - t) ** 3;
+
+type Turn = {
+  dir: 1 | -1;
+  target: number;
+  plan: TurnPlan;
+  progress: number;
+  leaf: HTMLElement;
+  frontShade: HTMLElement;
+  backShade: HTMLElement;
+  cast: HTMLElement;
+  layers: HTMLElement[];
+  raf: number | null;
+  /** Arah animasi yang sedang berjalan (1 = selesaikan, 0 = batalkan). */
+  goal: 0 | 1 | null;
+};
+
 /**
  * Pasang mode halaman pada `viewport` (pembungkus, overflow tersembunyi) dan `flow` (isi bab).
  * `flow` wajib berisi elemen `.book-marker` di posisi paling akhir isi (boleh di dalam halaman
@@ -107,12 +181,16 @@ export function createPager(
   let current = 0;
   let initialized = false;
   let destroyed = false;
+  let turn: Turn | null = null;
+  const reducedMotion =
+    typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  const screens = () => screensFor(pages, layout.cols);
   const state = () => stateFor(current, pages, layout.cols);
+  const emit = () => options.onChange?.(state());
 
-  const apply = (animate: boolean) => {
-    flow.classList.toggle("is-dragging", !animate);
-    flow.style.transform = `translate3d(${-current * layout.step * layout.cols}px,0,0)`;
+  const showScreen = (screen: number) => {
+    flow.style.transform = `translate3d(${-screen * layout.step * layout.cols}px,0,0)`;
   };
 
   const measure = () => {
@@ -125,6 +203,7 @@ export function createPager(
     s.columnCount = String(layout.cols);
     s.columnGap = `${layout.pad * 2}px`;
     s.columnFill = "auto";
+    viewport.style.perspective = `${Math.round(Math.max(1400, layout.step * 3.2))}px`;
     viewport.classList.add("is-paged");
     viewport.classList.toggle("is-spread", layout.cols > 1);
     if (!marker) return;
@@ -133,60 +212,185 @@ export function createPager(
     pages = pagesFor(offset, layout);
   };
 
-  const emit = () => options.onChange?.(state());
+  // --- Lembar kertas --------------------------------------------------------------------------
+
+  /** Salinan isi bab yang hanya menampilkan satu halaman (untuk muka lembar / halaman tertahan). */
+  const pageLayer = (page: number | null, className: string) => {
+    const el = document.createElement("div");
+    el.className = className;
+    el.setAttribute("aria-hidden", "true");
+    if (page !== null && page < pages) {
+      const copy = flow.cloneNode(true) as HTMLElement;
+      copy.inert = true;
+      copy.style.transform = `translate3d(${-page * layout.step}px,0,0)`;
+      el.append(copy);
+    }
+    return el;
+  };
+
+  const slotStyle = (el: HTMLElement, slot: number) => {
+    el.style.left = `${slot * layout.step}px`;
+    el.style.width = `${layout.step}px`;
+  };
+
+  const render = (t: Turn) => {
+    const angle = leafAngle(t.dir, t.progress);
+    const lift = Math.sin((Math.abs(angle) * Math.PI) / 180);
+    t.leaf.style.transform = `rotateY(${angle}deg)`;
+    t.leaf.style.boxShadow = `0 0 ${Math.round(30 * lift)}px rgb(0 0 0 / ${(0.28 * lift).toFixed(3)})`;
+    t.frontShade.style.opacity = (0.9 * lift).toFixed(3);
+    t.backShade.style.opacity = (0.7 * lift).toFixed(3);
+    t.cast.style.opacity = (0.8 * lift).toFixed(3);
+  };
+
+  const startTurn = (dir: 1 | -1): Turn | null => {
+    const target = current + dir;
+    if (target < 0 || target >= screens()) return null;
+    const plan = planTurn(current, dir, layout.cols);
+
+    const leaf = document.createElement("div");
+    leaf.className = "book-leaf";
+    slotStyle(leaf, plan.leafSlot);
+    const front = pageLayer(plan.front, "book-face");
+    const back = pageLayer(plan.back, "book-face book-face-back");
+    const frontShade = document.createElement("div");
+    frontShade.className = "book-shade";
+    const backShade = document.createElement("div");
+    backShade.className = "book-shade book-shade-back";
+    front.append(frontShade);
+    back.append(backShade);
+    leaf.append(front, back);
+
+    // Bayangan lembar yang jatuh di halaman bawahnya.
+    const cast = document.createElement("div");
+    cast.className = "book-cast";
+    slotStyle(cast, plan.leafSlot);
+
+    const layers: HTMLElement[] = [];
+    if (plan.pin) {
+      const pin = pageLayer(plan.pin.page, "book-pin");
+      slotStyle(pin, plan.pin.slot);
+      layers.push(pin);
+    }
+    layers.push(cast, leaf);
+    viewport.append(...layers);
+    if (plan.flowJumps === "start") showScreen(target);
+
+    const t: Turn = {
+      dir,
+      target,
+      plan,
+      progress: 0,
+      leaf,
+      frontShade,
+      backShade,
+      cast,
+      layers,
+      raf: null,
+      goal: null,
+    };
+    render(t);
+    return t;
+  };
+
+  const endTurn = (t: Turn, commit: boolean) => {
+    if (t.raf !== null) cancelAnimationFrame(t.raf);
+    for (const el of t.layers) el.remove();
+    if (turn === t) turn = null;
+    if (commit) {
+      current = t.target;
+      showScreen(current);
+      emit();
+    } else showScreen(current);
+  };
+
+  const animate = (t: Turn, goal: 0 | 1) => {
+    if (t.raf !== null) cancelAnimationFrame(t.raf);
+    t.goal = goal;
+    const from = t.progress;
+    const duration = Math.max(120, TURN_MS * Math.abs(goal - from));
+    const t0 = performance.now();
+    const frame = (now: number) => {
+      const k = Math.min(1, (now - t0) / duration);
+      t.progress = from + (goal - from) * easeOut(k);
+      render(t);
+      if (k < 1) t.raf = requestAnimationFrame(frame);
+      else {
+        t.raf = null;
+        endTurn(t, goal === 1);
+      }
+    };
+    t.raf = requestAnimationFrame(frame);
+  };
+
+  /** Lembar yang masih berputar langsung diselesaikan (mis. ketukan cepat beruntun). */
+  const settle = () => {
+    if (turn) endTurn(turn, turn.goal !== 0 && turn.progress > 0);
+  };
+
+  // --- Navigasi -------------------------------------------------------------------------------
 
   const relayout = () => {
     if (destroyed) return;
-    const before = initialized ? fractionOf(current, screensFor(pages, layout.cols)) : null;
+    settle();
+    const before = initialized ? fractionOf(current, screens()) : null;
     measure();
-    const screens = screensFor(pages, layout.cols);
-    if (before !== null) current = screenAtFraction(before, screens);
+    if (before !== null) current = screenAtFraction(before, screens());
     else {
       const start = options.startAt ?? 0;
       current =
         start === "end"
-          ? screens - 1
+          ? screens() - 1
           : typeof start === "number"
-            ? clampScreen(start, screens)
-            : screenAtFraction(start.fraction, screens);
+            ? clampScreen(start, screens())
+            : screenAtFraction(start.fraction, screens());
       initialized = true;
     }
-    apply(false);
+    showScreen(current);
     emit();
   };
 
   const goTo = (screen: number) => {
-    const target = clampScreen(screen, screensFor(pages, layout.cols));
-    if (target === current) {
-      apply(true);
-      return;
-    }
+    settle();
+    const target = clampScreen(screen, screens());
+    if (target === current) return;
     current = target;
-    apply(true);
+    showScreen(current);
     emit();
   };
-  const next = () => {
-    if (current >= screensFor(pages, layout.cols) - 1) {
-      apply(true);
-      options.onEdge?.("next");
-    } else goTo(current + 1);
-  };
-  const prev = () => {
-    if (current <= 0) {
-      apply(true);
-      options.onEdge?.("prev");
-    } else goTo(current - 1);
-  };
 
-  // --- Sentuhan: geser untuk membalik, ketuk tepi kiri/kanan untuk mundur/maju -------------
+  const turnPage = (dir: 1 | -1) => {
+    settle();
+    const atEdge = dir === 1 ? current >= screens() - 1 : current <= 0;
+    if (atEdge) {
+      options.onEdge?.(dir === 1 ? "next" : "prev");
+      return;
+    }
+    if (reducedMotion) {
+      goTo(current + dir);
+      return;
+    }
+    const t = startTurn(dir);
+    if (!t) return;
+    turn = t;
+    animate(t, 1);
+  };
+  const next = () => turnPage(1);
+  const prev = () => turnPage(-1);
+
+  // --- Sentuhan: lembar mengikuti jari; ketuk tepi kiri/kanan untuk mundur/maju --------------
   let startX = 0;
   let startY = 0;
   let dragging = false;
   let tracking = false;
+  let dragDir: 1 | -1 | null = null;
+
   const onDown = (e: PointerEvent) => {
     if (e.button !== 0) return;
+    settle();
     tracking = true;
     dragging = false;
+    dragDir = null;
     startX = e.clientX;
     startY = e.clientY;
   };
@@ -197,9 +401,15 @@ export function createPager(
     if (!dragging) {
       if (Math.abs(dx) < DRAG_START_PX || Math.abs(dx) < Math.abs(dy)) return;
       dragging = true;
+      dragDir = dx < 0 ? 1 : -1;
+      if (!reducedMotion) turn = startTurn(dragDir);
     }
-    flow.classList.add("is-dragging");
-    flow.style.transform = `translate3d(${-current * layout.step * layout.cols + dx}px,0,0)`;
+    if (!turn || !dragDir) return;
+    // Tepi kertas mengikuti jari. Di HP tepi bergerak sedikit lebih cepat dari jari supaya
+    // satu geseran pendek cukup untuk membalik.
+    const span = layout.step * (layout.cols === 1 ? 1 : 1.5);
+    turn.progress = Math.min(1, Math.max(0, (-dragDir * dx) / span));
+    render(turn);
   };
   const onUp = (e: PointerEvent) => {
     if (!tracking) return;
@@ -207,9 +417,10 @@ export function createPager(
     const dx = e.clientX - startX;
     if (dragging) {
       dragging = false;
-      if (dx <= -SWIPE_MIN_PX) next();
-      else if (dx >= SWIPE_MIN_PX) prev();
-      else apply(true);
+      const t = turn;
+      if (t) animate(t, t.progress >= COMMIT_AT ? 1 : 0);
+      else if (dragDir && Math.abs(dx) >= SWIPE_MIN_PX) turnPage(dragDir);
+      dragDir = null;
       return;
     }
     if (Math.abs(dx) > DRAG_START_PX || Math.abs(e.clientY - startY) > DRAG_START_PX) return;
@@ -222,10 +433,9 @@ export function createPager(
   };
   const onCancel = () => {
     tracking = false;
-    if (dragging) {
-      dragging = false;
-      apply(true);
-    }
+    dragging = false;
+    dragDir = null;
+    if (turn) animate(turn, 0);
   };
 
   const keyTarget = options.keyTarget ?? window;
@@ -265,6 +475,7 @@ export function createPager(
     state,
     destroy: () => {
       destroyed = true;
+      if (turn) endTurn(turn, false);
       viewport.removeEventListener("pointerdown", onDown);
       viewport.removeEventListener("pointermove", onMove);
       viewport.removeEventListener("pointerup", onUp);
