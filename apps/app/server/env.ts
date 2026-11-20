@@ -34,6 +34,8 @@ export interface Env {
   READ_GUARD: DurableObjectNamespace<import("./durable/read-guard").ReadGuard>;
   /** Ambang bab berbeda per jam sebelum akun dibekukan sementara. Default 60. */
   SCRAPE_CHAPTERS_PER_HOUR?: string;
+  /** Ambang bab berbeda per 24 jam. Default 300. */
+  SCRAPE_CHAPTERS_PER_DAY?: string;
 }
 
 export type Auth = ReturnType<typeof createAuth>;

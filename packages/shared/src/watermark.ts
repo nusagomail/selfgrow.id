@@ -3,8 +3,8 @@
  * sebagai karakter tak terlihat (zero-width). Teks yang bocor (disalin atau disedot dari API)
  * bisa ditelusuri kembali ke akun asalnya lewat `extractWatermarks`.
  *
- * Format satu sisipan: U+200B, lalu 48 bit (U+200C = 0, U+200D = 1), lalu U+200B.
- * 48 bit = kode 40 bit (10 heksadesimal) + checksum 8 bit.
+ * Format satu sisipan: U+200B, lalu 64 bit (U+200C = 0, U+200D = 1), lalu U+200B.
+ * 64 bit = kode 40 bit (10 heksadesimal) + tanda tangan HMAC 24 bit.
  */
 import { z } from "zod";
 import type { EbookDoc, EbookNode } from "./ebook";
@@ -12,46 +12,44 @@ import type { EbookDoc, EbookNode } from "./ebook";
 const FRAME = "\u200B";
 const BIT0 = "\u200C";
 const BIT1 = "\u200D";
-const PAYLOAD_BITS = 48;
+const PAYLOAD_BITS = 64;
 const MARK_RE = new RegExp(`${FRAME}([${BIT0}${BIT1}]{${PAYLOAD_BITS}})${FRAME}`, "g");
 
 /** Kode watermark: 10 karakter heksadesimal kecil (40 bit). */
 export const WATERMARK_CODE_RE = /^[0-9a-f]{10}$/;
+/** Tanda tangan: 6 heksadesimal (24 bit) dari HMAC rahasia server atas kode. */
+export const WATERMARK_TAG_RE = /^[0-9a-f]{6}$/;
 
 /** Teks minimal (karakter) agar sebuah node teks diberi sisipan. */
 const MIN_TEXT_CHARS = 40;
 /** Batas sisipan per bab agar ukuran respons tetap kecil. */
 const MAX_MARKS_PER_DOC = 200;
 
-function checksum(bytes: number[]): number {
-  // CRC-8 (polinom 0x07): cukup untuk menolak potongan acak/rusak.
-  let crc = 0;
-  for (const b of bytes) {
-    crc ^= b;
-    for (let i = 0; i < 8; i++) crc = crc & 0x80 ? ((crc << 1) ^ 0x07) & 0xff : (crc << 1) & 0xff;
-  }
-  return crc;
-}
-
-function codeToBytes(code: string): number[] {
-  if (!WATERMARK_CODE_RE.test(code)) throw new Error("Kode watermark tidak valid");
+const hexToBytes = (hex: string) => {
   const bytes: number[] = [];
-  for (let i = 0; i < 10; i += 2) bytes.push(Number.parseInt(code.slice(i, i + 2), 16));
+  for (let i = 0; i < hex.length; i += 2) bytes.push(Number.parseInt(hex.slice(i, i + 2), 16));
   return bytes;
-}
+};
+const bytesToHex = (bytes: number[]) => bytes.map((b) => b.toString(16).padStart(2, "0")).join("");
 
-export function encodeWatermark(code: string): string {
-  const bytes = codeToBytes(code);
-  bytes.push(checksum(bytes));
+/**
+ * Satu sisipan tak terlihat berisi kode + tanda tangan. Tanda tangan dibuat server dengan kunci
+ * rahasia, sehingga orang yang mengetahui kode user lain tetap tidak bisa memalsukan sisipan
+ * untuk menjebaknya (review keamanan PR #13).
+ */
+export function encodeWatermark(code: string, tag: string): string {
+  if (!WATERMARK_CODE_RE.test(code) || !WATERMARK_TAG_RE.test(tag)) {
+    throw new Error("Kode watermark tidak valid");
+  }
   let bits = "";
-  for (const b of bytes) {
+  for (const b of hexToBytes(code + tag)) {
     for (let i = 7; i >= 0; i--) bits += (b >> i) & 1 ? BIT1 : BIT0;
   }
   return FRAME + bits + FRAME;
 }
 
-/** Kode-kode watermark yang ditemukan di teks, dengan jumlah kemunculannya. */
-export function extractWatermarks(text: string): { code: string; count: number }[] {
+/** Sisipan yang ditemukan di teks (kode + tanda tangan, belum diverifikasi), dengan jumlahnya. */
+export function extractWatermarks(text: string): { code: string; tag: string; count: number }[] {
   const found = new Map<string, number>();
   for (const m of text.matchAll(MARK_RE)) {
     const bits = m[1] as string;
@@ -61,12 +59,12 @@ export function extractWatermarks(text: string): { code: string; count: number }
       for (let j = 0; j < 8; j++) b = (b << 1) | (bits[i + j] === BIT1 ? 1 : 0);
       bytes.push(b);
     }
-    const crc = bytes.pop() as number;
-    if (checksum(bytes) !== crc) continue;
-    const code = bytes.map((b) => b.toString(16).padStart(2, "0")).join("");
-    found.set(code, (found.get(code) ?? 0) + 1);
+    const hex = bytesToHex(bytes);
+    found.set(hex, (found.get(hex) ?? 0) + 1);
   }
-  return [...found].map(([code, count]) => ({ code, count })).sort((a, b) => b.count - a.count);
+  return [...found]
+    .map(([hex, count]) => ({ code: hex.slice(0, 10), tag: hex.slice(10), count }))
+    .sort((a, b) => b.count - a.count);
 }
 
 /** Buang semua karakter watermark (mis. sebelum membandingkan teks). */
@@ -79,8 +77,7 @@ export function stripWatermarks(text: string): string {
  * tepat setelah spasi pertama (tidak memecah kata, tidak mengubah tampilan).
  * Tautan dan kode (`code`) tidak disentuh.
  */
-export function watermarkDoc(doc: EbookDoc, code: string): EbookDoc {
-  const mark = encodeWatermark(code);
+export function watermarkDoc(doc: EbookDoc, mark: string): EbookDoc {
   let remaining = MAX_MARKS_PER_DOC;
   const visit = (node: EbookNode): EbookNode => {
     if (node.type === "text") {

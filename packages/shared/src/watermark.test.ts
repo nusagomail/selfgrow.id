@@ -25,38 +25,38 @@ const textOf = (d: EbookDoc): string => JSON.stringify(d);
 
 describe("watermark forensik", () => {
   it("encode lalu extract mengembalikan kode yang sama", () => {
-    expect(extractWatermarks(`abc ${encodeWatermark("0a1b2c3d4e")} def`)).toEqual([
-      { code: "0a1b2c3d4e", count: 1 },
+    expect(extractWatermarks(`abc ${encodeWatermark("0a1b2c3d4e", "abcdef")} def`)).toEqual([
+      { code: "0a1b2c3d4e", tag: "abcdef", count: 1 },
     ]);
   });
 
   it("tidak terlihat: teks tanpa watermark sama persis dengan aslinya", () => {
-    const w = watermarkDoc(doc, "ffffffffff");
+    const w = watermarkDoc(doc, encodeWatermark("ffffffffff", "000000"));
     const p = w.content[1] as { content: { text: string }[] };
     expect(p.content[0]?.text).not.toBe(long);
     expect(stripWatermarks(p.content[0]?.text ?? "")).toBe(long);
   });
 
   it("teks pendek dan tautan tidak disisipi", () => {
-    const w = watermarkDoc(doc, "0000000001");
+    const w = watermarkDoc(doc, encodeWatermark("0000000001", "000000"));
     expect(w.content[0]).toEqual(doc.content[0]);
     expect(w.content[2]).toEqual(doc.content[2]);
   });
 
   it("kode berbeda per pelanggan dan bisa dilacak dari potongan teks", () => {
-    const a = textOf(watermarkDoc(doc, "aaaaaaaaaa"));
-    const b = textOf(watermarkDoc(doc, "bbbbbbbbbb"));
-    expect(extractWatermarks(a)).toEqual([{ code: "aaaaaaaaaa", count: 1 }]);
-    expect(extractWatermarks(b)).toEqual([{ code: "bbbbbbbbbb", count: 1 }]);
+    const a = textOf(watermarkDoc(doc, encodeWatermark("aaaaaaaaaa", "111111")));
+    const b = textOf(watermarkDoc(doc, encodeWatermark("bbbbbbbbbb", "222222")));
+    expect(extractWatermarks(a)).toEqual([{ code: "aaaaaaaaaa", tag: "111111", count: 1 }]);
+    expect(extractWatermarks(b)).toEqual([{ code: "bbbbbbbbbb", tag: "222222", count: 1 }]);
   });
 
-  it("sisipan rusak (checksum salah) diabaikan", () => {
-    const m = encodeWatermark("1234567890");
-    const broken = m.slice(0, 5) + (m[5] === "‌" ? "‍" : "‌") + m.slice(6);
-    expect(extractWatermarks(broken)).toEqual([]);
+  it("sisipan terpotong diabaikan", () => {
+    const m = encodeWatermark("1234567890", "abcdef");
+    expect(extractWatermarks(m.slice(0, 30) + m.slice(31))).toEqual([]);
   });
 
   it("kode tidak valid ditolak", () => {
-    expect(() => encodeWatermark("XYZ")).toThrow();
+    expect(() => encodeWatermark("XYZ", "abcdef")).toThrow();
+    expect(() => encodeWatermark("1234567890", "zz")).toThrow();
   });
 });

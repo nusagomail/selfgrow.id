@@ -3,8 +3,9 @@
  * dengan pembekuan sementara, rate limit, serta alat admin (lacak bocoran, buka pembekuan).
  */
 import { env } from "cloudflare:test";
+import { encodeWatermark, extractWatermarks } from "@selfgrow/shared";
 import { describe, expect, it } from "vitest";
-import { call, createUser, grantSubscription } from "../test/helpers";
+import { call, createUser, grantSubscription, testEnv } from "../test/helpers";
 
 const json = (body: unknown) => ({
   headers: { "content-type": "application/json" },
@@ -75,7 +76,10 @@ describe("watermark", () => {
     expect(textA).not.toContain(LONG); // disisipi karakter tak terlihat
     expect(JSON.stringify(ra2.doc)).toBe(textA); // stabil untuk user yang sama
     expect(JSON.stringify(rb.doc)).not.toBe(textA); // berbeda antar user
-    expect(ra.watermark.label).toContain(`${a.id}@example.com`);
+    expect(ra.watermark.label).toBe(`${a.id}@example.com`);
+    // Kode forensik tidak ditampilkan di label terlihat.
+    const codeA = extractWatermarks(textA)[0]?.code as string;
+    expect(ra.watermark.label).not.toContain(codeA);
 
     // Admin menempel teks bocoran -> pemilik teks ditemukan.
     const leaked = JSON.parse(textA).content[0].content[0].text as string;
@@ -88,6 +92,33 @@ describe("watermark", () => {
     const { matches } = (await trace.json()) as { matches: { user: { id: string } | null }[] };
     expect(matches).toHaveLength(1);
     expect(matches[0]?.user?.id).toBe(a.id);
+  });
+
+  it("tanda palsu (kode user lain tanpa tanda tangan server) tidak bisa menjebak, dan banjir tanda palsu tidak menenggelamkan yang asli", async () => {
+    const { admin, slug, ids } = await setupEbook(1);
+    const victim = await subscriber();
+    const leaker = await subscriber();
+    const rv = (await (await read(slug, ids[0] as string, victim.token)).json()) as ChapterRes;
+    const rl = (await (await read(slug, ids[0] as string, leaker.token)).json()) as ChapterRes;
+    const victimCode = extractWatermarks(JSON.stringify(rv.doc))[0]?.code as string;
+    const leakedText = JSON.parse(JSON.stringify(rl.doc)).content[0].content[0].text as string;
+    const fakes = [
+      ...Array.from({ length: 30 }, () => encodeWatermark(victimCode, "000000")),
+      ...Array.from({ length: 30 }, (_, i) =>
+        encodeWatermark(i.toString(16).padStart(10, "0"), "abcdef"),
+      ),
+    ].join(" ");
+    const r = await call("/api/v1/admin/watermark/trace", {
+      method: "POST",
+      token: admin.token,
+      ...json({ text: `${fakes} ${leakedText}` }),
+    });
+    const body = (await r.json()) as {
+      matches: { user: { id: string } | null }[];
+      forged: number;
+    };
+    expect(body.forged).toBe(60);
+    expect(body.matches.map((m) => m.user?.id)).toEqual([leaker.id]);
   });
 
   it("member tidak bisa memakai alat lacak", async () => {
@@ -138,6 +169,32 @@ describe("deteksi scraping", () => {
     expect((await read(slug, ids[0] as string, u.token)).status).toBe(200);
   });
 
+  it("batas harian: banyak bab tersebar beberapa jam tetap terdeteksi", async () => {
+    const { slug, ids } = await setupEbook(1);
+    const u = await subscriber();
+    const guard = testEnv.READ_GUARD.get(testEnv.READ_GUARD.idFromName(u.id));
+    const now = Date.now();
+    // 8 bab berbeda tersebar 4 jam (2 per jam, di bawah ambang per jam 5).
+    for (let i = 0; i < 8; i++) await guard.record(`lama-${i}`, now - (4 - i / 2) * 3_600_000);
+    // Bab ke-9 dalam 24 jam melewati ambang harian test (8).
+    expect((await read(slug, ids[0] as string, u.token)).status).toBe(423);
+  });
+
+  it("akun beku tetap bisa melihat data akunnya sendiri", async () => {
+    const { slug, ids } = await setupEbook(6);
+    const u = await subscriber();
+    for (const chId of ids) await read(slug, chId, u.token);
+    expect((await read(slug, ids[0] as string, u.token)).status).toBe(423);
+    expect((await call("/api/v1/me", { token: u.token })).status).toBe(200);
+    // Pembekuan dicatat sekali saja, oleh sistem (bukan oleh user).
+    const rows = await env.DB.prepare(
+      "SELECT actor_id FROM audit_log WHERE action = 'security.freeze' AND target = ?",
+    )
+      .bind(`user:${u.id}`)
+      .all<{ actor_id: string | null }>();
+    expect(rows.results).toEqual([{ actor_id: null }]);
+  });
+
   it("membaca ulang bab yang sama tidak dihitung sebagai scraping", async () => {
     const { slug, ids } = await setupEbook(1);
     const u = await subscriber();
@@ -157,6 +214,19 @@ describe("deteksi scraping", () => {
 });
 
 describe("rate limit", () => {
+  it("gangguan layanan rate limit tidak memblokir pembaca", async () => {
+    const { slug, ids } = await setupEbook(1);
+    const u = await subscriber();
+    const original = testEnv.RL_USER.limit;
+    testEnv.RL_USER.limit = () => Promise.reject(new Error("limiter down"));
+    await expect(testEnv.RL_USER.limit({ key: "x" })).rejects.toThrow("limiter down");
+    try {
+      expect((await read(slug, ids[0] as string, u.token)).status).toBe(200);
+    } finally {
+      testEnv.RL_USER.limit = original;
+    }
+  });
+
   it("terlalu banyak bab per menit dari satu user -> 429", async () => {
     const { slug, ids } = await setupEbook(1);
     const u = await subscriber();

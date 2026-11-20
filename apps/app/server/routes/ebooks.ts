@@ -7,8 +7,8 @@ import { ebookKeys, readDoc } from "../services/ebook-storage";
 import { getSubscriptionStatus } from "../services/entitlements";
 import {
   getFreeze,
-  getWatermarkCode,
   recordChapterRead,
+  watermarkMarkFor,
   withinRateLimit,
 } from "../services/protection";
 
@@ -111,18 +111,19 @@ export const ebooks = new Hono<AppEnv>()
     const newlyFrozen = await recordChapterRead(c, user.id, chapter.id);
     if (newlyFrozen) return c.json({ error: "account_frozen", until: newlyFrozen.until }, 423);
 
-    const [doc, code] = await Promise.all([
+    const [doc, mark] = await Promise.all([
       readDoc(c.env.CONTENT, ebookKeys.published(ebook.id, chapter.id)),
-      getWatermarkCode(c.var.db, user.id),
+      watermarkMarkFor(c, user.id),
     ]);
     if (!doc) return c.json({ error: "not_found" }, 404);
 
     c.header("Cache-Control", "private, no-store");
     return c.json({
       chapter: { id: chapter.id, title: chapter.title, order: chapter.order },
-      // Watermark forensik (tak terlihat) + label watermark terlihat untuk halaman baca.
-      doc: watermarkDoc(doc, code),
-      watermark: { label: `${user.email} · ${code}` },
+      // Watermark forensik (tak terlihat, bertanda tangan) + label terlihat untuk halaman baca.
+      // Kode forensik sengaja tidak ditampilkan (review keamanan PR #13).
+      doc: watermarkDoc(doc, mark),
+      watermark: { label: user.email },
     });
   })
 

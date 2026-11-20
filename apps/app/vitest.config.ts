@@ -19,6 +19,7 @@ export default defineConfig(async () => {
             GOOGLE_CLIENT_SECRET: "test-client-secret",
             // Ambang scraping kecil agar mudah diuji (produksi default 60 bab/jam).
             SCRAPE_CHAPTERS_PER_HOUR: "5",
+            SCRAPE_CHAPTERS_PER_DAY: "8",
             TEST_MIGRATIONS: migrations,
           },
         },

@@ -29,6 +29,7 @@ export function StudioSecurity() {
   const [error, setError] = useState<string | null>(null);
   const [text, setText] = useState("");
   const [matches, setMatches] = useState<Match[] | null>(null);
+  const [forged, setForged] = useState(0);
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(() => {
@@ -47,11 +48,12 @@ export function StudioSecurity() {
     e.preventDefault();
     setBusy(true);
     try {
-      const r = await api<{ matches: Match[] }>("/admin/watermark/trace", {
+      const r = await api<{ matches: Match[]; forged: number }>("/admin/watermark/trace", {
         method: "POST",
         body: JSON.stringify({ text }),
       });
       setMatches(r.matches);
+      setForged(r.forged);
     } finally {
       setBusy(false);
     }
@@ -100,7 +102,8 @@ export function StudioSecurity() {
         <p className="muted">
           Tempel teks ebook yang kamu temukan di luar (mis. dari grup atau situs lain). Setiap
           pelanggan menerima teks dengan tanda tak terlihat yang unik, sehingga asal bocoran bisa
-          dikenali. Tanda ini hilang bila teks diketik ulang atau difoto.
+          dikenali. Tanda ini hilang bila teks diketik ulang atau difoto. Anggap hasilnya sebagai
+          petunjuk kuat, lalu periksa riwayat akun sebelum bertindak.
         </p>
         <textarea
           value={text}
@@ -112,6 +115,12 @@ export function StudioSecurity() {
         <button type="submit" className="btn btn-primary" disabled={busy || !text.trim()}>
           {busy ? "Melacak…" : "Lacak"}
         </button>
+        {matches && forged > 0 && (
+          <p className="error">
+            Ada {forged} tanda palsu di teks ini (bukan buatan SelfGrow): kemungkinan ada yang
+            mencoba menyamarkan atau menjebak akun lain. Abaikan tanda palsu tersebut.
+          </p>
+        )}
         {matches &&
           (matches.length === 0 ? (
             <p>Tidak ditemukan tanda watermark di teks ini.</p>
