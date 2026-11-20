@@ -5,8 +5,14 @@
  */
 import { env } from "cloudflare:test";
 import { todayWib } from "@selfgrow/shared";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { call, createUser } from "../test/helpers";
+
+// Generator DOCX/PDF/XLSX dimuat lazy; muat sekali di awal agar import library besar di runner CI
+// yang sibuk tidak melewati batas 5 detik per test (sama seperti templates.test.ts).
+beforeAll(async () => {
+  await import("./templates");
+}, 60_000);
 
 const json = (body: unknown) => ({
   headers: { "content-type": "application/json" },
