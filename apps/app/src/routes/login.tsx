@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { Logo } from "../components/logo";
-import { signInWithGoogle } from "../lib/api";
+import { getSiteUrl, signInWithGoogle } from "../lib/api";
 import { TURNSTILE_SITE_KEY, Turnstile } from "../lib/turnstile";
 import { useMe } from "../lib/use-me";
 
@@ -13,11 +13,26 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const onToken = useCallback((t: string | null) => setToken(t), []);
 
+  const [siteUrl, setSiteUrl] = useState<string | null>(null);
+  const needsCaptcha = Boolean(TURNSTILE_SITE_KEY);
+  // Dari tombol "Masuk" di etalase: langsung ke Google tanpa halaman perantara (D34).
+  const auto =
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).has("auto");
+
+  useEffect(() => {
+    getSiteUrl().then(setSiteUrl);
+  }, []);
+
   useEffect(() => {
     if (me.status === "ready") navigate({ to: "/", replace: true });
-  }, [me, navigate]);
-
-  const needsCaptcha = Boolean(TURNSTILE_SITE_KEY);
+    if (me.status === "anonymous" && auto && !needsCaptcha) {
+      setBusy(true);
+      signInWithGoogle(undefined, { replace: true }).catch(() => {
+        setError("Gagal memulai login. Coba lagi.");
+        setBusy(false);
+      });
+    }
+  }, [me, navigate, auto, needsCaptcha]);
 
   async function onClick() {
     setBusy(true);
@@ -32,6 +47,11 @@ export function LoginPage() {
 
   return (
     <main className="page">
+      {siteUrl && (
+        <p>
+          <a href={siteUrl}>← Kembali ke beranda</a>
+        </p>
+      )}
       <div className="brand-hero">
         <Logo height={56} />
       </div>

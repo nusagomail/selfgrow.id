@@ -61,7 +61,7 @@ const topicName = new Map(topics.map((t) => [t.slug, t.name]));
         Ebook, tool, dan template untuk {topic ? topic.name : category.name} sedang ditulis. Daftar
         sekarang supaya kamu dikabari saat terbit dan mendapat harga founding member.
       </p>
-      <a href={appUrl("/masuk")} class="btn btn-primary">Daftar gratis</a>
+      <a href={appUrl("/masuk?auto=1")} class="btn btn-primary">Daftar gratis</a>
     </div>
   )}
 </section>

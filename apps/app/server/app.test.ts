@@ -1,6 +1,6 @@
 import { healthResponseSchema } from "@selfgrow/shared";
 import { describe, expect, it } from "vitest";
-import { testEnv as env } from "../test/helpers";
+import { call, testEnv as env } from "../test/helpers";
 import { api } from "./app";
 
 describe("API /api/v1", () => {
@@ -28,5 +28,13 @@ describe("API /api/v1", () => {
   it("memasang header keamanan", async () => {
     const res = await api.request("/api/v1/health", {}, env);
     expect(res.headers.get("x-content-type-options")).toBe("nosniff");
+  });
+});
+
+describe("konfigurasi publik", () => {
+  it("memberi alamat etalase untuk mengarahkan pengunjung yang belum login", async () => {
+    const r = await call("/api/v1/health/config");
+    expect(r.status).toBe(200);
+    expect(await r.json()).toEqual({ siteUrl: "http://localhost:4321" });
   });
 });

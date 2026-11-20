@@ -1,7 +1,7 @@
 import type { AdminView, DeviceSession, MeResponse, SubscriptionStatus } from "@selfgrow/shared";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { ApiError, api, signOut } from "../lib/api";
+import { ApiError, api, goToStorefront, signOut } from "../lib/api";
 
 const timeFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" });
 
@@ -28,7 +28,7 @@ export function AccountPage() {
 
   async function logout() {
     await signOut().catch(() => {});
-    navigate({ to: "/masuk", replace: true });
+    goToStorefront(() => navigate({ to: "/masuk", replace: true }));
   }
 
   return (
