@@ -127,14 +127,19 @@ export const templates = new Hono<AppEnv>()
       return c.json({ error: "quota_exceeded", limit: DEFAULT_DOWNLOAD_QUOTA }, 429);
 
     const fileName = buildFileName(tpl.config, tpl.item.title, values, body.data.format);
-    // Riwayat unduhan untuk halaman Profil (D33).
-    await c.var.db.insert(schema.templateDownloads).values({
-      id: crypto.randomUUID(),
-      userId: user.id,
-      contentId: tpl.item.id,
-      format: body.data.format,
-      fileName,
-    });
+    // Riwayat unduhan untuk halaman Profil (D33). Hanya pelengkap: bila gagal, file tetap
+    // dikirim karena kuota sudah terpotong (review keamanan PR #18).
+    try {
+      await c.var.db.insert(schema.templateDownloads).values({
+        id: crypto.randomUUID(),
+        userId: user.id,
+        contentId: tpl.item.id,
+        format: body.data.format,
+        fileName,
+      });
+    } catch (e) {
+      console.error(JSON.stringify({ alert: "download_history_failed", error: String(e) }));
+    }
 
     return new Response(bytes, {
       headers: {

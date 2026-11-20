@@ -156,6 +156,19 @@ describe("unduh template", () => {
     expect(strFromU8(zip["docProps/core.xml"] as Uint8Array)).toContain(`selfgrow:${u.id}`);
   });
 
+  it("gagal mencatat riwayat unduhan tidak menggagalkan unduhan (kuota sudah terpotong)", async () => {
+    const { slug } = await setupTemplate();
+    const u = await subscriber();
+    await env.DB.prepare("ALTER TABLE template_downloads RENAME TO template_downloads_off").run();
+    try {
+      const r = await generate(slug, u.token, "pdf");
+      expect(r.status).toBe(200);
+      expect(r.headers.get("x-downloads-used")).toBe("1");
+    } finally {
+      await env.DB.prepare("ALTER TABLE template_downloads_off RENAME TO template_downloads").run();
+    }
+  });
+
   it("format yang tidak diaktifkan ditolak", async () => {
     const { admin, id, slug } = await setupTemplate({ publish: false });
     await call(`/api/v1/studio/templates/${id}`, {

@@ -196,7 +196,7 @@ export const profile = new Hono<AppEnv>()
         })
         .from(schema.streaks)
         .innerJoin(schema.contentItems, eq(schema.contentItems.id, schema.streaks.toolId))
-        .where(eq(schema.streaks.userId, user.id))
+        .where(and(eq(schema.streaks.userId, user.id), eq(schema.contentItems.status, "published")))
         .orderBy(desc(schema.streaks.lastEntryDate))
         .limit(20),
       db
@@ -228,7 +228,12 @@ export const profile = new Hono<AppEnv>()
           schema.programs,
           eq(schema.programs.contentId, schema.programEnrollments.programId),
         )
-        .where(eq(schema.programEnrollments.userId, user.id))
+        .where(
+          and(
+            eq(schema.programEnrollments.userId, user.id),
+            eq(schema.contentItems.status, "published"),
+          ),
+        )
         .orderBy(desc(schema.programEnrollments.startedAt))
         .limit(20),
       db
@@ -244,7 +249,12 @@ export const profile = new Hono<AppEnv>()
           schema.contentItems,
           eq(schema.contentItems.id, schema.templateDownloads.contentId),
         )
-        .where(eq(schema.templateDownloads.userId, user.id))
+        .where(
+          and(
+            eq(schema.templateDownloads.userId, user.id),
+            eq(schema.contentItems.status, "published"),
+          ),
+        )
         .orderBy(desc(schema.templateDownloads.createdAt))
         .limit(20),
     ]);
@@ -259,7 +269,9 @@ export const profile = new Hono<AppEnv>()
           title: schema.contentItems.title,
         })
         .from(schema.contentItems)
-        .where(inArray(schema.contentItems.id, chunk)),
+        .where(
+          and(inArray(schema.contentItems.id, chunk), eq(schema.contentItems.status, "published")),
+        ),
     );
     const toolById = new Map(toolRows.map((t) => [t.id, t]));
     const tools = toolRuns

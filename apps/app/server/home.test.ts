@@ -162,5 +162,13 @@ describe("profil", () => {
     expect(pb.reading).toEqual([]);
     expect(pb.downloads).toEqual([]);
     expect((await call("/api/v1/profile")).status).toBe(401);
+
+    // Konten yang ditarik dari terbit tidak lagi tampil di profil.
+    await env.DB.prepare("UPDATE content_items SET status = 'draft' WHERE slug = ?")
+      .bind(slug)
+      .run();
+    const after = (await (await call("/api/v1/profile", { token: a.token })).json()) as Profile;
+    expect(after.reading).toEqual([]);
+    expect(after.downloads).toEqual([]);
   });
 });
