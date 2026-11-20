@@ -7,6 +7,9 @@ export default defineConfig({
   // Production mengisi SITE_URL; selain itu alamat dasar diambil dari request (D15).
   site: process.env.SITE_URL || undefined,
   output: "server",
-  adapter: cloudflare(),
+  // Tanpa Cloudflare Images dan tanpa sesi KV: etalase tidak memakai keduanya, dan adapter
+  // akan membuat resource baru di akun Cloudflare bila dibiarkan default.
+  adapter: cloudflare({ imageService: "passthrough" }),
+  session: false,
   build: { inlineStylesheets: "always" },
 });
