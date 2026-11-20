@@ -3,11 +3,46 @@ import Base from "../layouts/Base.astro";
 ---
 
 <Base
-  title="selfgrow — tumbuh sedikit setiap hari"
+  title="SelfGrow — Bertumbuh Menjadi Lebih Baik"
   description="Ebook interaktif, tools, dan template untuk pengembangan diri. Segera hadir."
 >
   <main>
-    <h1>selfgrow</h1>
-    <p>Ebook interaktif, tools, dan template untuk pengembangan diri. Segera hadir.</p>
+    <picture>
+      <source
+        media="(prefers-color-scheme: dark)"
+        srcset="/brand/logo-dark-240.webp 240w, /brand/logo-dark-480.webp 480w"
+        sizes="280px"
+      />
+      <img
+        src="/brand/logo-480.webp"
+        srcset="/brand/logo-240.webp 240w, /brand/logo-480.webp 480w"
+        sizes="280px"
+        width="280"
+        height="81"
+        alt="SelfGrow — Bertumbuh Menjadi Lebih Baik"
+      />
+    </picture>
+    <h1>Bertumbuh sedikit setiap hari.</h1>
+    <p>Ebook interaktif, tools, dan template untuk keuangan, produktivitas, kebiasaan, dan karier. Segera hadir.</p>
   </main>
 </Base>
+
+<style>
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 64px 16px;
+    text-align: center;
+  }
+  img {
+    height: auto;
+    max-width: 100%;
+  }
+  h1 {
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    margin: 32px 0 8px;
+  }
+  p {
+    color: var(--muted);
+  }
+</style>

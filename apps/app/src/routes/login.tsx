@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
+import { Logo } from "../components/logo";
 import { signInWithGoogle } from "../lib/api";
 import { TURNSTILE_SITE_KEY, Turnstile } from "../lib/turnstile";
 import { useMe } from "../lib/use-me";
@@ -31,7 +32,10 @@ export function LoginPage() {
 
   return (
     <main className="page">
-      <h1>Masuk ke selfgrow</h1>
+      <div className="brand-hero">
+        <Logo height={56} />
+      </div>
+      <h1>Masuk ke SelfGrow</h1>
       <p className="muted">Cukup pakai akun Google. Tanpa password.</p>
       <div className="card stack">
         <Turnstile onToken={onToken} />

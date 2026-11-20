@@ -5,6 +5,7 @@ interface Props {
 }
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL("/brand/og-image.png", Astro.site);
 ---
 
 <!doctype html>
@@ -14,10 +15,42 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#073e1f" />
     <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/brand/favicon-64.png" />
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <style is:global>
+      :root {
+        --brand-dark: #073e1f;
+        --primary: #1d7a34;
+        --bg: #f7faf6;
+        --text: #10241a;
+        --muted: #4b5f53;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #08130d;
+          --text: #e6efe8;
+          --muted: #9fb3a6;
+          --primary: #5cbf4a;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+      }
+    </style>
   </head>
   <body>
     <slot />
