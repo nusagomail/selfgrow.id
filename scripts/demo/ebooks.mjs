@@ -7,8 +7,17 @@
  *   ["h", "judul"]        → heading level 2
  *   ["ul", [..]]          → daftar berbutir
  *   ["ol", [..]]          → daftar bernomor
- *   ["tip", "teks"]       → callout tips
+ *   ["tip"|"info"|"warn", "teks"] → callout
+ *   ["h3", "judul"]       → heading level 3
+ *   ["quote", "teks"]     → kutipan
+ *   ["table", [[kepala..], [baris..], ..]] → tabel
+ *   **teks**              → huruf tebal di dalam teks
+ *
+ * "Gaji Aman Sampai Akhir Bulan" ditulis lengkap (10 bab) sebagai contoh ebook serius.
  */
+import { PART_1 } from "./books/gaji-aman-1.mjs";
+import { PART_2 } from "./books/gaji-aman-2.mjs";
+
 export const EBOOKS = [
   {
     slug: "gaji-aman-sampai-akhir-bulan",
@@ -16,59 +25,9 @@ export const EBOOKS = [
     category: "Keuangan Pribadi",
     title: "Gaji Aman Sampai Akhir Bulan",
     summary:
-      "Cara sederhana mengatur gaji dengan aturan 50/30/20 supaya tidak habis sebelum tanggal 25.",
+      "Panduan lengkap 10 bab mengatur gaji: membaca ke mana uang pergi, anggaran yang realistis, rekening terpisah, dana darurat, melunasi cicilan, sampai rencana 90 hari.",
     cover: { from: "#073e1f", to: "#1d7a34", accent: "#f4ac13", motif: "bars" },
-    chapters: [
-      {
-        title: "Kenapa gaji cepat habis",
-        blocks: [
-          "Gaji habis sebelum tanggal 25 jarang terjadi karena penghasilan terlalu kecil. Lebih sering, uang keluar tanpa rencana: jajan kecil yang berulang, cicilan yang lupa dihitung, dan belanja dadakan.",
-          ["h", "Tiga kebocoran paling umum"],
-          [
-            "ul",
-            [
-              "Pengeluaran kecil harian yang tidak dicatat, misalnya kopi dan ongkir.",
-              "Langganan yang lupa dibatalkan.",
-              "Belanja karena diskon, bukan karena butuh.",
-            ],
-          ],
-          [
-            "tip",
-            "Catat semua pengeluaran selama 7 hari, sekecil apa pun. Kamu akan kaget melihat totalnya.",
-          ],
-        ],
-      },
-      {
-        title: "Aturan 50/30/20",
-        blocks: [
-          "Bagi gaji bersih menjadi tiga pos: 50% untuk kebutuhan, 30% untuk keinginan, dan 20% untuk tabungan atau pelunasan utang.",
-          [
-            "ol",
-            [
-              "Kebutuhan: kos, makan, transportasi, cicilan wajib.",
-              "Keinginan: nongkrong, hiburan, belanja non-pokok.",
-              "Tabungan: dana darurat, investasi, atau melunasi utang lebih cepat.",
-            ],
-          ],
-          "Kalau kebutuhanmu lebih dari 50%, jangan menyerah. Mulai dari 70/20/10, lalu geser pelan-pelan.",
-        ],
-      },
-      {
-        title: "Mulai bulan ini",
-        blocks: [
-          "Hari gajian adalah hari terpenting. Langsung pindahkan porsi tabungan ke rekening terpisah sebelum uang sempat terpakai.",
-          [
-            "ul",
-            [
-              "Buat rekening khusus tabungan tanpa kartu ATM.",
-              "Atur transfer otomatis di hari gajian.",
-              "Tinjau pengeluaran setiap Minggu malam selama 10 menit.",
-            ],
-          ],
-          ["tip", "Bayar dirimu sendiri lebih dulu: tabungan bukan sisa, tapi pos pertama."],
-        ],
-      },
-    ],
+    chapters: [...PART_1, ...PART_2],
   },
   {
     slug: "kebiasaan-kecil-hasil-besar",

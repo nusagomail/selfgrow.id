@@ -3,7 +3,9 @@ import {
   clampScreen,
   fractionOf,
   layoutFor,
+  leafAngle,
   pagesFor,
+  planTurn,
   screenAtFraction,
   screensFor,
   stateFor,
@@ -85,5 +87,46 @@ describe("stateFor", () => {
   });
   it("mode satu halaman", () => {
     expect(stateFor(7, 3, 1)).toMatchObject({ screen: 2, first: 3, last: 3 });
+  });
+});
+
+describe("membalik lembar", () => {
+  it("HP maju: halaman sekarang terangkat, halaman berikutnya sudah ada di bawahnya", () => {
+    expect(planTurn(3, 1, 1)).toEqual({
+      leafSlot: 0,
+      front: 3,
+      back: null,
+      pin: null,
+      flowJumps: "start",
+    });
+  });
+  it("HP mundur: halaman sebelumnya kembali menutup, alur pindah setelah selesai", () => {
+    expect(planTurn(3, -1, 1)).toMatchObject({ front: 2, back: null, flowJumps: "end" });
+  });
+  it("dua halaman maju: kanan berputar ke kiri, punggungnya halaman kiri berikutnya", () => {
+    expect(planTurn(1, 1, 2)).toEqual({
+      leafSlot: 1,
+      front: 3,
+      back: 4,
+      pin: { slot: 0, page: 2 },
+      flowJumps: "start",
+    });
+  });
+  it("dua halaman mundur: kiri berputar kembali ke kanan", () => {
+    expect(planTurn(2, -1, 2)).toEqual({
+      leafSlot: 1,
+      front: 3,
+      back: 4,
+      pin: { slot: 1, page: 5 },
+      flowJumps: "start",
+    });
+  });
+  it("sudut lembar", () => {
+    expect(leafAngle(1, 0)).toBe(-0);
+    expect(leafAngle(1, 0.5)).toBeCloseTo(-90);
+    expect(leafAngle(1, 0.25)).toBeCloseTo(-60);
+    expect(leafAngle(1, 2)).toBe(-180);
+    expect(leafAngle(-1, 0)).toBe(-180);
+    expect(leafAngle(-1, 1)).toBe(-0);
   });
 });

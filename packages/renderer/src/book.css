@@ -51,24 +51,80 @@
   line-height: 1.72;
   overflow-wrap: break-word;
 }
-.is-paged > .book-flow {
-  transition: transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1);
-  will-change: transform;
-}
 /* Rata kiri-kanan hanya di layar cukup lebar; di HP justify membuat celah kata terlalu lebar. */
 @media (min-width: 600px) {
-  .is-paged > .book-flow {
+  .is-paged .book-flow {
     text-align: justify;
     hyphens: auto;
   }
 }
-.is-paged > .book-flow.is-dragging {
-  transition: none;
+
+/* Lembar kertas yang sedang dibalik (dibuat createPager). */
+.book-leaf,
+.book-pin,
+.book-cast {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
 }
-@media (prefers-reduced-motion: reduce) {
-  .is-paged > .book-flow {
-    transition: none;
-  }
+.book-pin {
+  z-index: 1;
+  overflow: hidden;
+  background: var(--book-bg);
+}
+.book-cast {
+  z-index: 1;
+  background: linear-gradient(90deg, rgb(0 0 0 / 22%), rgb(0 0 0 / 6%) 35%, transparent 70%);
+  opacity: 0;
+}
+.book-leaf {
+  z-index: 2;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+.book-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--book-bg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.book-face-back {
+  transform: rotateY(180deg);
+}
+.book-face > .book-flow,
+.book-pin > .book-flow {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* Cahaya & lengkung kertas: gelap di dekat tulang buku, terang di tepi yang terangkat. */
+.book-shade {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 26%),
+    rgb(0 0 0 / 6%) 18%,
+    transparent 45%,
+    rgb(255 255 255 / 14%) 82%,
+    rgb(0 0 0 / 10%)
+  );
+}
+.book-shade-back {
+  background: linear-gradient(
+    270deg,
+    rgb(0 0 0 / 24%),
+    rgb(0 0 0 / 5%) 20%,
+    transparent 50%,
+    rgb(0 0 0 / 8%)
+  );
+}
+.book-viewport.is-spread::after {
+  z-index: 3;
 }
 
 .book-flow .ebook-content {

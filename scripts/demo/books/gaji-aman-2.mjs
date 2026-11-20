@@ -1,0 +1,331 @@
+/**
+ * Ebook demo LENGKAP "Gaji Aman Sampai Akhir Bulan" (bab 6–10). Edukasi umum, bukan nasihat
+ * keuangan pribadi.
+ */
+export const PART_2 = [
+  {
+    title: "Cicilan dan utang: memutus lingkaran",
+    blocks: [
+      "Utang bukan selalu musuh. Cicilan rumah atau kendaraan untuk bekerja bisa menjadi keputusan yang masuk akal. Masalahnya muncul ketika cicilan memakan terlalu besar bagian penghasilan, atau ketika utang dipakai untuk menutup kebutuhan sehari-hari. Di titik itu, utang berhenti menjadi alat dan mulai menjadi beban yang mengatur hidup kita.",
+      ["h", "Batas sehat cicilan"],
+      "Patokan yang banyak dipakai adalah total cicilan tidak lebih dari 30 persen penghasilan bersih. Di atas angka itu, ruang untuk kebutuhan, dana darurat, dan kejadian tak terduga menjadi sangat sempit. Jika cicilanmu saat ini di atas 30 persen, tujuan pertama bab ini adalah menurunkannya, bukan menambah utang baru dalam bentuk apa pun.",
+      [
+        "table",
+        [
+          ["Total cicilan/penghasilan", "Kondisi", "Langkah"],
+          ["0 sampai 20%", "Sehat", "Pertahankan, hindari cicilan konsumtif baru"],
+          ["20 sampai 30%", "Waspada", "Tidak menambah cicilan sampai ada yang lunas"],
+          ["30 sampai 50%", "Berat", "Fokus pelunasan, tunda tujuan lain"],
+          ["Di atas 50%", "Bahaya", "Hentikan utang baru, cari bantuan restrukturisasi"],
+        ],
+      ],
+      ["h", "Mengenali utang konsumtif yang paling mahal"],
+      "Tidak semua utang sama mahalnya. Paylater dan kartu kredit sering terlihat ringan karena cicilannya kecil, tetapi bunga, biaya keterlambatan, dan biaya layanan bisa membuat total yang dibayar jauh lebih besar dari harga barangnya. Kebiasaan membayar minimum kartu kredit adalah salah satu cara tercepat terjebak utang bertahun-tahun.",
+      "Penting juga diingat: riwayat pembayaran paylater dan kartu kredit tercatat di Sistem Layanan Informasi Keuangan (SLIK) OJK. Keterlambatan kecil yang berulang bisa memengaruhi pengajuan KPR atau pinjaman lain di masa depan.",
+      [
+        "warn",
+        "Hindari pinjaman online ilegal. Sebelum meminjam, pastikan penyelenggaranya terdaftar dan berizin OJK. Daftar resminya bisa dicek di situs OJK atau melalui Kontak OJK 157. Pinjaman ilegal sering disertai bunga tidak wajar dan cara penagihan yang melanggar hukum.",
+      ],
+      ["h", "Langkah 1: daftar semua utang"],
+      "Seperti di Bab 2, kita mulai dari data yang jujur. Tulis semua utang dalam satu tabel: nama, sisa pokok, cicilan per bulan, bunga atau biaya, dan tanggal jatuh tempo. Termasuk utang ke keluarga atau teman.",
+      [
+        "table",
+        [
+          ["Utang", "Sisa", "Cicilan/bulan", "Biaya"],
+          ["Paylater A", "Rp1.800.000", "Rp320.000", "Tinggi"],
+          ["Kartu kredit", "Rp4.500.000", "Rp450.000 (minimum)", "Tinggi"],
+          ["Cicilan motor", "Rp9.600.000", "Rp800.000", "Sedang"],
+          ["Pinjam kakak", "Rp2.000.000", "Fleksibel", "Tanpa bunga"],
+        ],
+      ],
+      "Melihat semuanya dalam satu tabel sering menimbulkan dua perasaan sekaligus: kaget dan lega. Kaget karena totalnya, lega karena akhirnya terlihat utuh dan bisa direncanakan.",
+      ["h", "Langkah 2: pilih strategi pelunasan"],
+      "Setelah semua cicilan minimum dibayar, sisihkan jumlah tambahan setiap bulan untuk mempercepat pelunasan satu utang. Ada dua strategi yang terkenal, dan keduanya berhasil jika dijalankan konsisten.",
+      ["h3", "Metode longsoran (avalanche)"],
+      "Uang tambahan diarahkan ke utang dengan biaya atau bunga tertinggi lebih dulu, sambil membayar minimum utang lainnya. Secara matematis, ini cara paling hemat karena mengurangi total bunga yang dibayar.",
+      ["h3", "Metode bola salju (snowball)"],
+      "Uang tambahan diarahkan ke utang dengan sisa terkecil lebih dulu. Begitu lunas, cicilannya digulirkan ke utang terkecil berikutnya. Secara matematis sedikit lebih mahal, tetapi kemenangan cepat memberi semangat untuk terus berjalan.",
+      [
+        "tip",
+        "Jika kamu mudah kehilangan semangat, mulai dengan bola salju. Jika kamu termotivasi oleh angka, pilih longsoran. Strategi terbaik adalah yang kamu jalankan sampai selesai.",
+      ],
+      ["h", "Langkah 3: bekukan utang baru"],
+      "Selama masa pelunasan, berhenti menambah utang konsumtif. Praktiknya:",
+      [
+        "ul",
+        [
+          "Nonaktifkan atau hapus fitur paylater dari aplikasi belanja.",
+          "Simpan kartu kredit di rumah, jangan di dompet, atau turunkan limitnya.",
+          "Hapus data kartu yang tersimpan di aplikasi belanja dan pesan antar.",
+          "Terapkan aturan tunggu 48 jam untuk pembelian di atas Rp300.000.",
+        ],
+      ],
+      ["h", "Jika cicilan sudah tidak tertanggung"],
+      "Jika total cicilan sudah melebihi kemampuan bayar, jangan menghindar dan jangan menambal utang dengan utang baru. Hubungi pemberi pinjaman sebelum terlambat dan tanyakan kemungkinan restrukturisasi, misalnya perpanjangan tenor atau keringanan sementara. Lembaga keuangan resmi umumnya lebih terbuka bernegosiasi dengan nasabah yang datang lebih awal daripada yang sudah menunggak berbulan-bulan.",
+      "Bicarakan juga dengan keluarga yang kamu percaya. Utang sering membuat orang malu dan menyembunyikannya, padahal dukungan dan masukan dari orang terdekat bisa membantu menemukan jalan keluar yang tidak terlihat saat kita sendirian.",
+      [
+        "quote",
+        "Setiap cicilan yang lunas adalah kenaikan gaji yang kamu berikan kepada dirimu sendiri.",
+      ],
+      ["h3", "Tugas Bab 6"],
+      [
+        "ol",
+        [
+          "Daftar semua utang dalam satu tabel.",
+          "Hitung rasio total cicilan terhadap penghasilan bersih.",
+          "Pilih strategi longsoran atau bola salju dan tentukan utang target pertama.",
+          "Nonaktifkan paylater dan hapus kartu yang tersimpan di aplikasi belanja.",
+        ],
+      ],
+    ],
+  },
+  {
+    title: "Kebocoran halus: godaan, gengsi, dan keluarga",
+    blocks: [
+      "Sampai di sini, kita sudah punya data, anggaran, sistem rekening, dana darurat, dan rencana utang. Secara teknis, semuanya lengkap. Namun banyak rencana keuangan yang rapi tetap gagal karena satu hal yang jarang dibahas di buku: perasaan. Bab ini membahas kebocoran yang tidak terlihat di tabel, tetapi sangat terasa di saldo.",
+      ["h", "Belanja karena perasaan"],
+      "Kita jarang belanja hanya karena butuh. Kita belanja karena lelah setelah lembur, karena bosan di Minggu sore, karena merasa pantas setelah minggu yang berat, atau karena teman baru saja memamerkan barang yang sama. Aplikasi belanja dirancang memahami ini dengan sangat baik: notifikasi di jam pulang kerja, hitung mundur flash sale, gratis ongkir dengan minimum belanja.",
+      'Langkah pertama bukan melawan perasaan itu, tetapi menyadarinya. Sebelum membayar, tanyakan pada diri sendiri: "Apa yang sebenarnya sedang aku rasakan sekarang?" Pertanyaan sederhana ini sering cukup untuk memberi jeda.',
+      ["h3", "Aturan sederhana yang terbukti membantu"],
+      [
+        "ul",
+        [
+          "**Aturan 48 jam:** masukkan ke keranjang, tunggu dua hari. Jika masih ingin dan masih sesuai anggaran, beli.",
+          "**Matikan notifikasi promosi** dari semua aplikasi belanja. Kamu tetap bisa membuka aplikasinya kapan pun kamu mau.",
+          "**Hitung dalam jam kerja:** barang Rp600.000 dengan penghasilan Rp40.000 per jam berarti 15 jam kerja. Apakah barang ini sepadan?",
+          "**Ganti pemicu:** jika belanja adalah cara melepas lelah, siapkan alternatif murah seperti jalan sore, mandi air hangat, atau menelepon teman.",
+        ],
+      ],
+      ["h", "Gengsi dan perbandingan"],
+      "Media sosial membuat kita membandingkan diri dengan potongan terbaik hidup orang lain. Liburan teman, kendaraan baru rekan kerja, renovasi rumah kenalan. Yang tidak terlihat adalah cicilan di baliknya, utang yang menumpuk, atau tabungan yang terkuras. Kita membandingkan bagian dalam hidup kita dengan bagian luar hidup orang lain.",
+      "Cara paling efektif mengurangi tekanan ini adalah memiliki tujuan sendiri yang jelas. Ketika kamu tahu sedang menabung untuk uang muka rumah atau untuk berhenti berutang, keputusan menolak ajakan nongkrong yang mahal terasa sebagai pilihan, bukan pengorbanan.",
+      [
+        "tip",
+        'Kamu boleh berkata, "Bulan ini aku lagi fokus nabung, ikut lain kali ya." Teman yang baik akan mengerti. Sebagian bahkan diam-diam merasa lega karena mereka juga ingin berhemat.',
+      ],
+      ["h", "Kewajiban sosial yang tidak bisa dihindari"],
+      "Kondangan, arisan, sumbangan duka, oleh-oleh mudik, hadiah ulang tahun keponakan. Di Indonesia, ini bagian dari hidup bermasyarakat dan bukan pemborosan. Yang membuatnya terasa berat adalah datang tanpa rencana. Solusinya sudah kita bahas: beri pos tetap di anggaran. Jika pos bulan ini habis, gunakan cara lain yang tetap menghormati, misalnya hadir tanpa amplop besar atau memberi hadiah buatan sendiri.",
+      ["h", "Generasi sandwich: menanggung dua arah"],
+      "Banyak dari kita menanggung orang tua sekaligus anak sendiri. Ini adalah bentuk bakti yang mulia, sekaligus beban keuangan yang nyata. Beberapa prinsip yang membantu:",
+      [
+        "ol",
+        [
+          "**Tetapkan angka kiriman tetap** untuk orang tua, bukan berubah-ubah sesuai permintaan. Angka tetap lebih mudah dianggarkan dan lebih mudah dikomunikasikan.",
+          "**Bicarakan terbuka** dengan saudara kandung tentang pembagian tanggung jawab, supaya tidak hanya satu orang yang memikul semuanya.",
+          "**Lindungi dana daruratmu sendiri.** Membantu keluarga tidak berarti mengorbankan seluruh bantalanmu. Jika kamu jatuh, kamu tidak bisa lagi membantu siapa pun.",
+          "**Pikirkan perlindungan kesehatan** untuk orang tua, misalnya memastikan kepesertaan BPJS Kesehatan tetap aktif, karena biaya sakit adalah salah satu pengeluaran darurat terbesar.",
+        ],
+      ],
+      "Percakapan tentang uang dengan keluarga sering canggung. Mulailah dari niat baik: kamu ingin bisa terus membantu dalam jangka panjang, dan untuk itu perlu rencana. Kebanyakan orang tua lebih tenang mengetahui anaknya punya rencana daripada melihat anaknya diam-diam kesulitan.",
+      ["h", "Inflasi gaya hidup saat penghasilan naik"],
+      "Ketika gaji naik, buat keputusan sebelum uangnya datang. Aturan sederhana yang banyak dipakai: separuh kenaikan untuk masa depan, separuh untuk menikmati hidup. Dengan cara ini, kamu tetap merasakan hasil kerja keras, sementara posisi keuanganmu ikut membaik setiap kali penghasilan bertambah.",
+      ["h3", "Tugas Bab 7"],
+      [
+        "ol",
+        [
+          "Matikan notifikasi promosi di semua aplikasi belanja hari ini.",
+          "Tulis tiga pemicu belanja emosionalmu dan satu alternatif murah untuk masing-masing.",
+          "Tetapkan angka pos sosial dan kiriman keluarga per bulan.",
+          "Tentukan aturan pembagian kenaikan penghasilanmu berikutnya.",
+        ],
+      ],
+    ],
+  },
+  {
+    title: "Menabung untuk tujuan dan mengenal investasi dasar",
+    blocks: [
+      "Menabung tanpa tujuan seperti berlari tanpa garis akhir: melelahkan dan mudah berhenti. Bab ini membantu mengubah pos masa depan menjadi tujuan-tujuan nyata, lalu mengenalkan instrumen investasi dasar yang umum dipakai untuk tujuan jangka menengah dan panjang.",
+      ["h", "Tiga jangka waktu tujuan"],
+      [
+        "table",
+        [
+          ["Jangka", "Contoh", "Tempat yang umum dipakai"],
+          ["Pendek, di bawah 1 tahun", "Mudik, gawai kerja, kursus", "Tabungan terpisah, deposito"],
+          [
+            "Menengah, 1 sampai 5 tahun",
+            "Menikah, uang muka rumah, kendaraan",
+            "Reksa dana pasar uang atau pendapatan tetap, SBN ritel",
+          ],
+          [
+            "Panjang, di atas 5 tahun",
+            "Pendidikan anak, pensiun",
+            "Reksa dana campuran atau saham, saham secara bertahap",
+          ],
+        ],
+      ],
+      "Prinsip dasarnya: semakin dekat waktu uang dibutuhkan, semakin rendah risiko yang boleh diambil. Uang untuk mudik bulan depan tidak boleh diletakkan di instrumen yang nilainya bisa turun 20 persen minggu depan.",
+      ["h", "Menulis tujuan dengan benar"],
+      'Tujuan yang baik punya tiga unsur: apa, berapa, dan kapan. "Ingin punya rumah" adalah keinginan. "Uang muka rumah Rp60.000.000 dalam 4 tahun" adalah tujuan. Dari tujuan ini kita bisa menghitung: Rp60.000.000 dibagi 48 bulan sama dengan Rp1.250.000 per bulan, sebelum memperhitungkan imbal hasil.',
+      [
+        "tip",
+        "Tempel tujuanmu di tempat yang terlihat, misalnya sebagai nama rekening atau wallpaper ponsel. Tujuan yang terlihat setiap hari lebih sulit dikorbankan untuk belanja impulsif.",
+      ],
+      ["h", "Mengenal instrumen dasar"],
+      "Berikut gambaran umum beberapa instrumen yang mudah diakses di Indonesia. Ini bukan rekomendasi produk tertentu, melainkan peta untuk memulai belajar.",
+      ["h3", "Reksa dana"],
+      "Reksa dana mengumpulkan dana banyak orang lalu dikelola oleh manajer investasi. Ada beberapa jenis dengan risiko berbeda: pasar uang (risiko paling rendah), pendapatan tetap, campuran, dan saham (risiko paling tinggi dengan potensi imbal hasil jangka panjang lebih besar). Banyak aplikasi memungkinkan pembelian mulai dari puluhan ribu rupiah.",
+      ["h3", "Surat Berharga Negara ritel"],
+      "SBN ritel adalah surat utang yang diterbitkan pemerintah untuk perorangan, seperti ORI, SBR, Sukuk Ritel, dan Sukuk Tabungan. Pembelian biasanya mulai dari Rp1.000.000 melalui mitra distribusi resmi, pada masa penawaran tertentu. Pembayaran kupon dan pokoknya dijamin oleh negara sesuai ketentuan undang-undang.",
+      ["h3", "Saham"],
+      "Membeli saham berarti memiliki sebagian kecil perusahaan. Nilainya bisa naik dan turun tajam dalam waktu singkat, sehingga lebih cocok untuk tujuan jangka panjang dan untuk orang yang sudah memiliki dana darurat serta memahami risikonya.",
+      ["h3", "Emas"],
+      "Emas sering dipakai sebagai pelindung nilai jangka panjang. Perhatikan selisih harga beli dan jual yang bisa cukup besar, sehingga emas kurang cocok untuk tujuan jangka pendek.",
+      [
+        "warn",
+        "Waspadai tawaran investasi yang menjanjikan imbal hasil tinggi, pasti, dan cepat, apalagi jika disertai ajakan merekrut orang lain. Pastikan produk dan perusahaannya terdaftar di OJK. Prinsip lama tetap berlaku: legal dan logis. Jika terdengar terlalu bagus untuk menjadi kenyataan, kemungkinan besar memang tidak nyata.",
+      ],
+      ["h", "Urutan yang sehat"],
+      "Banyak orang ingin langsung berinvestasi karena terdengar menarik. Urutan yang lebih aman adalah:",
+      [
+        "ol",
+        [
+          "Anggaran berjalan dan pengeluaran di bawah penghasilan.",
+          "Dana darurat tahap 1 terbentuk.",
+          "Utang konsumtif berbunga tinggi lunas atau sedang dilunasi agresif.",
+          "Dana darurat menuju target penuh, sambil mulai berinvestasi kecil secara rutin.",
+          "Investasi untuk tujuan jangka menengah dan panjang ditingkatkan bertahap.",
+        ],
+      ],
+      "Berinvestasi sambil membayar bunga paylater atau kartu kredit yang tinggi ibarat mengisi ember yang bocor. Tutup dulu kebocorannya.",
+      ["h", "Rutin lebih penting dari waktu yang tepat"],
+      "Salah satu kebiasaan paling efektif untuk investor pemula adalah membeli dengan jumlah tetap setiap bulan, tanpa mencoba menebak kapan harga terendah. Cara ini membuat kita membeli lebih banyak unit ketika harga turun dan lebih sedikit ketika harga naik, serta menghilangkan godaan untuk terus memantau pasar setiap hari.",
+      ["h3", "Tugas Bab 8"],
+      [
+        "ol",
+        [
+          "Tulis tiga tujuan keuangan dengan format apa, berapa, dan kapan.",
+          "Hitung setoran bulanan untuk masing-masing tujuan.",
+          "Tentukan jangka waktu setiap tujuan dan tempat penyimpanan yang sesuai.",
+          "Jika dana darurat tahap 1 sudah ada, pelajari satu instrumen dari bab ini lebih dalam minggu ini.",
+        ],
+      ],
+    ],
+  },
+  {
+    title: "Ritme bulanan: 30 menit yang menjaga semuanya",
+    blocks: [
+      "Sistem keuangan yang baik tidak membutuhkan perhatian setiap hari, tetapi membutuhkan perhatian rutin. Tanpa peninjauan, anggaran pelan-pelan melenceng, langganan baru bertambah, dan tujuan terlupakan. Bab ini memberikan ritme sederhana: lima menit setiap minggu dan tiga puluh menit setiap bulan.",
+      ["h", "Cek mingguan: lima menit"],
+      "Pilih satu waktu tetap, misalnya Minggu malam. Buka rekening harian dan jawab tiga pertanyaan:",
+      [
+        "ol",
+        [
+          "Berapa sisa jatah minggu ini, dan apakah aku di jalur yang benar?",
+          "Apakah ada pengeluaran yang mengejutkan minggu ini?",
+          "Apakah ada pengeluaran besar yang akan datang minggu depan?",
+        ],
+      ],
+      "Lima menit ini mencegah kejutan di akhir bulan. Jika minggu ini berlebih, kamu masih punya tiga minggu untuk menyesuaikan, bukan tiga hari.",
+      ["h", "Tinjauan bulanan: tiga puluh menit"],
+      "Lakukan sehari atau dua hari sebelum gajian. Siapkan catatan atau lembar anggaranmu, lalu ikuti urutan berikut.",
+      [
+        "table",
+        [
+          ["Menit", "Kegiatan"],
+          [
+            "0 sampai 10",
+            "Bandingkan anggaran dengan realisasi setiap pos. Tandai yang melebihi 10 persen.",
+          ],
+          ["10 sampai 15", "Cari penyebab pos yang melebihi anggaran. Kejadian sekali atau pola?"],
+          ["15 sampai 20", "Cek kemajuan dana darurat, utang, dan tujuan. Catat angkanya."],
+          ["20 sampai 25", "Sesuaikan anggaran bulan depan berdasarkan temuan."],
+          ["25 sampai 30", "Pastikan transfer otomatis dan autodebet bulan depan sudah benar."],
+        ],
+      ],
+      [
+        "tip",
+        "Lakukan tinjauan bulanan bersama pasangan jika sudah berkeluarga. Jadikan suasananya santai, misalnya sambil minum teh setelah anak tidur. Tujuannya menyamakan arah, bukan mencari siapa yang salah.",
+      ],
+      ["h", "Ketika rencana meleset"],
+      "Akan ada bulan yang berantakan. Ada pernikahan sahabat, ada servis kendaraan yang lebih mahal dari perkiraan, ada bulan ketika kamu sedang tidak ingin peduli. Itu normal. Yang membedakan orang yang berhasil bukanlah bulan tanpa kesalahan, melainkan kemampuan kembali ke jalur di bulan berikutnya.",
+      'Ketika rencana meleset, hindari dua reaksi ekstrem: menyerah sepenuhnya ("sudahlah, percuma") atau menghukum diri dengan anggaran super ketat bulan depan. Keduanya membuat sistem runtuh. Cukup catat apa yang terjadi, sesuaikan sedikit, dan lanjutkan.',
+      [
+        "quote",
+        "Satu bulan yang buruk tidak menghapus kemajuan berbulan-bulan. Yang menghapusnya adalah berhenti.",
+      ],
+      ["h", "Indikator bahwa kamu di jalur yang benar"],
+      "Setelah tiga bulan menjalankan sistem ini, perhatikan tanda-tanda berikut:",
+      [
+        "ul",
+        [
+          "Saldo di tanggal 25 tidak lagi membuat cemas.",
+          "Pengeluaran tidak rutin seperti servis atau mudik tidak lagi mengganggu anggaran bulanan.",
+          "Dana darurat tahap 1 sudah terbentuk atau hampir terbentuk.",
+          "Tidak ada utang konsumtif baru yang ditambahkan.",
+          "Kamu tahu, tanpa melihat aplikasi, kira-kira berapa sisa jatahmu minggu ini.",
+        ],
+      ],
+      "Jika tiga atau lebih tanda ini sudah terlihat, selamat. Kamu sudah melewati bagian tersulit: membangun sistem dan kebiasaan. Dari sini, perbaikan berikutnya akan terasa jauh lebih ringan.",
+      ["h3", "Tugas Bab 9"],
+      [
+        "ol",
+        [
+          "Tentukan waktu tetap untuk cek mingguan dan pasang pengingat berulang.",
+          "Jadwalkan tinjauan bulanan dua hari sebelum gajian.",
+          "Siapkan lembar tinjauan sederhana berisi tabel 30 menit di atas.",
+        ],
+      ],
+    ],
+  },
+  {
+    title: "Rencana 90 hari: dari membaca ke menjalankan",
+    blocks: [
+      "Kamu sudah sampai di bab terakhir. Jika kamu mengerjakan tugas setiap bab, sebagian besar fondasi sudah berdiri. Jika belum, tidak apa-apa. Bab ini merangkum semuanya menjadi rencana 90 hari yang bisa diikuti langkah demi langkah, dimulai besok pagi.",
+      ["h", "Bulan pertama: melihat dan menata"],
+      [
+        "ol",
+        [
+          "**Minggu 1:** hitung penghasilan bersih, audit tiga bulan transaksi, dan pilih cara mencatat (Bab 2).",
+          "**Minggu 2:** susun anggaran dengan proporsi yang realistis, termasuk pos tidak rutin, sosial, dan uang saku (Bab 3).",
+          "**Minggu 3:** siapkan struktur empat rekening dan transfer otomatis di hari gajian (Bab 4).",
+          "**Minggu 4:** daftar semua utang, pilih strategi pelunasan, nonaktifkan paylater (Bab 6).",
+        ],
+      ],
+      ["h", "Bulan kedua: menjalankan dan menyesuaikan"],
+      [
+        "ol",
+        [
+          "Jalankan anggaran penuh dengan transfer mingguan ke rekening harian.",
+          "Lakukan cek mingguan lima menit setiap Minggu malam.",
+          "Mulai mengisi dana darurat tahap 1 (Bab 5).",
+          "Terapkan aturan 48 jam dan matikan notifikasi promosi (Bab 7).",
+          "Lakukan tinjauan bulanan pertama di akhir bulan (Bab 9).",
+        ],
+      ],
+      ["h", "Bulan ketiga: menguatkan kebiasaan"],
+      [
+        "ol",
+        [
+          "Turunkan satu pos pengeluaran lagi berdasarkan hasil tinjauan.",
+          "Tulis tiga tujuan keuangan lengkap dengan angka dan tenggat (Bab 8).",
+          "Rayakan utang pertama yang lunas atau dana darurat tahap 1 yang tercapai.",
+          "Bandingkan potret keuangan hari ke-90 dengan potret di Bab 2.",
+        ],
+      ],
+      ["h", "Lembar perbandingan hari ke-1 dan hari ke-90"],
+      [
+        "table",
+        [
+          ["Ukuran", "Hari ke-1", "Hari ke-90"],
+          ["Total pengeluaran/penghasilan", "…%", "…%"],
+          ["Rasio cicilan", "…%", "…%"],
+          ["Dana darurat", "Rp…", "Rp…"],
+          ["Tabungan tujuan", "Rp…", "Rp…"],
+          ['Tanggal saldo mulai "tipis"', "…", "…"],
+        ],
+      ],
+      "Isi kolom hari ke-1 hari ini juga. Di hari ke-90, isi kolom kedua. Perbedaan dua kolom ini adalah bukti nyata bahwa perubahan kecil yang konsisten menghasilkan dampak besar.",
+      ["h", "Pesan penutup"],
+      "Mengatur keuangan bukan tentang menjadi orang yang paling hemat, dan bukan tentang menolak semua kesenangan. Ini tentang memastikan uang yang kamu dapat dengan kerja keras benar-benar bekerja untuk hal-hal yang penting bagimu: ketenangan hari ini, keluarga yang kamu sayangi, dan masa depan yang kamu bayangkan.",
+      "Kamu tidak perlu sempurna. Kamu hanya perlu mulai, lalu kembali setiap kali tergelincir. Gaji yang aman sampai akhir bulan bukan hasil dari satu keputusan besar, melainkan dari ratusan keputusan kecil yang searah.",
+      [
+        "quote",
+        "Mulai dari yang kecil, lakukan dengan rutin, dan beri dirimu waktu. Tiga bulan dari sekarang, kamu akan berterima kasih pada dirimu hari ini.",
+      ],
+      [
+        "info",
+        "Simpan buku ini dan buka kembali Bab 9 setiap kali kamu melakukan tinjauan bulanan. Kebiasaan meninjau adalah bagian yang paling sering dilupakan, dan justru yang paling menentukan.",
+      ],
+    ],
+  },
+];
