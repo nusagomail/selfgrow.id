@@ -36,6 +36,20 @@
       "when": 1795147488606,
       "tag": "0004_user_watermarks",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1795168259756,
+      "tag": "0005_category_hook",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1795168260380,
+      "tag": "0006_seed_categories",
+      "breakpoints": true
     }
   ]
 }

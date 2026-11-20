@@ -87,6 +87,35 @@ export const studio = new Hono<AppEnv>()
     return c.json({ id }, 201);
   })
 
+  /** Pohon kategori → topik untuk pemilih topik di Studio. */
+  .get("/categories", async (c) => {
+    const rows = await c.var.db
+      .select({
+        id: schema.categories.id,
+        parentId: schema.categories.parentId,
+        name: schema.categories.name,
+      })
+      .from(schema.categories)
+      .orderBy(asc(schema.categories.order));
+    const roots = rows.filter((r) => !r.parentId);
+    return c.json({
+      categories: roots.map((r) => ({
+        id: r.id,
+        name: r.name,
+        topics: rows.filter((t) => t.parentId === r.id).map((t) => ({ id: t.id, name: t.name })),
+      })),
+    });
+  })
+
+  .get("/content/:id/category", async (c) => {
+    const item = await c.var.db.query.contentItems.findFirst({
+      where: eq(schema.contentItems.id, c.req.param("id")),
+      columns: { categoryId: true },
+    });
+    if (!item) return c.json({ error: "not_found" }, 404);
+    return c.json({ categoryId: item.categoryId });
+  })
+
   .get("/content/:id", async (c) => {
     const id = c.req.param("id");
     const item = await c.var.db.query.contentItems.findFirst({
@@ -118,6 +147,15 @@ export const studio = new Hono<AppEnv>()
       where: eq(schema.contentItems.id, id),
     });
     if (!before) return c.json({ error: "not_found" }, 404);
+
+    // Konten hanya boleh ditempatkan di topik (kategori yang punya induk), bukan kategori induk.
+    if (body.categoryId) {
+      const topic = await c.var.db.query.categories.findFirst({
+        where: eq(schema.categories.id, body.categoryId),
+        columns: { parentId: true },
+      });
+      if (!topic?.parentId) return c.json({ error: "invalid_category" }, 400);
+    }
 
     if (body.slug && body.slug !== before.slug) {
       const taken = await c.var.db.query.contentItems.findFirst({
