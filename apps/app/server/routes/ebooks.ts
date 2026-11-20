@@ -3,6 +3,7 @@ import { bookmarkBodySchema, progressBodySchema, watermarkDoc } from "@selfgrow/
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { FREE_TIER, requireAuth } from "../middleware/guards";
+import { coverPath } from "../services/covers";
 import { ebookKeys, readDoc } from "../services/ebook-storage";
 import { getAccessStatus } from "../services/entitlements";
 import {
@@ -70,7 +71,13 @@ export const ebooks = new Hono<AppEnv>()
     ]);
 
     return c.json({
-      ebook: { id: ebook.id, slug: ebook.slug, title: ebook.title, summary: ebook.summary },
+      ebook: {
+        id: ebook.id,
+        slug: ebook.slug,
+        title: ebook.title,
+        summary: ebook.summary,
+        coverUrl: coverPath(ebook.coverAssetId),
+      },
       chapters: chapters.map((ch) => ({
         ...ch,
         locked: !sub.active && ebook.tier !== FREE_TIER && !ch.isFreePreview,
