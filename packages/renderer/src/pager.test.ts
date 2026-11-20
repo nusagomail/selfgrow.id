@@ -4,7 +4,6 @@ import {
   foldGeometry,
   fractionOf,
   layoutFor,
-  leafAngle,
   pagesFor,
   planTurn,
   screenAtFraction,
