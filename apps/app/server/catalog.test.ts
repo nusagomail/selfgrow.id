@@ -98,7 +98,7 @@ describe("katalog publik", () => {
       topic: "utang-pinjol-paylater",
     });
     expect(Object.keys(item ?? {}).sort()).toEqual(
-      ["access", "publishedAt", "slug", "summary", "title", "topic", "type"].sort(),
+      ["access", "coverUrl", "publishedAt", "slug", "summary", "title", "topic", "type"].sort(),
     );
 
     const list = (await (await call("/api/v1/catalog/categories")).json()) as { categories: Cat[] };

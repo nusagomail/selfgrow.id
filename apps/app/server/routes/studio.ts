@@ -15,6 +15,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireAccess, requireAdmin } from "../middleware/guards";
 import { writeAudit } from "../services/audit";
+import { COVER_MAX_BYTES, coverKey, coverPath, sniffImage } from "../services/covers";
 import {
   ebookKeys,
   readDoc,
@@ -110,10 +111,72 @@ export const studio = new Hono<AppEnv>()
   .get("/content/:id/category", async (c) => {
     const item = await c.var.db.query.contentItems.findFirst({
       where: eq(schema.contentItems.id, c.req.param("id")),
-      columns: { categoryId: true, tier: true },
+      columns: { categoryId: true, tier: true, coverAssetId: true },
     });
     if (!item) return c.json({ error: "not_found" }, 404);
-    return c.json({ categoryId: item.categoryId, tier: item.tier === "free" ? "free" : "all" });
+    return c.json({
+      categoryId: item.categoryId,
+      tier: item.tier === "free" ? "free" : "all",
+      coverUrl: coverPath(item.coverAssetId),
+    });
+  })
+
+  /** Unggah sampul (body = file gambar PNG/JPEG/WebP, maks 1,5 MB). Menggantikan sampul lama. */
+  .put("/content/:id/cover", async (c) => {
+    const id = c.req.param("id");
+    const item = await c.var.db.query.contentItems.findFirst({
+      where: eq(schema.contentItems.id, id),
+      columns: { id: true, coverAssetId: true },
+    });
+    if (!item) return c.json({ error: "not_found" }, 404);
+    const bytes = new Uint8Array(await c.req.arrayBuffer());
+    if (bytes.length === 0) return c.json({ error: "empty_file" }, 400);
+    if (bytes.length > COVER_MAX_BYTES) return c.json({ error: "file_too_large" }, 413);
+    const mime = sniffImage(bytes);
+    if (!mime) return c.json({ error: "unsupported_image" }, 415);
+
+    const assetId = crypto.randomUUID();
+    const key = coverKey(id, assetId, mime);
+    await c.env.CONTENT.put(key, bytes, { httpMetadata: { contentType: mime } });
+    await c.var.db.batch([
+      c.var.db.insert(schema.assets).values({
+        id: assetId,
+        r2Key: key,
+        mime,
+        size: bytes.length,
+        uploadedBy: c.var.user?.id ?? null,
+      }),
+      c.var.db
+        .update(schema.contentItems)
+        .set({ coverAssetId: assetId, updatedAt: new Date() })
+        .where(eq(schema.contentItems.id, id)),
+    ]);
+    await writeAudit(c, {
+      action: "content.cover",
+      target: `content:${id}`,
+      before: { coverAssetId: item.coverAssetId },
+      after: { coverAssetId: assetId },
+    });
+    return c.json({ coverUrl: coverPath(assetId) });
+  })
+
+  .delete("/content/:id/cover", async (c) => {
+    const id = c.req.param("id");
+    const item = await c.var.db.query.contentItems.findFirst({
+      where: eq(schema.contentItems.id, id),
+      columns: { coverAssetId: true },
+    });
+    if (!item) return c.json({ error: "not_found" }, 404);
+    await c.var.db
+      .update(schema.contentItems)
+      .set({ coverAssetId: null, updatedAt: new Date() })
+      .where(eq(schema.contentItems.id, id));
+    await writeAudit(c, {
+      action: "content.cover.remove",
+      target: `content:${id}`,
+      before: { coverAssetId: item.coverAssetId },
+    });
+    return c.body(null, 204);
   })
 
   .get("/content/:id", async (c) => {

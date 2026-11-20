@@ -1,5 +1,5 @@
 ---
-import { ACCESS_LABEL, type Access, type ContentType, contentPath } from "../lib/api";
+import { ACCESS_LABEL, type Access, type ContentType, contentPath, siteCover } from "../lib/api";
 
 interface Props {
   item: {
@@ -8,10 +8,12 @@ interface Props {
     title: string;
     summary: string | null;
     access: Access;
+    coverUrl?: string | null;
     category?: { slug: string; name: string } | null;
   };
 }
 const { item } = Astro.props;
+const cover = siteCover(item.coverUrl);
 const TYPE_LABEL: Record<ContentType, string> = {
   ebook: "Ebook",
   tool: "Tool",
@@ -21,7 +23,8 @@ const TYPE_LABEL: Record<ContentType, string> = {
 ---
 
 <a href={contentPath(item)} class:list={["item", item.type]}>
-  <span class="thumb" aria-hidden="true">
+  <span class:list={["thumb", { "has-cover": cover }]} aria-hidden="true">
+    {cover && <img src={cover} alt="" width="200" height="300" loading="lazy" decoding="async" />}
     <span class="thumb-type">{TYPE_LABEL[item.type]}</span>
   </span>
   <span class="body">
@@ -82,6 +85,29 @@ const TYPE_LABEL: Record<ContentType, string> = {
     background:
       radial-gradient(120% 120% at 100% 0%, rgb(255 255 255 / 20%), transparent 55%),
       linear-gradient(135deg, #4f347a, #7a5aa8);
+  }
+  .thumb {
+    position: relative;
+    overflow: hidden;
+  }
+  /* Sampul diposisikan absolut di dalam kotak 16:9, supaya tinggi kartu selalu sama. */
+  .thumb img {
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: calc(100% - 24px);
+    width: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 10px 24px rgb(0 0 0 / 35%);
+  }
+  .thumb.has-cover .thumb-type {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
   }
   .thumb-type {
     font-size: 0.75rem;
