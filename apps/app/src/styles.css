@@ -415,3 +415,19 @@ select {
 .ebook-content th p {
   margin: 0;
 }
+
+/* Program */
+.progress {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+.progress > div {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s;
+}
+.program-day.locked {
+  opacity: 0.7;
+}

@@ -62,7 +62,7 @@ export function StudioHome() {
   const [slug, setSlug] = useState("");
   const [slugEdited, setSlugEdited] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [kind, setKind] = useState<"ebook" | "tool" | "template">("ebook");
+  const [kind, setKind] = useState<"ebook" | "tool" | "template" | "program">("ebook");
   const [preset, setPreset] = useState<"budget_503020" | "habit_daily" | "blank">("budget_503020");
   useAdminGuard(err);
 
@@ -83,6 +83,12 @@ export function StudioHome() {
           body: JSON.stringify({ title, slug }),
         });
         navigate({ to: "/studio/ebook/$id", params: { id } });
+      } else if (kind === "program") {
+        const { id } = await api<{ id: string }>("/studio/programs", {
+          method: "POST",
+          body: JSON.stringify({ title, slug, durationDays: 30 }),
+        });
+        navigate({ to: "/studio/program/$id", params: { id } });
       } else if (kind === "template") {
         const { id } = await api<{ id: string }>("/studio/templates", {
           method: "POST",
@@ -126,6 +132,10 @@ export function StudioHome() {
               onChange={() => setKind("template")}
             />
             Template
+          </label>
+          <label className="check">
+            <input type="radio" checked={kind === "program"} onChange={() => setKind("program")} />
+            Program
           </label>
         </div>
         <label className="field">
@@ -195,6 +205,11 @@ export function StudioHome() {
               )}
               {it.type === "template" && (
                 <Link to="/studio/template/$id" params={{ id: it.id }} className="btn">
+                  Edit
+                </Link>
+              )}
+              {it.type === "program" && (
+                <Link to="/studio/program/$id" params={{ id: it.id }} className="btn">
                   Edit
                 </Link>
               )}

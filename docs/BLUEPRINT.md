@@ -46,6 +46,7 @@ Platform web berlangganan Rp100.000/user/bulan untuk menikmati konten buatan pla
 | D24 | Tracker = tool no-code dengan `stores_user_data`. Satu entri per user per tool per tanggal WIB (diisi ulang = diperbarui), boleh mengisi sampai 7 hari ke belakang; streak dihitung ulang dari entri setiap ada perubahan. Riwayat bisa dibaca tanpa langganan aktif, menulis butuh langganan | Streak harus jujur tapi memaafkan lupa isi; data tetap milik user setelah berhenti berlangganan (UU PDP, bagian 5) |
 | D25 | Unduhan template dikirim langsung sebagai respons `POST /v1/templates/:slug/generate` (lampiran, `Cache-Control: private, no-store`), menggantikan token unduh di D18 | Tidak ada file atau URL yang tersimpan di mana pun, jadi lebih ketat daripada token 5 menit dan tanpa pembersihan R2 |
 | D26 | XLSX ditulis sendiri (fflate + XML minimal, semua teks inline string, sanitasi awalan `= + - @`), DOCX memakai `docx`, PDF memakai `pdf-lib` font standar (karakter di luar WinAnsi dibuang). Isi template = JSON editor yang sama dengan ebook; tabel ditambahkan ke skema ebook | Paket `xlsx` di npm berhenti di 0.18.5 dengan celah yang diketahui; satu editor untuk semua konten |
+| D27 | Program bertahap: langkah per hari merujuk bab ebook, tool, template, atau tugas teks. Program hanya bisa terbit bila semua rujukan sudah terbit; hari terbuka menurut kalender WIB sejak mendaftar; isi hari yang belum terbuka tidak dikirim ke klien; penyelesaian per hari di `program_day_completions` | Pelanggan tidak pernah menemukan tautan mati, dan pengalaman "satu langkah per hari" tidak bisa dilompati |
 
 ## 3. Model bisnis & tahapan
 
@@ -497,7 +498,7 @@ Selesai bila: user bisa login, admin bisa masuk Studio, user tanpa langganan dit
 
 - [x] Ebook Studio (Tiptap, bab, versi, preview) + reader di `app` dengan progress dan bookmark
 - [x] Tool Builder no-code (JSON Logic) + registry tool custom + `POST /v1/tools/:id/run`
-- [ ] Template Builder + generator DOCX/PDF/XLSX + kuota unduh, tool tracker dengan data user, program bertahap, streak, dan review mingguan (tool tracker + streak + Template Builder DOCX/PDF/XLSX + kuota unduh selesai)
+- [ ] Template Builder + generator DOCX/PDF/XLSX + kuota unduh, tool tracker dengan data user, program bertahap, streak, dan review mingguan (tool tracker + streak + Template Builder DOCX/PDF/XLSX + kuota unduh + program bertahap selesai; review mingguan menunggu email/WhatsApp di Fase 1C)
 - [ ] Perlindungan ebook: rate limit, deteksi scraping, watermark terlihat + forensik
 
 Selesai bila: pemilik bisa membuat, menerbitkan, dan memperbarui satu ebook, satu tool, dan satu template dari Studio tanpa menyentuh kode.
