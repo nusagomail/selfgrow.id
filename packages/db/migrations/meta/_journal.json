@@ -29,6 +29,13 @@
       "when": 1795144982217,
       "tag": "0003_program_day_completions",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1795147488606,
+      "tag": "0004_user_watermarks",
+      "breakpoints": true
     }
   ]
 }

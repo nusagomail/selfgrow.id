@@ -38,6 +38,7 @@ const toolPage = () => import("./tools/page");
 const templateBuilder = () => import("./studio/template-builder");
 const templatePage = () => import("./templates/page");
 const programBuilder = () => import("./studio/program-builder");
+const studioSecurity = () => import("./studio/security");
 const programPage = () => import("./programs/page");
 
 const routeTree = rootRoute.addChildren([
@@ -63,6 +64,11 @@ const routeTree = rootRoute.addChildren([
     getParentRoute: () => rootRoute,
     path: "/studio",
     component: lazyRouteComponent(studio, "StudioHome"),
+  }),
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/studio/keamanan",
+    component: lazyRouteComponent(studioSecurity, "StudioSecurity"),
   }),
   createRoute({
     getParentRoute: () => rootRoute,

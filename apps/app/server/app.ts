@@ -19,6 +19,7 @@ import { studioTemplates } from "./routes/studio-templates";
 import { studioTools } from "./routes/studio-tools";
 import { templates } from "./routes/templates";
 import { tools } from "./routes/tools";
+import { rateLimit } from "./services/protection";
 
 /**
  * API Hono, berdiri sendiri supaya bisa dipecah jadi Worker terpisah kapan saja (BLUEPRINT bagian 4).
@@ -47,6 +48,7 @@ api.use("*", (c, next) => {
   if (bearerOnly) return next();
   return csrf({ origin: [resolveAppUrl(c.env, c.req.url)] })(c, next);
 });
+api.post("/auth/*", rateLimit("auth"));
 api.on(["GET", "POST"], "/auth/*", (c) => c.var.auth.handler(c.req.raw));
 api.route("/me", me);
 api.route("/library", library);

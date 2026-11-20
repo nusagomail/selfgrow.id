@@ -26,6 +26,14 @@ export interface Env {
   /** File privat: isi bab ebook, template, aset (BLUEPRINT bagian 5). Tidak pernah publik. */
   CONTENT: R2Bucket;
   ASSETS: Fetcher;
+
+  /** Rate limit (jendela 60 detik): per user per kelompok endpoint, dan per IP. */
+  RL_USER: RateLimit;
+  RL_IP: RateLimit;
+  /** Penghitung bab berbeda per jam per user (deteksi scraping, BLUEPRINT bagian 8). */
+  READ_GUARD: DurableObjectNamespace<import("./durable/read-guard").ReadGuard>;
+  /** Ambang bab berbeda per jam sebelum akun dibekukan sementara. Default 60. */
+  SCRAPE_CHAPTERS_PER_HOUR?: string;
 }
 
 export type Auth = ReturnType<typeof createAuth>;

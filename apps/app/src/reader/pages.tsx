@@ -156,6 +156,30 @@ export function EbookToc() {
 }
 
 // ---------------------------------------------------------------------------
+// Watermark terlihat (BLUEPRINT bagian 8): email + kode pelanggan, samar, menutupi layar
+// sehingga ikut terekam di tangkapan layar. Tidak bisa diklik dan diabaikan pembaca layar.
+function Watermark({ label }: { label: string }) {
+  return (
+    <div className="watermark" aria-hidden="true">
+      {Array.from({ length: 24 }, (_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: daftar statis
+        <span key={i}>{label}</span>
+      ))}
+    </div>
+  );
+}
+
+function frozenUntil(err: ApiError): string | null {
+  const until = (err.body as { until?: string } | undefined)?.until;
+  if (!until) return null;
+  return new Intl.DateTimeFormat("id-ID", {
+    timeZone: "Asia/Jakarta",
+    weekday: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(until));
+}
+
 // /baca/$slug/$chapterId  (reader)
 // ---------------------------------------------------------------------------
 
@@ -164,7 +188,11 @@ export function ChapterReader() {
   const s = encodeURIComponent(slug);
   const ch = encodeURIComponent(chapterId);
   const [meta, setMeta] = useState<EbookMeta | null>(null);
-  const [chapter, setChapter] = useState<{ title: string; doc: EbookDoc } | null>(null);
+  const [chapter, setChapter] = useState<{
+    title: string;
+    doc: EbookDoc;
+    watermark: string;
+  } | null>(null);
   const [err, setErr] = useState<unknown>(null);
   const articleRef = useRef<HTMLElement>(null);
   useAuthRedirect(err);
@@ -176,9 +204,11 @@ export function ChapterReader() {
   useEffect(() => {
     setChapter(null);
     setErr(null);
-    api<{ chapter: { title: string }; doc: EbookDoc }>(`/ebooks/${s}/chapters/${ch}`)
+    api<{ chapter: { title: string }; doc: EbookDoc; watermark: { label: string } }>(
+      `/ebooks/${s}/chapters/${ch}`,
+    )
       .then((r) => {
-        setChapter({ title: r.chapter.title, doc: r.doc });
+        setChapter({ title: r.chapter.title, doc: r.doc, watermark: r.watermark.label });
         window.scrollTo(0, 0);
       })
       .catch(setErr);
@@ -234,6 +264,23 @@ export function ChapterReader() {
           <h2>Bab ini untuk pelanggan</h2>
           <p className="muted">Berlangganan untuk membuka semua bab, tools, dan template.</p>
         </div>
+      ) : err instanceof ApiError && err.status === 423 ? (
+        <div className="card stack">
+          <h2>Akses baca dijeda sementara</h2>
+          <p className="muted">
+            Kami mendeteksi pembukaan bab yang sangat cepat dari akun ini, sehingga akses dijeda
+            untuk melindungi konten. Akses terbuka lagi otomatis
+            {frozenUntil(err) ? ` pada ${frozenUntil(err)}` : " dalam beberapa jam"}. Hubungi kami
+            bila ini keliru.
+          </p>
+        </div>
+      ) : err instanceof ApiError && err.status === 429 ? (
+        <div className="card stack">
+          <h2>Pelan-pelan dulu</h2>
+          <p className="muted">
+            Terlalu banyak bab dibuka dalam satu menit. Coba lagi sebentar lagi.
+          </p>
+        </div>
       ) : err ? (
         <p className="error">Bab tidak ditemukan.</p>
       ) : !chapter ? (
@@ -253,6 +300,7 @@ export function ChapterReader() {
         >
           <h1>{chapter.title}</h1>
           <EbookContent doc={chapter.doc} />
+          <Watermark label={chapter.watermark} />
         </article>
       )}
       <nav className="row" aria-label="Navigasi bab" style={{ marginTop: 24 }}>

@@ -113,7 +113,12 @@ export function StudioHome() {
       <p>
         <Link to="/">← Beranda</Link>
       </p>
-      <h1>Studio</h1>
+      <div className="row">
+        <h1>Studio</h1>
+        <Link to="/studio/keamanan" className="btn">
+          Keamanan konten
+        </Link>
+      </div>
       <form className="card stack" onSubmit={create}>
         <h2>Konten baru</h2>
         <div className="row-actions" role="radiogroup" aria-label="Jenis konten">

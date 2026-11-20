@@ -1,10 +1,16 @@
 import { and, asc, desc, eq, schema, sql } from "@selfgrow/db";
-import { bookmarkBodySchema, progressBodySchema } from "@selfgrow/shared";
+import { bookmarkBodySchema, progressBodySchema, watermarkDoc } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireAuth } from "../middleware/guards";
 import { ebookKeys, readDoc } from "../services/ebook-storage";
 import { getSubscriptionStatus } from "../services/entitlements";
+import {
+  getFreeze,
+  getWatermarkCode,
+  recordChapterRead,
+  withinRateLimit,
+} from "../services/protection";
 
 /**
  * Reader ebook (BLUEPRINT bagian 5 & 8). Isi diambil per bab lewat API, tanpa cache publik.
@@ -89,16 +95,35 @@ export const ebooks = new Hono<AppEnv>()
     });
     if (!chapter) return c.json({ error: "not_found" }, 404);
 
+    // Perlindungan (BLUEPRINT bagian 8): akun beku, rate limit, lalu hitung bab per jam.
+    const frozen = await getFreeze(c.env.KV, user.id);
+    if (frozen) return c.json({ error: "account_frozen", until: frozen.until }, 423);
+    if (!(await withinRateLimit(c, "chapter"))) {
+      c.header("Retry-After", "60");
+      return c.json({ error: "rate_limited" }, 429);
+    }
+
     if (!chapter.isFreePreview) {
       const sub = await getSubscriptionStatus(c.env.KV, c.var.db, user.id);
       if (!sub.active) return c.json({ error: "subscription_required" }, 403);
     }
 
-    const doc = await readDoc(c.env.CONTENT, ebookKeys.published(ebook.id, chapter.id));
+    const newlyFrozen = await recordChapterRead(c, user.id, chapter.id);
+    if (newlyFrozen) return c.json({ error: "account_frozen", until: newlyFrozen.until }, 423);
+
+    const [doc, code] = await Promise.all([
+      readDoc(c.env.CONTENT, ebookKeys.published(ebook.id, chapter.id)),
+      getWatermarkCode(c.var.db, user.id),
+    ]);
     if (!doc) return c.json({ error: "not_found" }, 404);
 
     c.header("Cache-Control", "private, no-store");
-    return c.json({ chapter: { id: chapter.id, title: chapter.title, order: chapter.order }, doc });
+    return c.json({
+      chapter: { id: chapter.id, title: chapter.title, order: chapter.order },
+      // Watermark forensik (tak terlihat) + label watermark terlihat untuk halaman baca.
+      doc: watermarkDoc(doc, code),
+      watermark: { label: `${user.email} · ${code}` },
+    });
   })
 
   .put("/:slug/progress", async (c) => {

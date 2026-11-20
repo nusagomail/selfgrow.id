@@ -1,6 +1,8 @@
 import { api } from "./app";
 import type { Env } from "./env";
 
+export { ReadGuard } from "./durable/read-guard";
+
 export default {
   fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);

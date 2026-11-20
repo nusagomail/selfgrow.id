@@ -17,6 +17,8 @@ export default defineConfig(async () => {
             BETTER_AUTH_SECRET: "test-secret-yang-panjang-sekali-untuk-test-saja-123",
             GOOGLE_CLIENT_ID: "test-client-id",
             GOOGLE_CLIENT_SECRET: "test-client-secret",
+            // Ambang scraping kecil agar mudah diuji (produksi default 60 bab/jam).
+            SCRAPE_CHAPTERS_PER_HOUR: "5",
             TEST_MIGRATIONS: migrations,
           },
         },
