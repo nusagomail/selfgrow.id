@@ -86,7 +86,7 @@ EBOOKS.forEach((e, i) => {
   const publishedAt = now - i * 60_000;
   sql.push(
     `INSERT OR IGNORE INTO assets (id, r2_key, mime, size, uploaded_by, created_at) VALUES (${q(coverId)}, ${q(coverKey)}, 'image/jpeg', ${statSync(coverFile).size}, NULL, ${now});`,
-    `INSERT INTO content_items (id, type, slug, title, summary, tier, status, category_id, cover_asset_id, published_at, created_at, updated_at) VALUES (${q(contentId)}, 'ebook', ${q(e.slug)}, ${q(e.title)}, ${q(e.summary)}, 'all', 'published', ${q(e.topic)}, ${q(coverId)}, ${publishedAt}, ${now}, ${now}) ON CONFLICT(id) DO UPDATE SET title = excluded.title, summary = excluded.summary, category_id = excluded.category_id, cover_asset_id = excluded.cover_asset_id, updated_at = excluded.updated_at ON CONFLICT DO NOTHING;`,
+    `INSERT INTO content_items (id, type, slug, title, summary, tier, status, category_id, cover_asset_id, published_at, created_at, updated_at) VALUES (${q(contentId)}, 'ebook', ${q(e.slug)}, ${q(e.title)}, ${q(e.summary)}, 'all', 'published', ${q(e.topic)}, ${q(coverId)}, ${publishedAt}, ${now}, ${now}) ON CONFLICT(id) DO UPDATE SET title = excluded.title, summary = excluded.summary, category_id = excluded.category_id, updated_at = excluded.updated_at ON CONFLICT DO NOTHING;`,
   );
   uploads.push({ key: coverKey, file: coverFile, type: "image/jpeg" });
 

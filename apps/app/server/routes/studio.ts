@@ -15,7 +15,13 @@ import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireAccess, requireAdmin } from "../middleware/guards";
 import { writeAudit } from "../services/audit";
-import { COVER_MAX_BYTES, coverKey, coverPath, sniffImage } from "../services/covers";
+import {
+  COVER_MAX_BYTES,
+  coverKey,
+  coverPath,
+  removeCoverAsset,
+  sniffImage,
+} from "../services/covers";
 import {
   ebookKeys,
   readDoc,
@@ -151,6 +157,7 @@ export const studio = new Hono<AppEnv>()
         .set({ coverAssetId: assetId, updatedAt: new Date() })
         .where(eq(schema.contentItems.id, id)),
     ]);
+    await removeCoverAsset(c.var.db, c.env.CONTENT, item.coverAssetId);
     await writeAudit(c, {
       action: "content.cover",
       target: `content:${id}`,
@@ -171,6 +178,7 @@ export const studio = new Hono<AppEnv>()
       .update(schema.contentItems)
       .set({ coverAssetId: null, updatedAt: new Date() })
       .where(eq(schema.contentItems.id, id));
+    await removeCoverAsset(c.var.db, c.env.CONTENT, item.coverAssetId);
     await writeAudit(c, {
       action: "content.cover.remove",
       target: `content:${id}`,

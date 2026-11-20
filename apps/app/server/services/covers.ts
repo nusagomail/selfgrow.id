@@ -1,3 +1,6 @@
+import { eq, schema } from "@selfgrow/db";
+import type { AppEnv } from "../env";
+
 /**
  * Sampul konten (ebook, tool, template, program). Disimpan privat di R2, metadata di `assets`,
  * dirujuk `content_items.cover_asset_id`. Hanya gambar raster (tanpa SVG, cegah XSS).
@@ -27,6 +30,22 @@ export function sniffImage(bytes: Uint8Array): CoverMime | null {
     return "image/webp";
   }
   return null;
+}
+
+/** Hapus sampul lama (objek R2 + baris assets) setelah diganti/dihapus, agar tidak menumpuk. */
+export async function removeCoverAsset(
+  db: AppEnv["Variables"]["db"],
+  bucket: R2Bucket,
+  assetId: string | null | undefined,
+) {
+  if (!assetId) return;
+  const asset = await db.query.assets.findFirst({
+    where: eq(schema.assets.id, assetId),
+    columns: { r2Key: true },
+  });
+  if (!asset) return;
+  await bucket.delete(asset.r2Key);
+  await db.delete(schema.assets).where(eq(schema.assets.id, assetId));
 }
 
 export const coverKey = (contentId: string, assetId: string, mime: CoverMime) =>

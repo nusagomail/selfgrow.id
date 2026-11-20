@@ -2,6 +2,7 @@
  * Sampul konten: hanya admin yang mengunggah, hanya gambar raster (dicek dari isi file),
  * dan sampul hanya dilayani publik untuk konten yang sudah terbit.
  */
+import { env } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
 import { call, createUser } from "../test/helpers";
 
@@ -66,6 +67,17 @@ describe("sampul", () => {
         .status,
     ).toBe(204);
     expect((await call(coverUrl)).status).toBe(404);
+  });
+
+  it("mengganti sampul menghapus sampul lama dari penyimpanan", async () => {
+    const { admin, id } = await setup();
+    const first = (await (await upload(id, admin.token, PNG)).json()) as { coverUrl: string };
+    const oldId = first.coverUrl.split("/").pop();
+    expect((await upload(id, admin.token, PNG)).status).toBe(200);
+    const row = await env.DB.prepare("SELECT id FROM assets WHERE id = ?").bind(oldId).first();
+    expect(row).toBeNull();
+    const objects = await env.CONTENT.list({ prefix: `covers/${id}/` });
+    expect(objects.objects).toHaveLength(1);
   });
 
   it("menolak file bukan gambar (walau mengaku image/png) dan file terlalu besar", async () => {
