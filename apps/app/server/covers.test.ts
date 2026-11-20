@@ -61,6 +61,13 @@ describe("sampul", () => {
     };
     expect(list.items.find((i) => i.slug === slug)?.coverUrl).toBe(coverUrl);
 
+    // Reader (halaman sampul buku) ikut menerima alamat sampul.
+    const reader = await createUser();
+    const meta = (await (await call(`/api/v1/ebooks/${slug}`, { token: reader.token })).json()) as {
+      ebook: { coverUrl: string | null };
+    };
+    expect(meta.ebook.coverUrl).toBe(coverUrl);
+
     // Hapus sampul: tidak lagi dirujuk & tidak dilayani.
     expect(
       (await call(`/api/v1/studio/content/${id}/cover`, { method: "DELETE", token: admin.token }))

@@ -2,6 +2,7 @@
 import type { EbookDoc } from "@selfgrow/shared";
 import Base from "../layouts/Base.astro";
 import { ACCESS_LABEL, appUrl, type ContentDetail, contentPath, siteCover } from "../lib/api";
+import "@selfgrow/renderer/book.css";
 import Nodes from "./ebook/Nodes.astro";
 
 interface Props {
@@ -117,12 +118,34 @@ const crumbs = {
     <div class="main">
       {preview && (
         <article class="preview">
-          <p class="eyebrow">Bab gratis</p>
-          <h2>{preview.chapter.title}</h2>
-          <div class="ebook-content"><Nodes nodes={preview.doc.content} /></div>
-          <div class="continue">
-            <p><b>Suka bab ini?</b> Lanjutkan ke bab berikutnya di aplikasi.</p>
-            <a href={appLink} class="btn btn-primary">Lanjut membaca</a>
+          <div class="preview-head">
+            <p class="eyebrow">Bab gratis · baca langsung di sini</p>
+            <p class="hint muted" data-paged-only hidden>Geser atau ketuk tepi halaman untuk membalik.</p>
+          </div>
+          {/* Teks lengkap tetap ada di HTML (untuk Google & tanpa JavaScript); skrip di bawah
+              hanya menatanya menjadi halaman buku (D37). */}
+          <div class="book site-book" data-theme="paper" tabindex="0" aria-label={`Bab gratis: ${preview.chapter.title}`}>
+            <div class="book-viewport">
+              <div class="book-flow">
+                <header class="book-chapter-head">
+                  <p class="book-chapter-num">Bab 1</p>
+                  <h2 class="book-chapter-title">{preview.chapter.title}</h2>
+                  <span class="book-ornament"></span>
+                </header>
+                <div class="ebook-content"><Nodes nodes={preview.doc.content} /></div>
+                <section class="book-end">
+                  <p class="book-end-title">Akhir Bab 1</p>
+                  <p>Suka bab ini? Lanjutkan ke bab berikutnya di aplikasi, cukup masuk dengan Google.</p>
+                  <a href={appLink} class="btn btn-primary">Lanjut membaca</a>
+                  <span class="book-marker"></span>
+                </section>
+              </div>
+            </div>
+            <div class="site-book-foot" data-paged-only hidden>
+              <button type="button" class="pg" data-prev aria-label="Halaman sebelumnya">‹</button>
+              <span class="pg-label" aria-live="polite"></span>
+              <button type="button" class="pg" data-next aria-label="Halaman berikutnya">›</button>
+            </div>
           </div>
         </article>
       )}
@@ -165,6 +188,36 @@ const crumbs = {
     </aside>
   </div>
 </Base>
+
+<script>
+  import { createPager } from "@selfgrow/renderer/pager";
+
+  for (const book of document.querySelectorAll<HTMLElement>(".site-book")) {
+    const viewport = book.querySelector<HTMLElement>(".book-viewport");
+    const flow = book.querySelector<HTMLElement>(".book-flow");
+    if (!viewport || !flow) continue;
+    const label = book.querySelector<HTMLElement>(".pg-label");
+    const prevBtn = book.querySelector<HTMLButtonElement>("[data-prev]");
+    const nextBtn = book.querySelector<HTMLButtonElement>("[data-next]");
+    book.classList.add("is-book");
+    for (const el of document.querySelectorAll<HTMLElement>("[data-paged-only]")) el.hidden = false;
+    const pager = createPager(viewport, flow, {
+      keyTarget: book,
+      spreadMinWidth: 820,
+      onChange: (st) => {
+        if (label)
+          label.textContent =
+            st.first === st.last
+              ? `Hal. ${st.first} dari ${st.pages}`
+              : `Hal. ${st.first}–${st.last} dari ${st.pages}`;
+        if (prevBtn) prevBtn.disabled = st.screen === 0;
+        if (nextBtn) nextBtn.disabled = st.screen === st.screens - 1;
+      },
+    });
+    prevBtn?.addEventListener("click", () => pager.prev());
+    nextBtn?.addEventListener("click", () => pager.next());
+  }
+</script>
 
 <style>
   .head {
@@ -311,55 +364,65 @@ const crumbs = {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-width: 68ch;
+    min-width: 0;
   }
-  .ebook-content {
-    font-size: 1.06rem;
-    line-height: 1.8;
+  .preview-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 12px;
   }
-  .ebook-content :global(img) {
-    border-radius: 10px;
+  .hint {
+    font-size: 0.85rem;
   }
-  .ebook-content :global(.callout) {
+  .site-book {
+    border: 1px solid var(--book-line);
+    border-radius: 6px 14px 14px 6px;
+    box-shadow:
+      inset 8px 0 12px -8px rgb(0 0 0 / 18%),
+      0 18px 40px rgb(7 62 31 / 12%);
+    padding: 20px 0 12px;
+    outline-offset: 3px;
+  }
+  .site-book:not(.is-book) .book-flow {
+    padding: 0 clamp(18px, 4vw, 40px);
+  }
+  .site-book.is-book .book-viewport {
+    height: min(72vh, 680px);
+    min-height: 420px;
+  }
+  .site-book-foot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 10px;
+    margin-top: 8px;
+    border-top: 1px solid var(--book-line);
+    color: var(--book-muted);
+    font-size: 0.88rem;
+  }
+  .site-book-foot[hidden] {
+    display: none;
+  }
+  .pg {
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 12px;
-    padding: 12px 16px;
-    background: var(--surface-alt);
-    border-left: 4px solid var(--primary);
-    margin: 16px 0;
+    border: 1px solid var(--book-line);
+    background: transparent;
+    color: var(--book-ink);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
   }
-  .ebook-content :global(.callout-warning) {
-    border-left-color: var(--gold);
+  .pg:disabled {
+    opacity: 0.3;
+    cursor: default;
   }
   .ebook-content :global(.table-wrap) {
     overflow-x: auto;
-  }
-  .ebook-content :global(table) {
-    border-collapse: collapse;
-    width: 100%;
-  }
-  .ebook-content :global(th),
-  .ebook-content :global(td) {
-    border: 1px solid var(--line);
-    padding: 8px 10px;
-    text-align: left;
-  }
-  .ebook-content :global(blockquote) {
-    margin: 16px 0;
-    padding-left: 16px;
-    border-left: 3px solid var(--line);
-    color: var(--muted);
-  }
-  .continue {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 18px;
-    border-radius: var(--radius);
-    background: var(--surface-alt);
-    border: 1px solid var(--line);
-    margin-top: 12px;
   }
   @media (max-width: 900px) {
     .layout {
