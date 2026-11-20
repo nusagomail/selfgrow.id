@@ -1,23 +1,28 @@
 :root {
-  --bg: #f8faf9;
+  /* Warna brand SelfGrow (dari logo) */
+  --brand-dark: #073e1f;
+  --brand-green: #3c9631;
+  --brand-star: #f4ac13;
+
+  --bg: #f7faf6;
   --surface: #ffffff;
-  --text: #0f172a;
-  --muted: #475569;
-  --border: #e2e8f0;
-  --primary: #0f766e;
+  --text: #10241a;
+  --muted: #4b5f53;
+  --border: #dde8e0;
+  --primary: #1d7a34;
   --primary-text: #ffffff;
   --danger: #b91c1c;
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0b1211;
-    --surface: #111b1a;
-    --text: #e2e8f0;
-    --muted: #94a3b8;
-    --border: #1f2d2b;
-    --primary: #2dd4bf;
-    --primary-text: #042f2e;
+    --bg: #08130d;
+    --surface: #0f1d15;
+    --text: #e6efe8;
+    --muted: #9fb3a6;
+    --border: #1e3227;
+    --primary: #5cbf4a;
+    --primary-text: #062a14;
     --danger: #f87171;
   }
 }
@@ -366,4 +371,22 @@ select {
 .chart-label {
   font-size: 9px;
   fill: var(--muted);
+}
+
+/* Header brand */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 16px;
+}
+.topbar a {
+  display: inline-flex;
+}
+.brand-hero {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 8px;
 }

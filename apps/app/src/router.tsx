@@ -2,14 +2,33 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  Link,
   lazyRouteComponent,
   Outlet,
+  useRouterState,
 } from "@tanstack/react-router";
+import { Logo } from "./components/logo";
 import { AccountPage } from "./routes/account";
 import { HomePage } from "./routes/home";
 import { LoginPage } from "./routes/login";
 
-const rootRoute = createRootRoute({ component: () => <Outlet /> });
+function RootLayout() {
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  return (
+    <>
+      {path !== "/masuk" && (
+        <header className="topbar">
+          <Link to="/" aria-label="SelfGrow, ke beranda">
+            <Logo height={32} />
+          </Link>
+        </header>
+      )}
+      <Outlet />
+    </>
+  );
+}
+
+const rootRoute = createRootRoute({ component: RootLayout });
 
 // Studio (Tiptap) dan reader dimuat terpisah supaya bundle awal tetap kecil (BLUEPRINT bagian 10).
 const studio = () => import("./studio/pages");
