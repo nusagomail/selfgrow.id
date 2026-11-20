@@ -3,6 +3,8 @@
  * gratis pertama bisa dibaca tanpa login, konten bertanda gratis terbuka untuk user login tanpa
  * langganan, konten premium tetap terkunci.
  */
+import { env } from "cloudflare:test";
+import { todayWib } from "@selfgrow/shared";
 import { describe, expect, it } from "vitest";
 import { call, createUser } from "../test/helpers";
 
@@ -53,13 +55,17 @@ async function ebook(admin: { token: string }, opts: { freeFirst: boolean; publi
   return { id, slug, chapters };
 }
 
-async function tool(admin: { token: string }, tier: "all" | "free") {
+async function tool(
+  admin: { token: string },
+  tier: "all" | "free",
+  preset: "budget_503020" | "habit_daily" = "budget_503020",
+) {
   const slug = `tool-${rid()}`;
   const { id } = (await (
     await call("/api/v1/studio/tools", {
       method: "POST",
       token: admin.token,
-      ...json({ title: "Kalkulator", slug, preset: "budget_503020" }),
+      ...json({ title: "Kalkulator", slug, preset }),
     })
   ).json()) as { id: string };
   const r = await call(`/api/v1/studio/content/${id}`, {
@@ -172,5 +178,154 @@ describe("konten gratis (tier free)", () => {
         })
       ).status,
     ).toBe(400);
+  });
+});
+
+async function publish(admin: { token: string }, id: string, tier: "all" | "free") {
+  const r = await call(`/api/v1/studio/content/${id}`, {
+    method: "PATCH",
+    token: admin.token,
+    ...json({ status: "published", tier }),
+  });
+  expect(r.status).toBe(200);
+}
+
+async function template(admin: { token: string }, tier: "all" | "free") {
+  const slug = `tpl-${rid()}`;
+  const { id } = (await (
+    await call("/api/v1/studio/templates", {
+      method: "POST",
+      token: admin.token,
+      ...json({ title: "Rencana", slug }),
+    })
+  ).json()) as { id: string };
+  await publish(admin, id, tier);
+  return slug;
+}
+
+async function program(admin: { token: string }, tier: "all" | "free") {
+  const slug = `prg-${rid()}`;
+  const { id } = (await (
+    await call("/api/v1/studio/programs", {
+      method: "POST",
+      token: admin.token,
+      ...json({ title: "7 Hari", slug, durationDays: 7 }),
+    })
+  ).json()) as { id: string };
+  await call(`/api/v1/studio/programs/${id}`, {
+    method: "PUT",
+    token: admin.token,
+    ...json({
+      durationDays: 7,
+      steps: [{ day: 1, title: "Mulai", items: [{ type: "task", text: "Catat" }] }],
+    }),
+  });
+  await publish(admin, id, tier);
+  return slug;
+}
+
+describe("konten gratis: template, program, tracker, pembekuan, draft", () => {
+  it("template gratis bisa diunduh tanpa langganan, premium 403", async () => {
+    const admin = await createUser({ role: "admin" });
+    const free = await template(admin, "free");
+    const premium = await template(admin, "all");
+    const m = await createUser();
+    const gen = (slug: string) =>
+      call(`/api/v1/templates/${slug}/generate`, {
+        method: "POST",
+        token: m.token,
+        ...json({
+          format: "pdf",
+          input: { nama: "Rina", minggu: 2, target: "Lari", catatan: null },
+        }),
+      });
+    expect((await gen(free)).status).toBe(200);
+    expect((await gen(premium)).status).toBe(403);
+  });
+
+  it("program gratis bisa diikuti & ditandai selesai tanpa langganan, premium 403", async () => {
+    const admin = await createUser({ role: "admin" });
+    const free = await program(admin, "free");
+    const premium = await program(admin, "all");
+    const m = await createUser();
+    const enroll = (slug: string) =>
+      call(`/api/v1/programs/${slug}/enroll`, { method: "POST", token: m.token, ...json({}) });
+    expect((await enroll(free)).status).toBe(201);
+    expect(
+      (await call(`/api/v1/programs/${free}/days/1/complete`, { method: "POST", token: m.token }))
+        .status,
+    ).toBe(200);
+    const view = (await (await call(`/api/v1/programs/${free}`, { token: m.token })).json()) as {
+      days: { unlocked: boolean; items: unknown[] }[];
+    };
+    expect(view.days[0]).toMatchObject({ unlocked: true });
+    expect(view.days[0]?.items.length).toBe(1);
+    expect((await enroll(premium)).status).toBe(403);
+  });
+
+  it("tracker gratis bisa diisi tanpa langganan", async () => {
+    const admin = await createUser({ role: "admin" });
+    const t = await tool(admin, "free", "habit_daily");
+    const m = await createUser();
+    const r = await call(`/api/v1/tools/${t.slug}/entries`, {
+      method: "PUT",
+      token: m.token,
+      ...json({ date: todayWib(), input: { olahraga: 30, air: 8, mood: "4" } }),
+    });
+    expect(r.status).toBe(200);
+  });
+
+  it("akun beku tetap 423 walau kontennya gratis", async () => {
+    const admin = await createUser({ role: "admin" });
+    const t = await tool(admin, "free");
+    const m = await createUser();
+    const until = new Date(Date.now() + 3_600_000).toISOString();
+    await env.KV.put(
+      `frozen:${m.id}`,
+      JSON.stringify({ until, reason: "scraping", chaptersPerHour: 99, chaptersPerDay: 99 }),
+    );
+    const r = await call(`/api/v1/tools/${t.slug}/run`, {
+      method: "POST",
+      token: m.token,
+      ...json({ input: { gaji: 1, pengeluaran_wajib: 1 } }),
+    });
+    expect(r.status).toBe(423);
+  });
+
+  it("konten bertanda gratis yang masih draft tidak terbuka", async () => {
+    const admin = await createUser({ role: "admin" });
+    const slug = `tool-${rid()}`;
+    const { id } = (await (
+      await call("/api/v1/studio/tools", {
+        method: "POST",
+        token: admin.token,
+        ...json({ title: "Draft", slug, preset: "budget_503020" }),
+      })
+    ).json()) as { id: string };
+    await call(`/api/v1/studio/content/${id}`, {
+      method: "PATCH",
+      token: admin.token,
+      ...json({ tier: "free" }),
+    });
+    const m = await createUser();
+    const r = await call(`/api/v1/tools/${slug}/run`, {
+      method: "POST",
+      token: m.token,
+      ...json({ input: { gaji: 1, pengeluaran_wajib: 1 } }),
+    });
+    expect(r.status).toBe(403);
+  });
+
+  it("pratinjau publik 404 untuk ebook draft dan bab gratis yang masih draft", async () => {
+    const admin = await createUser({ role: "admin" });
+    const draft = await ebook(admin, { freeFirst: true, publish: false });
+    expect((await call(`/api/v1/catalog/ebooks/${draft.slug}/preview`)).status).toBe(404);
+    const eb = await ebook(admin, { freeFirst: true });
+    await call(`/api/v1/studio/chapters/${eb.chapters[0]}`, {
+      method: "PUT",
+      token: admin.token,
+      ...json({ status: "draft" }),
+    });
+    expect((await call(`/api/v1/catalog/ebooks/${eb.slug}/preview`)).status).toBe(404);
   });
 });
