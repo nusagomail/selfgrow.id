@@ -46,7 +46,8 @@
       "vars": {
         "ENVIRONMENT": "staging",
         "APP_URL": "",
-        "SITE_URL": "",
+        // Etalase publik staging: pengunjung yang belum login diarahkan ke sini (D34).
+        "SITE_URL": "https://selfgrow-site-staging.nusagomail.workers.dev",
         // Cloudflare Access (D17): seluruh staging di balik Access, hanya pemilik akun.
         // Bukan rahasia: AUD & team domain dipakai untuk memverifikasi JWT Access.
         "ACCESS_TEAM_DOMAIN": "throbbing-glitter-55a4.cloudflareaccess.com",

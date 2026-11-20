@@ -45,7 +45,7 @@ const plans = [
         <p class="amount"><span class="rp">Rp</span>{p.price}<span class="per">{p.per}</span></p>
         <p class="muted">{p.note}</p>
         <ul>{p.features.map((f) => <li>{f}</li>)}</ul>
-        <a href={appUrl("/masuk")} class:list={["btn", p.best ? "btn-primary" : "btn-ghost"]}>Daftar gratis dulu</a>
+        <a href={appUrl("/masuk?auto=1")} class:list={["btn", p.best ? "btn-primary" : "btn-ghost"]}>Daftar gratis dulu</a>
       </article>
     ))}
     <article class="plan founding">
@@ -53,7 +53,7 @@ const plans = [
       <h2>Founding member</h2>
       <p class="amount small">Rp49.000–69.000<span class="per">/bulan</span></p>
       <p>Harga khusus untuk 500 pelanggan pertama, terkunci selama langganan aktif. Pendaftar awal dikabari lebih dulu saat pendaftaran dibuka.</p>
-      <a href={appUrl("/masuk")} class="btn btn-gold">Amankan tempatmu</a>
+      <a href={appUrl("/masuk?auto=1")} class="btn btn-gold">Amankan tempatmu</a>
     </article>
   </section>
 </Base>

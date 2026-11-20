@@ -24,13 +24,35 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   return (await res.json()) as T;
 }
 
-export async function signInWithGoogle(captchaToken?: string) {
+/**
+ * Mulai login Google. `replace` dipakai saat login dimulai otomatis (dari tombol Masuk di
+ * etalase), supaya halaman perantara tidak tersisa di riwayat dan tombol Kembali tidak terjebak.
+ */
+export async function signInWithGoogle(captchaToken?: string, opts: { replace?: boolean } = {}) {
   const res = await api<{ url: string }>("/auth/sign-in/social", {
     method: "POST",
     headers: captchaToken ? { "x-captcha-response": captchaToken } : {},
     body: JSON.stringify({ provider: "google", callbackURL: "/", errorCallbackURL: "/masuk" }),
   });
-  window.location.assign(res.url);
+  if (opts.replace) window.location.replace(res.url);
+  else window.location.assign(res.url);
+}
+
+let siteUrlPromise: Promise<string | null> | null = null;
+
+/** Alamat etalase publik (website), atau null bila tidak dikonfigurasi (mis. lokal). */
+export function getSiteUrl(): Promise<string | null> {
+  siteUrlPromise ??= api<{ siteUrl: string | null }>("/health/config")
+    .then((r) => r.siteUrl)
+    .catch(() => null);
+  return siteUrlPromise;
+}
+
+/** Pengunjung yang belum login: ke etalase bila ada, selain itu ke halaman masuk. */
+export async function goToStorefront(fallback: () => void) {
+  const site = await getSiteUrl();
+  if (site) window.location.replace(site);
+  else fallback();
 }
 
 export function signOut() {

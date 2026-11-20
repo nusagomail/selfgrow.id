@@ -1,7 +1,7 @@
 import type { SubscriptionStatus } from "@selfgrow/shared";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ApiError, api } from "../lib/api";
+import { ApiError, api, goToStorefront } from "../lib/api";
 
 type ItemType = "ebook" | "tool" | "template" | "program";
 type Item = {
@@ -103,7 +103,9 @@ export function HomePage() {
     api<HomeData>("/home")
       .then(setData)
       .catch((e) => {
-        if (e instanceof ApiError && e.status === 401) navigate({ to: "/masuk", replace: true });
+        // Belum login: tampilkan etalase (penawaran & kategori), bukan halaman masuk (D34).
+        if (e instanceof ApiError && e.status === 401)
+          goToStorefront(() => navigate({ to: "/masuk", replace: true }));
         else setError(true);
       });
   }, [navigate]);
