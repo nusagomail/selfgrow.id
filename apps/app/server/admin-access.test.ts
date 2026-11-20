@@ -95,4 +95,34 @@ describe("akses admin", () => {
     expect(me.subscription.active).toBe(false);
     expect(me.subscription.adminAccess).toBeUndefined();
   });
+
+  it("admin yang diturunkan ke member langsung kehilangan akses penuh", async () => {
+    const { admin, url } = await paidChapter();
+    const other = await createUser({ role: "admin" });
+    expect((await call(url, { token: other.token })).status).toBe(200);
+    const r = await call(`/api/v1/admin/users/${other.id}/role`, {
+      method: "PATCH",
+      token: admin.token,
+      ...json({ role: "member" }),
+    });
+    expect(r.status).toBe(200);
+    expect((await call(url, { token: other.token })).status).toBe(403);
+    const me = (await (await call("/api/v1/me", { token: other.token })).json()) as Me;
+    expect(me.subscription.adminAccess).toBeUndefined();
+  });
+
+  it("member tidak bisa menjadikan dirinya admin lewat update-user", async () => {
+    const { url } = await paidChapter();
+    const m = await createUser();
+    await call("/api/v1/auth/update-user", {
+      method: "POST",
+      token: m.token,
+      ...json({ role: "admin" }),
+    });
+    const row = await env.DB.prepare("SELECT role FROM users WHERE id = ?")
+      .bind(m.id)
+      .first<{ role: string }>();
+    expect(row?.role).toBe("member");
+    expect((await call(url, { token: m.token })).status).toBe(403);
+  });
 });

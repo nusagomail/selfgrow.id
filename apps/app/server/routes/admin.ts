@@ -4,7 +4,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireAccess, requireAdmin } from "../middleware/guards";
 import { writeAudit } from "../services/audit";
-import { invalidateEntitlementCache } from "../services/entitlements";
+import { adminViewKey, invalidateEntitlementCache } from "../services/entitlements";
 import { inChunks } from "../services/programs";
 import { getFreeze, listFrozen, unfreezeUser, watermarkTag } from "../services/protection";
 
@@ -50,6 +50,8 @@ export const admin = new Hono<AppEnv>()
       after: { role: parsed.data.role },
     });
     await invalidateEntitlementCache(c.env.KV, id);
+    // Pilihan tampilan admin tidak terbawa bila peran berubah (review keamanan PR #16).
+    await c.env.KV.delete(adminViewKey(id));
     return c.json({ id, role: parsed.data.role });
   })
   /** Akun yang sedang dibekukan sementara karena terdeteksi scraping. */
