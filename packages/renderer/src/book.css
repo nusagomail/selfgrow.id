@@ -8,7 +8,7 @@
   --book-muted: #5f6d63;
   --book-line: #e8e2d2;
   --book-accent: #1d7a34;
-  --book-size: 18px;
+  --book-size: 16px;
   background: var(--book-bg);
   color: var(--book-ink);
 }
@@ -35,6 +35,16 @@
   touch-action: pan-y;
   cursor: default;
 }
+/* Bayangan jilid tipis di tepi kiri halaman tunggal (HP). */
+.book-viewport.is-paged:not(.is-spread)::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 16px;
+  z-index: 5;
+  background: linear-gradient(90deg, rgb(0 0 0 / 7%), transparent);
+  pointer-events: none;
+}
 /* Lipatan tengah saat dua halaman berdampingan. */
 .book-viewport.is-spread::after {
   content: "";
@@ -48,7 +58,7 @@
 
 .book-flow {
   font-size: var(--book-size);
-  line-height: 1.72;
+  line-height: 1.62;
   overflow-wrap: break-word;
 }
 /* Rata kiri-kanan hanya di layar cukup lebar; di HP justify membuat celah kata terlalu lebar. */
@@ -59,72 +69,92 @@
   }
 }
 
-/* Lembar kertas yang sedang dibalik (dibuat createPager). */
-.book-leaf,
+/* Kertas yang sedang dibalik (dibuat createPager): lembar, bagian terlipat, dan bayangannya. */
 .book-pin,
-.book-cast {
+.book-sheet,
+.book-flap,
+.book-flap-inner,
+.book-cast,
+.book-fold-shade {
   position: absolute;
   top: 0;
   bottom: 0;
   pointer-events: none;
 }
-.book-pin {
+.book-pin,
+.book-sheet {
   z-index: 1;
   overflow: hidden;
   background: var(--book-bg);
 }
-.book-cast {
-  z-index: 1;
-  background: linear-gradient(90deg, rgb(0 0 0 / 22%), rgb(0 0 0 / 6%) 35%, transparent 70%);
-  opacity: 0;
-}
-.book-leaf {
+.book-sheet {
   z-index: 2;
-  transform-origin: left center;
-  transform-style: preserve-3d;
 }
-.book-face {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: var(--book-bg);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.book-face-back {
-  transform: rotateY(180deg);
-}
-.book-face > .book-flow,
-.book-pin > .book-flow {
+.book-pin > .book-flow,
+.book-sheet > .book-flow,
+.book-flap-inner > .book-flow {
   position: absolute;
   top: 0;
   left: 0;
 }
-/* Cahaya & lengkung kertas: gelap di dekat tulang buku, terang di tepi yang terangkat. */
-.book-shade {
+.book-fold-shade {
+  z-index: 3;
+}
+.book-fold-shade-right {
+  background: linear-gradient(90deg, transparent, rgb(0 0 0 / 7%) 60%, rgb(0 0 0 / 20%));
+}
+.book-fold-shade-left {
+  background: linear-gradient(270deg, transparent, rgb(0 0 0 / 7%) 60%, rgb(0 0 0 / 20%));
+}
+.book-cast {
+  z-index: 2;
+}
+.book-cast-right {
+  background: linear-gradient(90deg, rgb(0 0 0 / 26%), rgb(0 0 0 / 8%) 40%, transparent);
+}
+.book-cast-left {
+  background: linear-gradient(270deg, rgb(0 0 0 / 26%), rgb(0 0 0 / 8%) 40%, transparent);
+}
+.book-flap {
+  z-index: 4;
+  overflow: hidden;
+  background: var(--book-bg);
+}
+.book-flap-inner {
+  overflow: visible;
+}
+/* Punggung kertas di HP: teks muka tembus samar, seperti kertas tipis. */
+.book-flap.is-mirror .book-flap-inner {
+  opacity: 0.14;
+  filter: blur(0.3px);
+}
+/* Lengkung kertas: gelap di lipatan, terang di tengah, sedikit gelap di tepi bebas. */
+.book-flap-shade {
   position: absolute;
   inset: 0;
-  opacity: 0;
+}
+.book-flap-right .book-flap-shade {
   background: linear-gradient(
     90deg,
-    rgb(0 0 0 / 26%),
-    rgb(0 0 0 / 6%) 18%,
-    transparent 45%,
-    rgb(255 255 255 / 14%) 82%,
-    rgb(0 0 0 / 10%)
+    rgb(0 0 0 / 6%),
+    rgb(255 255 255 / 18%) 30%,
+    rgb(255 255 255 / 4%) 60%,
+    rgb(0 0 0 / 16%) 92%,
+    rgb(0 0 0 / 26%)
   );
 }
-.book-shade-back {
+.book-flap-left .book-flap-shade {
   background: linear-gradient(
     270deg,
-    rgb(0 0 0 / 24%),
-    rgb(0 0 0 / 5%) 20%,
-    transparent 50%,
-    rgb(0 0 0 / 8%)
+    rgb(0 0 0 / 6%),
+    rgb(255 255 255 / 18%) 30%,
+    rgb(255 255 255 / 4%) 60%,
+    rgb(0 0 0 / 16%) 92%,
+    rgb(0 0 0 / 26%)
   );
 }
 .book-viewport.is-spread::after {
-  z-index: 3;
+  z-index: 5;
 }
 
 .book-flow .ebook-content {
@@ -200,7 +230,7 @@
 /* Pembuka bab. */
 .book-chapter-head {
   text-align: center;
-  padding: 12% 0 1.4em;
+  padding: 8% 0 1.2em;
   break-inside: avoid;
   break-after: avoid;
 }
@@ -213,7 +243,7 @@
   margin: 0;
 }
 .book-chapter-title {
-  font-size: 1.65em;
+  font-size: 1.5em;
   line-height: 1.22;
   margin: 0.35em 0 0.5em;
   color: var(--book-ink);

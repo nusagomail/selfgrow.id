@@ -330,10 +330,10 @@ textarea {
   transition: opacity 0.2s ease;
 }
 .book-bar {
-  border-bottom: 1px solid var(--book-line);
+  padding-bottom: 2px;
 }
 .book-foot {
-  border-top: 1px solid var(--book-line);
+  padding-top: 2px;
 }
 .chrome-off .book-bar,
 .chrome-off .book-foot {
@@ -451,7 +451,6 @@ textarea {
   width: 100%;
   max-width: 1180px;
   margin: 0 auto;
-  padding-block: clamp(14px, 3vh, 36px);
   display: flex;
 }
 .book-stage .book-viewport {

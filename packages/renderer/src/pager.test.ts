@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   clampScreen,
+  foldGeometry,
   fractionOf,
   layoutFor,
-  leafAngle,
   pagesFor,
   planTurn,
   screenAtFraction,
@@ -91,42 +91,67 @@ describe("stateFor", () => {
 });
 
 describe("membalik lembar", () => {
-  it("HP maju: halaman sekarang terangkat, halaman berikutnya sudah ada di bawahnya", () => {
+  it("HP maju: halaman sekarang terlipat, halaman berikutnya sudah ada di bawahnya", () => {
     expect(planTurn(3, 1, 1)).toEqual({
-      leafSlot: 0,
-      front: 3,
-      back: null,
+      side: "right",
+      sheetSlot: 0,
+      turning: 3,
+      back: "mirror",
       pin: null,
-      flowJumps: "start",
+      under: "target",
+      reverse: false,
     });
   });
-  it("HP mundur: halaman sebelumnya kembali menutup, alur pindah setelah selesai", () => {
-    expect(planTurn(3, -1, 1)).toMatchObject({ front: 2, back: null, flowJumps: "end" });
+  it("HP mundur: lembar sebelumnya kembali menutup (animasi maju dibalik)", () => {
+    expect(planTurn(3, -1, 1)).toMatchObject({ turning: 2, under: "current", reverse: true });
   });
-  it("dua halaman maju: kanan berputar ke kiri, punggungnya halaman kiri berikutnya", () => {
+  it("buku terbuka maju: halaman kanan terlipat, punggungnya halaman kiri berikutnya", () => {
     expect(planTurn(1, 1, 2)).toEqual({
-      leafSlot: 1,
-      front: 3,
+      side: "right",
+      sheetSlot: 1,
+      turning: 3,
       back: 4,
       pin: { slot: 0, page: 2 },
-      flowJumps: "start",
+      under: "target",
+      reverse: false,
     });
   });
-  it("dua halaman mundur: kiri berputar kembali ke kanan", () => {
+  it("buku terbuka mundur: halaman kiri terlipat ke kanan", () => {
     expect(planTurn(2, -1, 2)).toEqual({
-      leafSlot: 1,
-      front: 3,
-      back: 4,
+      side: "left",
+      sheetSlot: 0,
+      turning: 4,
+      back: 3,
       pin: { slot: 1, page: 5 },
-      flowJumps: "start",
+      under: "target",
+      reverse: false,
     });
   });
-  it("sudut lembar", () => {
-    expect(leafAngle(1, 0)).toBe(-0);
-    expect(leafAngle(1, 0.5)).toBeCloseTo(-90);
-    expect(leafAngle(1, 0.25)).toBeCloseTo(-60);
-    expect(leafAngle(1, 2)).toBe(-180);
-    expect(leafAngle(-1, 0)).toBe(-180);
-    expect(leafAngle(-1, 1)).toBe(-0);
+});
+
+describe("geometri lipatan", () => {
+  it("awal: belum ada lipatan", () => {
+    expect(foldGeometry("right", 0, 400, 0)).toEqual({
+      edge: 400,
+      fold: 400,
+      visible: [0, 400],
+      flap: [400, 400],
+    });
+  });
+  it("tengah: kertas terlipat dua, lipatan di tengah halaman", () => {
+    const g = foldGeometry("right", 0, 400, 0.5);
+    expect(g.edge).toBe(0);
+    expect(g.fold).toBe(200);
+    expect(g.flap[1] - g.flap[0]).toBe(400 - g.fold);
+  });
+  it("selesai: lipatan di tulang buku", () => {
+    expect(foldGeometry("right", 500, 1000, 1).fold).toBe(500);
+    expect(foldGeometry("left", 0, 500, 1).fold).toBe(500);
+  });
+  it("lebar lipatan selalu sama dengan bagian kertas yang terangkat", () => {
+    for (const q of [0.1, 0.3, 0.7]) {
+      const g = foldGeometry("left", 0, 500, q);
+      expect(g.flap[1] - g.flap[0]).toBeCloseTo(g.fold - 0);
+    }
   });
 });
