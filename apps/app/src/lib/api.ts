@@ -51,7 +51,14 @@ export function getSiteUrl(): Promise<string | null> {
 /** Pengunjung yang belum login: ke etalase bila ada, selain itu ke halaman masuk. */
 export async function goToStorefront(fallback: () => void) {
   const site = await getSiteUrl();
-  if (site) window.location.replace(site);
+  // Cegah putaran tanpa akhir bila SITE_URL keliru diisi alamat aplikasi ini sendiri.
+  let external = false;
+  try {
+    external = Boolean(site) && new URL(site as string).origin !== window.location.origin;
+  } catch {
+    external = false;
+  }
+  if (external) window.location.replace(site as string);
   else fallback();
 }
 
