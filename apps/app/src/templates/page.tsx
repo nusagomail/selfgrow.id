@@ -42,7 +42,7 @@ export function TemplatePage() {
   return (
     <main className="page">
       <p>
-        <Link to="/perpustakaan">← Perpustakaan</Link>
+        <Link to="/">← Beranda</Link>
       </p>
       <h1>{meta.template.title}</h1>
       {meta.template.summary && <p className="muted">{meta.template.summary}</p>}

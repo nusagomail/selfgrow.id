@@ -4,14 +4,6 @@ import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ApiError, api } from "../lib/api";
 
-type LibraryItem = {
-  id: string;
-  type: string;
-  slug: string;
-  title: string;
-  summary: string | null;
-};
-
 type EbookMeta = {
   ebook: { id: string; slug: string; title: string; summary: string | null };
   chapters: { id: string; title: string; order: number; isFreePreview: boolean; locked: boolean }[];
@@ -19,75 +11,11 @@ type EbookMeta = {
   subscribed: boolean;
 };
 
-const TYPE_LABEL: Record<string, string> = {
-  ebook: "Ebook",
-  tool: "Tool",
-  template: "Template",
-  program: "Program",
-};
-
 function useAuthRedirect(err: unknown) {
   const navigate = useNavigate();
   useEffect(() => {
     if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk", replace: true });
   }, [err, navigate]);
-}
-
-// ---------------------------------------------------------------------------
-// /perpustakaan
-// ---------------------------------------------------------------------------
-
-export function LibraryPage() {
-  const [items, setItems] = useState<LibraryItem[] | null>(null);
-  const [err, setErr] = useState<unknown>(null);
-  useAuthRedirect(err);
-
-  useEffect(() => {
-    api<{ items: LibraryItem[] }>("/library")
-      .then((r) => setItems(r.items))
-      .catch(setErr);
-  }, []);
-
-  return (
-    <main className="page">
-      <p>
-        <Link to="/">← Beranda</Link>
-      </p>
-      <h1>Perpustakaan</h1>
-      {err instanceof ApiError && err.status === 403 && (
-        <p className="card">Perpustakaan lengkap terbuka setelah berlangganan.</p>
-      )}
-      {!items && !err && <p className="muted">Memuat…</p>}
-      {items?.length === 0 && <p className="muted">Belum ada konten.</p>}
-      {items?.map((it) => (
-        <div key={it.id} className="card">
-          <span className="badge">{TYPE_LABEL[it.type] ?? it.type}</span>
-          <h2 style={{ marginTop: 8 }}>{it.title}</h2>
-          {it.summary && <p className="muted">{it.summary}</p>}
-          {it.type === "ebook" && (
-            <Link to="/baca/$slug" params={{ slug: it.slug }} className="btn btn-primary">
-              Baca
-            </Link>
-          )}
-          {it.type === "tool" && (
-            <Link to="/tools/$slug" params={{ slug: it.slug }} className="btn btn-primary">
-              Pakai
-            </Link>
-          )}
-          {it.type === "template" && (
-            <Link to="/template/$slug" params={{ slug: it.slug }} className="btn btn-primary">
-              Gunakan
-            </Link>
-          )}
-          {it.type === "program" && (
-            <Link to="/program/$slug" params={{ slug: it.slug }} className="btn btn-primary">
-              Ikuti
-            </Link>
-          )}
-        </div>
-      ))}
-    </main>
-  );
 }
 
 // ---------------------------------------------------------------------------
@@ -117,7 +45,7 @@ export function EbookToc() {
   return (
     <main className="page">
       <p>
-        <Link to="/perpustakaan">← Perpustakaan</Link>
+        <Link to="/">← Beranda</Link>
       </p>
       <h1>{meta.ebook.title}</h1>
       {meta.ebook.summary && <p className="muted">{meta.ebook.summary}</p>}

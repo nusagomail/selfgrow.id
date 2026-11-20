@@ -11,6 +11,7 @@ import { admin } from "./routes/admin";
 import { catalog } from "./routes/catalog";
 import { ebooks } from "./routes/ebooks";
 import { health } from "./routes/health";
+import { home, profile } from "./routes/home";
 import { library } from "./routes/library";
 import { me } from "./routes/me";
 import { programs } from "./routes/programs";
@@ -52,6 +53,8 @@ api.use("*", (c, next) => {
 api.post("/auth/*", rateLimit("auth"));
 api.on(["GET", "POST"], "/auth/*", (c) => c.var.auth.handler(c.req.raw));
 api.route("/me", me);
+api.route("/home", home);
+api.route("/profile", profile);
 api.route("/library", library);
 api.route("/catalog", catalog);
 api.route("/ebooks", ebooks);

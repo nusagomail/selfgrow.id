@@ -1,4 +1,4 @@
-import type { AdminView, DeviceSession, MeResponse } from "@selfgrow/shared";
+import type { AdminView, DeviceSession, MeResponse, SubscriptionStatus } from "@selfgrow/shared";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, api, signOut } from "../lib/api";
@@ -33,10 +33,8 @@ export function AccountPage() {
 
   return (
     <main className="page">
-      <p>
-        <Link to="/">← Beranda</Link>
-      </p>
-      <h1>Akun</h1>
+      <h1>Profil</h1>
+      <ProfileOverview />
       <AdminViewCard />
       <div className="card">
         <h2>Perangkat aktif</h2>
@@ -125,5 +123,195 @@ function AdminViewCard() {
         </label>
       </div>
     </div>
+  );
+}
+
+type Overview = {
+  user: { name: string; email: string; image: string | null; role: string };
+  subscription: SubscriptionStatus;
+  reading: {
+    slug: string;
+    title: string;
+    chapterId: string;
+    chapterNumber: number;
+    totalChapters: number;
+    percent: number;
+    updatedAt: string;
+  }[];
+  trackers: {
+    slug: string;
+    title: string;
+    current: number;
+    longest: number;
+    lastEntryDate: string | null;
+  }[];
+  tools: { slug: string; title: string; runsThisMonth: number }[];
+  programs: {
+    slug: string;
+    title: string;
+    durationDays: number;
+    currentDay: number;
+    completedDays: number;
+    finished: boolean;
+  }[];
+  downloads: { slug: string; title: string; fileName: string; format: string; createdAt: string }[];
+};
+
+const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "long" });
+
+/** Ringkasan milik pelanggan: langganan, bacaan, tracker, tools, program, unduhan. */
+function ProfileOverview() {
+  const [data, setData] = useState<Overview | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    api<Overview>("/profile")
+      .then(setData)
+      .catch(() => setFailed(true));
+  }, []);
+  if (failed) return <p className="error">Gagal memuat profil.</p>;
+  if (!data) return <p className="muted">Memuat…</p>;
+  const sub = data.subscription;
+
+  return (
+    <>
+      <div className="card profile-head">
+        {data.user.image && (
+          <img src={data.user.image} alt="" width={56} height={56} referrerPolicy="no-referrer" />
+        )}
+        <div>
+          <div className="strong">{data.user.name}</div>
+          <div className="muted small">{data.user.email}</div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h2>Langganan</h2>
+        {sub.adminAccess ? (
+          <p>Akses penuh sebagai admin.</p>
+        ) : sub.adminView === "visitor" ? (
+          <p className="muted">Sedang melihat sebagai pengunjung tanpa langganan.</p>
+        ) : sub.active ? (
+          <p>
+            Aktif
+            {sub.currentPeriodEnd && ` sampai ${dateFmt.format(new Date(sub.currentPeriodEnd))}`}
+            {sub.inGracePeriod && " (masa tenggang, segera perpanjang)"}
+          </p>
+        ) : (
+          <p className="muted">Belum berlangganan. Bab gratis tetap bisa dibaca dari Beranda.</p>
+        )}
+        <p className="muted small" style={{ margin: 0 }}>
+          Riwayat pembayaran akan tampil di sini setelah pembayaran dibuka.
+        </p>
+      </div>
+
+      <div className="card stack">
+        <h2>Sedang dibaca</h2>
+        {data.reading.length === 0 ? (
+          <p className="muted">Belum ada ebook yang dibaca.</p>
+        ) : (
+          data.reading.map((r) => (
+            <Link
+              key={r.slug}
+              to="/baca/$slug/$chapterId"
+              params={{ slug: r.slug, chapterId: r.chapterId }}
+              className="profile-row"
+            >
+              <span>
+                <span className="strong">{r.title}</span>
+                <span className="muted small">
+                  {" "}
+                  · Bab {r.chapterNumber}/{r.totalChapters}
+                </span>
+              </span>
+              <span className="progress" aria-hidden="true">
+                <span style={{ width: `${r.percent}%` }} />
+              </span>
+              <span className="small strong">{r.percent}%</span>
+            </Link>
+          ))
+        )}
+      </div>
+
+      <div className="card stack">
+        <h2>Tracker &amp; tools</h2>
+        {data.trackers.length === 0 && data.tools.length === 0 ? (
+          <p className="muted">Belum ada tool yang dipakai.</p>
+        ) : (
+          <>
+            {data.trackers.map((t) => (
+              <Link
+                key={`t-${t.slug}`}
+                to="/tools/$slug"
+                params={{ slug: t.slug }}
+                className="profile-row"
+              >
+                <span className="strong">{t.title}</span>
+                <span className="small">
+                  🔥 {t.current} hari · rekor {t.longest}
+                </span>
+              </Link>
+            ))}
+            {data.tools
+              .filter((x) => !data.trackers.some((t) => t.slug === x.slug))
+              .map((x) => (
+                <Link
+                  key={`u-${x.slug}`}
+                  to="/tools/$slug"
+                  params={{ slug: x.slug }}
+                  className="profile-row"
+                >
+                  <span className="strong">{x.title}</span>
+                  <span className="muted small">{x.runsThisMonth}× bulan ini</span>
+                </Link>
+              ))}
+          </>
+        )}
+      </div>
+
+      <div className="card stack">
+        <h2>Program</h2>
+        {data.programs.length === 0 ? (
+          <p className="muted">Belum mengikuti program.</p>
+        ) : (
+          data.programs.map((p) => (
+            <Link
+              key={p.slug}
+              to="/program/$slug"
+              params={{ slug: p.slug }}
+              className="profile-row"
+            >
+              <span className="strong">{p.title}</span>
+              <span className="muted small">
+                {p.finished
+                  ? "Selesai"
+                  : `Hari ke-${p.currentDay} · ${p.completedDays}/${p.durationDays} hari selesai`}
+              </span>
+            </Link>
+          ))
+        )}
+      </div>
+
+      <div className="card stack">
+        <h2>Template diunduh</h2>
+        {data.downloads.length === 0 ? (
+          <p className="muted">Belum ada template yang diunduh.</p>
+        ) : (
+          data.downloads.map((d) => (
+            <Link
+              key={`${d.slug}-${d.createdAt}`}
+              to="/template/$slug"
+              params={{ slug: d.slug }}
+              className="profile-row"
+            >
+              <span>
+                <span className="strong">{d.fileName}</span>
+                <span className="muted small"> · {d.title}</span>
+              </span>
+              <span className="muted small">{timeFmt.format(new Date(d.createdAt))}</span>
+            </Link>
+          ))
+        )}
+      </div>
+    </>
   );
 }

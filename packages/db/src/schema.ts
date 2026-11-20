@@ -454,6 +454,27 @@ export const userWatermarks = sqliteTable("user_watermarks", {
   createdAt: createdAt(),
 });
 
+/**
+ * Riwayat unduhan template untuk halaman Profil pelanggan (D33). Volumenya dibatasi kuota unduh
+ * (20 per bulan per user), jadi aman di D1; bukan log aktivitas umum.
+ */
+export const templateDownloads = sqliteTable(
+  "template_downloads",
+  {
+    id: id(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    contentId: text("content_id")
+      .notNull()
+      .references(() => contentItems.id, { onDelete: "cascade" }),
+    format: text("format", { enum: ["docx", "pdf", "xlsx"] }).notNull(),
+    fileName: text("file_name").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("template_downloads_user_idx").on(t.userId, t.createdAt)],
+);
+
 export const streaks = sqliteTable(
   "streaks",
   {
