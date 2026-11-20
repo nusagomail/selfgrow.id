@@ -126,12 +126,19 @@ export const templates = new Hono<AppEnv>()
     if (used === null)
       return c.json({ error: "quota_exceeded", limit: DEFAULT_DOWNLOAD_QUOTA }, 429);
 
+    const fileName = buildFileName(tpl.config, tpl.item.title, values, body.data.format);
+    // Riwayat unduhan untuk halaman Profil (D33).
+    await c.var.db.insert(schema.templateDownloads).values({
+      id: crypto.randomUUID(),
+      userId: user.id,
+      contentId: tpl.item.id,
+      format: body.data.format,
+      fileName,
+    });
+
     return new Response(bytes, {
       headers: {
-        ...attachmentHeaders(
-          CONTENT_TYPES[body.data.format],
-          buildFileName(tpl.config, tpl.item.title, values, body.data.format),
-        ),
+        ...attachmentHeaders(CONTENT_TYPES[body.data.format], fileName),
         "X-Downloads-Used": String(used),
         "X-Downloads-Limit": String(DEFAULT_DOWNLOAD_QUOTA),
       },

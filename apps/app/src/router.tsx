@@ -8,9 +8,25 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { Logo } from "./components/logo";
+import { useMe } from "./lib/use-me";
 import { AccountPage } from "./routes/account";
-import { HomePage } from "./routes/home";
+import { HomePage, LibraryRedirect } from "./routes/home";
 import { LoginPage } from "./routes/login";
+
+/** Menu atas: Beranda & Profil untuk semua, Studio hanya untuk admin. */
+function TopNav() {
+  const me = useMe();
+  const isAdmin = me.status === "ready" && me.me.user.role === "admin";
+  return (
+    <nav className="topnav" aria-label="Menu aplikasi">
+      <Link to="/" activeOptions={{ exact: true }}>
+        Beranda
+      </Link>
+      <Link to="/akun">Profil</Link>
+      {isAdmin && <Link to="/studio">Studio</Link>}
+    </nav>
+  );
+}
 
 function RootLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -22,10 +38,7 @@ function RootLayout() {
             <Link to="/" className="brand" aria-label="SelfGrow, ke beranda">
               <Logo height={32} />
             </Link>
-            <nav className="topnav" aria-label="Menu aplikasi">
-              <Link to="/perpustakaan">Perpustakaan</Link>
-              <Link to="/akun">Akun</Link>
-            </nav>
+            <TopNav />
           </div>
         </header>
       )}
@@ -54,7 +67,7 @@ const routeTree = rootRoute.addChildren([
   createRoute({
     getParentRoute: () => rootRoute,
     path: "/perpustakaan",
-    component: lazyRouteComponent(reader, "LibraryPage"),
+    component: LibraryRedirect,
   }),
   createRoute({
     getParentRoute: () => rootRoute,

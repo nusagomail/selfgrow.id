@@ -144,6 +144,13 @@ describe("unduh template", () => {
     );
     expect(r.headers.get("cache-control")).toBe("private, no-store");
     expect(r.headers.get("x-downloads-used")).toBe("1");
+    // Riwayat unduhan untuk halaman Profil (D33).
+    const hist = await env.DB.prepare(
+      "SELECT file_name, format FROM template_downloads WHERE user_id = ?",
+    )
+      .bind(u.id)
+      .all<{ file_name: string; format: string }>();
+    expect(hist.results).toEqual([{ file_name: "Rencana Mingguan Dhuha.docx", format: "docx" }]);
     const zip = unzipSync(new Uint8Array(await r.arrayBuffer()));
     expect(strFromU8(zip["word/document.xml"] as Uint8Array)).toContain("Rencana Mingguan Dhuha");
     expect(strFromU8(zip["docProps/core.xml"] as Uint8Array)).toContain(`selfgrow:${u.id}`);

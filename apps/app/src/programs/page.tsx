@@ -73,7 +73,7 @@ export function ProgramPage() {
   return (
     <main className="page">
       <p>
-        <Link to="/perpustakaan">← Perpustakaan</Link>
+        <Link to="/">← Beranda</Link>
       </p>
       <h1>{meta.program.title}</h1>
       {meta.program.summary && <p className="muted">{meta.program.summary}</p>}

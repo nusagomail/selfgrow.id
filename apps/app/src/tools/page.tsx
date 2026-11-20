@@ -38,7 +38,7 @@ export function ToolPage() {
   return (
     <main className="page">
       <p>
-        <Link to="/perpustakaan">← Perpustakaan</Link>
+        <Link to="/">← Beranda</Link>
       </p>
       <h1>{meta.tool.title}</h1>
       {meta.tool.summary && <p className="muted">{meta.tool.summary}</p>}
