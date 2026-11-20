@@ -12,6 +12,7 @@
   "dependencies": {
     "@astrojs/cloudflare": "^14.4.9",
     "@fontsource-variable/plus-jakarta-sans": "5.3.0",
+    "@selfgrow/shared": "workspace:*",
     "astro": "^7.4.13"
   },
   "devDependencies": {

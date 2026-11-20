@@ -2,7 +2,7 @@ import { and, asc, count, desc, eq, inArray, like, schema } from "@selfgrow/db";
 import { currentProgramDay } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
-import { requireAuth } from "../middleware/guards";
+import { FREE_TIER, requireAuth } from "../middleware/guards";
 import { getAccessStatus } from "../services/entitlements";
 import { inChunks } from "../services/programs";
 import { currentPeriod } from "../services/usage";
@@ -115,6 +115,7 @@ export const home = new Hono<AppEnv>()
           title: schema.contentItems.title,
           summary: schema.contentItems.summary,
           categoryId: schema.contentItems.categoryId,
+          tier: schema.contentItems.tier,
           publishedAt: schema.contentItems.publishedAt,
         })
         .from(schema.contentItems)
@@ -139,14 +140,16 @@ export const home = new Hono<AppEnv>()
     for (const cat of categories) rootOf.set(cat.id, cat.parentId ?? cat.id);
     const view = items.map((i) => {
       const freePreview = i.type === "ebook" && free.has(i.id);
+      const isFree = i.tier === FREE_TIER;
       return {
         type: i.type,
         slug: i.slug,
         title: i.title,
         summary: i.summary,
         freePreview,
-        // Terkunci = belum berlangganan dan tidak ada bagian gratis.
-        locked: !access.active && !freePreview,
+        free: isFree,
+        // Terkunci = belum berlangganan, bukan konten gratis, dan tidak ada bagian gratis.
+        locked: !access.active && !isFree && !freePreview,
         category: i.categoryId ? (rootOf.get(i.categoryId) ?? null) : null,
       };
     });

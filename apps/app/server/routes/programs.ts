@@ -7,7 +7,7 @@ import {
 } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
-import { requireActiveSubscription, requireAuth } from "../middleware/guards";
+import { FREE_TIER, requireActiveSubscriptionUnlessFree, requireAuth } from "../middleware/guards";
 import { getAccessStatus } from "../services/entitlements";
 import {
   findEnrollment,
@@ -68,7 +68,8 @@ export const programs = new Hono<AppEnv>()
       ? await completedDays(c.var.db, user.id, program.item.id)
       : new Set<number>();
     const today = enrollment ? currentProgramDay(enrollment.startedAt) : 0;
-    const isUnlocked = (day: number) => Boolean(enrollment) && day <= today && sub.active;
+    const hasAccess = sub.active || program.item.tier === FREE_TIER;
+    const isUnlocked = (day: number) => Boolean(enrollment) && day <= today && hasAccess;
     // Rujukan hanya di-resolve untuk hari yang terbuka.
     const refs = await resolveRefs(
       c.var.db,
@@ -94,7 +95,8 @@ export const programs = new Hono<AppEnv>()
         summary: program.item.summary,
         durationDays: program.durationDays,
       },
-      locked: !sub.active,
+      locked: !hasAccess,
+      free: program.item.tier === FREE_TIER,
       enrollment: enrollment
         ? {
             startedAt: enrollment.startedAt.toISOString(),
@@ -107,7 +109,7 @@ export const programs = new Hono<AppEnv>()
     });
   })
 
-  .post("/:slug/enroll", requireActiveSubscription, async (c) => {
+  .post("/:slug/enroll", requireActiveSubscriptionUnlessFree("program"), async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
     const user = c.var.user!;
     const body = enrollBodySchema.safeParse(await c.req.json().catch(() => ({})));
@@ -143,7 +145,7 @@ export const programs = new Hono<AppEnv>()
     return c.json({ ok: true }, existing ? 200 : 201);
   })
 
-  .post("/:slug/days/:day/complete", requireActiveSubscription, async (c) => {
+  .post("/:slug/days/:day/complete", requireActiveSubscriptionUnlessFree("program"), async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
     const user = c.var.user!;
     const day = Number(c.req.param("day"));

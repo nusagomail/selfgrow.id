@@ -189,6 +189,8 @@ export const updateContentBodySchema = z
     status: z.enum(["draft", "published"]),
     /** Topik (kategori anak). Kategori induk ikut dari topik. `null` = belum dikelompokkan. */
     categoryId: z.string().min(1).max(100).nullable(),
+    /** `free` = terbuka untuk semua user login tanpa langganan (D35); `all` = untuk pelanggan. */
+    tier: z.enum(["all", "free"]),
   })
   .partial();
 

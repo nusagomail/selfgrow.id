@@ -1,34 +1,35 @@
 ---
-import CategoryCard from "../components/CategoryCard.astro";
+import ItemCard from "../components/ItemCard.astro";
 import Base from "../layouts/Base.astro";
-import { appUrl, getCategories } from "../lib/api";
+import { appUrl, getCategories, getItems } from "../lib/api";
 
-const categories = await getCategories();
-const topicCount = categories.reduce((n, c) => n + c.topics.length, 0);
+// Beranda etalase seperti YouTube (D35): semua konten terbit tampil, difilter per kategori lewat
+// ?kategori=slug (tanpa JavaScript). Gratis bisa langsung dicoba, Premium untuk pelanggan.
+const [categories, items] = await Promise.all([getCategories(), getItems()]);
+const active = Astro.url.searchParams.get("kategori") ?? "semua";
+const withContent = categories.filter((c) => items.some((i) => i.category?.slug === c.slug));
+const shown = active === "semua" ? items : items.filter((i) => i.category?.slug === active);
+const activeCat = categories.find((c) => c.slug === active);
+const freeCount = items.filter((i) => i.access !== "premium").length;
 
 const faqs = [
   {
     q: "Apa itu SelfGrow?",
-    a: "SelfGrow adalah platform pengembangan diri berisi ebook interaktif, tools, tracker, template, dan program bertahap. Semuanya dipakai langsung di HP atau laptop, dalam Bahasa Indonesia.",
+    a: "SelfGrow adalah kumpulan ebook interaktif, tools, tracker, template, dan program bertahap untuk pengembangan diri, dalam Bahasa Indonesia. Semua dipakai langsung di HP atau laptop.",
   },
   {
-    q: "Apa bedanya dengan membaca buku biasa?",
-    a: "Setiap ebook dilengkapi alat untuk langsung praktik: kalkulator, tracker harian dengan streak, dan template yang bisa diunduh sebagai Word, PDF, atau Excel. Kamu tidak hanya membaca, tapi juga mengerjakan.",
+    q: "Apa bedanya Gratis dan Premium?",
+    a: "Konten berlabel Gratis bisa dipakai siapa saja yang sudah masuk dengan Google. Konten berlabel Bab gratis bisa dibaca bab pertamanya tanpa login. Konten Premium terbuka penuh setelah berlangganan.",
   },
   {
-    q: "Berapa biayanya?",
-    a: "Satu langganan Rp100.000 per bulan membuka semua kategori. Paket tahunan setara 10 bulan. Pendaftar awal mendapat harga founding member yang terkunci selama langganan aktif.",
-  },
-  {
-    q: "Apakah bisa dicoba gratis?",
-    a: "Bisa. Bab pertama setiap ebook gratis dibaca setelah masuk dengan akun Google, tanpa kartu kredit.",
+    q: "Berapa biaya berlangganan?",
+    a: "Rp100.000 per bulan untuk semua konten Premium di semua kategori. Paket tahunan setara 10 bulan, dan 500 pendaftar pertama mendapat harga founding member.",
   },
   {
     q: "Bisa dipakai di HP?",
-    a: "Bisa. SelfGrow dirancang untuk HP lebih dulu, ringan di koneksi 4G, dan bisa dipasang di layar utama seperti aplikasi.",
+    a: "Bisa. SelfGrow dirancang untuk HP lebih dulu dan ringan di koneksi 4G.",
   },
 ];
-
 const faqLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -45,148 +46,67 @@ const siteLd = {
   url: new URL("/", Astro.site ?? Astro.url.origin).toString(),
   inLanguage: "id-ID",
 };
-const week = ["S", "S", "R", "K", "J", "S", "M"];
 ---
 
 <Base
-  title="SelfGrow: Bertumbuh Menjadi Lebih Baik"
-  description="Ebook interaktif, tools, tracker, dan template untuk keuangan, kebiasaan, produktivitas, karier, dan lainnya. Satu langganan untuk semua kategori."
+  title={activeCat ? `${activeCat.name} | SelfGrow` : "SelfGrow: Bertumbuh Menjadi Lebih Baik"}
+  description="Ebook interaktif, tools, tracker, dan template untuk keuangan, kebiasaan, produktivitas, karier, dan lainnya. Ada yang gratis, sisanya satu langganan untuk semua."
   categories={categories}
+  current={activeCat?.slug}
   jsonLd={[siteLd, faqLd]}
 >
-  <section class="hero">
-    <div class="container hero-inner">
-      <div class="hero-copy">
-        <p class="eyebrow on-dark">Ebook interaktif · Tools · Template</p>
+  <section class="intro">
+    <div class="container intro-inner">
+      <div>
         <h1>Bertumbuh sedikit <span class="mark">setiap hari.</span></h1>
-        <p class="hero-lead">
-          Baca satu bab, langsung praktik dengan alatnya, lalu pantau kemajuanmu. Untuk urusan uang,
-          kebiasaan, kerja, sampai hubungan, dalam satu langganan.
+        <p class="lead">
+          Ebook, tools, dan template untuk langsung dipraktikkan. {freeCount > 0
+            ? `${freeCount} konten bisa dicoba gratis.`
+            : "Mulai dari bab gratis."}
         </p>
-        <div class="hero-cta">
-          <a href={appUrl("/masuk?auto=1")} class="btn btn-gold">Mulai gratis</a>
-          <a href="#kategori" class="btn btn-outline-light">Lihat kategori</a>
-        </div>
-        <p class="hero-note">Bab pertama gratis · Masuk dengan Google · Tanpa kartu kredit</p>
       </div>
-
-      <div class="hero-visual" aria-hidden="true">
-        <div class="tile streak">
-          <div class="tile-head">
-            <span class="tile-label">Tracker kebiasaan</span>
-            <span class="streak-num">12 hari</span>
-          </div>
-          <div class="week">
-            {week.map((d, i) => (
-              <span class:list={["day", { done: i < 5, today: i === 5 }]}>
-                <span class="dot"></span>
-                <span class="d">{d}</span>
-              </span>
-            ))}
-          </div>
-        </div>
-        <div class="tile budget">
-          <span class="tile-label">Kalkulator anggaran</span>
-          <div class="bar">
-            <span style="flex:50" class="b1"></span>
-            <span style="flex:30" class="b2"></span>
-            <span style="flex:20" class="b3"></span>
-          </div>
-          <div class="legend">
-            <span><i class="b1"></i>Kebutuhan 50%</span>
-            <span><i class="b2"></i>Keinginan 30%</span>
-            <span><i class="b3"></i>Tabungan 20%</span>
-          </div>
-        </div>
-        <div class="tile files">
-          <span class="tile-label">Template siap unduh</span>
-          <div class="file-row">
-            <span class="file docx">DOCX</span>
-            <span class="file pdf">PDF</span>
-            <span class="file xlsx">XLSX</span>
-          </div>
-          <span class="file-name">Rencana Mingguan.xlsx</span>
-        </div>
-      </div>
+      <a href={appUrl("/masuk?auto=1")} class="btn btn-gold">Mulai gratis</a>
     </div>
   </section>
 
-  <section class="section" id="kategori">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">{categories.length} kategori · {topicCount} topik</p>
-        <h2>Mulai dari masalah yang paling terasa</h2>
-        <p class="lead">Pilih satu kategori. Setiap topik punya ebook untuk dipahami, tool untuk dipraktikkan, dan template untuk dipakai.</p>
+  <section class="container feed" id="konten">
+    <nav class="chips" aria-label="Filter kategori">
+      <a href="/#konten" class="chip" aria-current={active === "semua" ? "page" : undefined}>
+        Semua <span class="count">{items.length}</span>
+      </a>
+      {withContent.map((c) => (
+        <a href={`/?kategori=${c.slug}#konten`} class="chip" aria-current={active === c.slug ? "page" : undefined}>
+          {c.name} <span class="count">{items.filter((i) => i.category?.slug === c.slug).length}</span>
+        </a>
+      ))}
+      <a href="/kategori" class="chip all">Semua kategori →</a>
+    </nav>
+
+    {shown.length > 0 ? (
+      <div class="grid feed-grid">
+        {shown.map((i) => <ItemCard item={i} />)}
       </div>
-      <div class="grid cats">
-        {categories.map((c, i) => <CategoryCard category={c} index={i + 1} />)}
+    ) : (
+      <div class="empty">
+        <h2>Konten sedang disiapkan</h2>
+        <p class="muted">
+          Ebook, tools, dan template pertama sedang ditulis. Daftar sekarang supaya kamu dikabari saat
+          terbit dan mendapat harga founding member.
+        </p>
+        <a href={appUrl("/masuk?auto=1")} class="btn btn-primary">Daftar gratis</a>
       </div>
-    </div>
+    )}
   </section>
 
-  <section class="section alt">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Bukan sekadar bacaan</p>
-        <h2>Tiga cara bertumbuh, saling melengkapi</h2>
+  <section class="strip">
+    <div class="container strip-inner">
+      <div>
+        <p class="eyebrow on-dark">Premium</p>
+        <h2>Buka semua konten Premium dengan satu langganan</h2>
+        <p class="strip-lead">Rp100.000/bulan untuk semua kategori. 500 pendaftar pertama mendapat harga founding member.</p>
       </div>
-      <div class="kinds">
-        <article class="kind">
-          <span class="kind-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z" /><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5" /></svg>
-          </span>
-          <h3>Ebook interaktif</h3>
-          <p class="muted">Dibaca per bab, singkat dan langsung ke praktik. Progres dan penanda tersimpan otomatis.</p>
-        </article>
-        <article class="kind">
-          <span class="kind-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 19h8" /></svg>
-          </span>
-          <h3>Tools &amp; tracker</h3>
-          <p class="muted">Kalkulator, penilaian, dan tracker harian dengan streak, supaya perubahan kecil terasa nyata.</p>
-        </article>
-        <article class="kind">
-          <span class="kind-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h4" /></svg>
-          </span>
-          <h3>Template siap pakai</h3>
-          <p class="muted">Isi formulir singkat, unduh hasilnya sebagai Word, PDF, atau Excel dengan namamu di dalamnya.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container steps-wrap">
-      <div class="section-head">
-        <p class="eyebrow">Cara kerja</p>
-        <h2>Dari bingung jadi jalan, dalam tiga langkah</h2>
-      </div>
-      <ol class="steps">
-        <li><span class="step-num">1</span><div><h3>Pilih masalahmu</h3><p class="muted">Misalnya gaji cepat habis atau sulit konsisten olahraga.</p></div></li>
-        <li><span class="step-num">2</span><div><h3>Baca dan praktikkan</h3><p class="muted">Satu bab sehari, lalu pakai tool atau template yang menyertainya.</p></div></li>
-        <li><span class="step-num">3</span><div><h3>Pantau kemajuan</h3><p class="muted">Tracker, streak, dan program bertahap menjaga kamu tetap di jalur.</p></div></li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="section alt">
-    <div class="container price">
-      <div class="price-copy">
-        <p class="eyebrow">Harga</p>
-        <h2>Satu langganan, semua kategori</h2>
-        <p class="lead">Tidak perlu membeli ebook satu per satu. Semua konten baru setiap minggu ikut terbuka.</p>
-        <a href="/harga" class="btn btn-ghost">Lihat detail harga</a>
-      </div>
-      <div class="price-card">
-        <p class="plan">Bulanan</p>
-        <p class="amount"><span class="rp">Rp</span>100.000<span class="per">/bulan</span></p>
-        <ul>
-          <li>Semua ebook, tools, template, dan program</li>
-          <li>Tahunan setara 10 bulan</li>
-          <li>Harga founding member untuk 500 pendaftar pertama</li>
-        </ul>
-        <a href={appUrl("/masuk?auto=1")} class="btn btn-primary">Daftar dulu, gratis</a>
+      <div class="strip-cta">
+        <a href="/harga" class="btn btn-gold">Lihat harga</a>
       </div>
     </div>
   </section>
@@ -207,295 +127,100 @@ const week = ["S", "S", "R", "K", "J", "S", "M"];
       </div>
     </div>
   </section>
-
-  <section class="final">
-    <div class="container final-inner">
-      <h2>Mulai dari satu bab hari ini.</h2>
-      <a href={appUrl("/masuk?auto=1")} class="btn btn-gold">Mulai gratis</a>
-    </div>
-  </section>
 </Base>
 
 <style>
-  .hero {
+  .intro {
     background:
-      radial-gradient(1000px 500px at 85% -10%, rgb(60 150 49 / 35%), transparent 60%),
+      radial-gradient(900px 400px at 90% -20%, rgb(60 150 49 / 35%), transparent 60%),
       var(--hero-bg);
     color: var(--hero-ink);
-    padding-block: clamp(48px, 8vw, 96px);
-    overflow: hidden;
+    padding-block: clamp(28px, 5vw, 48px);
   }
-  .hero-inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: clamp(32px, 5vw, 64px);
-    align-items: center;
-  }
-  .hero-copy {
+  .intro-inner {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
     gap: 20px;
   }
-  .on-dark {
-    color: var(--gold);
-  }
-  .hero h1 {
+  .intro h1 {
     color: #fff;
+    font-size: clamp(1.7rem, 4.5vw, 2.6rem);
   }
   .mark {
     color: var(--gold);
   }
-  .hero-lead {
-    font-size: clamp(1.05rem, 2vw, 1.2rem);
+  .intro .lead {
     color: var(--hero-muted);
+    margin-top: 8px;
+  }
+  .feed {
+    padding-block: 24px clamp(40px, 6vw, 72px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    position: sticky;
+    top: calc(69px + env(safe-area-inset-top, 0px));
+    z-index: 5;
+    background: var(--bg);
+    padding-top: 8px;
+  }
+  .chips .chip {
+    flex-shrink: 0;
+  }
+  .chips .all {
+    border-style: dashed;
+  }
+  .feed-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  }
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: clamp(32px, 6vw, 56px) 20px;
+    border: 1.5px dashed var(--line);
+    border-radius: var(--radius);
+  }
+  .empty h2 {
+    font-size: 1.3rem;
+  }
+  .empty p {
     max-width: 52ch;
   }
-  .hero-cta {
+  .strip {
+    background: var(--hero-bg);
+    color: var(--hero-ink);
+    padding-block: clamp(32px, 6vw, 56px);
+  }
+  .strip-inner {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-  }
-  .btn-outline-light {
-    border-color: rgb(255 255 255 / 35%);
-    color: #fff;
-  }
-  .hero-note {
-    font-size: 0.88rem;
-    color: var(--hero-muted);
-  }
-  .hero-visual {
-    display: grid;
-    gap: 14px;
-    grid-template-columns: 1fr 1fr;
-  }
-  .tile {
-    background: #fff;
-    color: #10241a;
-    border-radius: var(--radius);
-    padding: 16px;
-    box-shadow: 0 18px 40px rgb(0 0 0 / 25%);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-width: 0;
-  }
-  .tile-label {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #4f6357;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .tile-head {
-    display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
-    flex-wrap: wrap;
+    gap: 20px;
   }
-  .streak {
-    grid-column: 1 / -1;
-  }
-  .streak-num {
-    font-weight: 800;
-    font-size: 1.3rem;
-    color: #1d7a34;
-  }
-  .week {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-  }
-  .day {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.75rem;
-    color: #4f6357;
-  }
-  .dot {
-    width: 100%;
-    max-width: 34px;
-    aspect-ratio: 1;
-    border-radius: 10px;
-    background: #e2f0e4;
-  }
-  .day.done .dot {
-    background: #1d7a34;
-  }
-  .day.today .dot {
-    background: #f4ac13;
-  }
-  .bar {
-    display: flex;
-    height: 14px;
-    border-radius: 99px;
-    overflow: hidden;
-    gap: 3px;
-  }
-  .b1 {
-    background: #073e1f;
-  }
-  .b2 {
-    background: #3c9631;
-  }
-  .b3 {
-    background: #f4ac13;
-  }
-  .legend {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 0.8rem;
-  }
-  .legend i {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-    margin-right: 6px;
-  }
-  .file-row {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .file {
-    font-size: 0.72rem;
-    font-weight: 800;
-    padding: 6px 8px;
-    border-radius: 6px;
+  .strip h2 {
     color: #fff;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
   }
-  .docx {
-    background: #2f6fa8;
+  .on-dark {
+    color: var(--gold);
   }
-  .pdf {
-    background: #b23a2e;
+  .strip-lead {
+    color: var(--hero-muted);
+    margin-top: 6px;
   }
-  .xlsx {
-    background: #1d7a34;
-  }
-  .file-name {
-    font-size: 0.85rem;
-    font-weight: 600;
-    overflow-wrap: anywhere;
-  }
-
-  .alt {
-    background: var(--surface-alt);
-  }
-  @media (min-width: 1100px) {
-    .cats {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 560px) and (max-width: 1099px) {
-    .cats {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  .kinds {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
-  }
-  .kind {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .kind-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    display: grid;
-    place-items: center;
-    background: var(--surface);
-    color: var(--primary);
-    border: 1px solid var(--line);
-  }
-
-  .steps {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
-  }
-  .steps li {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-  }
-  .steps h3 {
-    margin-bottom: 4px;
-  }
-  .step-num {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--gold);
-    color: var(--green-950);
-    font-weight: 800;
-    display: grid;
-    place-items: center;
-  }
-
-  .price {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
-    gap: 40px;
-    align-items: center;
-  }
-  .price-copy {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    align-items: flex-start;
-  }
-  .price-card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    padding: 28px;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .plan {
-    font-weight: 700;
-    color: var(--muted);
-  }
-  .amount {
-    font-size: clamp(2.2rem, 6vw, 2.8rem);
-    font-weight: 800;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-  .rp {
-    font-size: 0.45em;
-    vertical-align: super;
-    margin-right: 4px;
-  }
-  .per {
-    font-size: 0.4em;
-    font-weight: 600;
-    color: var(--muted);
-    margin-left: 4px;
-  }
-  .price-card ul {
-    margin: 0;
-    padding-left: 20px;
-    display: grid;
-    gap: 6px;
-    color: var(--muted);
-  }
-
   .faq {
     display: grid;
     gap: 10px;
@@ -511,45 +236,9 @@ const week = ["S", "S", "R", "K", "J", "S", "M"];
     cursor: pointer;
     font-weight: 700;
     padding: 14px 0;
-    list-style-position: outside;
   }
   .faq details p {
     padding-bottom: 16px;
     color: var(--muted);
-  }
-
-  .final {
-    background: var(--green-700);
-    color: #fff;
-    padding-block: 48px;
-  }
-  .final-inner {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-  }
-  .final h2 {
-    color: #fff;
-  }
-
-  @media (max-width: 900px) {
-    .hero-inner,
-    .price {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .kinds,
-    .steps {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-  @media (max-width: 420px) {
-    .hero-visual {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .hero-cta .btn {
-      flex: 1;
-    }
   }
 </style>

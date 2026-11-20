@@ -1,5 +1,6 @@
 ---
-import { appUrl, type CategoryDetail, itemUrl, TYPE_LABEL } from "../lib/api";
+import { appUrl, type CategoryDetail } from "../lib/api";
+import ItemCard from "./ItemCard.astro";
 
 interface Props {
   data: CategoryDetail;
@@ -7,7 +8,6 @@ interface Props {
 const { data } = Astro.props;
 const { category, topic, topics, items } = data;
 const total = topics.reduce((n, t) => n + t.count, 0);
-const topicName = new Map(topics.map((t) => [t.slug, t.name]));
 ---
 
 <section class="cat-hero">
@@ -40,12 +40,7 @@ const topicName = new Map(topics.map((t) => [t.slug, t.name]));
   {items.length > 0 ? (
     <div class="grid items">
       {items.map((i) => (
-        <a href={itemUrl(i)} class="item">
-          <span class:list={["type", i.type]}>{TYPE_LABEL[i.type]}</span>
-          <h2>{i.title}</h2>
-          {i.summary && <p class="muted">{i.summary}</p>}
-          {!topic && i.topic && <span class="topic">{topicName.get(i.topic)}</span>}
-        </a>
+        <ItemCard item={{ ...i, category: null }} />
       ))}
     </div>
   ) : (

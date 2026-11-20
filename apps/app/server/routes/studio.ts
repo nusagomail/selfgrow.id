@@ -110,10 +110,10 @@ export const studio = new Hono<AppEnv>()
   .get("/content/:id/category", async (c) => {
     const item = await c.var.db.query.contentItems.findFirst({
       where: eq(schema.contentItems.id, c.req.param("id")),
-      columns: { categoryId: true },
+      columns: { categoryId: true, tier: true },
     });
     if (!item) return c.json({ error: "not_found" }, 404);
-    return c.json({ categoryId: item.categoryId });
+    return c.json({ categoryId: item.categoryId, tier: item.tier === "free" ? "free" : "all" });
   })
 
   .get("/content/:id", async (c) => {
