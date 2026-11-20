@@ -62,7 +62,8 @@ export const catalog = new Hono<AppEnv>()
     const key = new Request(c.req.url, { method: "GET" });
     if (useCache) {
       const hit = await caches.default.match(key);
-      if (hit) return hit;
+      // Salinan: respons dari cache tidak bisa diubah, sedangkan middleware lain menambah header.
+      if (hit) return new Response(hit.body, hit);
     }
     await next();
     if (c.res.status !== 200) return;

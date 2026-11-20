@@ -17,10 +17,16 @@ function RootLayout() {
   return (
     <>
       {path !== "/masuk" && (
-        <header className="topbar">
-          <Link to="/" aria-label="SelfGrow, ke beranda">
-            <Logo height={32} />
-          </Link>
+        <header className="topbar-wrap">
+          <div className="topbar">
+            <Link to="/" className="brand" aria-label="SelfGrow, ke beranda">
+              <Logo height={32} />
+            </Link>
+            <nav className="topnav" aria-label="Menu aplikasi">
+              <Link to="/perpustakaan">Perpustakaan</Link>
+              <Link to="/akun">Akun</Link>
+            </nav>
+          </div>
         </header>
       )}
       <Outlet />

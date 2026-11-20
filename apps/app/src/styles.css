@@ -12,6 +12,10 @@
   --primary: #1d7a34;
   --primary-text: #ffffff;
   --danger: #b91c1c;
+  --surface-alt: #f1f8f1;
+  --font:
+    "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -21,9 +25,10 @@
     --text: #e6efe8;
     --muted: #9fb3a6;
     --border: #1e3227;
-    --primary: #5cbf4a;
-    --primary-text: #062a14;
+    --primary: #5cc174;
+    --primary-text: #04260f;
     --danger: #f87171;
+    --surface-alt: #10241a;
   }
 }
 * {
@@ -33,13 +38,29 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
+  font-family: var(--font);
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+h1,
+h2,
+h3 {
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+a {
+  color: var(--primary);
+  text-underline-offset: 3px;
+}
+:focus-visible {
+  outline: 3px solid var(--brand-star);
+  outline-offset: 2px;
 }
 .page {
-  max-width: 560px;
+  max-width: 640px;
   margin: 0 auto;
-  padding: 32px 16px 64px;
+  padding: 32px max(16px, env(safe-area-inset-right, 0px))
+    calc(64px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
 }
 .card {
   background: var(--surface);
@@ -66,12 +87,12 @@ h2 {
   gap: 10px;
   min-height: 44px;
   padding: 0 18px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
   background: var(--surface);
   color: var(--text);
   font: inherit;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: none;
 }
@@ -397,16 +418,49 @@ select {
 }
 
 /* Header brand */
+.topbar-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding-top: env(safe-area-inset-top, 0px);
+}
 .topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 12px 16px;
+  min-height: 60px;
+  padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px
+    max(16px, env(safe-area-inset-left, 0px));
 }
-.topbar a {
+.topbar .brand {
   display: inline-flex;
+  margin-right: auto;
+}
+.topnav {
+  display: flex;
+  gap: 4px;
+}
+.topnav a {
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.topnav a[data-status="active"] {
+  background: var(--surface-alt);
+  color: var(--primary);
+}
+@media (max-width: 480px) {
+  .topnav a {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
 }
 .brand-hero {
   display: flex;

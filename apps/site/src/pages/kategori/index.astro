@@ -1,0 +1,101 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCategories } from "../../lib/api";
+
+const categories = await getCategories();
+---
+
+<Base
+  title="Semua kategori | SelfGrow"
+  description="Keuangan, kebiasaan, produktivitas, karier, kesehatan mental, kebugaran, komunikasi, bisnis sampingan, keluarga, dan mindset."
+  categories={categories}
+>
+  <section class="head">
+    <div class="container">
+      <p class="eyebrow">{categories.length} kategori</p>
+      <h1>Semua kategori dan topik</h1>
+      <p class="lead">Pilih topik yang paling dekat dengan masalahmu sekarang.</p>
+    </div>
+  </section>
+  <section class="container list">
+    {categories.map((c, i) => (
+      <article class="row" id={c.slug}>
+        <div class="row-head">
+          <span class="num">{String(i + 1).padStart(2, "0")}</span>
+          <div>
+            <h2><a href={`/kategori/${c.slug}`}>{c.name}</a></h2>
+            {c.hook && <p class="hook">"{c.hook}"</p>}
+          </div>
+        </div>
+        <ul class="topics">
+          {c.topics.map((t) => (
+            <li><a href={`/kategori/${c.slug}/${t.slug}`} class="chip">{t.name}{t.count > 0 && <span class="count">{t.count}</span>}</a></li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </section>
+</Base>
+
+<style>
+  .head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(32px, 6vw, 64px);
+  }
+  .head .container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .list {
+    padding-block: 24px clamp(48px, 8vw, 96px);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 24px;
+    padding-block: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+  .row-head {
+    display: flex;
+    gap: 14px;
+  }
+  .num {
+    font-weight: 800;
+    color: var(--accent-ink);
+    font-variant-numeric: tabular-nums;
+    padding-top: 4px;
+  }
+  .row h2 {
+    font-size: 1.3rem;
+  }
+  .row h2 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .row h2 a:hover {
+    color: var(--primary);
+  }
+  .hook {
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 4px;
+  }
+  .topics {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-content: flex-start;
+  }
+  @media (max-width: 760px) {
+    .row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+  }
+</style>

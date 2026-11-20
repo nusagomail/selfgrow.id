@@ -1,0 +1,299 @@
+---
+import { appUrl, type Category } from "../lib/api";
+
+interface Props {
+  categories: Category[];
+  current?: string;
+}
+const { categories, current } = Astro.props;
+const path = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a href="/" class="brand" aria-label="SelfGrow, ke beranda">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="/brand/logo-dark-240.webp 1x, /brand/logo-dark-480.webp 2x" />
+        <img src="/brand/logo-240.webp" srcset="/brand/logo-240.webp 1x, /brand/logo-480.webp 2x" width="138" height="40" alt="SelfGrow" />
+      </picture>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Menu utama">
+      <details class="mega" data-menu>
+        <summary class:list={["nav-link", { active: path.startsWith("/kategori") }]}>
+          Kategori <span class="caret" aria-hidden="true"></span>
+        </summary>
+        <div class="mega-panel">
+          <div class="mega-grid">
+            {categories.map((c) => (
+              <a href={`/kategori/${c.slug}`} class:list={["mega-item", { current: current === c.slug }]}>
+                <span class="mega-name">{c.name}</span>
+                {c.hook && <span class="mega-hook">"{c.hook}"</span>}
+              </a>
+            ))}
+          </div>
+          <a href="/kategori" class="mega-all">Lihat semua kategori dan topik →</a>
+        </div>
+      </details>
+      <a href="/harga" class:list={["nav-link", { active: path === "/harga" }]}>Harga</a>
+      <a href="/tentang" class:list={["nav-link", { active: path === "/tentang" }]}>Tentang</a>
+    </nav>
+
+    <div class="actions">
+      <a href={appUrl("/masuk")} class="btn btn-ghost btn-sm login">Masuk</a>
+      <a href={appUrl("/masuk")} class="btn btn-primary btn-sm">Mulai gratis</a>
+      <details class="mobile" data-menu>
+        <summary class="burger" aria-label="Buka menu">
+          <span></span><span></span><span></span>
+        </summary>
+        <div class="drawer">
+          <nav aria-label="Menu">
+            <p class="drawer-label">Kategori</p>
+            <ul>
+              {categories.map((c) => (
+                <li><a href={`/kategori/${c.slug}`} aria-current={current === c.slug ? "page" : undefined}>{c.name}</a></li>
+              ))}
+            </ul>
+            <ul class="drawer-links">
+              <li><a href="/kategori">Semua kategori</a></li>
+              <li><a href="/harga">Harga</a></li>
+              <li><a href="/tentang">Tentang</a></li>
+            </ul>
+            <div class="drawer-cta">
+              <a href={appUrl("/masuk")} class="btn btn-primary">Mulai gratis</a>
+              <a href={appUrl("/masuk")} class="btn btn-ghost">Masuk</a>
+            </div>
+          </nav>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Tutup menu saat klik di luar, tekan Escape, atau menu lain dibuka.
+  const menus = [...document.querySelectorAll<HTMLDetailsElement>("details[data-menu]")];
+  document.addEventListener("click", (e) => {
+    for (const m of menus) if (m.open && !m.contains(e.target as Node)) m.open = false;
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    for (const m of menus) if (m.open) {
+      m.open = false;
+      m.querySelector("summary")?.focus();
+    }
+  });
+  for (const m of menus) {
+    m.addEventListener("toggle", () => {
+      if (m.open) for (const o of menus) if (o !== m) o.open = false;
+      if (m.classList.contains("mobile")) document.body.classList.toggle("lock", m.open);
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    /* Latar padat, tanpa backdrop-filter: filter membuat drawer fixed ikut terpotong header. */
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-height: 68px;
+  }
+  .brand {
+    display: flex;
+    flex-shrink: 0;
+  }
+  .brand img {
+    width: 138px;
+    height: auto;
+    display: block;
+  }
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    list-style: none;
+  }
+  .nav-link::-webkit-details-marker {
+    display: none;
+  }
+  .nav-link:hover,
+  .nav-link.active,
+  details[open] > .nav-link {
+    background: var(--surface-alt);
+  }
+  .caret {
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 0.15s;
+  }
+  details[open] .caret {
+    transform: translateY(1px) rotate(-135deg);
+  }
+  .mega {
+    position: relative;
+  }
+  .mega-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: min(760px, calc(100vw - 48px));
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 12px;
+  }
+  .mega-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .mega-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .mega-item:hover,
+  .mega-item.current {
+    background: var(--surface-alt);
+  }
+  .mega-name {
+    font-weight: 700;
+  }
+  .mega-hook {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .mega-all {
+    display: block;
+    margin-top: 8px;
+    padding: 12px;
+    border-top: 1px solid var(--line);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mobile {
+    display: none;
+  }
+  .burger {
+    list-style: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    display: grid;
+    place-content: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .burger::-webkit-details-marker {
+    display: none;
+  }
+  .burger span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--ink);
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .mobile[open] .burger span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .mobile[open] .burger span:nth-child(2) {
+    opacity: 0;
+  }
+  .mobile[open] .burger span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+  .drawer {
+    position: fixed;
+    inset: calc(69px + env(safe-area-inset-top, 0px)) 0 0 0;
+    background: var(--bg);
+    overflow-y: auto;
+    padding: 16px var(--gutter-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gutter);
+  }
+  .drawer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .drawer li a {
+    display: block;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .drawer li a[aria-current="page"] {
+    color: var(--primary);
+  }
+  .drawer-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-bottom: 4px;
+  }
+  .drawer-links {
+    margin-top: 16px !important;
+  }
+  .drawer-cta {
+    display: grid;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  :global(body.lock) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 900px) {
+    .desktop-nav,
+    .login {
+      display: none;
+    }
+    .mobile {
+      display: block;
+    }
+  }
+  @media (max-width: 380px) {
+    .actions .btn-primary {
+      display: none;
+    }
+  }
+</style>

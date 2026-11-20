@@ -1,0 +1,57 @@
+---
+import Base from "../layouts/Base.astro";
+import { appUrl } from "../lib/api";
+---
+
+<Base title="Tentang SelfGrow" description="SelfGrow membantu orang Indonesia bertumbuh sedikit setiap hari lewat ebook interaktif, tools, dan template yang langsung dipraktikkan.">
+  <section class="head">
+    <div class="container">
+      <p class="eyebrow">Tentang</p>
+      <h1>Pengembangan diri yang langsung dipraktikkan</h1>
+    </div>
+  </section>
+  <section class="container prose">
+    <p class="lead">SelfGrow lahir dari satu keyakinan: perubahan besar datang dari langkah kecil yang dilakukan setiap hari.</p>
+    <p>Banyak buku pengembangan diri berhenti di halaman terakhir. Di SelfGrow, setiap bab disertai alat untuk langsung dipraktikkan: kalkulator untuk menghitung, tracker untuk membangun kebiasaan, dan template yang bisa diunduh lalu dipakai.</p>
+    <h2>Yang kami pegang</h2>
+    <ul>
+      <li><b>Praktis.</b> Setiap konten berakhir pada satu hal yang bisa kamu lakukan hari ini.</li>
+      <li><b>Bahasa sehari-hari.</b> Ditulis dalam Bahasa Indonesia yang ringan, dengan contoh yang dekat dengan kehidupan di sini.</li>
+      <li><b>Ringan di HP.</b> Dirancang untuk HP dan koneksi 4G, bukan hanya laptop.</li>
+      <li><b>Data milikmu.</b> Catatan tracker dan isian template adalah milikmu dan tidak dijual ke pihak lain.</li>
+    </ul>
+    <h2>Satu langganan, banyak pintu</h2>
+    <p>Mulai dari satu masalah, misalnya keuangan atau kebiasaan, lalu jelajahi kategori lain kapan pun kamu siap. Semua konten terbuka dalam satu langganan.</p>
+    <p><a href={appUrl("/masuk")} class="btn btn-primary">Mulai gratis</a></p>
+  </section>
+</Base>
+
+<style>
+  .head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(32px, 6vw, 64px);
+  }
+  .head .container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .prose {
+    max-width: calc(68ch + 32px);
+    padding-block: 40px clamp(48px, 8vw, 96px);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .prose h2 {
+    font-size: 1.4rem;
+    margin-top: 12px;
+  }
+  .prose ul {
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 10px;
+  }
+</style>

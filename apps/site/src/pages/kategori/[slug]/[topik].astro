@@ -1,0 +1,39 @@
+---
+import CategoryView from "../../../components/CategoryView.astro";
+import Base from "../../../layouts/Base.astro";
+import { getCategory } from "../../../lib/api";
+
+const slug = Astro.params.slug ?? "";
+const topik = Astro.params.topik ?? "";
+const data = await getCategory(slug, topik);
+if (!data?.topic) return Astro.rewrite("/404");
+const { category, topic } = data;
+const crumbs = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Beranda",
+      item: new URL("/", Astro.site ?? Astro.url.origin).toString(),
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: category.name,
+      item: new URL(`/kategori/${slug}`, Astro.site ?? Astro.url.origin).toString(),
+    },
+    { "@type": "ListItem", position: 3, name: topic.name },
+  ],
+};
+---
+
+<Base
+  title={`${topic.name} | ${category.name} | SelfGrow`}
+  description={`Ebook, tools, dan template tentang ${topic.name.toLowerCase()} untuk membantu kamu bertumbuh.`}
+  current={slug}
+  jsonLd={[crumbs]}
+>
+  <CategoryView data={data} />
+</Base>
