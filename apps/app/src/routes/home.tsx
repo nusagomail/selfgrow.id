@@ -9,7 +9,7 @@ export function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (me.status === "anonymous") navigate({ to: "/masuk" });
+    if (me.status === "anonymous") navigate({ to: "/masuk", replace: true });
   }, [me, navigate]);
 
   if (me.status === "loading" || me.status === "anonymous") {

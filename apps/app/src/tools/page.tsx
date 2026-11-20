@@ -24,7 +24,7 @@ export function ToolPage() {
   }, [s]);
 
   useEffect(() => {
-    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk" });
+    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk", replace: true });
   }, [err, navigate]);
 
   if (!meta) {

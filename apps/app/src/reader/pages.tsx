@@ -29,7 +29,7 @@ const TYPE_LABEL: Record<string, string> = {
 function useAuthRedirect(err: unknown) {
   const navigate = useNavigate();
   useEffect(() => {
-    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk" });
+    if (err instanceof ApiError && err.status === 401) navigate({ to: "/masuk", replace: true });
   }, [err, navigate]);
 }
 
