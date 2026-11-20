@@ -11,7 +11,21 @@ export interface PublishedProgram {
   steps: ProgramDay[];
 }
 
-/** Ambil judul & status konten yang dirujuk langkah program (sekali query per tabel). */
+/** D1 membatasi 100 parameter per query; daftar id dipecah per 90 (review keamanan PR #12). */
+export const D1_IN_CHUNK = 90;
+
+export async function inChunks<T>(
+  ids: string[],
+  query: (chunk: string[]) => Promise<T[]>,
+): Promise<T[]> {
+  const out: T[] = [];
+  for (let i = 0; i < ids.length; i += D1_IN_CHUNK) {
+    out.push(...(await query(ids.slice(i, i + D1_IN_CHUNK))));
+  }
+  return out;
+}
+
+/** Ambil judul & status konten yang dirujuk langkah program. */
 export async function resolveRefs(db: Database, steps: ProgramDay[]) {
   const contentIds = new Set<string>();
   const chapterIds = new Set<string>();
@@ -21,29 +35,29 @@ export async function resolveRefs(db: Database, steps: ProgramDay[]) {
       if (it.type === "chapter") chapterIds.add(it.chapterId);
     }
   }
-  const contents = contentIds.size
-    ? await db
-        .select({
-          id: schema.contentItems.id,
-          type: schema.contentItems.type,
-          slug: schema.contentItems.slug,
-          title: schema.contentItems.title,
-          status: schema.contentItems.status,
-        })
-        .from(schema.contentItems)
-        .where(inArray(schema.contentItems.id, [...contentIds]))
-    : [];
-  const chapters = chapterIds.size
-    ? await db
-        .select({
-          id: schema.ebookChapters.id,
-          contentId: schema.ebookChapters.contentId,
-          title: schema.ebookChapters.title,
-          status: schema.ebookChapters.status,
-        })
-        .from(schema.ebookChapters)
-        .where(inArray(schema.ebookChapters.id, [...chapterIds]))
-    : [];
+  const contents = await inChunks([...contentIds], (ids) =>
+    db
+      .select({
+        id: schema.contentItems.id,
+        type: schema.contentItems.type,
+        slug: schema.contentItems.slug,
+        title: schema.contentItems.title,
+        status: schema.contentItems.status,
+      })
+      .from(schema.contentItems)
+      .where(inArray(schema.contentItems.id, ids)),
+  );
+  const chapters = await inChunks([...chapterIds], (ids) =>
+    db
+      .select({
+        id: schema.ebookChapters.id,
+        contentId: schema.ebookChapters.contentId,
+        title: schema.ebookChapters.title,
+        status: schema.ebookChapters.status,
+      })
+      .from(schema.ebookChapters)
+      .where(inArray(schema.ebookChapters.id, ids)),
+  );
   return {
     contents: new Map(contents.map((c) => [c.id, c])),
     chapters: new Map(chapters.map((c) => [c.id, c])),
@@ -85,7 +99,8 @@ export function itemViews(
   return day.items.map((it) => {
     if (it.type === "task") return { type: "task", title: it.text, href: null };
     const c = refs.contents.get(it.contentId);
-    const live = c && c.status === "published";
+    const expected = it.type === "chapter" ? "ebook" : it.type;
+    const live = c && c.status === "published" && c.type === expected;
     if (it.type === "chapter") {
       const ch = refs.chapters.get(it.chapterId);
       const ok = live && ch && ch.contentId === it.contentId && ch.status === "published";

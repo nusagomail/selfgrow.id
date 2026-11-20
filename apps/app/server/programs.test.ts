@@ -2,9 +2,12 @@
  * Program bertahap (Fase 1B, D13): rujukan wajib terbit, hari terbuka sesuai tanggal WIB,
  * progres per user (IDOR), butuh langganan untuk mulai & menandai selesai.
  */
+
 import { env } from "cloudflare:test";
+import { createDb } from "@selfgrow/db";
 import { describe, expect, it } from "vitest";
 import { call, createUser, grantSubscription } from "../test/helpers";
+import { checkProgramRefs, resolveRefs } from "./services/programs";
 
 const json = (body: unknown) => ({
   headers: { "content-type": "application/json" },
@@ -202,6 +205,40 @@ describe("program pelanggan", () => {
     expect(await r.json()).toEqual({ completedCount: 2, finished: true });
   });
 
+  it("hari yang dihapus saat terbit ulang tidak dihitung untuk status selesai", async () => {
+    const { admin, slug, id } = await setupProgram();
+    const u = await subscriber();
+    await call(`/api/v1/programs/${slug}/enroll`, { method: "POST", token: u.token, ...json({}) });
+    await env.DB.prepare(
+      "UPDATE program_enrollments SET started_at = started_at - 86400000 WHERE user_id = ? AND program_id = ?",
+    )
+      .bind(u.id, id)
+      .run();
+    await call(`/api/v1/programs/${slug}/days/1/complete`, { method: "POST", token: u.token });
+    await call(`/api/v1/studio/programs/${id}`, {
+      method: "PUT",
+      token: admin.token,
+      ...json({
+        durationDays: 30,
+        steps: [
+          { day: 2, title: "Dua", items: [] },
+          { day: 3, title: "Tiga", items: [] },
+        ],
+      }),
+    });
+    const pub = await call(`/api/v1/studio/content/${id}`, {
+      method: "PATCH",
+      token: admin.token,
+      ...json({ status: "published" }),
+    });
+    expect(pub.status).toBe(200);
+    const r = await call(`/api/v1/programs/${slug}/days/2/complete`, {
+      method: "POST",
+      token: u.token,
+    });
+    expect(await r.json()).toEqual({ completedCount: 1, finished: false });
+  });
+
   it("progres hanya milik sendiri", async () => {
     const { slug } = await setupProgram();
     const a = await subscriber();
@@ -253,5 +290,38 @@ describe("program pelanggan", () => {
       title: "Bab tidak tersedia",
       href: null,
     });
+  });
+
+  it("hapus tanda selesai untuk slug tak dikenal tetap 204 (tidak membocorkan slug)", async () => {
+    const u = await subscriber();
+    const r = await call("/api/v1/programs/tidak-ada-slug/days/1/complete", {
+      method: "DELETE",
+      token: u.token,
+    });
+    expect(r.status).toBe(204);
+  });
+});
+
+describe("rujukan program dalam jumlah besar", () => {
+  it("lebih dari 100 rujukan tidak melewati batas parameter D1", async () => {
+    const { eb } = await setupProgram();
+    const db = createDb(env.DB);
+    const steps = Array.from({ length: 150 }, (_, i) => ({
+      day: i + 1,
+      title: `Hari ${i + 1}`,
+      items: [
+        {
+          type: "chapter" as const,
+          contentId: eb.id,
+          chapterId: i === 0 ? eb.chapterId : `ch-${i}`,
+        },
+        { type: "tool" as const, contentId: `tool-${i}` },
+      ],
+    }));
+    const refs = await resolveRefs(db, steps);
+    expect(refs.contents.has(eb.id)).toBe(true);
+    expect(refs.chapters.has(eb.chapterId)).toBe(true);
+    const problems = await checkProgramRefs(db, steps);
+    expect(problems.length).toBeGreaterThan(100);
   });
 });

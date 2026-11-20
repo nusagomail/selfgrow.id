@@ -1,4 +1,4 @@
-import { and, eq, schema, sql } from "@selfgrow/db";
+import { and, eq, schema } from "@selfgrow/db";
 import {
   currentProgramDay,
   enrollBodySchema,
@@ -68,9 +68,14 @@ export const programs = new Hono<AppEnv>()
       ? await completedDays(c.var.db, user.id, program.item.id)
       : new Set<number>();
     const today = enrollment ? currentProgramDay(enrollment.startedAt) : 0;
-    const refs = await resolveRefs(c.var.db, program.steps);
+    const isUnlocked = (day: number) => Boolean(enrollment) && day <= today && sub.active;
+    // Rujukan hanya di-resolve untuk hari yang terbuka.
+    const refs = await resolveRefs(
+      c.var.db,
+      program.steps.filter((s) => isUnlocked(s.day)),
+    );
     const days: ProgramDayView[] = program.steps.map((s) => {
-      const unlocked = Boolean(enrollment) && s.day <= today && sub.active;
+      const unlocked = isUnlocked(s.day);
       return {
         day: s.day,
         title: s.title,
@@ -154,16 +159,11 @@ export const programs = new Hono<AppEnv>()
       .insert(schema.programDayCompletions)
       .values({ userId: user.id, programId: program.item.id, day, completedAt: new Date() })
       .onConflictDoNothing();
-    const [{ n } = { n: 0 }] = await c.var.db
-      .select({ n: sql<number>`count(*)` })
-      .from(schema.programDayCompletions)
-      .where(
-        and(
-          eq(schema.programDayCompletions.userId, user.id),
-          eq(schema.programDayCompletions.programId, program.item.id),
-        ),
-      );
-    const finished = n >= program.steps.length;
+    // Hanya hari yang masih ada di langkah terbit yang dihitung (review keamanan PR #12).
+    const stepDays = new Set(program.steps.map((s) => s.day));
+    const done = await completedDays(c.var.db, user.id, program.item.id);
+    const n = [...done].filter((d) => stepDays.has(d)).length;
+    const finished = n >= stepDays.size;
     await c.var.db
       .update(schema.programEnrollments)
       .set({
@@ -186,7 +186,8 @@ export const programs = new Hono<AppEnv>()
       ),
       columns: { id: true },
     });
-    if (!item) return c.json({ error: "not_found" }, 404);
+    // Selalu 204 agar keberadaan slug program yang belum terbit tidak terbocorkan.
+    if (!item) return c.body(null, 204);
     await c.var.db
       .delete(schema.programDayCompletions)
       .where(

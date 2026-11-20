@@ -10,7 +10,7 @@ import type { AppEnv } from "../env";
 import { requireAccess, requireAdmin } from "../middleware/guards";
 import { writeAudit } from "../services/audit";
 import { writeJson } from "../services/ebook-storage";
-import { checkProgramRefs, programKeys } from "../services/programs";
+import { checkProgramRefs, inChunks, programKeys } from "../services/programs";
 
 async function parseBody<S extends z.ZodTypeAny>(req: Request, s: S) {
   const parsed = s.safeParse(await req.json().catch(() => null));
@@ -93,18 +93,18 @@ export const studioPrograms = new Hono<AppEnv>()
       .orderBy(desc(schema.contentItems.updatedAt))
       .limit(500);
     const ebookIds = catalog.filter((x) => x.type === "ebook").map((x) => x.id);
-    const chapters = ebookIds.length
-      ? await c.var.db
-          .select({
-            id: schema.ebookChapters.id,
-            contentId: schema.ebookChapters.contentId,
-            title: schema.ebookChapters.title,
-            status: schema.ebookChapters.status,
-          })
-          .from(schema.ebookChapters)
-          .where(inArray(schema.ebookChapters.contentId, ebookIds))
-          .orderBy(asc(schema.ebookChapters.order))
-      : [];
+    const chapters = await inChunks(ebookIds, (ids) =>
+      c.var.db
+        .select({
+          id: schema.ebookChapters.id,
+          contentId: schema.ebookChapters.contentId,
+          title: schema.ebookChapters.title,
+          status: schema.ebookChapters.status,
+        })
+        .from(schema.ebookChapters)
+        .where(inArray(schema.ebookChapters.contentId, ids))
+        .orderBy(asc(schema.ebookChapters.order)),
+    );
     const steps = JSON.parse(program.stepsJson) as ProgramDay[];
     return c.json({
       item: {
