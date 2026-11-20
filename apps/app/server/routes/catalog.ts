@@ -3,6 +3,7 @@ import { type ContentType, contentTypeSchema } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { FREE_TIER } from "../middleware/guards";
+import { coverPath } from "../services/covers";
 import { ebookKeys, readDoc } from "../services/ebook-storage";
 import { inChunks, type PublishedProgram, programKeys } from "../services/programs";
 import { rateLimit } from "../services/protection";
@@ -131,7 +132,7 @@ export const catalog = new Hono<AppEnv>()
     }
     await next();
     if (c.res.status !== 200) return;
-    c.header("Cache-Control", PUBLIC_CACHE);
+    if (!c.res.headers.has("Cache-Control")) c.header("Cache-Control", PUBLIC_CACHE);
     if (useCache) {
       const copy = c.res.clone();
       const headers = new Headers(copy.headers);
@@ -182,6 +183,7 @@ export const catalog = new Hono<AppEnv>()
             id: schema.contentItems.id,
             tier: schema.contentItems.tier,
             categoryId: schema.contentItems.categoryId,
+            coverAssetId: schema.contentItems.coverAssetId,
             publishedAt: schema.contentItems.publishedAt,
           })
           .from(schema.contentItems)
@@ -217,8 +219,38 @@ export const catalog = new Hono<AppEnv>()
         summary: i.summary,
         topic: i.categoryId ? (topicById.get(i.categoryId) ?? null) : null,
         access: access.get(i.id) ?? "premium",
+        coverUrl: coverPath(i.coverAssetId),
         publishedAt: i.publishedAt?.toISOString() ?? null,
       })),
+    });
+  })
+
+  /**
+   * Gambar sampul. Hanya sampul milik konten TERBIT yang dilayani; id aset unik per unggahan,
+   * jadi aman di-cache lama.
+   */
+  .get("/covers/:assetId", async (c) => {
+    const rows = await c.var.db
+      .select({ r2Key: schema.assets.r2Key, mime: schema.assets.mime })
+      .from(schema.assets)
+      .innerJoin(schema.contentItems, eq(schema.contentItems.coverAssetId, schema.assets.id))
+      .where(
+        and(
+          eq(schema.assets.id, c.req.param("assetId")),
+          eq(schema.contentItems.status, "published"),
+        ),
+      )
+      .limit(1);
+    const asset = rows[0];
+    if (!asset) return c.json({ error: "not_found" }, 404);
+    const obj = await c.env.CONTENT.get(asset.r2Key);
+    if (!obj) return c.json({ error: "not_found" }, 404);
+    return new Response(obj.body, {
+      headers: {
+        "Content-Type": asset.mime,
+        "Cache-Control": "public, max-age=31536000, immutable",
+        "X-Content-Type-Options": "nosniff",
+      },
     });
   })
 
@@ -234,6 +266,7 @@ export const catalog = new Hono<AppEnv>()
           summary: schema.contentItems.summary,
           tier: schema.contentItems.tier,
           categoryId: schema.contentItems.categoryId,
+          coverAssetId: schema.contentItems.coverAssetId,
           publishedAt: schema.contentItems.publishedAt,
         })
         .from(schema.contentItems)
@@ -257,6 +290,7 @@ export const catalog = new Hono<AppEnv>()
           title: i.title,
           summary: i.summary,
           access: access.get(i.id) ?? "premium",
+          coverUrl: coverPath(i.coverAssetId),
           category: root ? { slug: root.slug, name: root.name } : null,
           publishedAt: i.publishedAt?.toISOString() ?? null,
         };
@@ -297,6 +331,7 @@ export const catalog = new Hono<AppEnv>()
       title: item.title,
       summary: item.summary,
       access,
+      coverUrl: coverPath(item.coverAssetId),
       category: category ? { slug: category.slug, name: category.name } : null,
       topic: topic ? { slug: topic.slug, name: topic.name } : null,
       publishedAt: item.publishedAt?.toISOString() ?? null,

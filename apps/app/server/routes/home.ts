@@ -3,6 +3,7 @@ import { currentProgramDay } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { FREE_TIER, requireAuth } from "../middleware/guards";
+import { coverPath } from "../services/covers";
 import { getAccessStatus } from "../services/entitlements";
 import { inChunks } from "../services/programs";
 import { currentPeriod } from "../services/usage";
@@ -116,6 +117,7 @@ export const home = new Hono<AppEnv>()
           summary: schema.contentItems.summary,
           categoryId: schema.contentItems.categoryId,
           tier: schema.contentItems.tier,
+          coverAssetId: schema.contentItems.coverAssetId,
           publishedAt: schema.contentItems.publishedAt,
         })
         .from(schema.contentItems)
@@ -148,6 +150,7 @@ export const home = new Hono<AppEnv>()
         summary: i.summary,
         freePreview,
         free: isFree,
+        coverUrl: coverPath(i.coverAssetId),
         // Terkunci = belum berlangganan, bukan konten gratis, dan tidak ada bagian gratis.
         locked: !access.active && !isFree && !freePreview,
         category: i.categoryId ? (rootOf.get(i.categoryId) ?? null) : null,

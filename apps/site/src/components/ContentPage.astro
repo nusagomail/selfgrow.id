@@ -1,7 +1,7 @@
 ---
 import type { EbookDoc } from "@selfgrow/shared";
 import Base from "../layouts/Base.astro";
-import { ACCESS_LABEL, appUrl, type ContentDetail, contentPath } from "../lib/api";
+import { ACCESS_LABEL, appUrl, type ContentDetail, contentPath, siteCover } from "../lib/api";
 import Nodes from "./ebook/Nodes.astro";
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
 const { data, preview } = Astro.props;
 const base = Astro.site ?? new URL(Astro.url.origin);
 const url = new URL(contentPath(data), base).toString();
+const cover = siteCover(data.coverUrl);
 
 const TYPE_LABEL = { ebook: "Ebook", tool: "Tool", template: "Template", program: "Program" };
 const APP_PATH = { ebook: "/baca", tool: "/tools", template: "/template", program: "/program" };
@@ -42,6 +43,7 @@ const ld: Record<string, unknown> = {
   dateModified: data.updatedAt,
   publisher: { "@type": "Organization", name: "SelfGrow" },
   isAccessibleForFree: data.access === "free",
+  ...(cover ? { image: new URL(cover, base).toString() } : {}),
   ...(data.type === "tool"
     ? { applicationCategory: "LifestyleApplication", operatingSystem: "Web" }
     : {}),
@@ -82,7 +84,9 @@ const crumbs = {
   jsonLd={[ld, crumbs]}
 >
   <section class:list={["head", data.type]}>
-    <div class="container head-inner">
+    <div class:list={["container", "head-inner", { "with-cover": cover }]}>
+      {cover && <img class="cover" src={cover} alt={`Sampul ${data.title}`} width="240" height="360" />}
+      <div class="head-text">
       <nav class="crumbs" aria-label="Lokasi halaman">
         <a href="/">Beranda</a>
         {data.category && (<><span aria-hidden="true">/</span><a href={`/kategori/${data.category.slug}`}>{data.category.name}</a></>)}
@@ -105,6 +109,7 @@ const crumbs = {
             ? "Bab gratis bisa dibaca di bawah ini tanpa login. Bab lainnya untuk pelanggan."
             : "Konten Premium: terbuka untuk pelanggan. Masuk dengan Google untuk mulai."}
       </p>
+      </div>
     </div>
   </section>
 
@@ -178,10 +183,34 @@ const crumbs = {
   .head.program {
     background: linear-gradient(135deg, #34205a, #4f347a);
   }
-  .head-inner {
+  .head-inner,
+  .head-text {
     display: flex;
     flex-direction: column;
     gap: 14px;
+  }
+  .head-inner.with-cover {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(20px, 4vw, 40px);
+  }
+  .head-text {
+    min-width: 0;
+  }
+  .cover {
+    width: clamp(120px, 22vw, 220px);
+    height: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 18px 40px rgb(0 0 0 / 40%);
+    flex-shrink: 0;
+  }
+  @media (max-width: 560px) {
+    .head-inner.with-cover {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
   .head h1 {
     color: #fff;

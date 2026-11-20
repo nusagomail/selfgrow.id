@@ -13,6 +13,7 @@ type Item = {
   /** Ditandai gratis di Studio: terbuka untuk semua user login (D35). */
   free: boolean;
   locked: boolean;
+  coverUrl: string | null;
 };
 type Section = { slug: string; name: string; hook: string | null; items: Item[] };
 type Reading = {
@@ -44,6 +45,11 @@ function ItemCard({ item }: { item: Item }) {
   const common = { className: `item-card${item.locked ? " is-locked" : ""}` };
   const body = (
     <>
+      {item.coverUrl && (
+        <span className="item-cover">
+          <img src={item.coverUrl} alt="" loading="lazy" decoding="async" />
+        </span>
+      )}
       <span className="item-top">
         <span className={`type-tag ${item.type}`}>{TYPE_LABEL[item.type]}</span>
         {item.locked ? (

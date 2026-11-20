@@ -726,3 +726,47 @@ select {
   grid-column: 1 / -1;
   grid-row: 2;
 }
+
+/* Sampul konten (Studio & kartu) */
+.cover-picker {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.cover-preview {
+  width: 96px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.cover-preview.empty {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: var(--surface-alt);
+  padding: 6px;
+}
+.item-cover {
+  position: relative;
+  overflow: hidden;
+  margin: -16px -16px 4px;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg, #073e1f, #1d7a34);
+  border-radius: 14px 14px 0 0;
+}
+.item-cover img {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: calc(100% - 24px);
+  width: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 35%);
+}

@@ -28,6 +28,7 @@ export interface CatalogItem {
   summary: string | null;
   topic: string | null;
   access: Access;
+  coverUrl: string | null;
   publishedAt: string | null;
 }
 
@@ -37,6 +38,7 @@ export interface FeedItem {
   title: string;
   summary: string | null;
   access: Access;
+  coverUrl: string | null;
   category: { slug: string; name: string } | null;
   publishedAt: string | null;
 }
@@ -47,6 +49,7 @@ export interface ContentDetail {
   title: string;
   summary: string | null;
   access: Access;
+  coverUrl: string | null;
   category: { slug: string; name: string } | null;
   topic: { slug: string; name: string } | null;
   publishedAt: string | null;
@@ -113,6 +116,12 @@ export const SITE_PATH: Record<ContentType, string> = {
 };
 export const contentPath = (i: { type: ContentType; slug: string }) =>
   `${SITE_PATH[i.type]}/${encodeURIComponent(i.slug)}`;
+
+/** Alamat sampul di etalase: /sampul/{id} (proxy ke katalog app). */
+export function siteCover(coverUrl: string | null | undefined): string | null {
+  const id = coverUrl?.split("/").pop();
+  return id ? `/sampul/${id}` : null;
+}
 
 /** Tautan ke aplikasi (login, baca, pakai tool). */
 export function appUrl(path = "/"): string {
