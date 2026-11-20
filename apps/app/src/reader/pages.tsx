@@ -41,7 +41,9 @@ function useAuthRedirect(err: unknown) {
 // Preferensi baca (per perangkat): ukuran huruf & warna kertas.
 // ---------------------------------------------------------------------------
 
-const SIZES = [16, 18, 20, 23] as const;
+/** Ukuran huruf (px). Bawaan 16px, setara buku saku di layar HP. */
+const SIZES = [14, 15, 16, 17.5, 19, 21] as const;
+const DEFAULT_SIZE = 2;
 const THEMES = [
   { id: "paper", label: "Putih" },
   { id: "sepia", label: "Krem" },
@@ -49,7 +51,7 @@ const THEMES = [
 ] as const;
 type Theme = (typeof THEMES)[number]["id"];
 type Prefs = { size: number; theme: Theme };
-const PREFS_KEY = "sg-book";
+const PREFS_KEY = "sg-book-v2";
 
 function loadPrefs(): Prefs {
   try {
@@ -57,11 +59,11 @@ function loadPrefs(): Prefs {
     const size = typeof raw?.size === "number" && raw.size >= 0 && raw.size < SIZES.length;
     const theme = THEMES.some((t) => t.id === raw?.theme);
     return {
-      size: size ? (raw?.size as number) : 1,
+      size: size ? (raw?.size as number) : DEFAULT_SIZE,
       theme: theme ? (raw?.theme as Theme) : "paper",
     };
   } catch {
-    return { size: 1, theme: "paper" };
+    return { size: DEFAULT_SIZE, theme: "paper" };
   }
 }
 

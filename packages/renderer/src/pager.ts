@@ -1,6 +1,7 @@
 /**
  * Mesin halaman ebook (D37): isi bab ditata dalam kolom CSS selebar layar, lalu dibalik per
- * halaman dengan efek kertas (lembar berputar pada tulang buku, mengikuti jari saat digeser).
+ * halaman dengan efek kertas terlipat: tepi halaman terangkat dan terlipat ke arah tulang buku
+ * mengikuti jari, punggung kertas terlihat, dengan bayangan di garis lipatan.
  * Tanpa React dan tanpa dependency, dipakai reader di `app` dan pratinjau bab gratis di `site`.
  * Hanya mengatur gaya, transform, dan salinan DOM (cloneNode); tidak pernah menulis HTML.
  */
@@ -10,6 +11,8 @@ export type PagerLayout = {
   cols: number;
   /** Margin kiri-kanan tiap halaman (px). */
   pad: number;
+  /** Margin atas-bawah tiap halaman (px), di dalam kertas. */
+  vpad: number;
   /** Lebar teks tiap halaman (px). */
   colWidth: number;
   /** Lebar satu halaman (px) = lebar layar / kolom. */
@@ -52,7 +55,7 @@ export type Pager = {
 
 const SWIPE_MIN_PX = 40;
 const DRAG_START_PX = 8;
-const TURN_MS = 620;
+const TURN_MS = 680;
 /** Lembar yang sudah terbuka melewati batas ini saat jari dilepas akan diselesaikan. */
 const COMMIT_AT = 0.22;
 const INTERACTIVE = "a,button,input,select,textarea,summary,label,[role=button]";
@@ -62,7 +65,8 @@ export function layoutFor(width: number, spreadMinWidth = 900): PagerLayout {
   const cols = w >= spreadMinWidth ? 2 : 1;
   const pad = w < 480 ? 22 : w < spreadMinWidth ? 36 : 44;
   const step = w / cols;
-  return { cols, pad, colWidth: Math.max(1, step - 2 * pad), step };
+  const vpad = w < 480 ? 28 : 44;
+  return { cols, pad, vpad, colWidth: Math.max(1, step - 2 * pad), step };
 }
 
 /** Jumlah halaman dari posisi penanda akhir (px dari tepi kiri alur teks). */
@@ -96,56 +100,98 @@ export function stateFor(screen: number, pages: number, cols: number): PagerStat
 }
 
 export type TurnPlan = {
-  /** Kolom (slot layar) tempat engsel lembar: lembar menempati slot ini saat sudut 0. */
-  leafSlot: number;
-  /** Halaman di muka & punggung lembar (null = kertas kosong). */
-  front: number;
-  back: number | null;
-  /** Slot yang ditahan menampilkan halaman lama selama lembar berputar. */
+  /** Sisi lembar yang terangkat: "right" = tepi kanan terlipat ke kiri (maju), "left" sebaliknya. */
+  side: "right" | "left";
+  /** Slot layar (kolom) tempat lembar yang dibalik. */
+  sheetSlot: number;
+  /** Halaman di muka lembar yang dibalik. */
+  turning: number;
+  /** Punggung lembar: halaman lain (buku terbuka) atau cermin samar muka lembar (HP). */
+  back: number | "mirror";
+  /** Slot yang ditahan menampilkan halaman lama selama lembar dibalik. */
   pin: { slot: number; page: number } | null;
-  /** Kapan alur teks di bawah lembar pindah ke layar tujuan. */
-  flowJumps: "start" | "end";
+  /** Layar yang ditampilkan alur teks di bawah lembar selama dibalik. */
+  under: "target" | "current";
+  /** Mundur di HP = animasi maju yang diputar balik (lembar sebelumnya kembali menutup). */
+  reverse: boolean;
 };
 
-/**
- * Rencana membalik satu lembar dari layar `screen` ke arah `dir`. Murni (tanpa DOM) supaya
- * mudah diuji. Sudut lembar: maju 0 → -180 derajat, mundur -180 → 0 derajat.
- */
+/** Rencana membalik satu lembar dari layar `screen` ke arah `dir`. Murni, tanpa DOM. */
 export function planTurn(screen: number, dir: 1 | -1, cols: number): TurnPlan {
   const target = screen + dir;
-  const leafSlot = cols - 1;
   if (cols === 1) {
     return dir === 1
-      ? { leafSlot, front: screen, back: null, pin: null, flowJumps: "start" }
-      : { leafSlot, front: target, back: null, pin: null, flowJumps: "end" };
+      ? {
+          side: "right",
+          sheetSlot: 0,
+          turning: screen,
+          back: "mirror",
+          pin: null,
+          under: "target",
+          reverse: false,
+        }
+      : {
+          side: "right",
+          sheetSlot: 0,
+          turning: target,
+          back: "mirror",
+          pin: null,
+          under: "current",
+          reverse: true,
+        };
   }
   return dir === 1
     ? {
-        // Halaman kanan berputar ke kiri; halaman kiri lama ditahan sampai tertutup.
-        leafSlot,
-        front: screen * 2 + 1,
+        side: "right",
+        sheetSlot: 1,
+        turning: screen * 2 + 1,
         back: target * 2,
         pin: { slot: 0, page: screen * 2 },
-        flowJumps: "start",
+        under: "target",
+        reverse: false,
       }
     : {
-        // Halaman kiri berputar kembali ke kanan; halaman kanan lama ditahan.
-        leafSlot,
-        front: target * 2 + 1,
-        back: screen * 2,
+        side: "left",
+        sheetSlot: 0,
+        turning: screen * 2,
+        back: target * 2 + 1,
         pin: { slot: 1, page: screen * 2 + 1 },
-        flowJumps: "start",
+        under: "target",
+        reverse: false,
       };
 }
 
+export type FoldGeometry = {
+  /** Posisi tepi bebas kertas (mengikuti jari). */
+  edge: number;
+  /** Garis lipatan. */
+  fold: number;
+  /** Bagian muka lembar yang masih rata [kiri, kanan]. */
+  visible: [number, number];
+  /** Bagian kertas yang terlipat (punggungnya terlihat) [kiri, kanan]. */
+  flap: [number, number];
+};
+
 /**
- * Sudut lembar (derajat) untuk kemajuan 0..1. Kemajuan dipetakan ke posisi tepi kertas
- * (bukan sudut) supaya tepi lembar bergerak rata mengikuti jari, seperti kertas sungguhan.
+ * Geometri lipatan untuk lembar selebar [left, right] dengan kemajuan q 0..1. Lipatan selalu di
+ * tengah antara tepi bebas dan posisi awal tepi itu, seperti kertas yang ditekuk rata.
  */
-export function leafAngle(dir: 1 | -1, progress: number): number {
-  const p = Math.min(1, Math.max(0, progress));
-  const edge = dir === 1 ? 1 - 2 * p : 2 * p - 1;
-  return -(Math.acos(Math.min(1, Math.max(-1, edge))) * 180) / Math.PI;
+export function foldGeometry(
+  side: "right" | "left",
+  left: number,
+  right: number,
+  q: number,
+): FoldGeometry {
+  const t = Math.min(1, Math.max(0, q));
+  const w = right - left;
+  if (side === "right") {
+    const edge = right - 2 * w * t;
+    const fold = (edge + right) / 2;
+    return { edge, fold, visible: [left, fold], flap: [edge, fold] };
+  }
+  const edge = left + 2 * w * t;
+  const fold = (edge + left) / 2;
+  return { edge, fold, visible: [fold, right], flap: [fold, edge] };
 }
 
 const easeOut = (t: number) => 1 - (1 - t) ** 3;
@@ -155,9 +201,11 @@ type Turn = {
   target: number;
   plan: TurnPlan;
   progress: number;
-  leaf: HTMLElement;
-  frontShade: HTMLElement;
-  backShade: HTMLElement;
+  sheet: HTMLElement;
+  flap: HTMLElement;
+  flapInner: HTMLElement;
+  flapShade: HTMLElement;
+  foldShade: HTMLElement;
   cast: HTMLElement;
   layers: HTMLElement[];
   raf: number | null;
@@ -199,11 +247,10 @@ export function createPager(
     s.boxSizing = "border-box";
     s.width = `${layout.step * layout.cols}px`;
     s.height = "100%";
-    s.padding = `0 ${layout.pad}px`;
+    s.padding = `${layout.vpad}px ${layout.pad}px`;
     s.columnCount = String(layout.cols);
     s.columnGap = `${layout.pad * 2}px`;
     s.columnFill = "auto";
-    viewport.style.perspective = `${Math.round(Math.max(1400, layout.step * 3.2))}px`;
     viewport.classList.add("is-paged");
     viewport.classList.toggle("is-spread", layout.cols > 1);
     if (!marker) return;
@@ -212,78 +259,116 @@ export function createPager(
     pages = pagesFor(offset, layout);
   };
 
-  // --- Lembar kertas --------------------------------------------------------------------------
+  // --- Kertas terlipat ------------------------------------------------------------------------
 
-  /** Salinan isi bab yang hanya menampilkan satu halaman (untuk muka lembar / halaman tertahan). */
-  const pageLayer = (page: number | null, className: string) => {
+  /** Salinan isi bab yang menampilkan satu halaman di [0, lebar halaman] (cloneNode, inert). */
+  const pageCopy = (page: number) => {
+    const copy = flow.cloneNode(true) as HTMLElement;
+    copy.inert = true;
+    copy.setAttribute("aria-hidden", "true");
+    copy.style.transform = `translate3d(${-page * layout.step}px,0,0)`;
+    return copy;
+  };
+  const box = (className: string, left: number, width: number) => {
     const el = document.createElement("div");
     el.className = className;
     el.setAttribute("aria-hidden", "true");
-    if (page !== null && page < pages) {
-      const copy = flow.cloneNode(true) as HTMLElement;
-      copy.inert = true;
-      copy.style.transform = `translate3d(${-page * layout.step}px,0,0)`;
-      el.append(copy);
-    }
+    el.style.left = `${left}px`;
+    el.style.width = `${Math.max(0, width)}px`;
     return el;
   };
 
-  const slotStyle = (el: HTMLElement, slot: number) => {
-    el.style.left = `${slot * layout.step}px`;
-    el.style.width = `${layout.step}px`;
-  };
-
   const render = (t: Turn) => {
-    const angle = leafAngle(t.dir, t.progress);
-    const lift = Math.sin((Math.abs(angle) * Math.PI) / 180);
-    t.leaf.style.transform = `rotateY(${angle}deg)`;
-    t.leaf.style.boxShadow = `0 0 ${Math.round(30 * lift)}px rgb(0 0 0 / ${(0.28 * lift).toFixed(3)})`;
-    t.frontShade.style.opacity = (0.9 * lift).toFixed(3);
-    t.backShade.style.opacity = (0.7 * lift).toFixed(3);
-    t.cast.style.opacity = (0.8 * lift).toFixed(3);
+    const { plan } = t;
+    const step = layout.step;
+    const left = plan.sheetSlot * step;
+    const right = left + step;
+    const q = plan.reverse ? 1 - t.progress : t.progress;
+    const g = foldGeometry(plan.side, left, right, q);
+    const lift = Math.sin(Math.PI * Math.min(1, Math.max(0, q)));
+
+    // Muka lembar: hanya bagian yang masih rata.
+    t.sheet.style.clipPath = `inset(0 ${right - g.visible[1]}px 0 ${g.visible[0] - left}px)`;
+
+    // Bagian terlipat: punggung kertas.
+    const [fl, fr] = g.flap;
+    const fw = Math.max(0, fr - fl);
+    t.flap.style.left = `${fl}px`;
+    t.flap.style.width = `${fw}px`;
+    t.flap.style.visibility = fw < 0.5 ? "hidden" : "visible";
+    if (plan.back === "mirror") {
+      // Cermin muka lembar terhadap garis lipatan (teks samar tembus kertas).
+      t.flapInner.style.left = `${left - fl}px`;
+      t.flapInner.style.transformOrigin = `${g.fold - left}px 0`;
+      t.flapInner.style.transform = "scaleX(-1)";
+    } else {
+      // Buku terbuka: punggung lembar adalah halaman berikutnya, menempel di tepi bebas.
+      const backLeft = plan.side === "right" ? g.edge : g.edge - step;
+      t.flapInner.style.left = `${backLeft - fl}px`;
+    }
+    t.flapShade.style.opacity = (0.55 + 0.45 * lift).toFixed(3);
+    t.flap.style.boxShadow =
+      plan.side === "right"
+        ? `${(-6 * lift).toFixed(1)}px 0 ${Math.round(18 * lift)}px rgb(0 0 0 / ${(0.22 * lift).toFixed(3)})`
+        : `${(6 * lift).toFixed(1)}px 0 ${Math.round(18 * lift)}px rgb(0 0 0 / ${(0.22 * lift).toFixed(3)})`;
+
+    // Bayangan lengkung di muka lembar dekat lipatan, dan bayangan jatuh di halaman bawahnya.
+    const shadeW = Math.min(56, Math.max(0, g.visible[1] - g.visible[0]), step * 0.2);
+    const castW = Math.min(64, step * 0.25);
+    if (plan.side === "right") {
+      t.foldShade.style.left = `${g.fold - shadeW}px`;
+      t.cast.style.left = `${g.fold}px`;
+    } else {
+      t.foldShade.style.left = `${g.fold}px`;
+      t.cast.style.left = `${g.fold - castW}px`;
+    }
+    t.foldShade.style.width = `${shadeW}px`;
+    t.cast.style.width = `${castW}px`;
+    t.foldShade.style.opacity = (0.9 * lift).toFixed(3);
+    t.cast.style.opacity = (0.9 * lift).toFixed(3);
   };
 
   const startTurn = (dir: 1 | -1): Turn | null => {
     const target = current + dir;
     if (target < 0 || target >= screens()) return null;
     const plan = planTurn(current, dir, layout.cols);
-
-    const leaf = document.createElement("div");
-    leaf.className = "book-leaf";
-    slotStyle(leaf, plan.leafSlot);
-    const front = pageLayer(plan.front, "book-face");
-    const back = pageLayer(plan.back, "book-face book-face-back");
-    const frontShade = document.createElement("div");
-    frontShade.className = "book-shade";
-    const backShade = document.createElement("div");
-    backShade.className = "book-shade book-shade-back";
-    front.append(frontShade);
-    back.append(backShade);
-    leaf.append(front, back);
-
-    // Bayangan lembar yang jatuh di halaman bawahnya.
-    const cast = document.createElement("div");
-    cast.className = "book-cast";
-    slotStyle(cast, plan.leafSlot);
+    const step = layout.step;
+    const left = plan.sheetSlot * step;
+    const side = plan.side;
 
     const layers: HTMLElement[] = [];
     if (plan.pin) {
-      const pin = pageLayer(plan.pin.page, "book-pin");
-      slotStyle(pin, plan.pin.slot);
+      const pin = box("book-pin", plan.pin.slot * step, step);
+      if (plan.pin.page < pages) pin.append(pageCopy(plan.pin.page));
       layers.push(pin);
     }
-    layers.push(cast, leaf);
+    const sheet = box("book-sheet", left, step);
+    sheet.append(pageCopy(plan.turning));
+    const cast = box(`book-cast book-cast-${side}`, 0, 0);
+    const foldShade = box(`book-fold-shade book-fold-shade-${side}`, 0, 0);
+    const flap = box(`book-flap book-flap-${side}`, 0, 0);
+    const flapInner = box("book-flap-inner", 0, step);
+    const backPage = plan.back === "mirror" ? plan.turning : plan.back;
+    if (backPage < pages) flapInner.append(pageCopy(backPage));
+    if (plan.back === "mirror") flap.classList.add("is-mirror");
+    const flapShade = box("book-flap-shade", 0, 0);
+    flapShade.style.left = "";
+    flapShade.style.width = "";
+    flap.append(flapInner, flapShade);
+    layers.push(sheet, cast, foldShade, flap);
     viewport.append(...layers);
-    if (plan.flowJumps === "start") showScreen(target);
+    showScreen(plan.under === "target" ? target : current);
 
     const t: Turn = {
       dir,
       target,
       plan,
       progress: 0,
-      leaf,
-      frontShade,
-      backShade,
+      sheet,
+      flap,
+      flapInner,
+      flapShade,
+      foldShade,
       cast,
       layers,
       raf: null,
@@ -308,7 +393,7 @@ export function createPager(
     if (t.raf !== null) cancelAnimationFrame(t.raf);
     t.goal = goal;
     const from = t.progress;
-    const duration = Math.max(120, TURN_MS * Math.abs(goal - from));
+    const duration = Math.max(140, TURN_MS * Math.abs(goal - from));
     const t0 = performance.now();
     const frame = (now: number) => {
       const k = Math.min(1, (now - t0) / duration);
@@ -405,9 +490,8 @@ export function createPager(
       if (!reducedMotion) turn = startTurn(dragDir);
     }
     if (!turn || !dragDir) return;
-    // Tepi kertas mengikuti jari. Di HP tepi bergerak sedikit lebih cepat dari jari supaya
-    // satu geseran pendek cukup untuk membalik.
-    const span = layout.step * (layout.cols === 1 ? 1 : 1.5);
+    // Tepi kertas mengikuti jari, sedikit lebih cepat supaya satu geseran pendek cukup.
+    const span = layout.step * 1.2;
     turn.progress = Math.min(1, Math.max(0, (-dragDir * dx) / span));
     render(turn);
   };
