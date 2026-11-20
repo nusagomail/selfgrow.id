@@ -1,9 +1,10 @@
 import { and, desc, eq, gt, schema } from "@selfgrow/db";
-import type { DeviceSession, MeResponse } from "@selfgrow/shared";
+import { adminViewBodySchema, type DeviceSession, type MeResponse } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
-import { requireAuth } from "../middleware/guards";
-import { getSubscriptionStatus } from "../services/entitlements";
+import { requireAdmin, requireAuth } from "../middleware/guards";
+import { writeAudit } from "../services/audit";
+import { adminViewKey, getAccessStatus } from "../services/entitlements";
 
 /** Data akun milik user yang sedang login. Semua query difilter user_id dari sesi. */
 export const me = new Hono<AppEnv>()
@@ -19,9 +20,20 @@ export const me = new Hono<AppEnv>()
         image: user.image ?? null,
         role: user.role === "admin" ? "admin" : "member",
       },
-      subscription: await getSubscriptionStatus(c.env.KV, c.var.db, user.id),
+      subscription: await getAccessStatus(c.env.KV, c.var.db, user),
     };
     return c.json(body);
+  })
+  /** Admin: ganti tampilan aplikasi antara pelanggan dan pengunjung tanpa langganan. */
+  .put("/admin-view", requireAdmin, async (c) => {
+    // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
+    const user = c.var.user!;
+    const body = adminViewBodySchema.safeParse(await c.req.json().catch(() => null));
+    if (!body.success) return c.json({ error: "invalid_body" }, 400);
+    if (body.data.view === "visitor") await c.env.KV.put(adminViewKey(user.id), "visitor");
+    else await c.env.KV.delete(adminViewKey(user.id));
+    await writeAudit(c, { action: "admin.view", target: `user:${user.id}`, after: body.data });
+    return c.json({ view: body.data.view });
   })
   .get("/sessions", async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth

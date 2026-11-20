@@ -25,7 +25,13 @@ export function HomePage() {
       <h1>Halo, {user.name.split(" ")[0]}</h1>
       <div className="card">
         <h2>Langganan</h2>
-        {subscription.active ? (
+        {subscription.adminAccess ? (
+          <p>Akses penuh sebagai admin (tampilan pelanggan).</p>
+        ) : subscription.adminView === "visitor" ? (
+          <p className="muted">
+            Tampilan pengunjung tanpa langganan (admin). Ubah di halaman Akun.
+          </p>
+        ) : subscription.active ? (
           <p>
             Aktif
             {subscription.currentPeriodEnd &&

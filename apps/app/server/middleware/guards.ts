@@ -1,7 +1,7 @@
 import { createMiddleware } from "hono/factory";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { AppEnv } from "../env";
-import { getSubscriptionStatus } from "../services/entitlements";
+import { getAccessStatus } from "../services/entitlements";
 import { getFreeze } from "../services/protection";
 
 /** 401 bila belum login. */
@@ -18,7 +18,7 @@ export const requireActiveSubscription = createMiddleware<AppEnv>(async (c, next
   const user = c.var.user;
   if (!user) return c.json({ error: "unauthorized" }, 401);
   const [status, frozen] = await Promise.all([
-    getSubscriptionStatus(c.env.KV, c.var.db, user.id),
+    getAccessStatus(c.env.KV, c.var.db, user),
     getFreeze(c.env.KV, user.id),
   ]);
   // Akun dibekukan sementara karena terdeteksi scraping (BLUEPRINT bagian 8).

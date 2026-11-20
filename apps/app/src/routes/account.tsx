@@ -1,4 +1,4 @@
-import type { DeviceSession } from "@selfgrow/shared";
+import type { AdminView, DeviceSession, MeResponse } from "@selfgrow/shared";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, api, signOut } from "../lib/api";
@@ -37,6 +37,7 @@ export function AccountPage() {
         <Link to="/">← Beranda</Link>
       </p>
       <h1>Akun</h1>
+      <AdminViewCard />
       <div className="card">
         <h2>Perangkat aktif</h2>
         <p className="muted" style={{ marginTop: 0 }}>
@@ -69,5 +70,60 @@ export function AccountPage() {
         </button>
       </div>
     </main>
+  );
+}
+
+/** Admin: lihat aplikasi sebagai pelanggan (akses penuh) atau pengunjung tanpa langganan. */
+function AdminViewCard() {
+  const [me, setMe] = useState<MeResponse | null>(null);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    api<MeResponse>("/me")
+      .then(setMe)
+      .catch(() => {});
+  }, []);
+  if (me?.user.role !== "admin") return null;
+  const view: AdminView = me.subscription.adminView ?? "subscriber";
+
+  async function choose(next: AdminView) {
+    setSaving(true);
+    try {
+      await api("/me/admin-view", { method: "PUT", body: JSON.stringify({ view: next }) });
+      setMe((m) => (m ? { ...m, subscription: { ...m.subscription, adminView: next } } : m));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="card stack">
+      <h2>Tampilan admin</h2>
+      <p className="muted" style={{ margin: 0 }}>
+        Sebagai admin kamu punya akses penuh tanpa berlangganan. Pilih sudut pandang untuk meninjau
+        aplikasi.
+      </p>
+      <div className="row-actions" role="radiogroup" aria-label="Tampilan admin">
+        <label className="check">
+          <input
+            type="radio"
+            name="admin-view"
+            checked={view === "subscriber"}
+            disabled={saving}
+            onChange={() => choose("subscriber")}
+          />
+          Pelanggan (semua konten terbuka)
+        </label>
+        <label className="check">
+          <input
+            type="radio"
+            name="admin-view"
+            checked={view === "visitor"}
+            disabled={saving}
+            onChange={() => choose("visitor")}
+          />
+          Pengunjung tanpa langganan
+        </label>
+      </div>
+    </div>
   );
 }

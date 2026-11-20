@@ -4,7 +4,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireAuth } from "../middleware/guards";
 import { ebookKeys, readDoc } from "../services/ebook-storage";
-import { getSubscriptionStatus } from "../services/entitlements";
+import { getAccessStatus } from "../services/entitlements";
 import {
   getFreeze,
   recordChapterRead,
@@ -66,7 +66,7 @@ export const ebooks = new Hono<AppEnv>()
           eq(schema.readingProgress.contentId, ebook.id),
         ),
       }),
-      getSubscriptionStatus(c.env.KV, c.var.db, user.id),
+      getAccessStatus(c.env.KV, c.var.db, user),
     ]);
 
     return c.json({
@@ -104,7 +104,7 @@ export const ebooks = new Hono<AppEnv>()
     }
 
     if (!chapter.isFreePreview) {
-      const sub = await getSubscriptionStatus(c.env.KV, c.var.db, user.id);
+      const sub = await getAccessStatus(c.env.KV, c.var.db, user);
       if (!sub.active) return c.json({ error: "subscription_required" }, 403);
     }
 
