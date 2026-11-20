@@ -5,8 +5,14 @@
 import { env } from "cloudflare:test";
 import { STARTER_TEMPLATE } from "@selfgrow/shared";
 import { strFromU8, unzipSync } from "fflate";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { call, createUser, grantSubscription } from "../test/helpers";
+
+// Generator DOCX/PDF/XLSX dimuat lazy di aplikasi. Muat sekali di awal (waktu import library
+// besar di runner CI yang sibuk bisa melewati batas 5 detik per test).
+beforeAll(async () => {
+  await import("./templates");
+}, 60_000);
 
 const json = (body: unknown) => ({
   headers: { "content-type": "application/json" },

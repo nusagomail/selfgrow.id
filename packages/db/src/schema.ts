@@ -440,6 +440,18 @@ export const programDayCompletions = sqliteTable(
   (t) => [primaryKey({ columns: [t.userId, t.programId, t.day] })],
 );
 
+/**
+ * Kode watermark forensik per pelanggan (BLUEPRINT bagian 8): disisipkan tak terlihat ke teks
+ * bab, dipakai melacak asal teks yang bocor.
+ */
+export const userWatermarks = sqliteTable("user_watermarks", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  code: text("code").notNull().unique(),
+  createdAt: createdAt(),
+});
+
 export const streaks = sqliteTable(
   "streaks",
   {

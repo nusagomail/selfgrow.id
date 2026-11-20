@@ -259,6 +259,29 @@ textarea {
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
+.watermark {
+  position: fixed;
+  inset: -20%;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-around;
+  justify-content: space-around;
+  gap: 56px 40px;
+  transform: rotate(-24deg);
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+  color: var(--text);
+  opacity: 0.06;
+  font-size: 13px;
+  white-space: nowrap;
+}
+@media (prefers-color-scheme: dark) {
+  .watermark {
+    opacity: 0.08;
+  }
+}
 @media print {
   .reader {
     display: none;

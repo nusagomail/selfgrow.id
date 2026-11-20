@@ -18,6 +18,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireActiveSubscription, requireAuth } from "../middleware/guards";
 import { getSubscriptionStatus } from "../services/entitlements";
+import { rateLimit } from "../services/protection";
 import { readStreak, recomputeStreak } from "../services/streaks";
 import { consumeQuota } from "../services/usage";
 import { getCustomTool } from "../tools/registry";
@@ -91,7 +92,7 @@ export const tools = new Hono<AppEnv>()
     });
   })
 
-  .post("/:slug/run", requireActiveSubscription, async (c) => {
+  .post("/:slug/run", requireActiveSubscription, rateLimit("tool"), async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
     const user = c.var.user!;
     const body = runToolBodySchema.safeParse(await c.req.json().catch(() => null));
@@ -128,7 +129,7 @@ export const tools = new Hono<AppEnv>()
   })
 
   /** Simpan/ganti entri tracker untuk satu tanggal (D13). Butuh langganan aktif. */
-  .put("/:slug/entries", requireActiveSubscription, async (c) => {
+  .put("/:slug/entries", requireActiveSubscription, rateLimit("tool"), async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
     const user = c.var.user!;
     const body = trackerEntryBodySchema.safeParse(await c.req.json().catch(() => null));

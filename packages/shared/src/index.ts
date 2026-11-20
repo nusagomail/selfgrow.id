@@ -7,3 +7,4 @@ export * from "./schemas";
 export * from "./template";
 export * from "./tool";
 export * from "./tracker";
+export * from "./watermark";

@@ -30,6 +30,14 @@
   ],
   "kv_namespaces": [{ "binding": "KV", "id": "00000000000000000000000000000000" }],
   "r2_buckets": [{ "binding": "CONTENT", "bucket_name": "selfgrow-local-content" }],
+  // Perlindungan konten (BLUEPRINT bagian 8): rate limit per user & per IP (jendela 60 detik)
+  // dan Durable Object penghitung bab per jam untuk deteksi scraping.
+  "ratelimits": [
+    { "name": "RL_USER", "namespace_id": "1001", "simple": { "limit": 30, "period": 60 } },
+    { "name": "RL_IP", "namespace_id": "1002", "simple": { "limit": 120, "period": 60 } }
+  ],
+  "durable_objects": { "bindings": [{ "name": "READ_GUARD", "class_name": "ReadGuard" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ReadGuard"] }],
   "env": {
     // Staging (D15): alamat workers.dev, APP_URL kosong = pakai origin request.
     // ADMIN_EMAILS dan secret lain diset oleh workflow deploy-staging dari GitHub Secrets.
@@ -53,7 +61,13 @@
         }
       ],
       "kv_namespaces": [{ "binding": "KV", "id": "a97fc98aff02439797d52c259b48a22f" }],
-      "r2_buckets": [{ "binding": "CONTENT", "bucket_name": "selfgrow-staging-content" }]
+      "r2_buckets": [{ "binding": "CONTENT", "bucket_name": "selfgrow-staging-content" }],
+      "ratelimits": [
+        { "name": "RL_USER", "namespace_id": "2001", "simple": { "limit": 30, "period": 60 } },
+        { "name": "RL_IP", "namespace_id": "2002", "simple": { "limit": 120, "period": 60 } }
+      ],
+      "durable_objects": { "bindings": [{ "name": "READ_GUARD", "class_name": "ReadGuard" }] },
+      "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ReadGuard"] }]
     }
   }
 }

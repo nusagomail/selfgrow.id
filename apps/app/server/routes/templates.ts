@@ -11,6 +11,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { requireActiveSubscription, requireAuth } from "../middleware/guards";
 import { getSubscriptionStatus } from "../services/entitlements";
+import { rateLimit } from "../services/protection";
 import { type PublishedTemplate, readJson, templateKeys } from "../services/template-storage";
 import { consumeQuota, currentPeriod } from "../services/usage";
 
@@ -79,7 +80,7 @@ export const templates = new Hono<AppEnv>()
     });
   })
 
-  .post("/:slug/generate", requireActiveSubscription, async (c) => {
+  .post("/:slug/generate", requireActiveSubscription, rateLimit("template"), async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
     const user = c.var.user!;
     const body = generateTemplateBodySchema.safeParse(await c.req.json().catch(() => null));
