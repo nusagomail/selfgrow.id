@@ -251,6 +251,7 @@ export function createPager(
     s.columnCount = String(layout.cols);
     s.columnGap = `${layout.pad * 2}px`;
     s.columnFill = "auto";
+    viewport.style.perspective = `${Math.round(Math.max(1400, layout.step * 3.2))}px`;
     viewport.classList.add("is-paged");
     viewport.classList.toggle("is-spread", layout.cols > 1);
     if (!marker) return;
