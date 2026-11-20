@@ -2,12 +2,17 @@ import { and, asc, desc, eq, inArray, schema, sql } from "@selfgrow/db";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { inChunks } from "../services/programs";
+import { rateLimit } from "../services/protection";
 
 /**
  * Katalog publik untuk etalase `site` (BLUEPRINT bagian 5 & 10): kategori, topik, dan konten
  * terbit (judul + ringkasan saja). Tanpa login, tanpa isi berbayar, boleh di-cache di edge.
  */
-const PUBLIC_CACHE = "public, max-age=60, s-maxage=300, stale-while-revalidate=600";
+const PUBLIC_CACHE = "public, max-age=60";
+/** Cache API (cache edge per lokasi). Respons Worker sendiri tidak disimpan CDN otomatis. */
+const EDGE_TTL_SECONDS = 60;
+
+const MAX_ITEMS = 200;
 
 type CategoryRow = {
   id: string;
@@ -50,9 +55,26 @@ const toCategory = (r: CategoryRow) => ({
 });
 
 export const catalog = new Hono<AppEnv>()
+  .use(rateLimit("catalog"))
   .use(async (c, next) => {
+    // Kunci cache hanya URL (tanpa cookie/header), karena isinya sama untuk semua orang.
+    const useCache = c.env.ENVIRONMENT !== "test" && typeof caches !== "undefined";
+    const key = new Request(c.req.url, { method: "GET" });
+    if (useCache) {
+      const hit = await caches.default.match(key);
+      if (hit) return hit;
+    }
     await next();
-    if (c.res.status === 200) c.header("Cache-Control", PUBLIC_CACHE);
+    if (c.res.status !== 200) return;
+    c.header("Cache-Control", PUBLIC_CACHE);
+    if (useCache) {
+      const copy = c.res.clone();
+      const headers = new Headers(copy.headers);
+      headers.set("Cache-Control", `public, max-age=${EDGE_TTL_SECONDS}`);
+      c.executionCtx.waitUntil(
+        caches.default.put(key, new Response(copy.body, { status: 200, headers })),
+      );
+    }
   })
 
   /** Semua kategori beserta topik dan jumlah konten terbitnya (untuk menu & beranda). */
@@ -84,26 +106,33 @@ export const catalog = new Hono<AppEnv>()
     if (topicSlug && !selected) return c.json({ error: "not_found" }, 404);
     const ids = selected ? [selected.id] : topics.map((t) => t.id);
 
-    const items = await inChunks(ids, (chunk) =>
-      c.var.db
-        .select({
-          type: schema.contentItems.type,
-          slug: schema.contentItems.slug,
-          title: schema.contentItems.title,
-          summary: schema.contentItems.summary,
-          categoryId: schema.contentItems.categoryId,
-          publishedAt: schema.contentItems.publishedAt,
-        })
-        .from(schema.contentItems)
-        .where(
-          and(
-            eq(schema.contentItems.status, "published"),
-            inArray(schema.contentItems.categoryId, chunk),
-          ),
-        )
-        .orderBy(desc(schema.contentItems.publishedAt))
-        .limit(200),
-    );
+    const [chunks, counts] = await Promise.all([
+      inChunks(ids, (chunk) =>
+        c.var.db
+          .select({
+            type: schema.contentItems.type,
+            slug: schema.contentItems.slug,
+            title: schema.contentItems.title,
+            summary: schema.contentItems.summary,
+            categoryId: schema.contentItems.categoryId,
+            publishedAt: schema.contentItems.publishedAt,
+          })
+          .from(schema.contentItems)
+          .where(
+            and(
+              eq(schema.contentItems.status, "published"),
+              inArray(schema.contentItems.categoryId, chunk),
+            ),
+          )
+          .orderBy(desc(schema.contentItems.publishedAt))
+          .limit(MAX_ITEMS),
+      ),
+      publishedCounts(c.var.db),
+    ]);
+    // Urutkan setelah semua potongan digabung, lalu potong (review keamanan PR #14).
+    const items = chunks
+      .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0))
+      .slice(0, MAX_ITEMS);
     const topicById = new Map(topics.map((t) => [t.id, t.slug]));
     return c.json({
       category: toCategory(root),
@@ -111,7 +140,7 @@ export const catalog = new Hono<AppEnv>()
       topics: topics.map((t) => ({
         slug: t.slug,
         name: t.name,
-        count: items.filter((i) => i.categoryId === t.id).length,
+        count: counts.get(t.id) ?? 0,
       })),
       items: items.map((i) => ({
         type: i.type,

@@ -13,7 +13,7 @@ import { writeAudit } from "./audit";
 // Rate limit
 // ---------------------------------------------------------------------------
 
-export type RateGroup = "chapter" | "tool" | "template" | "auth";
+export type RateGroup = "chapter" | "tool" | "template" | "auth" | "catalog";
 
 /** 429 bila melewati batas per IP (bila IP diketahui) atau per user (bila login). */
 export function rateLimit(group: RateGroup) {

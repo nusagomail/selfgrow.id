@@ -10,7 +10,13 @@ const json = (body: unknown) => ({
   body: JSON.stringify(body),
 });
 
-type Cat = { slug: string; name: string; hook: string | null; count: number; topics: { slug: string; count: number }[] };
+type Cat = {
+  slug: string;
+  name: string;
+  hook: string | null;
+  count: number;
+  topics: { slug: string; count: number }[];
+};
 
 async function newEbook(admin: { token: string }, title: string) {
   const slug = `cat-${crypto.randomUUID().slice(0, 8)}`;
@@ -70,9 +76,9 @@ describe("katalog publik", () => {
     ).json()) as { categoryId: string };
     expect(cur.categoryId).toBe("top_utang-pinjol-paylater");
 
-    const before = (await (
-      await call("/api/v1/catalog/categories/keuangan-pribadi")
-    ).json()) as { items: { slug: string }[] };
+    const before = (await (await call("/api/v1/catalog/categories/keuangan-pribadi")).json()) as {
+      items: { slug: string }[];
+    };
     expect(before.items.some((i) => i.slug === eb.slug)).toBe(false);
 
     await call(`/api/v1/studio/content/${eb.id}`, {
