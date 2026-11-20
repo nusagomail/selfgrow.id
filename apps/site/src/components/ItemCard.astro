@@ -1,0 +1,142 @@
+---
+import { ACCESS_LABEL, type Access, type ContentType, contentPath } from "../lib/api";
+
+interface Props {
+  item: {
+    type: ContentType;
+    slug: string;
+    title: string;
+    summary: string | null;
+    access: Access;
+    category?: { slug: string; name: string } | null;
+  };
+}
+const { item } = Astro.props;
+const TYPE_LABEL: Record<ContentType, string> = {
+  ebook: "Ebook",
+  tool: "Tool",
+  template: "Template",
+  program: "Program",
+};
+---
+
+<a href={contentPath(item)} class:list={["item", item.type]}>
+  <span class="thumb" aria-hidden="true">
+    <span class="thumb-type">{TYPE_LABEL[item.type]}</span>
+  </span>
+  <span class="body">
+    <span class="row">
+      <span class:list={["access", item.access]}>
+        {item.access === "premium" && (
+          <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" /></svg>
+        )}
+        {ACCESS_LABEL[item.access]}
+      </span>
+      {item.category && <span class="cat">{item.category.name}</span>}
+    </span>
+    <span class="title">{item.title}</span>
+    {item.summary && <span class="summary">{item.summary}</span>}
+  </span>
+</a>
+
+<style>
+  .item {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    text-decoration: none;
+    overflow: hidden;
+    min-width: 0;
+    transition:
+      transform 0.15s,
+      border-color 0.15s;
+  }
+  .item:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary);
+  }
+  /* "Thumbnail" berwarna per jenis konten, seperti gambar mini video di YouTube. */
+  .thumb {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: flex-end;
+    padding: 12px;
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgb(244 172 19 / 35%), transparent 55%),
+      linear-gradient(135deg, var(--green-900), var(--green-700));
+  }
+  .tool .thumb {
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgb(255 255 255 / 20%), transparent 55%),
+      linear-gradient(135deg, #8a5a00, #f4ac13);
+  }
+  .template .thumb {
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgb(255 255 255 / 20%), transparent 55%),
+      linear-gradient(135deg, #1e4f7c, #2f6fa8);
+  }
+  .program .thumb {
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgb(255 255 255 / 20%), transparent 55%),
+      linear-gradient(135deg, #4f347a, #7a5aa8);
+  }
+  .thumb-type {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: rgb(0 0 0 / 25%);
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px 16px;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .access {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+  .access.free,
+  .access.preview {
+    background: var(--green-100);
+    color: var(--green-900);
+  }
+  .access.premium {
+    background: #fdf0d3;
+    color: #6b4500;
+  }
+  .cat {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .title {
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .summary {
+    font-size: 0.9rem;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

@@ -1,9 +1,9 @@
 import type { APIRoute } from "astro";
-import { getCategories } from "../lib/api";
+import { contentPath, getCategories, getItems } from "../lib/api";
 
 /** Sitemap otomatis dari katalog (BLUEPRINT bagian 10). */
 export const GET: APIRoute = async ({ site, url }) => {
-  const categories = await getCategories();
+  const [categories, items] = await Promise.all([getCategories(), getItems()]);
   const paths = [
     "/",
     "/kategori",
@@ -13,6 +13,7 @@ export const GET: APIRoute = async ({ site, url }) => {
       `/kategori/${c.slug}`,
       ...c.topics.map((t) => `/kategori/${c.slug}/${t.slug}`),
     ]),
+    ...items.map(contentPath),
   ];
   const urls = paths.map((p) => `<url><loc>${new URL(p, site ?? url.origin)}</loc></url>`).join("");
   return new Response(

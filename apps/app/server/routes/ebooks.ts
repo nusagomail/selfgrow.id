@@ -2,7 +2,7 @@ import { and, asc, desc, eq, schema, sql } from "@selfgrow/db";
 import { bookmarkBodySchema, progressBodySchema, watermarkDoc } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
-import { requireAuth } from "../middleware/guards";
+import { FREE_TIER, requireAuth } from "../middleware/guards";
 import { ebookKeys, readDoc } from "../services/ebook-storage";
 import { getAccessStatus } from "../services/entitlements";
 import {
@@ -73,7 +73,7 @@ export const ebooks = new Hono<AppEnv>()
       ebook: { id: ebook.id, slug: ebook.slug, title: ebook.title, summary: ebook.summary },
       chapters: chapters.map((ch) => ({
         ...ch,
-        locked: !sub.active && !ch.isFreePreview,
+        locked: !sub.active && ebook.tier !== FREE_TIER && !ch.isFreePreview,
       })),
       progress: progress ? { chapterId: progress.chapterId, position: progress.position } : null,
       subscribed: sub.active,
@@ -103,7 +103,8 @@ export const ebooks = new Hono<AppEnv>()
       return c.json({ error: "rate_limited" }, 429);
     }
 
-    if (!chapter.isFreePreview) {
+    // Bab gratis dan ebook bertanda gratis (D35) terbuka tanpa langganan.
+    if (!chapter.isFreePreview && ebook.tier !== FREE_TIER) {
       const sub = await getAccessStatus(c.env.KV, c.var.db, user);
       if (!sub.active) return c.json({ error: "subscription_required" }, 403);
     }

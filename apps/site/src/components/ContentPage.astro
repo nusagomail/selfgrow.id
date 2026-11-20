@@ -1,0 +1,344 @@
+---
+import type { EbookDoc } from "@selfgrow/shared";
+import Base from "../layouts/Base.astro";
+import { ACCESS_LABEL, appUrl, type ContentDetail, contentPath } from "../lib/api";
+import Nodes from "./ebook/Nodes.astro";
+
+interface Props {
+  data: ContentDetail;
+  preview?: { chapter: { id: string; title: string }; doc: EbookDoc } | null;
+}
+const { data, preview } = Astro.props;
+const base = Astro.site ?? new URL(Astro.url.origin);
+const url = new URL(contentPath(data), base).toString();
+
+const TYPE_LABEL = { ebook: "Ebook", tool: "Tool", template: "Template", program: "Program" };
+const APP_PATH = { ebook: "/baca", tool: "/tools", template: "/template", program: "/program" };
+const appLink = appUrl(`${APP_PATH[data.type]}/${encodeURIComponent(data.slug)}`);
+const loginThen = appUrl("/masuk?auto=1");
+const verb = {
+  ebook: data.access === "premium" ? "Baca setelah berlangganan" : "Baca sekarang",
+  tool: "Pakai tool ini",
+  template: "Isi & unduh template",
+  program: "Ikuti program",
+}[data.type];
+
+// Data terstruktur per jenis (BLUEPRINT bagian 10), termasuk penanda paywall agar tidak dianggap
+// cloaking: isi berbayar ditandai isAccessibleForFree=false, bab pratinjau ditandai gratis.
+const schemaType = {
+  ebook: "Book",
+  tool: "SoftwareApplication",
+  template: "DigitalDocument",
+  program: "Course",
+}[data.type];
+const ld: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": schemaType,
+  name: data.title,
+  description: data.summary ?? undefined,
+  url,
+  inLanguage: "id-ID",
+  datePublished: data.publishedAt ?? undefined,
+  dateModified: data.updatedAt,
+  publisher: { "@type": "Organization", name: "SelfGrow" },
+  isAccessibleForFree: data.access === "free",
+  ...(data.type === "tool"
+    ? { applicationCategory: "LifestyleApplication", operatingSystem: "Web" }
+    : {}),
+  ...(preview
+    ? {
+        hasPart: {
+          "@type": "WebPageElement",
+          isAccessibleForFree: true,
+          cssSelector: ".preview",
+        },
+      }
+    : {}),
+};
+const crumbs = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Beranda", item: new URL("/", base).toString() },
+    ...(data.category
+      ? [
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: data.category.name,
+            item: new URL(`/kategori/${data.category.slug}`, base).toString(),
+          },
+        ]
+      : []),
+    { "@type": "ListItem", position: data.category ? 3 : 2, name: data.title },
+  ],
+};
+---
+
+<Base
+  title={`${data.title} | ${TYPE_LABEL[data.type]} SelfGrow`}
+  description={data.summary ?? `${TYPE_LABEL[data.type]} ${data.title} di SelfGrow.`}
+  current={data.category?.slug}
+  jsonLd={[ld, crumbs]}
+>
+  <section class:list={["head", data.type]}>
+    <div class="container head-inner">
+      <nav class="crumbs" aria-label="Lokasi halaman">
+        <a href="/">Beranda</a>
+        {data.category && (<><span aria-hidden="true">/</span><a href={`/kategori/${data.category.slug}`}>{data.category.name}</a></>)}
+        {data.topic && data.category && (<><span aria-hidden="true">/</span><a href={`/kategori/${data.category.slug}/${data.topic.slug}`}>{data.topic.name}</a></>)}
+      </nav>
+      <div class="tags">
+        <span class="type-tag">{TYPE_LABEL[data.type]}</span>
+        <span class:list={["access", data.access]}>{ACCESS_LABEL[data.access]}</span>
+      </div>
+      <h1>{data.title}</h1>
+      {data.summary && <p class="summary">{data.summary}</p>}
+      <div class="cta">
+        <a href={appLink} class="btn btn-gold">{verb}</a>
+        {data.access !== "free" && <a href="/harga" class="btn btn-outline-light">Lihat harga</a>}
+      </div>
+      <p class="note">
+        {data.access === "free"
+          ? "Gratis. Cukup masuk dengan akun Google."
+          : data.access === "preview"
+            ? "Bab gratis bisa dibaca di bawah ini tanpa login. Bab lainnya untuk pelanggan."
+            : "Konten Premium: terbuka untuk pelanggan. Masuk dengan Google untuk mulai."}
+      </p>
+    </div>
+  </section>
+
+  <div class="container layout">
+    <div class="main">
+      {preview && (
+        <article class="preview">
+          <p class="eyebrow">Bab gratis</p>
+          <h2>{preview.chapter.title}</h2>
+          <div class="ebook-content"><Nodes nodes={preview.doc.content} /></div>
+          <div class="continue">
+            <p><b>Suka bab ini?</b> Lanjutkan ke bab berikutnya di aplikasi.</p>
+            <a href={appLink} class="btn btn-primary">Lanjut membaca</a>
+          </div>
+        </article>
+      )}
+      {!preview && data.type !== "ebook" && (
+        <div class="card how">
+          <h2>Cara memakai</h2>
+          <ol>
+            <li><a href={loginThen}>Masuk dengan Google</a> (satu klik, tanpa password).</li>
+            <li>Buka {TYPE_LABEL[data.type].toLowerCase()} ini dari Beranda atau tombol di atas.</li>
+            <li>{data.type === "tool" ? "Isi angka-angkamu dan lihat hasilnya langsung." : data.type === "template" ? "Isi formulir singkat, lalu unduh sebagai Word, PDF, atau Excel." : "Ikuti satu langkah setiap hari dan tandai yang sudah selesai."}</li>
+          </ol>
+        </div>
+      )}
+    </div>
+
+    <aside class="side">
+      {data.ebook && (
+        <div class="card">
+          <h2>Daftar isi</h2>
+          <ol class="toc">
+            {data.ebook.chapters.map((ch) => (
+              <li class:list={{ free: ch.free }}>
+                <span>{ch.title}</span>
+                <span class="toc-tag">{ch.free ? "Gratis" : data.access === "free" ? "" : "🔒"}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+      {data.program && (
+        <div class="card">
+          <h2>{data.program.durationDays} hari</h2>
+          <ol class="toc">
+            {data.program.days.map((d) => (
+              <li><span>Hari {d.day}: {d.title}</span></li>
+            ))}
+          </ol>
+        </div>
+      )}
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .head {
+    background:
+      radial-gradient(900px 400px at 90% -20%, rgb(60 150 49 / 35%), transparent 60%),
+      var(--hero-bg);
+    color: var(--hero-ink);
+    padding-block: clamp(28px, 6vw, 56px);
+  }
+  .head.tool {
+    background: linear-gradient(135deg, #5a3a00, #8a5a00);
+  }
+  .head.template {
+    background: linear-gradient(135deg, #123552, #1e4f7c);
+  }
+  .head.program {
+    background: linear-gradient(135deg, #34205a, #4f347a);
+  }
+  .head-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .head h1 {
+    color: #fff;
+  }
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.88rem;
+  }
+  .crumbs a {
+    color: var(--hero-muted);
+  }
+  .tags {
+    display: flex;
+    gap: 8px;
+  }
+  .type-tag,
+  .access {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 99px;
+  }
+  .type-tag {
+    background: rgb(255 255 255 / 15%);
+    color: #fff;
+    text-transform: uppercase;
+  }
+  .access.free,
+  .access.preview {
+    background: var(--green-100);
+    color: var(--green-900);
+  }
+  .access.premium {
+    background: var(--gold);
+    color: var(--green-950);
+  }
+  .summary {
+    color: var(--hero-muted);
+    font-size: clamp(1.02rem, 2vw, 1.15rem);
+    max-width: 62ch;
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .btn-outline-light {
+    border-color: rgb(255 255 255 / 35%);
+    color: #fff;
+  }
+  .note {
+    font-size: 0.88rem;
+    color: var(--hero-muted);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+    gap: 32px;
+    padding-block: 32px clamp(48px, 8vw, 96px);
+    align-items: start;
+  }
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: sticky;
+    top: 90px;
+  }
+  .side h2,
+  .how h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+  .toc {
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 8px;
+  }
+  .toc li span:first-child {
+    margin-right: 6px;
+  }
+  .toc-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .how ol {
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 8px;
+  }
+  .preview {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 68ch;
+  }
+  .ebook-content {
+    font-size: 1.06rem;
+    line-height: 1.8;
+  }
+  .ebook-content :global(img) {
+    border-radius: 10px;
+  }
+  .ebook-content :global(.callout) {
+    border-radius: 12px;
+    padding: 12px 16px;
+    background: var(--surface-alt);
+    border-left: 4px solid var(--primary);
+    margin: 16px 0;
+  }
+  .ebook-content :global(.callout-warning) {
+    border-left-color: var(--gold);
+  }
+  .ebook-content :global(.table-wrap) {
+    overflow-x: auto;
+  }
+  .ebook-content :global(table) {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  .ebook-content :global(th),
+  .ebook-content :global(td) {
+    border: 1px solid var(--line);
+    padding: 8px 10px;
+    text-align: left;
+  }
+  .ebook-content :global(blockquote) {
+    margin: 16px 0;
+    padding-left: 16px;
+    border-left: 3px solid var(--line);
+    color: var(--muted);
+  }
+  .continue {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px;
+    border-radius: var(--radius);
+    background: var(--surface-alt);
+    border: 1px solid var(--line);
+    margin-top: 12px;
+  }
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .side {
+      position: static;
+      order: -1;
+    }
+  }
+</style>

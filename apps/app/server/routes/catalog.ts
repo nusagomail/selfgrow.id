@@ -1,8 +1,12 @@
 import { and, asc, desc, eq, inArray, schema, sql } from "@selfgrow/db";
+import { type ContentType, contentTypeSchema } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
-import { inChunks } from "../services/programs";
+import { FREE_TIER } from "../middleware/guards";
+import { ebookKeys, readDoc } from "../services/ebook-storage";
+import { inChunks, type PublishedProgram, programKeys } from "../services/programs";
 import { rateLimit } from "../services/protection";
+import { readJson } from "../services/template-storage";
 
 /**
  * Katalog publik untuk etalase `site` (BLUEPRINT bagian 5 & 10): kategori, topik, dan konten
@@ -53,6 +57,66 @@ const toCategory = (r: CategoryRow) => ({
   description: r.description,
   hook: r.hook,
 });
+
+type Access = "free" | "preview" | "premium";
+
+/**
+ * Label akses publik (D35): `free` = ditandai gratis di Studio, `preview` = ebook dengan bab
+ * gratis, `premium` = khusus pelanggan.
+ */
+async function accessLabels(
+  db: AppEnv["Variables"]["db"],
+  items: { id: string; type: string; tier: string }[],
+): Promise<Map<string, Access>> {
+  const ebookIds = items.filter((i) => i.type === "ebook" && i.tier !== FREE_TIER).map((i) => i.id);
+  const withFree = await inChunks(ebookIds, (chunk) =>
+    db
+      .selectDistinct({ contentId: schema.ebookChapters.contentId })
+      .from(schema.ebookChapters)
+      .where(
+        and(
+          inArray(schema.ebookChapters.contentId, chunk),
+          eq(schema.ebookChapters.isFreePreview, true),
+          eq(schema.ebookChapters.status, "published"),
+        ),
+      ),
+  );
+  const preview = new Set(withFree.map((r) => r.contentId));
+  return new Map(
+    items.map((i) => [
+      i.id,
+      i.tier === FREE_TIER ? "free" : preview.has(i.id) ? "preview" : "premium",
+    ]),
+  );
+}
+
+async function findPublished(db: AppEnv["Variables"]["db"], type: ContentType, slug: string) {
+  return db.query.contentItems.findFirst({
+    where: and(
+      eq(schema.contentItems.type, type),
+      eq(schema.contentItems.slug, slug),
+      eq(schema.contentItems.status, "published"),
+    ),
+  });
+}
+
+/** Bab terbit sebuah ebook, urut. Hanya judul & penanda gratis (tanpa isi). */
+async function publicChapters(db: AppEnv["Variables"]["db"], contentId: string) {
+  return db
+    .select({
+      id: schema.ebookChapters.id,
+      title: schema.ebookChapters.title,
+      free: schema.ebookChapters.isFreePreview,
+    })
+    .from(schema.ebookChapters)
+    .where(
+      and(
+        eq(schema.ebookChapters.contentId, contentId),
+        eq(schema.ebookChapters.status, "published"),
+      ),
+    )
+    .orderBy(asc(schema.ebookChapters.order));
+}
 
 export const catalog = new Hono<AppEnv>()
   .use(rateLimit("catalog"))
@@ -115,6 +179,8 @@ export const catalog = new Hono<AppEnv>()
             slug: schema.contentItems.slug,
             title: schema.contentItems.title,
             summary: schema.contentItems.summary,
+            id: schema.contentItems.id,
+            tier: schema.contentItems.tier,
             categoryId: schema.contentItems.categoryId,
             publishedAt: schema.contentItems.publishedAt,
           })
@@ -135,6 +201,7 @@ export const catalog = new Hono<AppEnv>()
       .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0))
       .slice(0, MAX_ITEMS);
     const topicById = new Map(topics.map((t) => [t.id, t.slug]));
+    const access = await accessLabels(c.var.db, items);
     return c.json({
       category: toCategory(root),
       topic: selected ? toCategory(selected) : null,
@@ -149,7 +216,106 @@ export const catalog = new Hono<AppEnv>()
         title: i.title,
         summary: i.summary,
         topic: i.categoryId ? (topicById.get(i.categoryId) ?? null) : null,
+        access: access.get(i.id) ?? "premium",
         publishedAt: i.publishedAt?.toISOString() ?? null,
       })),
     });
+  })
+
+  /** Semua konten terbit untuk beranda etalase (seperti daftar video di YouTube). */
+  .get("/items", async (c) => {
+    const [rows, cats] = await Promise.all([
+      c.var.db
+        .select({
+          id: schema.contentItems.id,
+          type: schema.contentItems.type,
+          slug: schema.contentItems.slug,
+          title: schema.contentItems.title,
+          summary: schema.contentItems.summary,
+          tier: schema.contentItems.tier,
+          categoryId: schema.contentItems.categoryId,
+          publishedAt: schema.contentItems.publishedAt,
+        })
+        .from(schema.contentItems)
+        .where(eq(schema.contentItems.status, "published"))
+        .orderBy(desc(schema.contentItems.publishedAt))
+        .limit(MAX_ITEMS),
+      allCategories(c.var.db),
+    ]);
+    const byId = new Map(cats.map((r) => [r.id, r]));
+    const rootOf = (id: string | null) => {
+      const cat = id ? byId.get(id) : undefined;
+      return cat?.parentId ? byId.get(cat.parentId) : cat;
+    };
+    const access = await accessLabels(c.var.db, rows);
+    return c.json({
+      items: rows.map((i) => {
+        const root = rootOf(i.categoryId);
+        return {
+          type: i.type,
+          slug: i.slug,
+          title: i.title,
+          summary: i.summary,
+          access: access.get(i.id) ?? "premium",
+          category: root ? { slug: root.slug, name: root.name } : null,
+          publishedAt: i.publishedAt?.toISOString() ?? null,
+        };
+      }),
+    });
+  })
+
+  /** Detail publik satu konten: ringkasan, kategori, daftar isi/hari. Tanpa isi berbayar. */
+  .get("/content/:type/:slug", async (c) => {
+    const type = contentTypeSchema.safeParse(c.req.param("type"));
+    if (!type.success) return c.json({ error: "not_found" }, 404);
+    const item = await findPublished(c.var.db, type.data, c.req.param("slug"));
+    if (!item) return c.json({ error: "not_found" }, 404);
+    const cats = await allCategories(c.var.db);
+    const topic = cats.find((x) => x.id === item.categoryId && x.parentId);
+    const category = topic ? cats.find((x) => x.id === topic.parentId) : undefined;
+    const access = (await accessLabels(c.var.db, [item])).get(item.id) ?? "premium";
+
+    let ebook: { chapters: { id: string; title: string; free: boolean }[] } | null = null;
+    if (item.type === "ebook") ebook = { chapters: await publicChapters(c.var.db, item.id) };
+    let program: { durationDays: number; days: { day: number; title: string }[] } | null = null;
+    if (item.type === "program") {
+      const published = await readJson<PublishedProgram>(
+        c.env.CONTENT,
+        programKeys.published(item.id),
+      );
+      if (published) {
+        program = {
+          durationDays: published.durationDays,
+          // Judul hari saja; isi langkah tetap hanya untuk peserta (D27).
+          days: published.steps.map((d) => ({ day: d.day, title: d.title })),
+        };
+      }
+    }
+    return c.json({
+      type: item.type,
+      slug: item.slug,
+      title: item.title,
+      summary: item.summary,
+      access,
+      category: category ? { slug: category.slug, name: category.name } : null,
+      topic: topic ? { slug: topic.slug, name: topic.name } : null,
+      publishedAt: item.publishedAt?.toISOString() ?? null,
+      updatedAt: item.updatedAt.toISOString(),
+      ebook,
+      program,
+    });
+  })
+
+  /**
+   * Bab pertama yang ditandai gratis, bisa dibaca tanpa login (D35, untuk Google & rasa
+   * penasaran). Bab gratis berikutnya dan seluruh bab berbayar tetap lewat reader yang butuh login.
+   */
+  .get("/ebooks/:slug/preview", async (c) => {
+    const item = await findPublished(c.var.db, "ebook", c.req.param("slug"));
+    if (!item) return c.json({ error: "not_found" }, 404);
+    const first = (await publicChapters(c.var.db, item.id)).find((ch) => ch.free);
+    if (!first) return c.json({ error: "not_found" }, 404);
+    const doc = await readDoc(c.env.CONTENT, ebookKeys.published(item.id, first.id));
+    if (!doc) return c.json({ error: "not_found" }, 404);
+    return c.json({ chapter: { id: first.id, title: first.title }, doc });
   });

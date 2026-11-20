@@ -1,4 +1,5 @@
 import { env } from "cloudflare:workers";
+import type { EbookDoc } from "@selfgrow/shared";
 
 export type ContentType = "ebook" | "tool" | "template" | "program";
 
@@ -17,13 +18,41 @@ export interface Category {
   topics: Topic[];
 }
 
+/** `free` = gratis, `preview` = ebook dengan bab gratis, `premium` = khusus pelanggan. */
+export type Access = "free" | "preview" | "premium";
+
 export interface CatalogItem {
   type: ContentType;
   slug: string;
   title: string;
   summary: string | null;
   topic: string | null;
+  access: Access;
   publishedAt: string | null;
+}
+
+export interface FeedItem {
+  type: ContentType;
+  slug: string;
+  title: string;
+  summary: string | null;
+  access: Access;
+  category: { slug: string; name: string } | null;
+  publishedAt: string | null;
+}
+
+export interface ContentDetail {
+  type: ContentType;
+  slug: string;
+  title: string;
+  summary: string | null;
+  access: Access;
+  category: { slug: string; name: string } | null;
+  topic: { slug: string; name: string } | null;
+  publishedAt: string | null;
+  updatedAt: string;
+  ebook: { chapters: { id: string; title: string; free: boolean }[] } | null;
+  program: { durationDays: number; days: { day: number; title: string }[] } | null;
 }
 
 export interface CategoryDetail {
@@ -55,27 +84,39 @@ export function getCategory(slug: string, topic?: string) {
   return getJson<CategoryDetail>(`/categories/${encodeURIComponent(slug)}${q}`);
 }
 
-/** Tautan ke aplikasi (login, baca, pakai tool). */
-export function appUrl(path = "/"): string {
-  return new URL(path, env.APP_URL || "http://localhost:5173").toString();
+export async function getItems(): Promise<FeedItem[]> {
+  return (await getJson<{ items: FeedItem[] }>("/items"))?.items ?? [];
 }
 
-export const TYPE_LABEL: Record<ContentType, string> = {
-  ebook: "Ebook",
-  tool: "Tool",
-  template: "Template",
-  program: "Program",
+export function getContent(type: ContentType, slug: string) {
+  return getJson<ContentDetail>(`/content/${type}/${encodeURIComponent(slug)}`);
+}
+
+export function getPreview(slug: string) {
+  return getJson<{ chapter: { id: string; title: string }; doc: EbookDoc }>(
+    `/ebooks/${encodeURIComponent(slug)}/preview`,
+  );
+}
+
+export const ACCESS_LABEL: Record<Access, string> = {
+  free: "Gratis",
+  preview: "Bab gratis",
+  premium: "Premium",
 };
 
-const TYPE_PATH: Record<ContentType, string> = {
-  ebook: "/baca",
+/** Halaman publik konten di etalase (BLUEPRINT bagian 10: /ebook/{slug}, /tools/{slug}, ...). */
+export const SITE_PATH: Record<ContentType, string> = {
+  ebook: "/ebook",
   tool: "/tools",
   template: "/template",
   program: "/program",
 };
+export const contentPath = (i: { type: ContentType; slug: string }) =>
+  `${SITE_PATH[i.type]}/${encodeURIComponent(i.slug)}`;
 
-export function itemUrl(item: Pick<CatalogItem, "type" | "slug">): string {
-  return appUrl(`${TYPE_PATH[item.type]}/${encodeURIComponent(item.slug)}`);
+/** Tautan ke aplikasi (login, baca, pakai tool). */
+export function appUrl(path = "/"): string {
+  return new URL(path, env.APP_URL || "http://localhost:5173").toString();
 }
 
 /** Cache edge singkat untuk halaman publik (isi sama untuk semua pengunjung). */

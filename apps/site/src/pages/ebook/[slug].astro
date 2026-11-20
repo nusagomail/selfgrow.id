@@ -1,0 +1,11 @@
+---
+import ContentPage from "../../components/ContentPage.astro";
+import { getContent, getPreview } from "../../lib/api";
+
+const slug = Astro.params.slug ?? "";
+const data = await getContent("ebook", slug);
+if (!data) return Astro.rewrite("/404");
+const preview = data.ebook?.chapters.some((c) => c.free) ? await getPreview(slug) : null;
+---
+
+<ContentPage data={data} preview={preview} />

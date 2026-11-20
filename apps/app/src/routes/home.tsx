@@ -10,6 +10,8 @@ type Item = {
   title: string;
   summary: string | null;
   freePreview: boolean;
+  /** Ditandai gratis di Studio: terbuka untuk semua user login (D35). */
+  free: boolean;
   locked: boolean;
 };
 type Section = { slug: string; name: string; hook: string | null; items: Item[] };
@@ -57,6 +59,8 @@ function ItemCard({ item }: { item: Item }) {
             </svg>
             Terkunci
           </span>
+        ) : item.free ? (
+          <span className="free-tag">Gratis</span>
         ) : item.freePreview ? (
           <span className="free-tag">Bab gratis</span>
         ) : null}
@@ -151,8 +155,8 @@ export function HomePage() {
           </p>
         ) : !sub.active ? (
           <p className="banner">
-            Kamu belum berlangganan. Konten berlabel <b>Bab gratis</b> bisa langsung dibaca; sisanya
-            terbuka setelah berlangganan.
+            Kamu belum berlangganan. Konten berlabel <b>Gratis</b> dan <b>Bab gratis</b> bisa
+            langsung dipakai; sisanya terbuka setelah berlangganan.
           </p>
         ) : sub.inGracePeriod ? (
           <p className="banner warn">Langgananmu sudah jatuh tempo. Segera perpanjang.</p>

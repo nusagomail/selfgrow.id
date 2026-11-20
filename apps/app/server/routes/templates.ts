@@ -9,7 +9,7 @@ import {
 } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
-import { requireActiveSubscription, requireAuth } from "../middleware/guards";
+import { FREE_TIER, requireActiveSubscriptionUnlessFree, requireAuth } from "../middleware/guards";
 import { getAccessStatus } from "../services/entitlements";
 import { rateLimit } from "../services/protection";
 import { type PublishedTemplate, readJson, templateKeys } from "../services/template-storage";
@@ -75,77 +75,83 @@ export const templates = new Hono<AppEnv>()
       template: { slug: tpl.item.slug, title: tpl.item.title, summary: tpl.item.summary },
       variables: tpl.config.variables,
       formats: tpl.config.outputFormats,
-      locked: !sub.active,
+      locked: !sub.active && tpl.item.tier !== FREE_TIER,
+      free: tpl.item.tier === FREE_TIER,
       usage: { used: await downloadsUsed(c.var.db, user.id), limit: DEFAULT_DOWNLOAD_QUOTA },
     });
   })
 
-  .post("/:slug/generate", requireActiveSubscription, rateLimit("template"), async (c) => {
-    // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
-    const user = c.var.user!;
-    const body = generateTemplateBodySchema.safeParse(await c.req.json().catch(() => null));
-    if (!body.success) return c.json({ error: "invalid_body" }, 400);
-    const tpl = await loadPublishedTemplate(c.var.db, c.env.CONTENT, c.req.param("slug"));
-    if (!tpl) return c.json({ error: "not_found" }, 404);
-    if (!tpl.config.outputFormats.includes(body.data.format)) {
-      return c.json({ error: "format_not_available" }, 400);
-    }
+  .post(
+    "/:slug/generate",
+    requireActiveSubscriptionUnlessFree("template"),
+    rateLimit("template"),
+    async (c) => {
+      // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
+      const user = c.var.user!;
+      const body = generateTemplateBodySchema.safeParse(await c.req.json().catch(() => null));
+      if (!body.success) return c.json({ error: "invalid_body" }, 400);
+      const tpl = await loadPublishedTemplate(c.var.db, c.env.CONTENT, c.req.param("slug"));
+      if (!tpl) return c.json({ error: "not_found" }, 404);
+      if (!tpl.config.outputFormats.includes(body.data.format)) {
+        return c.json({ error: "format_not_available" }, 400);
+      }
 
-    let values: ReturnType<typeof parseTemplateInput>;
-    try {
-      values = parseTemplateInput(tpl.config, body.data.input);
-    } catch (e) {
-      const issues = (e as { issues?: { path: PropertyKey[]; message: string }[] }).issues ?? [];
-      return c.json(
-        {
-          error: "invalid_input",
-          issues: issues.map((i) => ({ path: i.path.map(String).join("."), message: i.message })),
+      let values: ReturnType<typeof parseTemplateInput>;
+      try {
+        values = parseTemplateInput(tpl.config, body.data.input);
+      } catch (e) {
+        const issues = (e as { issues?: { path: PropertyKey[]; message: string }[] }).issues ?? [];
+        return c.json(
+          {
+            error: "invalid_input",
+            issues: issues.map((i) => ({ path: i.path.map(String).join("."), message: i.message })),
+          },
+          400,
+        );
+      }
+
+      // Tolak lebih awal bila kuota habis, sebelum membuat file (hemat CPU, review keamanan PR #11).
+      if ((await downloadsUsed(c.var.db, user.id)) >= DEFAULT_DOWNLOAD_QUOTA) {
+        return c.json({ error: "quota_exceeded", limit: DEFAULT_DOWNLOAD_QUOTA }, 429);
+      }
+
+      let filled: ReturnType<typeof fillTemplate>;
+      try {
+        filled = fillTemplate(tpl.body, tpl.config, values);
+      } catch (e) {
+        if (e instanceof TemplateTooLargeError) return c.json({ error: "template_too_large" }, 413);
+        throw e;
+      }
+      const meta = { title: tpl.item.title, userId: user.id, generatedAt: new Date() };
+      const { CONTENT_TYPES, renderDocument } = await loadGenerators();
+      const bytes = await renderDocument(body.data.format, filled, meta);
+
+      // Potong kuota hanya bila file berhasil dibuat.
+      const used = await consumeQuota(c.var.db, user.id, "downloads", DEFAULT_DOWNLOAD_QUOTA);
+      if (used === null)
+        return c.json({ error: "quota_exceeded", limit: DEFAULT_DOWNLOAD_QUOTA }, 429);
+
+      const fileName = buildFileName(tpl.config, tpl.item.title, values, body.data.format);
+      // Riwayat unduhan untuk halaman Profil (D33). Hanya pelengkap: bila gagal, file tetap
+      // dikirim karena kuota sudah terpotong (review keamanan PR #18).
+      try {
+        await c.var.db.insert(schema.templateDownloads).values({
+          id: crypto.randomUUID(),
+          userId: user.id,
+          contentId: tpl.item.id,
+          format: body.data.format,
+          fileName,
+        });
+      } catch (e) {
+        console.error(JSON.stringify({ alert: "download_history_failed", error: String(e) }));
+      }
+
+      return new Response(bytes, {
+        headers: {
+          ...attachmentHeaders(CONTENT_TYPES[body.data.format], fileName),
+          "X-Downloads-Used": String(used),
+          "X-Downloads-Limit": String(DEFAULT_DOWNLOAD_QUOTA),
         },
-        400,
-      );
-    }
-
-    // Tolak lebih awal bila kuota habis, sebelum membuat file (hemat CPU, review keamanan PR #11).
-    if ((await downloadsUsed(c.var.db, user.id)) >= DEFAULT_DOWNLOAD_QUOTA) {
-      return c.json({ error: "quota_exceeded", limit: DEFAULT_DOWNLOAD_QUOTA }, 429);
-    }
-
-    let filled: ReturnType<typeof fillTemplate>;
-    try {
-      filled = fillTemplate(tpl.body, tpl.config, values);
-    } catch (e) {
-      if (e instanceof TemplateTooLargeError) return c.json({ error: "template_too_large" }, 413);
-      throw e;
-    }
-    const meta = { title: tpl.item.title, userId: user.id, generatedAt: new Date() };
-    const { CONTENT_TYPES, renderDocument } = await loadGenerators();
-    const bytes = await renderDocument(body.data.format, filled, meta);
-
-    // Potong kuota hanya bila file berhasil dibuat.
-    const used = await consumeQuota(c.var.db, user.id, "downloads", DEFAULT_DOWNLOAD_QUOTA);
-    if (used === null)
-      return c.json({ error: "quota_exceeded", limit: DEFAULT_DOWNLOAD_QUOTA }, 429);
-
-    const fileName = buildFileName(tpl.config, tpl.item.title, values, body.data.format);
-    // Riwayat unduhan untuk halaman Profil (D33). Hanya pelengkap: bila gagal, file tetap
-    // dikirim karena kuota sudah terpotong (review keamanan PR #18).
-    try {
-      await c.var.db.insert(schema.templateDownloads).values({
-        id: crypto.randomUUID(),
-        userId: user.id,
-        contentId: tpl.item.id,
-        format: body.data.format,
-        fileName,
       });
-    } catch (e) {
-      console.error(JSON.stringify({ alert: "download_history_failed", error: String(e) }));
-    }
-
-    return new Response(bytes, {
-      headers: {
-        ...attachmentHeaders(CONTENT_TYPES[body.data.format], fileName),
-        "X-Downloads-Used": String(used),
-        "X-Downloads-Limit": String(DEFAULT_DOWNLOAD_QUOTA),
-      },
-    });
-  });
+    },
+  );

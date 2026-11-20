@@ -16,7 +16,7 @@ import {
 } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
-import { requireActiveSubscription, requireAuth } from "../middleware/guards";
+import { FREE_TIER, requireActiveSubscriptionUnlessFree, requireAuth } from "../middleware/guards";
 import { getAccessStatus } from "../services/entitlements";
 import { rateLimit } from "../services/protection";
 import { readStreak, recomputeStreak } from "../services/streaks";
@@ -84,7 +84,9 @@ export const tools = new Hono<AppEnv>()
         summary: tool.item.summary,
       },
       definition,
-      locked: !sub.active,
+      // Konten gratis (D35) terbuka untuk semua user login.
+      locked: !sub.active && tool.item.tier !== FREE_TIER,
+      free: tool.item.tier === FREE_TIER,
       tracker:
         tool.def.storesUserData && !tool.custom
           ? { today: todayWib(), streak: await readStreak(c.var.db, user.id, tool.item.id) }
@@ -92,7 +94,7 @@ export const tools = new Hono<AppEnv>()
     });
   })
 
-  .post("/:slug/run", requireActiveSubscription, rateLimit("tool"), async (c) => {
+  .post("/:slug/run", requireActiveSubscriptionUnlessFree("tool"), rateLimit("tool"), async (c) => {
     // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
     const user = c.var.user!;
     const body = runToolBodySchema.safeParse(await c.req.json().catch(() => null));
@@ -129,65 +131,73 @@ export const tools = new Hono<AppEnv>()
   })
 
   /** Simpan/ganti entri tracker untuk satu tanggal (D13). Butuh langganan aktif. */
-  .put("/:slug/entries", requireActiveSubscription, rateLimit("tool"), async (c) => {
-    // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
-    const user = c.var.user!;
-    const body = trackerEntryBodySchema.safeParse(await c.req.json().catch(() => null));
-    if (!body.success) return c.json({ error: "invalid_body" }, 400);
-    if (!isEntryDateAllowed(body.data.date)) return c.json({ error: "date_out_of_range" }, 400);
+  .put(
+    "/:slug/entries",
+    requireActiveSubscriptionUnlessFree("tool"),
+    rateLimit("tool"),
+    async (c) => {
+      // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
+      const user = c.var.user!;
+      const body = trackerEntryBodySchema.safeParse(await c.req.json().catch(() => null));
+      if (!body.success) return c.json({ error: "invalid_body" }, 400);
+      if (!isEntryDateAllowed(body.data.date)) return c.json({ error: "date_out_of_range" }, 400);
 
-    const tool = await loadPublishedTool(c.var.db, c.req.param("slug"));
-    if (!tool) return c.json({ error: "not_found" }, 404);
-    if (!tool.def.storesUserData || !tool.config) return c.json({ error: "not_a_tracker" }, 400);
+      const tool = await loadPublishedTool(c.var.db, c.req.param("slug"));
+      if (!tool) return c.json({ error: "not_found" }, 404);
+      if (!tool.def.storesUserData || !tool.config) return c.json({ error: "not_a_tracker" }, 400);
 
-    let result: ReturnType<typeof runToolConfig>;
-    try {
-      result = runToolConfig(tool.config, body.data.input);
-    } catch (e) {
-      const issues = (e as { issues?: { path: PropertyKey[]; message: string }[] }).issues;
-      if (issues) {
-        return c.json(
-          {
-            error: "invalid_input",
-            issues: issues.map((i) => ({ path: i.path.map(String).join("."), message: i.message })),
-          },
-          400,
-        );
+      let result: ReturnType<typeof runToolConfig>;
+      try {
+        result = runToolConfig(tool.config, body.data.input);
+      } catch (e) {
+        const issues = (e as { issues?: { path: PropertyKey[]; message: string }[] }).issues;
+        if (issues) {
+          return c.json(
+            {
+              error: "invalid_input",
+              issues: issues.map((i) => ({
+                path: i.path.map(String).join("."),
+                message: i.message,
+              })),
+            },
+            400,
+          );
+        }
+        throw e;
       }
-      throw e;
-    }
 
-    const limit = tool.def.quotaPerMonth ?? DEFAULT_TOOL_RUN_QUOTA;
-    const used = await consumeQuota(c.var.db, user.id, `tool_runs:${tool.item.id}`, limit);
-    if (used === null) return c.json({ error: "quota_exceeded", limit }, 429);
+      const limit = tool.def.quotaPerMonth ?? DEFAULT_TOOL_RUN_QUOTA;
+      const used = await consumeQuota(c.var.db, user.id, `tool_runs:${tool.item.id}`, limit);
+      if (used === null) return c.json({ error: "quota_exceeded", limit }, 429);
 
-    // Simpan isian yang sudah tervalidasi + hasil hitung, supaya riwayat tidak perlu dihitung ulang.
-    const entry: Omit<TrackerEntry, "date"> = {
-      input: Object.fromEntries(
-        tool.config.inputs.map((i) => [i.key, body.data.input[i.key] ?? null]),
-      ),
-      results: result.results,
-    };
-    await c.var.db
-      .insert(schema.toolEntries)
-      .values({
-        id: crypto.randomUUID(),
-        userId: user.id,
-        toolId: tool.item.id,
-        entryDate: body.data.date,
-        dataJson: JSON.stringify(entry),
-      })
-      .onConflictDoUpdate({
-        target: [
-          schema.toolEntries.userId,
-          schema.toolEntries.toolId,
-          schema.toolEntries.entryDate,
-        ],
-        set: { dataJson: JSON.stringify(entry) },
-      });
-    const streak = await recomputeStreak(c.var.db, user.id, tool.item.id);
-    return c.json({ ...result, date: body.data.date, streak, usage: { used, limit } });
-  })
+      // Simpan isian yang sudah tervalidasi + hasil hitung, supaya riwayat tidak perlu dihitung ulang.
+      const entry: Omit<TrackerEntry, "date"> = {
+        input: Object.fromEntries(
+          tool.config.inputs.map((i) => [i.key, body.data.input[i.key] ?? null]),
+        ),
+        results: result.results,
+      };
+      await c.var.db
+        .insert(schema.toolEntries)
+        .values({
+          id: crypto.randomUUID(),
+          userId: user.id,
+          toolId: tool.item.id,
+          entryDate: body.data.date,
+          dataJson: JSON.stringify(entry),
+        })
+        .onConflictDoUpdate({
+          target: [
+            schema.toolEntries.userId,
+            schema.toolEntries.toolId,
+            schema.toolEntries.entryDate,
+          ],
+          set: { dataJson: JSON.stringify(entry) },
+        });
+      const streak = await recomputeStreak(c.var.db, user.id, tool.item.id);
+      return c.json({ ...result, date: body.data.date, streak, usage: { used, limit } });
+    },
+  )
 
   /**
    * Riwayat entri milik user sendiri. Cukup login (tanpa langganan): data milik user tetap bisa

@@ -1,0 +1,11 @@
+---
+import ContentPage from "../../components/ContentPage.astro";
+import { getContent } from "../../lib/api";
+
+const slug = Astro.params.slug ?? "";
+const data = await getContent("tool", slug);
+if (!data) return Astro.rewrite("/404");
+const preview = null;
+---
+
+<ContentPage data={data} preview={preview} />

@@ -1,0 +1,63 @@
+---
+/**
+ * Render isi bab ebook (JSON yang lolos `ebookDocSchema`) untuk halaman publik, setara
+ * `@selfgrow/renderer`: hanya node yang dikenal, tautan & gambar diperiksa ulang, tanpa HTML mentah.
+ */
+import type { EbookNode } from "@selfgrow/shared";
+import { appUrl } from "../../lib/api";
+import Marked from "./Marked.astro";
+
+interface Props {
+  nodes?: EbookNode[];
+}
+const { nodes = [] } = Astro.props;
+const Self = Astro.self;
+const SAFE_IMG = /^(https:\/\/[^\s]+|\/api\/v1\/assets\/[A-Za-z0-9_-]+)$/;
+// Aset Studio dilayani aplikasi; di etalase alamatnya dibuat lengkap.
+const imgSrc = (src: string) => (src.startsWith("/") ? appUrl(src) : src);
+---
+
+{
+  nodes.map((n) =>
+    n.type === "text" ? (
+      <Marked text={n.text} marks={n.marks} />
+    ) : n.type === "paragraph" ? (
+      <p><Self nodes={n.content} /></p>
+    ) : n.type === "heading" ? (
+      n.attrs.level === 2 ? (
+        <h2><Self nodes={n.content} /></h2>
+      ) : n.attrs.level === 3 ? (
+        <h3><Self nodes={n.content} /></h3>
+      ) : (
+        <h4><Self nodes={n.content} /></h4>
+      )
+    ) : n.type === "bulletList" ? (
+      <ul><Self nodes={n.content} /></ul>
+    ) : n.type === "orderedList" ? (
+      <ol start={n.attrs?.start}><Self nodes={n.content} /></ol>
+    ) : n.type === "listItem" ? (
+      <li><Self nodes={n.content} /></li>
+    ) : n.type === "blockquote" ? (
+      <blockquote><Self nodes={n.content} /></blockquote>
+    ) : n.type === "horizontalRule" ? (
+      <hr />
+    ) : n.type === "hardBreak" ? (
+      <br />
+    ) : n.type === "image" && SAFE_IMG.test(n.attrs.src) ? (
+      <figure>
+        <img src={imgSrc(n.attrs.src)} alt={n.attrs.alt ?? ""} loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+        {n.attrs.title && <figcaption>{n.attrs.title}</figcaption>}
+      </figure>
+    ) : n.type === "table" ? (
+      <div class="table-wrap"><table><tbody><Self nodes={n.content} /></tbody></table></div>
+    ) : n.type === "tableRow" ? (
+      <tr><Self nodes={n.content} /></tr>
+    ) : n.type === "tableHeader" ? (
+      <th colspan={n.attrs?.colspan} rowspan={n.attrs?.rowspan}><Self nodes={n.content} /></th>
+    ) : n.type === "tableCell" ? (
+      <td colspan={n.attrs?.colspan} rowspan={n.attrs?.rowspan}><Self nodes={n.content} /></td>
+    ) : n.type === "callout" ? (
+      <aside class={`callout callout-${n.attrs.variant}`} role="note"><Self nodes={n.content} /></aside>
+    ) : null,
+  )
+}

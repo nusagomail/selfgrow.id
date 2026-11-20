@@ -1,0 +1,37 @@
+---
+/**
+ * Teks dengan mark (tebal, miring, tautan, ...) dibungkus satu per satu secara rekursif.
+ * Teks selalu di-escape Astro; tidak ada set:html (aturan CLAUDE.md: tanpa innerHTML).
+ */
+import type { EbookMark } from "@selfgrow/shared";
+
+interface Props {
+  text: string;
+  marks?: EbookMark[];
+  i?: number;
+}
+const { text, marks = [], i = 0 } = Astro.props;
+const mark = marks[i];
+const SAFE_HREF = /^(https?:\/\/|mailto:)/i;
+const Self = Astro.self;
+---
+
+{
+  !mark ? (
+    text
+  ) : mark.type === "bold" ? (
+    <strong><Self text={text} marks={marks} i={i + 1} /></strong>
+  ) : mark.type === "italic" ? (
+    <em><Self text={text} marks={marks} i={i + 1} /></em>
+  ) : mark.type === "underline" ? (
+    <u><Self text={text} marks={marks} i={i + 1} /></u>
+  ) : mark.type === "strike" ? (
+    <s><Self text={text} marks={marks} i={i + 1} /></s>
+  ) : mark.type === "code" ? (
+    <code><Self text={text} marks={marks} i={i + 1} /></code>
+  ) : mark.type === "link" && SAFE_HREF.test(mark.attrs.href) ? (
+    <a href={mark.attrs.href} target="_blank" rel="noopener noreferrer nofollow"><Self text={text} marks={marks} i={i + 1} /></a>
+  ) : (
+    <Self text={text} marks={marks} i={i + 1} />
+  )
+}

@@ -1,3 +1,4 @@
+import { and, eq, schema } from "@selfgrow/db";
 import { createMiddleware } from "hono/factory";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { AppEnv } from "../env";
@@ -26,6 +27,48 @@ export const requireActiveSubscription = createMiddleware<AppEnv>(async (c, next
   if (!status.active) return c.json({ error: "subscription_required" }, 403);
   await next();
 });
+
+/** Tier konten yang terbuka untuk semua user login tanpa langganan (D35). */
+export const FREE_TIER = "free";
+
+/** Apakah konten terbit (jenis + slug) ditandai gratis di Studio. */
+export async function isFreeContent(
+  db: AppEnv["Variables"]["db"],
+  type: "ebook" | "tool" | "template" | "program",
+  slug: string,
+): Promise<boolean> {
+  const item = await db.query.contentItems.findFirst({
+    where: and(
+      eq(schema.contentItems.type, type),
+      eq(schema.contentItems.slug, slug),
+      eq(schema.contentItems.status, "published"),
+    ),
+    columns: { tier: true },
+  });
+  return item?.tier === FREE_TIER;
+}
+
+/**
+ * Seperti `requireActiveSubscription`, tetapi konten yang ditandai gratis (D35) boleh dipakai
+ * user login tanpa langganan. Pembekuan akun (D28) tetap berlaku untuk semua.
+ * Dipakai di route konten yang punya parameter `:slug`.
+ */
+export function requireActiveSubscriptionUnlessFree(
+  type: "ebook" | "tool" | "template" | "program",
+) {
+  return createMiddleware<AppEnv>(async (c, next) => {
+    const user = c.var.user;
+    if (!user) return c.json({ error: "unauthorized" }, 401);
+    const [status, frozen, free] = await Promise.all([
+      getAccessStatus(c.env.KV, c.var.db, user),
+      getFreeze(c.env.KV, user.id),
+      isFreeContent(c.var.db, type, c.req.param("slug") ?? ""),
+    ]);
+    if (frozen) return c.json({ error: "account_frozen", until: frozen.until }, 423);
+    if (!status.active && !free) return c.json({ error: "subscription_required" }, 403);
+    await next();
+  });
+}
 
 /** 403 untuk selain admin. Dipakai bersama requireAccess di /studio dan /admin. */
 export const requireAdmin = createMiddleware<AppEnv>(async (c, next) => {
