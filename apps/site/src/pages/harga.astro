@@ -1,0 +1,156 @@
+---
+import Base from "../layouts/Base.astro";
+import { appUrl } from "../lib/api";
+
+const plans = [
+  {
+    name: "Bulanan",
+    price: "100.000",
+    per: "/bulan",
+    note: "Bebas berhenti kapan saja.",
+    features: [
+      "Semua ebook, tools, template, dan program",
+      "Konten baru setiap minggu",
+      "Dipakai di HP dan laptop",
+    ],
+  },
+  {
+    name: "Tahunan",
+    price: "1.000.000",
+    per: "/tahun",
+    note: "Setara 10 bulan, hemat 2 bulan.",
+    features: [
+      "Semua yang ada di paket bulanan",
+      "Hemat Rp200.000 per tahun",
+      "Cocok untuk program jangka panjang",
+    ],
+    best: true,
+  },
+];
+---
+
+<Base title="Harga langganan | SelfGrow" description="Satu langganan Rp100.000 per bulan untuk semua ebook, tools, template, dan program SelfGrow. Paket tahunan setara 10 bulan.">
+  <section class="head">
+    <div class="container">
+      <p class="eyebrow">Harga</p>
+      <h1>Satu langganan untuk semua kategori</h1>
+      <p class="lead">Pendaftaran berbayar segera dibuka. Daftar sekarang secara gratis untuk mencoba bab pertama setiap ebook dan mendapat harga founding member.</p>
+    </div>
+  </section>
+  <section class="container plans">
+    {plans.map((p) => (
+      <article class:list={["plan", { best: p.best }]}>
+        {p.best && <span class="badge">Paling hemat</span>}
+        <h2>{p.name}</h2>
+        <p class="amount"><span class="rp">Rp</span>{p.price}<span class="per">{p.per}</span></p>
+        <p class="muted">{p.note}</p>
+        <ul>{p.features.map((f) => <li>{f}</li>)}</ul>
+        <a href={appUrl("/masuk")} class:list={["btn", p.best ? "btn-primary" : "btn-ghost"]}>Daftar gratis dulu</a>
+      </article>
+    ))}
+    <article class="plan founding">
+      <span class="badge gold">500 kursi</span>
+      <h2>Founding member</h2>
+      <p class="amount small">Rp49.000–69.000<span class="per">/bulan</span></p>
+      <p>Harga khusus untuk 500 pelanggan pertama, terkunci selama langganan aktif. Pendaftar awal dikabari lebih dulu saat pendaftaran dibuka.</p>
+      <a href={appUrl("/masuk")} class="btn btn-gold">Amankan tempatmu</a>
+    </article>
+  </section>
+</Base>
+
+<style>
+  .head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(32px, 6vw, 64px);
+  }
+  .head .container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    padding-block: 40px clamp(48px, 8vw, 96px);
+    align-items: stretch;
+  }
+  .plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    min-width: 0;
+  }
+  .plan.best {
+    border: 2px solid var(--primary);
+    box-shadow: var(--shadow);
+  }
+  .plan.founding {
+    background: var(--hero-bg);
+    color: var(--hero-ink);
+    border-color: transparent;
+  }
+  .plan.founding h2 {
+    color: #fff;
+  }
+  .badge {
+    position: absolute;
+    top: -12px;
+    left: 24px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: var(--primary);
+    color: var(--primary-ink);
+  }
+  .badge.gold {
+    background: var(--gold);
+    color: var(--green-950);
+  }
+  .plan h2 {
+    font-size: 1.2rem;
+  }
+  .amount {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .amount.small {
+    font-size: 1.6rem;
+  }
+  .rp {
+    font-size: 0.45em;
+    vertical-align: super;
+    margin-right: 4px;
+  }
+  .per {
+    font-size: 0.42em;
+    font-weight: 600;
+    opacity: 0.75;
+    margin-left: 4px;
+  }
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+  }
+  .plan .btn {
+    margin-top: auto;
+  }
+  @media (max-width: 900px) {
+    .plans {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 520px;
+    }
+  }
+</style>

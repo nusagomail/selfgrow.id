@@ -1,0 +1,187 @@
+---
+import { appUrl, type CategoryDetail, itemUrl, TYPE_LABEL } from "../lib/api";
+
+interface Props {
+  data: CategoryDetail;
+}
+const { data } = Astro.props;
+const { category, topic, topics, items } = data;
+const total = topics.reduce((n, t) => n + t.count, 0);
+const topicName = new Map(topics.map((t) => [t.slug, t.name]));
+---
+
+<section class="cat-hero">
+  <div class="container hero-inner">
+    <nav class="crumbs" aria-label="Lokasi halaman">
+      <a href="/">Beranda</a> <span aria-hidden="true">/</span>
+      <a href="/kategori">Kategori</a>
+      {topic && (<><span aria-hidden="true">/</span> <a href={`/kategori/${category.slug}`}>{category.name}</a></>)}
+    </nav>
+    <h1>{topic ? topic.name : category.name}</h1>
+    {!topic && category.hook && <p class="hook">"{category.hook}"</p>}
+    <p class="desc">
+      {topic ? `Bagian dari kategori ${category.name}.` : category.description}
+    </p>
+  </div>
+</section>
+
+<section class="container body">
+  <nav class="topics" aria-label="Topik">
+    <a href={`/kategori/${category.slug}`} class="chip" aria-current={!topic ? "page" : undefined}>
+      Semua <span class="count">{total}</span>
+    </a>
+    {topics.map((t) => (
+      <a href={`/kategori/${category.slug}/${t.slug}`} class="chip" aria-current={topic?.slug === t.slug ? "page" : undefined}>
+        {t.name} <span class="count">{t.count}</span>
+      </a>
+    ))}
+  </nav>
+
+  {items.length > 0 ? (
+    <div class="grid items">
+      {items.map((i) => (
+        <a href={itemUrl(i)} class="item">
+          <span class:list={["type", i.type]}>{TYPE_LABEL[i.type]}</span>
+          <h2>{i.title}</h2>
+          {i.summary && <p class="muted">{i.summary}</p>}
+          {!topic && i.topic && <span class="topic">{topicName.get(i.topic)}</span>}
+        </a>
+      ))}
+    </div>
+  ) : (
+    <div class="empty">
+      <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
+        <path d="M32 56V30" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none" />
+        <path d="M32 34c-10 0-16-6-16-16 10 0 16 6 16 16z" fill="currentColor" opacity=".55" />
+        <path d="M32 30c0-10 6-16 16-16 0 10-6 16-16 16z" fill="currentColor" />
+        <circle cx="48" cy="10" r="3" fill="var(--gold)" />
+      </svg>
+      <h2>Konten {topic ? "topik" : "kategori"} ini sedang disiapkan</h2>
+      <p class="muted">
+        Ebook, tool, dan template untuk {topic ? topic.name : category.name} sedang ditulis. Daftar
+        sekarang supaya kamu dikabari saat terbit dan mendapat harga founding member.
+      </p>
+      <a href={appUrl("/masuk")} class="btn btn-primary">Daftar gratis</a>
+    </div>
+  )}
+</section>
+
+<style>
+  .cat-hero {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(32px, 6vw, 64px);
+  }
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .crumbs {
+    font-size: 0.88rem;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .crumbs a {
+    color: var(--muted);
+  }
+  .hook {
+    font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+    font-style: italic;
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .desc {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+  .body {
+    padding-block: 32px clamp(48px, 8vw, 96px);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .topics {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+  .topics .chip {
+    flex-shrink: 0;
+  }
+  @media (min-width: 760px) {
+    .topics {
+      flex-wrap: wrap;
+      overflow: visible;
+    }
+  }
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    min-width: 0;
+  }
+  .item:hover {
+    border-color: var(--primary);
+  }
+  .item h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .type {
+    align-self: flex-start;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--green-100);
+    color: var(--green-900);
+  }
+  .type.tool {
+    background: #fdf0d3;
+    color: #6b4500;
+  }
+  .type.template {
+    background: #dfeaf6;
+    color: #1e4f7c;
+  }
+  .type.program {
+    background: #ece4f7;
+    color: #4f347a;
+  }
+  .topic {
+    margin-top: auto;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: clamp(32px, 6vw, 56px) 20px;
+    border: 1.5px dashed var(--line);
+    border-radius: var(--radius);
+    color: var(--primary);
+  }
+  .empty h2 {
+    font-size: 1.3rem;
+    color: var(--ink);
+  }
+  .empty p {
+    max-width: 52ch;
+  }
+</style>

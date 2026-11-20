@@ -1,9 +1,25 @@
+// Etalase publik (site). Data katalog diambil dari Worker app lewat service binding APP
+// (tanpa lewat internet, tidak terkena Cloudflare Access staging).
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "selfgrow-site",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  // Nilai top-level = production. Nilai lokal di .dev.vars (LOCAL_API_ORIGIN).
+  "vars": {
+    "ENVIRONMENT": "production",
+    "APP_URL": "https://app.selfgrow.id"
+  },
+  "services": [{ "binding": "APP", "service": "selfgrow-app" }],
   "env": {
-    "staging": { "name": "selfgrow-site-staging" }
+    "staging": {
+      "name": "selfgrow-site-staging",
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "APP_URL": "https://selfgrow-app-staging.nusagomail.workers.dev"
+      },
+      "services": [{ "binding": "APP", "service": "selfgrow-app-staging" }]
+    }
   }
 }

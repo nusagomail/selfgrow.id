@@ -43,7 +43,7 @@ Isi GitHub → repo `selfgrow.id` → **Settings → Secrets and variables → A
 | `ADMIN_EMAILS`         | Email Google pemilik                                                                                                                              |
 
 `BETTER_AUTH_SECRET` dibuat otomatis oleh workflow (acak, tidak pernah ditampilkan).
-Setelah deploy pertama, alamat staging dan Redirect URI Google muncul di ringkasan run GitHub Actions. Tambahkan Redirect URI itu di Google Cloud Console (langkah 1.4).
+Workflow yang sama men-deploy etalase publik `selfgrow-site-staging` (tidak dikunci Access, tetapi `noindex` sehingga tidak muncul di Google). Setelah deploy pertama, alamat staging (site dan app) serta Redirect URI Google muncul di ringkasan run GitHub Actions. Tambahkan Redirect URI itu di Google Cloud Console (langkah 1.4).
 
 Database dan cache staging sudah dibuat di Cloudflare: D1 `selfgrow-staging` (APAC) dan KV `selfgrow-staging-kv`.
 

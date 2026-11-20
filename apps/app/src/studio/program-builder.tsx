@@ -2,6 +2,7 @@ import type { ProgramDay, ProgramItem } from "@selfgrow/shared";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, api } from "../lib/api";
+import { TopicPicker } from "./topic-picker";
 
 type Issue = { path: string; message: string };
 type CatalogItem = {
@@ -160,6 +161,7 @@ export function StudioProgram() {
             </>
           )}
         </div>
+        <TopicPicker contentId={rawId} />
         {notice && <p className="notice">{notice}</p>}
         {[...issues.map((i) => `${i.path ? `${i.path}: ` : ""}${i.message}`), ...problems].map(
           (m) => (

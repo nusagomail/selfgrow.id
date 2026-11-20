@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ApiError, api } from "../lib/api";
 import { ToolForm } from "../tools/form";
 import { InputsEditor } from "./inputs-editor";
+import { TopicPicker } from "./topic-picker";
 
 type Issue = { path: string; message: string };
 
@@ -178,6 +179,7 @@ export function StudioTool() {
             </>
           )}
         </div>
+        <TopicPicker contentId={rawId} />
         {notice && <p className="notice">{notice}</p>}
         {issues.length > 0 && (
           <div className="error small">

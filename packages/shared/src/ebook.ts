@@ -187,6 +187,8 @@ export const updateContentBodySchema = z
     summary: z.string().trim().max(1000).nullable(),
     level: z.enum(["beginner", "intermediate", "advanced"]).nullable(),
     status: z.enum(["draft", "published"]),
+    /** Topik (kategori anak). Kategori induk ikut dari topik. `null` = belum dikelompokkan. */
+    categoryId: z.string().min(1).max(100).nullable(),
   })
   .partial();
 

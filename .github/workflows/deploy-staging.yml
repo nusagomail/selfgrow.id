@@ -1,6 +1,7 @@
 name: Deploy staging
 
-# Setiap merge ke main: test, migrasi D1 staging, deploy Worker app ke workers.dev (D15).
+# Setiap merge ke main: test, migrasi D1 staging, deploy Worker app lalu Worker site
+# (etalase publik, mengambil katalog dari app lewat service binding) ke workers.dev (D15).
 # Butuh GitHub Secrets (lihat docs/SETUP.md bagian 3):
 #   CLOUDFLARE_API_TOKEN (wajib), GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, ADMIN_EMAILS,
 #   CLOUDFLARE_ACCOUNT_ID (opsional), STAGING_TURNSTILE_SECRET_KEY (opsional).
@@ -101,6 +102,22 @@ jobs:
             rm -f "$RUNNER_TEMP/secrets.json"
           fi
 
+      # Site sesudah app: service binding APP butuh Worker app staging sudah ada.
+      - name: Build & deploy site (staging)
+        if: steps.gate.outputs.skip != 'true'
+        id: site
+        working-directory: apps/site
+        run: |
+          set -o pipefail
+          CLOUDFLARE_ENV=staging pnpm build
+          npx wrangler deploy 2>&1 | tee deploy.log
+          url=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          if [ -z "$url" ]; then
+            echo "::error::Deploy site tidak menghasilkan alamat workers.dev."
+            exit 1
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
       - name: Smoke test
         if: steps.gate.outputs.skip != 'true'
         run: |
@@ -121,9 +138,21 @@ jobs:
             echo "::error::Staging tidak merespons."
             exit 1
           fi
+          # Site publik (noindex di staging): beranda harus 200 dan memuat kategori dari app.
+          site="${{ steps.site.outputs.url }}"
+          for i in 1 2 3 4 5 6; do
+            body=$(curl -s "$site/" || true)
+            echo "$body" | grep -q 'Keuangan Pribadi' && site_ok=yes && break
+            sleep 5
+          done
+          if [ "$site_ok" != "yes" ]; then
+            echo "::error::Site staging tidak menampilkan kategori dari app."
+            exit 1
+          fi
           {
             echo "### Staging ter-deploy"
             echo ""
+            echo "- Site: $site"
             echo "- App: $url"
             echo "- Cloudflare Access: $status"
             echo "- Redirect URI Google OAuth: \`$url/api/v1/auth/callback/google\`"

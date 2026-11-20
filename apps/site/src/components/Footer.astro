@@ -1,0 +1,110 @@
+---
+import type { Category } from "../lib/api";
+
+interface Props {
+  categories: Category[];
+}
+const { categories } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container inner">
+    <div class="about">
+      <picture>
+        <source srcset="/brand/logo-dark-240.webp 1x, /brand/logo-dark-480.webp 2x" />
+        <img src="/brand/logo-dark-240.webp" width="138" height="40" alt="SelfGrow" loading="lazy" />
+      </picture>
+      <p>Ebook interaktif, tools, dan template untuk bertumbuh sedikit setiap hari. Satu langganan untuk semua kategori.</p>
+    </div>
+    <nav class="cols" aria-label="Tautan kaki halaman">
+      <div>
+        <p class="col-title">Kategori</p>
+        <ul class="two">
+          {categories.map((c) => <li><a href={`/kategori/${c.slug}`}>{c.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <p class="col-title">SelfGrow</p>
+        <ul>
+          <li><a href="/tentang">Tentang</a></li>
+          <li><a href="/harga">Harga</a></li>
+          <li><a href="/kategori">Semua kategori</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="container legal">
+    <p>© {year} SelfGrow. Bertumbuh Menjadi Lebih Baik.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--green-950);
+    color: #cfe3d3;
+    padding-block: 56px calc(24px + env(safe-area-inset-bottom, 0px));
+    margin-top: 0;
+  }
+  .inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 40px;
+  }
+  .about {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 36ch;
+  }
+  .about img {
+    width: 138px;
+    height: auto;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+  }
+  .col-title {
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  ul.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+  a {
+    color: #cfe3d3;
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--gold);
+  }
+  .legal {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(255 255 255 / 12%);
+    font-size: 0.85rem;
+    color: #8fb39a;
+  }
+  @media (max-width: 760px) {
+    .inner,
+    .cols {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 420px) {
+    ul.two {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

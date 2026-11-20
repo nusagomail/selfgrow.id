@@ -165,6 +165,8 @@ export const categories = sqliteTable("categories", {
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   description: text("description"),
+  /** Kalimat masalah (pain point) untuk hero halaman kategori & iklan (D12). Kategori saja. */
+  hook: text("hook"),
   order: integer("order").notNull().default(0),
 });
 

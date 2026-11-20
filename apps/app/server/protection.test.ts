@@ -227,29 +227,31 @@ describe("rate limit", () => {
     }
   });
 
+  // Limiter memakai jendela tetap 60 detik: kirim cukup banyak request agar tetap kena batas
+  // walau satu batas jendela terlewati di tengah test, lalu cek posisi 429 pertama.
   it("terlalu banyak bab per menit dari satu user -> 429", async () => {
     const { slug, ids } = await setupEbook(1);
     const u = await subscriber();
-    const statuses: number[] = [];
-    for (let i = 0; i < 32; i++)
-      statuses.push((await read(slug, ids[0] as string, u.token)).status);
-    expect(statuses.slice(0, 30).every((s) => s === 200)).toBe(true);
-    expect(statuses.at(-1)).toBe(429);
+    let first429 = -1;
+    for (let i = 0; i < 70 && first429 < 0; i++) {
+      if ((await read(slug, ids[0] as string, u.token)).status === 429) first429 = i;
+    }
+    expect(first429).toBeGreaterThanOrEqual(30);
   });
 
   it("batas per IP berlaku lintas akun", async () => {
     const { slug, ids } = await setupEbook(1);
     const ip = `203.0.113.${Math.floor(Math.random() * 250)}`;
-    const statuses: number[] = [];
-    for (let i = 0; i < 6; i++) {
+    let first429 = -1;
+    let sent = 0;
+    // Ganti akun setiap 20 request agar batas per user (30) tidak tercapai lebih dulu.
+    while (sent < 260 && first429 < 0) {
       const u = await subscriber();
-      for (let j = 0; j < 21; j++) {
-        statuses.push(
-          (await read(slug, ids[0] as string, u.token, { "cf-connecting-ip": ip })).status,
-        );
+      for (let j = 0; j < 20 && first429 < 0; j++, sent++) {
+        const r = await read(slug, ids[0] as string, u.token, { "cf-connecting-ip": ip });
+        if (r.status === 429) first429 = sent;
       }
     }
-    expect(statuses.slice(0, 120).every((s) => s === 200)).toBe(true);
-    expect(statuses.at(-1)).toBe(429);
+    expect(first429).toBeGreaterThanOrEqual(120);
   });
 });

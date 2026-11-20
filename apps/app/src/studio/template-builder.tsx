@@ -11,6 +11,7 @@ import { downloadFile } from "../lib/download";
 import { TemplateForm } from "../templates/form";
 import { ChapterEditor } from "./editor";
 import { InputsEditor } from "./inputs-editor";
+import { TopicPicker } from "./topic-picker";
 
 type Issue = { path: string; message: string };
 type Resp = {
@@ -151,6 +152,7 @@ export function StudioTemplate() {
             </>
           )}
         </div>
+        <TopicPicker contentId={rawId} />
         {notice && <p className="notice">{notice}</p>}
         {[...issues.map((i) => `${i.path ? `${i.path}: ` : ""}${i.message}`), ...problems].map(
           (m) => (

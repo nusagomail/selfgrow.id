@@ -1,18 +1,43 @@
 ---
+import "@fontsource-variable/plus-jakarta-sans/wght.css";
+import "../styles/global.css";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { type Category, getCategories, setPublicCache } from "../lib/api";
+
 interface Props {
   title: string;
   description: string;
+  /** Slug kategori aktif (untuk menu). */
+  current?: string;
+  /** Data terstruktur (JSON-LD) tambahan untuk halaman ini. */
+  jsonLd?: Record<string, unknown>[];
+  categories?: Category[];
 }
-const { title, description } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL("/brand/og-image.png", Astro.site);
+const { title, description, current, jsonLd = [] } = Astro.props;
+const categories = Astro.props.categories ?? (await getCategories());
+const base = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(Astro.url.pathname, base);
+const ogImage = new URL("/brand/og-image.png", base);
+setPublicCache(Astro.response.headers);
+
+const organization = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "SelfGrow",
+  url: new URL("/", base).toString(),
+  logo: new URL("/brand/mark-512.png", base).toString(),
+  slogan: "Bertumbuh Menjadi Lebih Baik",
+};
+// JSON-LD di-escape agar "</script>" di data tidak bisa menutup tag.
+const ld = (o: unknown) => JSON.stringify(o).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
 <html lang="id">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#073e1f" />
@@ -20,39 +45,40 @@ const ogImage = new URL("/brand/og-image.png", Astro.site);
     <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="64x64" href="/brand/favicon-64.png" />
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+    <meta property="og:site_name" content="SelfGrow" />
+    <meta property="og:locale" content="id_ID" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <style is:global>
-      :root {
-        --brand-dark: #073e1f;
-        --primary: #1d7a34;
-        --bg: #f7faf6;
-        --text: #10241a;
-        --muted: #4b5f53;
-        color-scheme: light dark;
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #08130d;
-          --text: #e6efe8;
-          --muted: #9fb3a6;
-          --primary: #5cbf4a;
-        }
-      }
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--text);
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        line-height: 1.6;
-      }
-    </style>
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={ld(organization)} />
+    {jsonLd.map((o) => <script type="application/ld+json" set:html={ld(o)} />)}
   </head>
   <body>
-    <slot />
+    <a href="#isi" class="skip">Langsung ke isi</a>
+    <Header categories={categories} current={current} />
+    <main id="isi">
+      <slot />
+    </main>
+    <Footer categories={categories} />
   </body>
 </html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: -999px;
+    top: 8px;
+    z-index: 100;
+    background: var(--surface);
+    padding: 8px 14px;
+    border-radius: 8px;
+  }
+  .skip:focus {
+    left: 8px;
+  }
+</style>
