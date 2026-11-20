@@ -13,7 +13,9 @@ import { health } from "./routes/health";
 import { library } from "./routes/library";
 import { me } from "./routes/me";
 import { studio } from "./routes/studio";
+import { studioTemplates } from "./routes/studio-templates";
 import { studioTools } from "./routes/studio-tools";
+import { templates } from "./routes/templates";
 import { tools } from "./routes/tools";
 
 /**
@@ -48,8 +50,10 @@ api.route("/me", me);
 api.route("/library", library);
 api.route("/ebooks", ebooks);
 api.route("/studio/tools", studioTools);
+api.route("/studio/templates", studioTemplates);
 api.route("/studio", studio);
 api.route("/tools", tools);
+api.route("/templates", templates);
 api.route("/admin", admin);
 
 api.notFound((c) => c.json({ error: "not_found" }, 404));

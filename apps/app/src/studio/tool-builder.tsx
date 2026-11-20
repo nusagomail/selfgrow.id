@@ -1,6 +1,5 @@
 import {
   FORMULA_FUNCTIONS,
-  TOOL_INPUT_TYPES,
   TOOL_OUTPUT_FORMATS,
   TOOL_VARIANTS,
   type ToolConfig,
@@ -11,6 +10,7 @@ import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ApiError, api } from "../lib/api";
 import { ToolForm } from "../tools/form";
+import { InputsEditor } from "./inputs-editor";
 
 type Issue = { path: string; message: string };
 
@@ -26,12 +26,6 @@ type ToolResponse = {
   };
 };
 
-const TYPE_LABEL: Record<(typeof TOOL_INPUT_TYPES)[number], string> = {
-  number: "Angka",
-  text: "Teks",
-  select: "Pilihan",
-  boolean: "Ya/Tidak",
-};
 const FORMAT_LABEL: Record<(typeof TOOL_OUTPUT_FORMATS)[number], string> = {
   number: "Angka",
   currency_idr: "Rupiah",
@@ -43,21 +37,6 @@ const VARIANT_LABEL: Record<(typeof TOOL_VARIANTS)[number], string> = {
   info: "ℹ️ Info",
   warning: "⚠️ Peringatan",
 };
-
-const optionsToText = (opts?: { value: string; label: string }[]) =>
-  (opts ?? []).map((o) => (o.value === o.label ? o.value : `${o.value} | ${o.label}`)).join("\n");
-const textToOptions = (t: string) =>
-  t
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean)
-    .map((l) => {
-      const [v, ...rest] = l.split("|");
-      const value = (v ?? "").trim();
-      return { value, label: rest.join("|").trim() || value };
-    });
-
-const numOrUndef = (v: string) => (v.trim() === "" ? undefined : Number(v));
 
 export function StudioTool() {
   const { id: rawId } = useParams({ from: "/studio/tool/$id" });
@@ -263,148 +242,12 @@ export function StudioTool() {
             <p className="muted small" style={{ margin: 0 }}>
               <b>Kunci</b> adalah nama yang dipakai di rumus, mis. <code>gaji</code>.
             </p>
-            {cfg.inputs.map((inp, idx) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: daftar terkontrol tanpa id stabil
-              <div key={`in-${idx}`} className="builder-item stack">
-                <div className="builder-row">
-                  <label className="field">
-                    <span>Kunci</span>
-                    <input
-                      value={inp.key}
-                      onChange={(e) =>
-                        update((c) => {
-                          (c.inputs[idx] as typeof inp).key = e.target.value.toLowerCase();
-                          return c;
-                        })
-                      }
-                    />
-                  </label>
-                  <label className="field grow">
-                    <span>Label</span>
-                    <input
-                      value={inp.label}
-                      onChange={(e) =>
-                        update((c) => {
-                          (c.inputs[idx] as typeof inp).label = e.target.value;
-                          return c;
-                        })
-                      }
-                    />
-                  </label>
-                  <label className="field">
-                    <span>Jenis</span>
-                    <select
-                      value={inp.type}
-                      onChange={(e) =>
-                        update((c) => {
-                          (c.inputs[idx] as typeof inp).type = e.target.value as typeof inp.type;
-                          return c;
-                        })
-                      }
-                    >
-                      {TOOL_INPUT_TYPES.map((t) => (
-                        <option key={t} value={t}>
-                          {TYPE_LABEL[t]}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-                <IssueText issues={issues} path={`inputs.${idx}.key`} />
-                {inp.type === "number" && (
-                  <div className="builder-row">
-                    {(["min", "max"] as const).map((k) => (
-                      <label key={k} className="field">
-                        <span>{k === "min" ? "Minimal" : "Maksimal"}</span>
-                        <input
-                          inputMode="decimal"
-                          value={inp[k] ?? ""}
-                          onChange={(e) =>
-                            update((c) => {
-                              (c.inputs[idx] as typeof inp)[k] = numOrUndef(e.target.value);
-                              return c;
-                            })
-                          }
-                        />
-                      </label>
-                    ))}
-                    <label className="field">
-                      <span>Satuan</span>
-                      <input
-                        value={inp.unit ?? ""}
-                        placeholder="Rp"
-                        onChange={(e) =>
-                          update((c) => {
-                            (c.inputs[idx] as typeof inp).unit = e.target.value || undefined;
-                            return c;
-                          })
-                        }
-                      />
-                    </label>
-                  </div>
-                )}
-                {inp.type === "select" && (
-                  <label className="field">
-                    <span>Pilihan (satu per baris, format: nilai | label)</span>
-                    <textarea
-                      rows={3}
-                      value={optionsToText(inp.options)}
-                      onChange={(e) =>
-                        update((c) => {
-                          (c.inputs[idx] as typeof inp).options = textToOptions(e.target.value);
-                          return c;
-                        })
-                      }
-                    />
-                    <IssueText issues={issues} path={`inputs.${idx}.options`} />
-                  </label>
-                )}
-                <div className="row-actions">
-                  <label className="check">
-                    <input
-                      type="checkbox"
-                      checked={inp.required}
-                      onChange={(e) =>
-                        update((c) => {
-                          (c.inputs[idx] as typeof inp).required = e.target.checked;
-                          return c;
-                        })
-                      }
-                    />
-                    Wajib diisi
-                  </label>
-                  <button
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={() =>
-                      update((c) => ({ ...c, inputs: c.inputs.filter((_, i) => i !== idx) }))
-                    }
-                  >
-                    Hapus
-                  </button>
-                </div>
-              </div>
-            ))}
-            <button
-              type="button"
-              className="btn"
-              onClick={() =>
-                update((c) => ({
-                  ...c,
-                  inputs: [
-                    ...c.inputs,
-                    {
-                      key: `isian_${c.inputs.length + 1}`,
-                      label: "Isian baru",
-                      type: "number",
-                      required: true,
-                    },
-                  ],
-                }))
-              }
-            >
-              + Isian
-            </button>
+            <InputsEditor
+              inputs={cfg.inputs}
+              issues={issues}
+              pathPrefix="inputs"
+              onChange={(inputs) => update((c) => ({ ...c, inputs }))}
+            />
           </div>
 
           <div className="card stack">

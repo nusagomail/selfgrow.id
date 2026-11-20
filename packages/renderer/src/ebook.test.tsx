@@ -74,6 +74,33 @@ describe("EbookContent", () => {
     expect(out).toContain('rel="noopener noreferrer nofollow"');
   });
 
+  it("merender tabel", () => {
+    const cell = (type: "tableHeader" | "tableCell", t: string) => ({
+      type,
+      content: [{ type: "paragraph" as const, content: [{ type: "text" as const, text: t }] }],
+    });
+    const out = html({
+      type: "doc",
+      content: [
+        {
+          type: "table",
+          content: [
+            {
+              type: "tableRow",
+              content: [cell("tableHeader", "Hari"), cell("tableHeader", "Tugas")],
+            },
+            {
+              type: "tableRow",
+              content: [cell("tableCell", "Senin"), cell("tableCell", "Olahraga")],
+            },
+          ],
+        },
+      ],
+    });
+    expect(out).toContain("<th><p><span>Hari</span></p></th>");
+    expect(out).toContain("<td><p><span>Olahraga</span></p></td>");
+  });
+
   it("transformText dipakai untuk setiap teks", () => {
     const out = html(
       { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "abc" }] }] },

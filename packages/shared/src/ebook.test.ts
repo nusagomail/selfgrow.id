@@ -28,6 +28,29 @@ describe("ebookDocSchema", () => {
     expect(ebookDocSchema.safeParse(d).success).toBe(true);
   });
 
+  it("menerima tabel Tiptap dan menolak colspan berlebihan", () => {
+    const table = (colspan: number) =>
+      doc([
+        {
+          type: "table",
+          content: [
+            {
+              type: "tableRow",
+              content: [
+                {
+                  type: "tableCell",
+                  attrs: { colspan, rowspan: 1, colwidth: null },
+                  content: [{ type: "paragraph", content: [{ type: "text", text: "x" }] }],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    expect(ebookDocSchema.safeParse(table(2)).success).toBe(true);
+    expect(ebookDocSchema.safeParse(table(9999)).success).toBe(false);
+  });
+
   it("menolak tautan javascript:", () => {
     const d = doc([
       {

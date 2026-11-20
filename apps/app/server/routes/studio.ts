@@ -22,6 +22,7 @@ import {
   writeDoc,
   writeJson,
 } from "../services/ebook-storage";
+import { publishTemplate } from "./studio-templates";
 
 /** Baca & validasi body JSON dengan skema Zod dari packages/shared. */
 async function parseBody<S extends z.ZodTypeAny>(req: Request, s: S) {
@@ -130,6 +131,14 @@ export const studio = new Hono<AppEnv>()
 
     // Tool: validasi & salin konfigurasi terbit SEBELUM status diubah, supaya penerbitan
     // gagal tanpa efek samping bila konfigurasi tidak valid (review keamanan PR #8).
+    let templatePublish: { snapshot: unknown } | null = null;
+    if (body.status === "published" && before.type === "template") {
+      const published = await publishTemplate(c.env, c.var.db, id);
+      if (!published.ok) {
+        return c.json({ error: "invalid_template", problems: published.problems }, 400);
+      }
+      templatePublish = { snapshot: published.snapshot };
+    }
     let toolPublish: { config: unknown } | null = null;
     if (body.status === "published" && before.type === "tool") {
       const published = await publishToolConfig(c.var.db, id);
@@ -151,6 +160,10 @@ export const studio = new Hono<AppEnv>()
     let version: number | undefined;
     if (body.status === "published" && before.type === "ebook") {
       version = await snapshotEbook(c.env.CONTENT, c.var.db, id, c.var.user?.id ?? null);
+    } else if (templatePublish) {
+      version = await recordVersion(c.env.CONTENT, c.var.db, id, c.var.user?.id ?? null, {
+        template: templatePublish.snapshot,
+      });
     } else if (toolPublish) {
       version = await recordVersion(c.env.CONTENT, c.var.db, id, c.var.user?.id ?? null, {
         config: toolPublish.config,

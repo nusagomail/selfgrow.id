@@ -1,5 +1,6 @@
 import type { EbookDoc } from "@selfgrow/shared";
 import Image from "@tiptap/extension-image";
+import { TableKit } from "@tiptap/extension-table";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useRef } from "react";
@@ -33,6 +34,7 @@ export function ChapterEditor({
       }),
       Image,
       Callout,
+      TableKit.configure({ table: { resizable: false } }),
     ],
     content: doc,
     onUpdate: ({ editor: e }) => onChangeRef.current(e.getJSON() as EbookDoc),
@@ -93,6 +95,18 @@ export function ChapterEditor({
           chain().setImage({ src, alt }).run();
         })}
         {btn("―", false, () => chain().setHorizontalRule().run(), "Garis pemisah")}
+        {btn("▦ Tabel", editor.isActive("table"), () =>
+          chain().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+        )}
+        {editor.isActive("table") && (
+          <>
+            {btn("+ Baris", false, () => chain().addRowAfter().run())}
+            {btn("+ Kolom", false, () => chain().addColumnAfter().run())}
+            {btn("− Baris", false, () => chain().deleteRow().run())}
+            {btn("− Kolom", false, () => chain().deleteColumn().run())}
+            {btn("Hapus tabel", false, () => chain().deleteTable().run())}
+          </>
+        )}
         {btn("↶", false, () => chain().undo().run(), "Urungkan")}
         {btn("↷", false, () => chain().redo().run(), "Ulangi")}
       </div>
