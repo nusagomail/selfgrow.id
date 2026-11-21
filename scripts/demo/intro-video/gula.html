@@ -101,7 +101,14 @@ const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const prog = (t, a, b) => clamp((t - a) / (b - a));
 const easeOut = (x) => 1 - (1 - x) ** 3;
 const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
-const bounce = (x) => { const n = 7.5625, d = 2.75; if (x < 1 / d) return n * x * x; if (x < 2 / d) return n * (x -= 1.5 / d) * x + 0.75; if (x < 2.5 / d) return n * (x -= 2.25 / d) * x + 0.9375; return n * (x -= 2.625 / d) * x + 0.984375; };
+const bounce = (x) => {
+  const n = 7.5625, d = 2.75;
+  if (x < 1 / d) return n * x * x;
+  if (x < 2 / d) { const y = x - 1.5 / d; return n * y * y + 0.75; }
+  if (x < 2.5 / d) { const y = x - 2.25 / d; return n * y * y + 0.9375; }
+  const y = x - 2.625 / d;
+  return n * y * y + 0.984375;
+};
 const fmt = (n) => n.toLocaleString("id-ID", { maximumFractionDigits: 1 });
 
 // Garis waktu: setiap beat berdurasi `dur` (panjang narasi) atau minimumnya.
@@ -174,7 +181,7 @@ panel("day", (p) => {
   const rows = ITEMS.map(([tm, ic, nm, n]) => { const r = el("div", "lg"); r.append(el("span", "tm", tm), el("span", "ic", ic), el("span", "", nm), el("span", "g", `+${n * 4} g`)); log.append(r); return r; });
   const tot = el("div", "tot"); tot.append(el("span", "", "Total"), el("b", "", "68 g"), el("span", "over", "+18 g di atas batas"));
   p.append(log, tot);
-  return (t, d) => { ITEMS.forEach(([, , , , f], i) => fade(rows[i], prog(t, d * f, d * f + 0.5), 30, "X")); fade(tot, prog(t, d * 0.84, d * 0.84 + 0.5), 14); };
+  return (t, d) => { ITEMS.forEach(([, , , , f], i) => { fade(rows[i], prog(t, d * f, d * f + 0.5), 30, "X"); }); fade(tot, prog(t, d * 0.84, d * 0.84 + 0.5), 14); };
 });
 panel("label", (p) => {
   p.append(el("div", "kick", "Ilmunya: tiga baris label"));
@@ -202,7 +209,7 @@ panel("swap", (p) => {
   const rows = [["🥛 Susu cokelat sebotol", "Susu tawar / air putih"], ["🧋 Es kopi susu", "“Gulanya setengah, ya”"], ["🍵 Teh 2 sendok", "Teh 1 sendok"]].map(([a, b]) => { const r = el("div", "swr"); r.append(el("div", "", a), el("i", "", "→"), el("div", "", b)); g.append(r); return r; });
   const big = el("div", "big2"); big.append(el("s", "", "68 g"), el("span", "", "→"), el("em", "", "26 g"));
   p.append(g, big);
-  return (t, d) => { SWAPS.forEach(([f], i) => fade(rows[i], prog(t, d * f - 0.5, d * f), 26, "X")); fade(big, prog(t, d * 0.8, d * 0.8 + 0.5), 14); };
+  return (t, d) => { SWAPS.forEach(([f], i) => { fade(rows[i], prog(t, d * f - 0.5, d * f), 26, "X"); }); fade(big, prog(t, d * 0.8, d * 0.8 + 0.5), 14); };
 });
 panel("ladder", (p) => {
   p.append(el("div", "kick", "Lalu latih lidahmu"));
@@ -210,7 +217,7 @@ panel("ladder", (p) => {
   const st = [["Sekarang", "2 sdt", 200], ["Minggu 1", "1,5 sdt", 165], ["Minggu 2", "1 sdt", 130], ["Minggu 3", "½ sdt", 95]].map(([a, b, h]) => { const x = el("div", "st"); x.style.height = `${h}px`; x.append(el("b", "", a), el("span", "", b)); s.append(x); return x; });
   const f = el("div", "fact", "Turun seperempat setiap minggu. Lidah yang terbiasa sedikit manis merasakan manis lebih kuat.");
   p.append(s, f);
-  return (t, d) => { st.forEach((x, i) => fade(x, prog(t, 0.3 + i * 0.5, 0.8 + i * 0.5), 30)); fade(f, prog(t, d * 0.55, d * 0.55 + 0.6), 12); };
+  return (t, d) => { st.forEach((x, i) => { fade(x, prog(t, 0.3 + i * 0.5, 0.8 + i * 0.5), 30); }); fade(f, prog(t, d * 0.55, d * 0.55 + 0.6), 12); };
 });
 panel("end", (p) => {
   const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";

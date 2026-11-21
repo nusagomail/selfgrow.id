@@ -23,7 +23,7 @@ export const GULA_1 = [
       ],
       ["h", "Buku ini tidak menyuruhmu berhenti makan manis"],
       "Berhenti total biasanya bertahan tiga hari, lalu kembali dua kali lipat. Buku ini mengambil jalan lain: **mengenali, menghitung, menukar, dan melatih lidah**. Pelan-pelan, tanpa merasa dihukum.",
-      "Di setiap bab kamu akan membuka satu \"berkas\": label kemasan, daftar komposisi, satu hari penuh, dan terakhir lidahmu sendiri. Siapkan satu kemasan minuman atau camilan yang ada di rumah. Kita akan memakainya di Bab 2.",
+      'Di setiap bab kamu akan membuka satu "berkas": label kemasan, daftar komposisi, satu hari penuh, dan terakhir lidahmu sendiri. Siapkan satu kemasan minuman atau camilan yang ada di rumah. Kita akan memakainya di Bab 2.',
       ["h", "Mulai dari jejak kemarin"],
       ["quiz", JEJAK_GULA],
       [
@@ -48,7 +48,7 @@ export const GULA_1 = [
       ["tool", "penerjemah-label-gula"],
       [
         "tip",
-        "Baris \"Gula\" di label mencakup gula alami seperti laktosa pada susu dan fruktosa pada buah. Untuk susu murni dan buah utuh, angkanya tidak perlu dikhawatirkan seperti gula tambahan. Yang perlu diwaspadai adalah minuman dan camilan yang manisnya berasal dari gula yang ditambahkan.",
+        'Baris "Gula" di label mencakup gula alami seperti laktosa pada susu dan fruktosa pada buah. Untuk susu murni dan buah utuh, angkanya tidak perlu dikhawatirkan seperti gula tambahan. Yang perlu diwaspadai adalah minuman dan camilan yang manisnya berasal dari gula yang ditambahkan.',
       ],
       [
         "exercise",
@@ -65,28 +65,28 @@ export const GULA_1 = [
   {
     title: "Berkas 2: Gula dengan Seribu Nama",
     blocks: [
-      "Tidak semua kemasan punya tabel gizi yang lengkap, dan tidak semua gula ditulis sebagai \"gula\". Di sinilah berkas kedua dibuka: **daftar komposisi**.",
+      'Tidak semua kemasan punya tabel gizi yang lengkap, dan tidak semua gula ditulis sebagai "gula". Di sinilah berkas kedua dibuka: **daftar komposisi**.',
       ["img", "nama-lain-gula", "Nama-nama lain gula di label."],
       ["h", "Aturan urutan"],
       "Komposisi ditulis berurutan dari bahan yang paling banyak ke yang paling sedikit. Jadi kalau gula ada di urutan pertama atau kedua, gula adalah salah satu bahan utama produk itu, apa pun yang tertulis di bagian depan kemasan.",
       "Beberapa produk memecah gulanya menjadi tiga atau empat jenis: gula, sirup glukosa, dekstrosa, maltosa. Masing-masing berada di urutan tengah, sehingga tidak ada yang terlihat dominan. Kalau dijumlahkan, gula bisa menjadi bahan terbanyak.",
-      ["h", "\"Sehat\" di depan, manis di belakang"],
+      ["h", '"Sehat" di depan, manis di belakang'],
       "Kata seperti *gula aren*, *madu*, *alami*, atau *tanpa gula pasir* di bagian depan kemasan terdengar lebih baik. Bagi tubuh, gula aren dan madu tetap gula. Kandungan mineralnya sedikit lebih banyak, tapi tidak cukup untuk mengubah hitungan gramnya.",
       [
         "table",
         [
           ["Tulisan di depan", "Yang perlu dicek di belakang"],
-          ["\"Pakai gula aren asli\"", "Gram gula per sajian tetap dihitung sama"],
-          ["\"Tanpa gula tambahan\"", "Boleh jadi tetap manis dari sari buah pekat"],
-          ["\"Rendah lemak\"", "Sering ditambah gula supaya tetap enak"],
-          ["\"Granola sehat\" / \"sereal gandum\"", "Lihat urutan gula di komposisi"],
-          ["\"Yoghurt buah\"", "Bandingkan dengan yoghurt tawar merek yang sama"],
+          ['"Pakai gula aren asli"', "Gram gula per sajian tetap dihitung sama"],
+          ['"Tanpa gula tambahan"', "Boleh jadi tetap manis dari sari buah pekat"],
+          ['"Rendah lemak"', "Sering ditambah gula supaya tetap enak"],
+          ['"Granola sehat" / "sereal gandum"', "Lihat urutan gula di komposisi"],
+          ['"Yoghurt buah"', "Bandingkan dengan yoghurt tawar merek yang sama"],
         ],
       ],
       [
         "exercise",
         [
-          "Pilih satu camilan yang kamu anggap \"sehat\".",
+          'Pilih satu camilan yang kamu anggap "sehat".',
           "Baca komposisinya dan tandai semua nama gula dari gambar di atas.",
           "Catat di urutan ke berapa gula pertama muncul, dan ada berapa jenis gula.",
         ],
@@ -149,10 +149,10 @@ export const GULA_1 = [
       [
         "ul",
         [
-          "\"Gulanya setengah, ya.\" Hampir semua kedai kopi dan penjual es teh bisa melakukannya.",
-          "\"Sirupnya dipisah.\" Kamu yang menentukan berapa yang dituang.",
-          "\"Ukuran kecil saja.\" Gula turun sepertiga tanpa mengubah rasa.",
-          "\"Es teh tawar, gula cair sedikit di samping.\"",
+          '"Gulanya setengah, ya." Hampir semua kedai kopi dan penjual es teh bisa melakukannya.',
+          '"Sirupnya dipisah." Kamu yang menentukan berapa yang dituang.',
+          '"Ukuran kecil saja." Gula turun sepertiga tanpa mengubah rasa.',
+          '"Es teh tawar, gula cair sedikit di samping."',
         ],
       ],
       ["h", "Penukaran lain yang sering berhasil"],
@@ -204,10 +204,10 @@ export const GULA_1 = [
         ],
       ],
       ["h", "Hari yang tidak sempurna"],
-      "Kondangan, ulang tahun teman kantor, Lebaran. Hari seperti ini akan selalu ada, dan bukan kegagalan. Satu hari yang manis tidak menghapus empat minggu tangga lidah. Yang menghapusnya adalah berpikir \"sudah terlanjur\", lalu berhenti sama sekali.",
+      'Kondangan, ulang tahun teman kantor, Lebaran. Hari seperti ini akan selalu ada, dan bukan kegagalan. Satu hari yang manis tidak menghapus empat minggu tangga lidah. Yang menghapusnya adalah berpikir "sudah terlanjur", lalu berhenti sama sekali.',
       [
         "tip",
-        "Gunakan aturan satu hari: setelah hari yang manis, kembali ke kebiasaan pada makan berikutnya, bukan \"mulai Senin\".",
+        'Gunakan aturan satu hari: setelah hari yang manis, kembali ke kebiasaan pada makan berikutnya, bukan "mulai Senin".',
       ],
       ["h", "Kenali angka tubuhmu"],
       "Karena gula darah tinggi sering tidak bergejala, pemeriksaan gula darah sesekali adalah cara paling jujur untuk mengetahui kondisimu. Pemeriksaan bisa dilakukan di puskesmas, klinik, atau laboratorium. Kalau ada keluarga dekat dengan diabetes, berat badan berlebih, atau kamu jarang bergerak, bicarakan dengan tenaga kesehatan seberapa sering kamu perlu diperiksa.",

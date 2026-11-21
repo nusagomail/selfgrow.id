@@ -40,9 +40,7 @@ const VIDEOS = [
   OVERTHINKING_INTRO,
   HARGA_INTRO,
   GULA_INTRO,
-].filter(
-  (v) => !ONLY || v.slug === ONLY,
-);
+].filter((v) => !ONLY || v.slug === ONLY);
 const VOICE = { languageCode: "id-ID", name: "id-ID-Wavenet-A" };
 /** Jeda sebelum narasi mulai di tiap adegan, dan jeda setelahnya sebelum adegan berganti. */
 const LEAD = 0.6;
@@ -63,10 +61,7 @@ copyFileSync(
   join(here, "../fonts/jetbrains-mono-latin-500-normal.woff2"),
   join(work, "mono.woff2"),
 );
-copyFileSync(
-  join(here, "../fonts/oswald-latin-600-normal.woff2"),
-  join(work, "label.woff2"),
-);
+copyFileSync(join(here, "../fonts/oswald-latin-600-normal.woff2"), join(work, "label.woff2"));
 const outDir = join(here, "../videos");
 mkdirSync(outDir, { recursive: true });
 
