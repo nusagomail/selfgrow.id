@@ -43,6 +43,10 @@ catur. Jam menghitung sepuluh detik tokoh menerima tawaran, batang emas menunjuk
 (selisih Rp1 juta/bulan ≈ Rp76 juta dalam lima tahun), bidak bergerak untuk lima langkah, kalimat
 nego diketik lalu jam berganti menjadi hitungan "diam", dan hasil akhir jatuh di papan.
 
+**Contoh ketiga: "Mengasuh Tanpa Teriak"** (`teriak.mjs` + `teriak.html`). Konsep: pintu kulkas
+dan satu meter suara tegak. Pemicu pagi menaikkan meter sampai merah, jeda 10 detik (dengan
+hitungan mundur) menurunkannya ke hijau, lalu kalimat batas tiga potong muncul.
+
 Panduan ini bukan cetakan. Setiap buku punya cara masuk yang berbeda. Buku keuangan mungkin
 dibuka dengan angka yang mengejutkan, buku tentang duka dibuka dengan satu kalimat yang
 lembut, buku kebiasaan dibuka dengan pertanyaan. Pilih adegan yang melayani buku itu, lalu

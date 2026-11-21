@@ -962,4 +962,145 @@ export const DEMO_TOOLS = [
       ],
     },
   },
+  {
+    slug: "penyusun-kalimat-batas",
+    topic: "top_pengasuhan-usia-dini",
+    title: "Penyusun Kalimat Batas untuk Anak",
+    summary: "Kalimat tiga bagian: namai perasaan, pasang batas, beri dua pilihan.",
+    config: {
+      version: 1,
+      intro: "Isi sesuai kejadian. Ucapkan dengan suara rendah, setinggi mata anak.",
+      submitLabel: "Susun kalimat",
+      inputs: [
+        {
+          key: "rasa",
+          label: "Apa yang kira-kira dirasakan anak?",
+          type: "select",
+          required: true,
+          options: [
+            { value: "kesal", label: "Kesal" },
+            { value: "sedih", label: "Sedih" },
+            { value: "kecewa", label: "Kecewa" },
+            { value: "capek", label: "Capek" },
+            { value: "takut", label: "Takut" },
+          ],
+        },
+        {
+          key: "sebab",
+          label: "Karena apa? (singkat)",
+          type: "text",
+          required: true,
+          placeholder: "menaranya roboh",
+        },
+        {
+          key: "perilaku",
+          label: "Perilaku yang tidak boleh",
+          type: "text",
+          required: true,
+          placeholder: "melempar balok",
+        },
+        {
+          key: "pilihan1",
+          label: "Pilihan pertama yang boleh",
+          type: "text",
+          required: true,
+          placeholder: "tarik napas bareng Ibu",
+        },
+        {
+          key: "pilihan2",
+          label: "Pilihan kedua yang boleh",
+          type: "text",
+          required: true,
+          placeholder: "peluk dulu",
+        },
+      ],
+      computed: [
+        {
+          key: "kalimat",
+          label: "Kalimatmu",
+          formula:
+            'concat("Kamu ", rasa, " ya, karena ", sebab, ". Boleh ", rasa, ", tapi tidak boleh ", perilaku, ". Kamu mau ", pilihan1, " atau ", pilihan2, "?")',
+          format: "text",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "1 == 1",
+          text: "Setelah bertanya, tunggu. Kalau anak belum memilih dalam beberapa detik, bantu dengan lembut: \u201cIbu bantu pilih, ya.\u201d",
+          variant: "tip",
+        },
+      ],
+    },
+  },
+  {
+    slug: "termometer-pagi",
+    topic: "top_pengasuhan-usia-dini",
+    title: "Termometer Pagi Orang Tua",
+    summary: "Cek seberapa dekat kamu ke titik meledak sebelum hari dimulai.",
+    config: {
+      version: 1,
+      intro: "Jawab jujur dalam 30 detik. Ini tentang kondisimu, bukan anakmu.",
+      submitLabel: "Cek suhu",
+      inputs: [
+        {
+          key: "tidur",
+          label: "Tidur semalam",
+          type: "number",
+          required: true,
+          min: 0,
+          max: 14,
+          step: 0.5,
+          unit: "jam",
+          placeholder: "6",
+        },
+        { key: "lapar", label: "Belum makan atau minum apa pun", type: "boolean", required: false },
+        {
+          key: "buru",
+          label: "Pagi ini harus berangkat terburu-buru",
+          type: "boolean",
+          required: false,
+        },
+        {
+          key: "pikiran",
+          label: "Ada urusan berat yang sedang dipikirkan",
+          type: "boolean",
+          required: false,
+        },
+        {
+          key: "anak",
+          label: "Anak kurang tidur atau sedang tidak enak badan",
+          type: "boolean",
+          required: false,
+        },
+      ],
+      computed: [
+        {
+          key: "suhu",
+          label: "Suhu pagi ini (0–10)",
+          formula:
+            "min(10, if(tidur < 5, 3, if(tidur < 6.5, 2, 0)) + if(lapar, 2, 0) + if(buru, 2, 0) + if(pikiran, 2, 0) + if(anak, 1, 0))",
+          format: "number",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "suhu >= 6",
+          text: "Suhumu tinggi ({{suhu}}). Turunkan target pagi ini: siapkan satu hal saja lebih awal, makan sesuatu dulu, dan putuskan sekarang kalimat jedamu.",
+          variant: "warning",
+        },
+        {
+          when: "and(suhu >= 3, suhu < 6)",
+          text: "Suhumu sedang ({{suhu}}). Pemicu kecil bisa terasa besar hari ini. Beri dirimu waktu ekstra 10 menit.",
+          variant: "tip",
+        },
+        {
+          when: "suhu < 3",
+          text: "Suhumu rendah ({{suhu}}). Hari yang baik untuk mencoba kalimat batas yang baru.",
+          variant: "info",
+        },
+      ],
+    },
+  },
 ];
