@@ -252,4 +252,116 @@ export const DEMO_TOOLS = [
       ],
     },
   },
+  {
+    slug: "perakit-kalimat-menolak",
+    topic: "top_komunikasi-asertif",
+    title: "Perakit Kalimat Menolak",
+    summary: "Susun kalimat penolakan yang jelas dan sopan sesuai situasimu.",
+    config: {
+      version: 1,
+      intro: "Pilih kepada siapa kamu menolak, tulis permintaannya, lalu pilih gaya bicaramu.",
+      submitLabel: "Susun kalimatku",
+      inputs: [
+        {
+          key: "siapa",
+          label: "Kamu menolak siapa?",
+          type: "select",
+          required: true,
+          options: [
+            { value: "atasan", label: "Atasan" },
+            { value: "rekan", label: "Rekan kerja" },
+            { value: "keluarga", label: "Keluarga" },
+            { value: "teman", label: "Teman" },
+          ],
+        },
+        {
+          key: "permintaan",
+          label: "Permintaannya apa?",
+          type: "text",
+          required: true,
+          placeholder: "lembur hari Sabtu",
+          help: "Tulis singkat, tanpa kata 'minta'. Contoh: pinjam uang Rp2 juta",
+        },
+        {
+          key: "tawaran",
+          label: "Mau menawarkan sesuatu?",
+          type: "select",
+          required: true,
+          options: [
+            { value: "tidak", label: "Tidak, cukup menolak" },
+            { value: "lain", label: "Waktu lain" },
+            { value: "kecil", label: "Bantuan yang lebih kecil" },
+            { value: "orang", label: "Orang lain yang bisa membantu" },
+          ],
+        },
+        {
+          key: "gaya",
+          label: "Gaya bicaramu",
+          type: "select",
+          required: true,
+          options: [
+            { value: "lembut", label: "Lembut" },
+            { value: "tegas", label: "Tegas" },
+          ],
+        },
+      ],
+      computed: [
+        {
+          key: "formal",
+          label: "Formal",
+          formula: 'siapa == "atasan"',
+          format: "text",
+          show: false,
+        },
+        {
+          key: "pembuka",
+          label: "Pembuka",
+          formula:
+            'if(gaya == "lembut", if(formal, "Terima kasih sudah mempercayakan ini ke saya.", "Makasih sudah kepikiran aku, ya."), if(formal, "Saya sudah mempertimbangkannya.", "Aku sudah pikirkan baik-baik."))',
+          format: "text",
+          show: false,
+        },
+        {
+          key: "inti",
+          label: "Inti",
+          formula:
+            'concat("Untuk ", permintaan, ", ", if(formal, "saya tidak mengambilnya kali ini.", if(gaya == "lembut", "aku nggak ambil dulu kali ini.", "jawabanku tidak.")))',
+          format: "text",
+          show: false,
+        },
+        {
+          key: "alternatif",
+          label: "Alternatif",
+          formula:
+            'if(tawaran == "lain", if(formal, " Kalau bisa menunggu, saya siap membantu di waktu lain minggu ini.", " Kalau lain waktu, aku bisa."), if(tawaran == "kecil", if(formal, " Saya bisa membantu bagian kecilnya, kalau itu meringankan.", " Aku bisa bantu sedikit, tapi nggak semuanya."), if(tawaran == "orang", if(formal, " Mungkin ada rekan lain yang lebih longgar; saya bisa bantu carikan.", " Mungkin ada yang lebih bisa, nanti aku bantu tanyakan."), "")))',
+          format: "text",
+          show: false,
+        },
+        {
+          key: "kalimat",
+          label: "Kalimatmu",
+          formula: 'concat(pembuka, " ", inti, alternatif)',
+          format: "text",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: 'gaya == "lembut"',
+          text: "Ucapkan sekali, lalu berhenti. Tidak perlu menambah alasan panjang: semakin banyak alasan, semakin banyak celah untuk ditawar.",
+          variant: "tip",
+        },
+        {
+          when: 'gaya == "tegas"',
+          text: "Tegas bukan berarti dingin. Jaga nada suara tetap ramah, dan kalau ditanya ulang, ulangi kalimat yang sama dengan tenang (Bab 7).",
+          variant: "info",
+        },
+        {
+          when: 'siapa == "keluarga"',
+          text: "Dengan keluarga, sampaikan secara langsung atau lewat telepon, bukan lewat grup. Penolakan yang didengar suaranya terasa lebih hangat.",
+          variant: "tip",
+        },
+      ],
+    },
+  },
 ];

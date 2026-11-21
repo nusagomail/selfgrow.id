@@ -6,6 +6,9 @@ import { FIGURES } from "./paylater-figures.mjs";
 import { SCROLL_1 } from "./scroll-1.mjs";
 import { SCROLL_2 } from "./scroll-2.mjs";
 import { SCROLL_FIGURES } from "./scroll-figures.mjs";
+import { TIDAK_1 } from "./tidak-1.mjs";
+import { TIDAK_2 } from "./tidak-2.mjs";
+import { TIDAK_FIGURES } from "./tidak-figures.mjs";
 
 export const FULL_BOOKS = {
   "lepas-dari-jerat-paylater": {
@@ -15,5 +18,9 @@ export const FULL_BOOKS = {
   "lepas-dari-scroll-tanpa-ujung": {
     chapters: [...SCROLL_1, ...SCROLL_2],
     figures: SCROLL_FIGURES,
+  },
+  "berani-bilang-tidak": {
+    chapters: [...TIDAK_1, ...TIDAK_2],
+    figures: TIDAK_FIGURES,
   },
 };
