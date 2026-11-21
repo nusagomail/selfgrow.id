@@ -1,4 +1,6 @@
 /** "Lepas dari Jerat Paylater" bab 5–7. Lihat paylater-1.mjs. */
+import { HEMAT_BARS } from "./paylater-interactive.mjs";
+
 export const PAYLATER_2 = [
   {
     title: "Peta Utang: Lihat Semuanya di Satu Halaman",
@@ -52,6 +54,12 @@ export const PAYLATER_2 = [
       ["h", "Langkah 3: hitung rasio cicilanmu"],
       "Bagi total cicilan per bulan dengan gaji bersihmu, lalu kalikan 100. Hasilnya adalah persentase gajimu yang sudah dipesan untuk utang sebelum kamu sempat membelanjakannya.",
       "Untuk Nadia: Rp1.588.200 ÷ Rp5.800.000 × 100 = 27,4%.",
+      [
+        "tool",
+        "kalkulator-rasio-cicilan",
+        "Cek rasio cicilanmu",
+        "Masukkan gaji bersih dan total cicilanmu bulan ini.",
+      ],
       [
         "table",
         [
@@ -125,6 +133,7 @@ export const PAYLATER_2 = [
           ["Total", "Rp1.160.000", "Rp460.000", "Rp700.000"],
         ],
       ],
+      ["chart", HEMAT_BARS],
       "Perhatikan bahwa Nadia tidak menghapus semuanya. Dia masih nongkrong, masih sesekali pesan makanan, masih berlangganan satu aplikasi musik. Dia hanya menguranginya. Inilah kunci yang sering dilupakan: anggaran yang terlalu ketat akan runtuh dalam dua minggu. Pengurangan yang masuk akal bisa bertahan berbulan-bulan.",
       "Nenek moyang kita sudah merumuskan prinsip ini jauh sebelum ada aplikasi keuangan: **sedikit demi sedikit, lama-lama menjadi bukit**. Rp700 ribu terdengar biasa saja. Dalam tujuh bulan, angka itu berubah menjadi hampir Rp5 juta yang menyerang utang.",
       ["img", "sebelum-sesudah", "Gaji yang sama, arah yang berbeda."],

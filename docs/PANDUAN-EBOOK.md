@@ -66,6 +66,25 @@ Di Studio, pilih **▣ Kotak…** pada bilah alat:
 
 Untuk kutipan bertokoh, buat kutipan lalu tekan tombol **Tokoh** untuk mengisi namanya.
 
+### Unsur interaktif (pembeda dari ebook PDF)
+
+Tiga unsur ini membuat pembaca *melakukan* sesuatu di dalam buku. Sama seperti unsur lain:
+pakai hanya kalau topiknya memintanya. Banyak bab yang lebih kuat tanpa satu pun.
+
+| Unsur | Gunanya bagi pembaca | Cocok untuk | Hati-hati |
+|---|---|---|---|
+| **Kuis / tes diri** (＋ Kuis) | Melihat posisinya sendiri dengan skor, langsung | Mengukur kondisi: jerat utang, tingkat stres, gaya komunikasi, kesiapan usaha | Bukan diagnosis; hasil ditulis hangat dan memberi langkah. Topik kesehatan mental: sebut kapan perlu bantuan profesional |
+| **Tes ulang** | Melihat kemajuan ("naik 3 poin") | Kuis yang sama di bab penutup, memakai **id kuis yang sama** | Hanya bermakna kalau pembaca benar-benar menjalankan isi buku |
+| **Tool di dalam bab** (＋ Tool) | Menghitung angkanya sendiri tanpa keluar dari buku | Keuangan, kebugaran, target, jadwal: tepat setelah rumus dijelaskan | Tool harus sudah terbit; satu tool per gagasan |
+| **Grafik bergerak** (＋ Grafik) | Angka penting "terasa" lewat batang atau angka yang berhitung naik | Satu angka kejutan, atau perbandingan 2–8 hal | Jangan menggantikan tabel yang perlu dibaca teliti; data tetap bersumber |
+
+Tidak semua kategori butuh unsur interaktif yang sama. Keuangan cocok dengan tool dan grafik;
+mindset dan makna hidup mungkin cukup satu tes diri yang lembut, atau tidak sama sekali.
+
+Cara menulis kuis yang baik: pertanyaan tentang perilaku nyata ("Dalam sebulan terakhir, pernah…"),
+bukan perasaan yang kabur; 5–10 pertanyaan; tiga atau empat pita hasil yang menutup semua skor
+dari 0 sampai skor maksimal; setiap pita hasil diakhiri satu langkah yang bisa dilakukan hari ini.
+
 ---
 
 ## 3. Arah rasa per kategori (saran, bukan aturan)
@@ -132,6 +151,7 @@ Bukan daftar centang bagian bab, melainkan pertanyaan tentang pengalaman pembaca
 6. Apakah batas topik sensitif sudah disebut, termasuk kapan perlu bantuan profesional?
 7. Apakah tabel dan gambar terbaca baik di layar HP?
 8. Kalau dibaca keras-keras, apakah terdengar seperti manusia yang peduli?
+9. Kalau ada kuis, tool, atau grafik: apakah ia membantu gagasan bab, bukan sekadar hiasan? Apakah sudah dicoba sampai hasilnya keluar?
 
 ---
 

@@ -88,6 +88,9 @@ export type EbookNode =
       attrs: { variant: (typeof CALLOUT_VARIANTS)[number] };
       content: EbookNode[];
     }
+  | { type: "quiz"; attrs: QuizAttrs }
+  | { type: "toolEmbed"; attrs: ToolEmbedAttrs }
+  | { type: "animChart"; attrs: AnimChartAttrs }
   | { type: "table"; content: EbookNode[] }
   | { type: "tableRow"; content: EbookNode[] }
   | {
@@ -95,6 +98,84 @@ export type EbookNode =
       attrs?: { colspan?: number; rowspan?: number; colwidth?: number[] | null };
       content: EbookNode[];
     };
+
+/**
+ * Unsur interaktif di dalam bab (D42): kuis/tes diri dengan skor langsung, tool yang ditanam,
+ * dan grafik bergerak. Semua berupa data (tanpa kode); skor kuis dihitung dari poin pilihan.
+ */
+export const quizAttrsSchema = z
+  .object({
+    /** Id kuis dalam satu ebook; kuis yang sama di bab lain memakai id yang sama (tes ulang). */
+    id: z.string().regex(/^[a-z0-9][a-z0-9-]{0,59}$/, "Id kuis: huruf kecil, angka, tanda hubung"),
+    title: z.string().trim().min(1).max(200),
+    intro: z.string().max(1000).nullish(),
+    questions: z
+      .array(
+        z.object({
+          q: z.string().trim().min(1).max(500),
+          options: z
+            .array(
+              z.object({
+                label: z.string().trim().min(1).max(200),
+                points: z.number().int().min(0).max(100),
+              }),
+            )
+            .min(2)
+            .max(6),
+        }),
+      )
+      .min(1)
+      .max(20),
+    results: z
+      .array(
+        z.object({
+          min: z.number().int().min(0).max(2000),
+          max: z.number().int().min(0).max(2000),
+          title: z.string().trim().min(1).max(200),
+          text: z.string().max(1000).default(""),
+        }),
+      )
+      .min(1)
+      .max(6),
+  })
+  .refine((a) => a.results.every((r) => r.min <= r.max), {
+    message: "Rentang skor hasil tidak valid",
+    path: ["results"],
+  });
+export type QuizAttrs = z.infer<typeof quizAttrsSchema>;
+
+export const toolEmbedAttrsSchema = z.object({
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/)
+    .max(120),
+  title: z.string().max(200).nullish(),
+  intro: z.string().max(1000).nullish(),
+});
+export type ToolEmbedAttrs = z.infer<typeof toolEmbedAttrsSchema>;
+
+export const ANIM_CHART_KINDS = ["bars", "counter"] as const;
+export const ANIM_CHART_FORMATS = ["number", "rupiah", "percent"] as const;
+export const animChartAttrsSchema = z.object({
+  title: z.string().trim().min(1).max(200),
+  kind: z.enum(ANIM_CHART_KINDS),
+  format: z.enum(ANIM_CHART_FORMATS).default("number"),
+  items: z
+    .array(
+      z.object({
+        label: z.string().trim().min(1).max(100),
+        value: z.number().finite().min(0).max(1e13),
+        color: z
+          .string()
+          .regex(/^#[0-9a-fA-F]{6}$/)
+          .nullish(),
+      }),
+    )
+    .min(1)
+    .max(12),
+  note: z.string().max(500).nullish(),
+});
+export type AnimChartAttrs = z.infer<typeof animChartAttrsSchema>;
 
 const text = z.object({
   type: z.literal("text"),
@@ -139,6 +220,9 @@ export const ebookNodeSchema: z.ZodType<EbookNode> = z.lazy(() =>
       attrs: z.object({ variant: z.enum(CALLOUT_VARIANTS) }),
       content: z.array(ebookNodeSchema),
     }),
+    z.object({ type: z.literal("quiz"), attrs: quizAttrsSchema }),
+    z.object({ type: z.literal("toolEmbed"), attrs: toolEmbedAttrsSchema }),
+    z.object({ type: z.literal("animChart"), attrs: animChartAttrsSchema }),
     z.object({ type: z.literal("table"), content: z.array(ebookNodeSchema).max(500) }),
     z.object({ type: z.literal("tableRow"), content: z.array(ebookNodeSchema).max(30) }),
     ...(["tableHeader", "tableCell"] as const).map((t) =>
@@ -246,6 +330,15 @@ export const progressBodySchema = z.object({
   chapterId: z.string().min(1),
   position: z.number().int().min(0).max(1_000_000),
 });
+
+/** Simpan skor kuis (D42). Skor dihitung di perangkat pembaca; ini catatan pribadi, bukan nilai resmi. */
+export const quizResultBodySchema = z
+  .object({
+    score: z.number().int().min(0).max(2000),
+    maxScore: z.number().int().min(0).max(2000),
+  })
+  .refine((b) => b.score <= b.maxScore, { message: "Skor melebihi skor maksimal" });
+export const quizIdSchema = z.string().regex(/^[a-z0-9][a-z0-9-]{0,59}$/);
 
 export const bookmarkBodySchema = z.object({
   chapterId: z.string().min(1),

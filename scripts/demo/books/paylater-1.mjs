@@ -4,6 +4,8 @@
  *
  * ["img", nama, keterangan] merujuk infografis di scripts/demo/figures/{slug}/{nama}.png.
  */
+import { CICILAN_COUNTER, SKOR_JERAT } from "./paylater-interactive.mjs";
+
 export const PAYLATER_1 = [
   {
     title: "Cuma Seratus Ribuan Sebulan, Kok",
@@ -14,6 +16,7 @@ export const PAYLATER_1 = [
       "Sembilan bulan kemudian, di bulan September, Nadia duduk di kasur kosnya sambil menatap layar ponsel. Tanggal 14. Gajian baru dua minggu lalu, tapi saldonya tinggal Rp640 ribu. Dia membuka satu per satu aplikasi dan menjumlahkan semua tagihan bulan itu di kalkulator.",
       "Angkanya: Rp1.588.200.",
       "Hampir Rp1,6 juta. Lebih dari seperempat gajinya sudah habis sebelum dia sempat membeli apa pun.",
+      ["chart", CICILAN_COUNTER],
       [
         "img",
         "cicilan-menumpuk",
@@ -48,32 +51,11 @@ export const PAYLATER_1 = [
       ],
       "Kita akan mengikuti perjalanan Nadia sampai akhir buku. Angkanya mungkin berbeda dengan angkamu, tapi polanya hampir pasti mirip.",
       ["h", "Cek dulu: seberapa dalam kamu terjerat?"],
-      "Jawab delapan pertanyaan di bawah ini dengan jujur. Tidak ada yang melihat jawabanmu selain kamu sendiri.",
-      [
-        "table",
-        [
-          ["Pernyataan", "Ya / Tidak"],
-          ["Aku punya lebih dari dua cicilan paylater yang aktif sekarang", ""],
-          ["Aku pernah memakai paylater untuk makan atau kebutuhan harian", ""],
-          ["Aku tidak tahu persis total cicilanku bulan ini tanpa membuka aplikasi", ""],
-          ["Aku pernah telat bayar dan kena denda dalam enam bulan terakhir", ""],
-          ["Aku pernah membayar satu utang dengan utang lain", ""],
-          ["Lebih dari 20% gajiku habis untuk cicilan", ""],
-          ["Aku merasa cemas setiap kali ada notifikasi tagihan", ""],
-          ["Aku menyembunyikan cicilanku dari pasangan atau keluarga", ""],
-        ],
-      ],
-      [
-        "ul",
-        [
-          '**0 sampai 2 "ya":** kamu masih di zona aman. Buku ini membantumu membangun pagar sebelum terlambat.',
-          '**3 sampai 5 "ya":** kamu sedang di jalur yang licin. Ikuti Bab 4 minggu ini juga.',
-          '**6 sampai 8 "ya":** kamu sudah di dalam lingkaran. Kabar baiknya, ada jalan keluar, dan kamu sudah memulainya dengan membaca halaman ini.',
-        ],
-      ],
+      "Sebelum lanjut, coba ukur posisimu sekarang. Ketuk jawabanmu, skornya langsung muncul.",
+      ["quiz", SKOR_JERAT],
       [
         "tip",
-        "Simpan skormu hari ini. Di akhir buku, kamu akan mengisi tes yang sama dan melihat seberapa jauh kamu sudah bergerak.",
+        "Skormu tersimpan. Di akhir buku, kamu akan mengisi tes yang sama dan melihat seberapa jauh kamu sudah bergerak.",
       ],
       ["h", "Satu permintaan sebelum lanjut"],
       "Bacalah buku ini pelan-pelan. Satu bab, lalu kerjakan tugasnya, baru lanjut ke bab berikutnya. Kebanyakan orang membaca buku keuangan sampai habis dalam semalam, merasa termotivasi, lalu tidak mengubah apa-apa. Lebih baik kamu selesai dalam dua minggu tapi benar-benar bergerak.",
@@ -151,6 +133,12 @@ export const PAYLATER_1 = [
       [
         "tip",
         "Rumus cepat yang bisa kamu hitung di kepala: biaya per bulan × jumlah bulan = tambahan harga. 2,6% × 12 bulan = 31,2%. Artinya barang itu 31% lebih mahal dari harga di etalase.",
+      ],
+      [
+        "tool",
+        "kalkulator-harga-cicilan",
+        "Hitung harga sebenarnya cicilanmu",
+        "Coba dengan barang yang sedang kamu cicil sekarang.",
       ],
       ["h", "Mencicil masa depan yang belum datang"],
       "Ada biaya lain yang tidak tercatat di aplikasi mana pun: biaya kesempatan.",

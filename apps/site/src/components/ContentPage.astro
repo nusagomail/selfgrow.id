@@ -221,6 +221,7 @@ const crumbs = {
 </Base>
 
 <script>
+  import { enhanceInteractive } from "@selfgrow/renderer/interactive";
   import { createPager } from "@selfgrow/renderer/pager";
 
   for (const book of document.querySelectorAll<HTMLElement>(".site-book")) {
@@ -245,6 +246,8 @@ const crumbs = {
         if (nextBtn) nextBtn.disabled = st.screen === st.screens - 1;
       },
     });
+    // Kuis & grafik bergerak di bab gratis (D42). Skor tidak disimpan tanpa login.
+    enhanceInteractive(flow);
     prevBtn?.addEventListener("click", () => pager.prev());
     nextBtn?.addEventListener("click", () => pager.next());
   }

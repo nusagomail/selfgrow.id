@@ -3,8 +3,10 @@
  * Render isi bab ebook (JSON yang lolos `ebookDocSchema`) untuk halaman publik, setara
  * `@selfgrow/renderer`: hanya node yang dikenal, tautan & gambar diperiksa ulang, tanpa HTML mentah.
  */
+import { barWidths, formatChartValue } from "@selfgrow/renderer/interactive-format";
 import { tableLayout } from "@selfgrow/renderer/table";
 import { CALLOUT_LABELS, type EbookNode } from "@selfgrow/shared";
+import { appUrl } from "../../lib/api";
 import Marked from "./Marked.astro";
 
 interface Props {
@@ -85,6 +87,57 @@ const imgSrc = (src: string) =>
       <th colspan={n.attrs?.colspan} rowspan={n.attrs?.rowspan}><Self nodes={n.content} /></th>
     ) : n.type === "tableCell" ? (
       <td colspan={n.attrs?.colspan} rowspan={n.attrs?.rowspan}><Self nodes={n.content} /></td>
+    ) : n.type === "quiz" ? (
+      // Kuis (D42): markup sama dengan renderer app, dihidupkan enhanceInteractive.
+      <form class="quiz" data-quiz-id={n.attrs.id} aria-label={n.attrs.title}>
+        <span class="callout-label">Tes diri</span>
+        <p class="quiz-title">{n.attrs.title}</p>
+        {n.attrs.intro && <p class="quiz-intro">{n.attrs.intro}</p>}
+        <ol class="quiz-qs">
+          {n.attrs.questions.map((q, qi) => (
+            <li><fieldset><legend>{q.q}</legend>
+              {q.options.map((o, oi) => (
+                <label class="quiz-opt"><input type="radio" name={`q${qi}`} value={oi} data-points={o.points} /><span>{o.label}</span></label>
+              ))}
+            </fieldset></li>
+          ))}
+        </ol>
+        <ul class="quiz-bands" hidden>
+          {n.attrs.results.map((r) => (<li data-min={r.min} data-max={r.max}><b>{r.title}</b>{r.text && <span>{r.text}</span>}</li>))}
+        </ul>
+        <div class="quiz-result" aria-live="polite" hidden></div>
+        <p class="quiz-hint">Jawab semua pertanyaan untuk melihat skormu.</p>
+      </form>
+    ) : n.type === "toolEmbed" ? (
+      <aside class="tool-embed tool-embed-static">
+        <span class="callout-label">Coba langsung</span>
+        <b>{n.attrs.title ?? "Kalkulator interaktif"}</b>
+        {n.attrs.intro && <p>{n.attrs.intro}</p>}
+        <p class="tool-embed-note">Kalkulator ini bisa diisi langsung di aplikasi SelfGrow. <a href={appUrl("/masuk?auto=1")}>Masuk gratis</a></p>
+      </aside>
+    ) : n.type === "animChart" ? (
+      (() => {
+        const widths = barWidths(n.attrs.items);
+        return (
+          <figure class={`anim-chart anim-kind-${n.attrs.kind}`} data-anim="" data-format={n.attrs.format}>
+            <figcaption class="anim-title">{n.attrs.title}</figcaption>
+            {n.attrs.kind === "bars" ? (
+              <div class="anim-bars">
+                {n.attrs.items.map((it, i) => (
+                  <div class="anim-row"><span class="anim-label">{it.label}</span><span class="anim-track"><span class="anim-bar" style={`--w:${widths[i]}%;--i:${i};${it.color ? `--c:${it.color};` : ""}`}></span></span><span class="anim-num" data-value={it.value}>{formatChartValue(it.value, n.attrs.format)}</span></div>
+                ))}
+              </div>
+            ) : (
+              <div class="anim-counters">
+                {n.attrs.items.map((it) => (
+                  <div class="anim-counter" style={it.color ? `--c:${it.color}` : undefined}><b class="anim-num" data-value={it.value}>{formatChartValue(it.value, n.attrs.format)}</b><span>{it.label}</span></div>
+                ))}
+              </div>
+            )}
+            {n.attrs.note && <p class="anim-note">{n.attrs.note}</p>}
+          </figure>
+        );
+      })()
     ) : n.type === "callout" ? (
       <aside class={`callout callout-${n.attrs.variant}`} role="note" aria-label={CALLOUT_LABELS[n.attrs.variant]}><span class="callout-label" aria-hidden="true">{CALLOUT_LABELS[n.attrs.variant]}</span><Self nodes={n.content} /></aside>
     ) : null,

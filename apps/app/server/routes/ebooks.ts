@@ -1,5 +1,11 @@
 import { and, asc, desc, eq, schema, sql } from "@selfgrow/db";
-import { bookmarkBodySchema, progressBodySchema, watermarkDoc } from "@selfgrow/shared";
+import {
+  bookmarkBodySchema,
+  progressBodySchema,
+  quizIdSchema,
+  quizResultBodySchema,
+  watermarkDoc,
+} from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { FREE_TIER, requireAuth } from "../middleware/guards";
@@ -30,6 +36,8 @@ async function findPublishedEbook(db: AppEnv["Variables"]["db"], slug: string) {
 }
 
 const MAX_BOOKMARKS_PER_EBOOK = 500;
+/** Id kuis berbeda yang boleh disimpan per user per ebook (D42). */
+const MAX_QUIZZES_PER_EBOOK = 50;
 
 export const ebooks = new Hono<AppEnv>()
   .use(requireAuth)
@@ -87,6 +95,82 @@ export const ebooks = new Hono<AppEnv>()
       progress: progress ? { chapterId: progress.chapterId, position: progress.position } : null,
       subscribed: sub.active,
     });
+  })
+
+  /** Skor kuis terakhir per kuis milik user ini di ebook ini (D42). */
+  .get("/:slug/quizzes", async (c) => {
+    // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
+    const user = c.var.user!;
+    const ebook = await findPublishedEbook(c.var.db, c.req.param("slug"));
+    if (!ebook) return c.json({ error: "not_found" }, 404);
+    const rows = await c.var.db
+      .select({
+        quizId: schema.quizResults.quizId,
+        score: schema.quizResults.score,
+        maxScore: schema.quizResults.maxScore,
+        createdAt: schema.quizResults.createdAt,
+      })
+      .from(schema.quizResults)
+      .where(
+        and(eq(schema.quizResults.userId, user.id), eq(schema.quizResults.contentId, ebook.id)),
+      )
+      // rowid memecah seri bila dua skor tersimpan di milidetik yang sama.
+      .orderBy(desc(schema.quizResults.createdAt), desc(sql`rowid`))
+      .limit(200);
+    const latest = new Map<string, (typeof rows)[number]>();
+    for (const r of rows) if (!latest.has(r.quizId)) latest.set(r.quizId, r);
+    return c.json({
+      results: [...latest.values()].map((r) => ({
+        quizId: r.quizId,
+        score: r.score,
+        maxScore: r.maxScore,
+        createdAt: r.createdAt.toISOString(),
+      })),
+    });
+  })
+
+  /** Simpan skor kuis (D42). Disimpan maksimal 20 riwayat per kuis per user. */
+  .post("/:slug/quizzes/:quizId", async (c) => {
+    // biome-ignore lint/style/noNonNullAssertion: dijamin requireAuth
+    const user = c.var.user!;
+    const quizId = quizIdSchema.safeParse(c.req.param("quizId"));
+    const body = quizResultBodySchema.safeParse(await c.req.json().catch(() => null));
+    if (!quizId.success || !body.success) return c.json({ error: "invalid_body" }, 400);
+    if (!(await withinRateLimit(c, "quiz"))) {
+      c.header("Retry-After", "60");
+      return c.json({ error: "rate_limited" }, 429);
+    }
+    const ebook = await findPublishedEbook(c.var.db, c.req.param("slug"));
+    if (!ebook) return c.json({ error: "not_found" }, 404);
+    // Batasi jumlah id kuis berbeda per user per ebook (review keamanan PR #30).
+    const ids = await c.var.db
+      .selectDistinct({ quizId: schema.quizResults.quizId })
+      .from(schema.quizResults)
+      .where(
+        and(eq(schema.quizResults.userId, user.id), eq(schema.quizResults.contentId, ebook.id)),
+      )
+      .limit(MAX_QUIZZES_PER_EBOOK + 1);
+    if (ids.length >= MAX_QUIZZES_PER_EBOOK && !ids.some((r) => r.quizId === quizId.data)) {
+      return c.json({ error: "too_many_quizzes" }, 409);
+    }
+    await c.var.db.insert(schema.quizResults).values({
+      id: crypto.randomUUID(),
+      userId: user.id,
+      contentId: ebook.id,
+      quizId: quizId.data,
+      score: body.data.score,
+      maxScore: body.data.maxScore,
+    });
+    // Rapikan riwayat lama: simpan 20 terbaru per kuis.
+    await c.var.db.run(sql`
+      DELETE FROM quiz_results
+      WHERE user_id = ${user.id} AND content_id = ${ebook.id} AND quiz_id = ${quizId.data}
+        AND id NOT IN (
+          SELECT id FROM quiz_results
+          WHERE user_id = ${user.id} AND content_id = ${ebook.id} AND quiz_id = ${quizId.data}
+          ORDER BY created_at DESC, rowid DESC LIMIT 20
+        )`);
+    return c.json({ ok: true }, 201);
   })
 
   .get("/:slug/chapters/:chapterId", async (c) => {

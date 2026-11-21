@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import { toDoc, words } from "./blocks.mjs";
 import { FULL_BOOKS } from "./books/index.mjs";
 import { catalogBooks } from "./catalog.mjs";
+import { DEMO_TOOLS } from "./tools.mjs";
 
 const mode = process.argv.includes("--staging")
   ? "staging"
@@ -115,6 +116,16 @@ catalogBooks().forEach((b, i) => {
     uploads.push({ key: draftKey, file, type: "application/json" });
     uploads.push({ key: publishedKey, file, type: "application/json" });
   });
+});
+
+// Tool demo yang ditanam di ebook (D42): gratis untuk user login, terbit.
+DEMO_TOOLS.forEach((t, i) => {
+  const contentId = uid(`tool:${t.slug}`);
+  const cfg = JSON.stringify(t.config);
+  sql.push(
+    `INSERT INTO content_items (id, type, slug, title, summary, tier, status, category_id, published_at, created_at, updated_at) VALUES (${q(contentId)}, 'tool', ${q(t.slug)}, ${q(t.title)}, ${q(t.summary)}, 'free', 'published', ${q(t.topic)}, ${now - 200 * 60_000 - i * 60_000}, ${now}, ${now}) ON CONFLICT(id) DO UPDATE SET title = excluded.title, summary = excluded.summary, tier = 'free', status = 'published', updated_at = excluded.updated_at ON CONFLICT DO NOTHING;`,
+    `INSERT INTO tool_definitions (content_id, kind, config_json, published_config_json) SELECT ${q(contentId)}, 'nocode', ${q(cfg)}, ${q(cfg)} WHERE EXISTS (SELECT 1 FROM content_items WHERE id = ${q(contentId)}) ON CONFLICT(content_id) DO UPDATE SET config_json = excluded.config_json, published_config_json = excluded.published_config_json;`,
+  );
 });
 
 const sqlFile = join(work, "seed.sql");

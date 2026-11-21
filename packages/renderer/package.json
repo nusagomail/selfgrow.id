@@ -7,7 +7,9 @@
     ".": "./src/index.ts",
     "./pager": "./src/pager.ts",
     "./book.css": "./src/book.css",
-    "./table": "./src/table.ts"
+    "./table": "./src/table.ts",
+    "./interactive": "./src/interactive.ts",
+    "./interactive-format": "./src/interactive-format.ts"
   },
   "scripts": {
     "typecheck": "tsc",
