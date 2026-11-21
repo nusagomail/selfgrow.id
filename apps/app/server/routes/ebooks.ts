@@ -12,6 +12,7 @@ import {
   watermarkMarkFor,
   withinRateLimit,
 } from "../services/protection";
+import { introMedia } from "./videos";
 
 /**
  * Reader ebook (BLUEPRINT bagian 5 & 8). Isi diambil per bab lewat API, tanpa cache publik.
@@ -77,6 +78,7 @@ export const ebooks = new Hono<AppEnv>()
         title: ebook.title,
         summary: ebook.summary,
         coverUrl: coverPath(ebook.coverAssetId),
+        introVideo: introMedia(ebook),
       },
       chapters: chapters.map((ch) => ({
         ...ch,

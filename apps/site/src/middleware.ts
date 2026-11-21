@@ -9,8 +9,14 @@ import { env } from "cloudflare:workers";
 const edgeCache = () => (caches as unknown as { default: Cache }).default;
 
 export const onRequest = defineMiddleware(async (ctx, next) => {
+  // Permintaan rentang (pemutar video) tidak boleh dijawab salinan utuh dari cache (D41).
   const cacheable =
-    ctx.request.method === "GET" && env.ENVIRONMENT !== "local" && typeof caches !== "undefined";
+    ctx.request.method === "GET" &&
+    !ctx.request.headers.has("range") &&
+    // Video tidak disimpan di cache halaman: berkas besar dan harus segera hilang bila dicabut.
+    !ctx.url.pathname.startsWith("/video/") &&
+    env.ENVIRONMENT !== "local" &&
+    typeof caches !== "undefined";
   const key = new Request(ctx.url.toString(), { method: "GET" });
   if (cacheable) {
     const hit = await edgeCache().match(key);

@@ -60,9 +60,10 @@ for (const v of query(
 )) {
   keys.add(v.snapshot_ref);
 }
-// Sampul dan gambar isi disimpan di covers/{contentId}/… dan content-images/{contentId}/….
+// Sampul, gambar isi, dan video pengantar disimpan di covers/, content-images/, dan
+// content-videos/ dengan {contentId} sebagai segmen kedua.
 const assets = query(
-  "SELECT id, r2_key FROM assets WHERE r2_key LIKE 'covers/%' OR r2_key LIKE 'content-images/%'",
+  "SELECT id, r2_key FROM assets WHERE r2_key LIKE 'covers/%' OR r2_key LIKE 'content-images/%' OR r2_key LIKE 'content-videos/%'",
 ).filter((a) => ids.has(a.r2_key.split("/")[1]));
 for (const a of assets) keys.add(a.r2_key);
 
