@@ -19,6 +19,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { GULA_INTRO } from "./gula.mjs";
 import { HARGA_INTRO } from "./harga.mjs";
+import { MINGGU_INTRO } from "./minggu.mjs";
 import { writeMusic } from "./music.mjs";
 import { NEGO_INTRO } from "./nego.mjs";
 import { OVERTHINKING_INTRO } from "./overthinking.mjs";
@@ -44,6 +45,7 @@ const VIDEOS = [
   GULA_INTRO,
   NEGO_INTRO,
   TERIAK_INTRO,
+  MINGGU_INTRO,
 ].filter((v) => !ONLY || v.slug === ONLY);
 const VOICE = { languageCode: "id-ID", name: "id-ID-Wavenet-A" };
 /** Jeda sebelum narasi mulai di tiap adegan, dan jeda setelahnya sebelum adegan berganti. */
