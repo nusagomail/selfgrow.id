@@ -1,10 +1,11 @@
 import type { EbookDoc } from "@selfgrow/shared";
+import { CALLOUT_LABELS, CALLOUT_VARIANTS } from "@selfgrow/shared";
 import Image from "@tiptap/extension-image";
 import { TableKit } from "@tiptap/extension-table";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useRef } from "react";
-import { Callout } from "./callout";
+import { Callout, QuoteCite } from "./callout";
 
 /**
  * Editor blok Tiptap (BLUEPRINT bagian 5). Hanya dimuat di Studio (lazy).
@@ -34,6 +35,7 @@ export function ChapterEditor({
       }),
       Image,
       Callout,
+      QuoteCite,
       TableKit.configure({ table: { resizable: false } }),
     ],
     content: doc,
@@ -75,10 +77,43 @@ export function ChapterEditor({
         {btn("• Daftar", editor.isActive("bulletList"), () => chain().toggleBulletList().run())}
         {btn("1. Daftar", editor.isActive("orderedList"), () => chain().toggleOrderedList().run())}
         {btn("❝ Kutipan", editor.isActive("blockquote"), () => chain().toggleBlockquote().run())}
-        {btn("💡 Tips", editor.isActive("callout"), () => {
-          if (editor.isActive("callout")) chain().lift("callout").run();
-          else chain().wrapIn("callout", { variant: "tip" }).run();
-        })}
+        {editor.isActive("blockquote") &&
+          btn(
+            "Tokoh",
+            Boolean(editor.getAttributes("blockquote").cite),
+            () => {
+              const prev = (editor.getAttributes("blockquote").cite as string | null) ?? "";
+              const cite = window.prompt("Nama tokoh kutipan (kosongkan untuk menghapus)", prev);
+              if (cite === null) return;
+              chain()
+                .updateAttributes("blockquote", { cite: cite.trim().slice(0, 200) || null })
+                .run();
+            },
+            "Nama tokoh di bawah kutipan",
+          )}
+        <select
+          className="tb"
+          aria-label="Kotak"
+          value={editor.isActive("callout") ? editor.getAttributes("callout").variant : ""}
+          onMouseDown={(e) => e.stopPropagation()}
+          onChange={(e) => {
+            const v = e.target.value;
+            if (v === "") {
+              if (editor.isActive("callout")) chain().lift("callout").run();
+            } else if (editor.isActive("callout")) {
+              chain().updateAttributes("callout", { variant: v }).run();
+            } else {
+              chain().wrapIn("callout", { variant: v }).run();
+            }
+          }}
+        >
+          <option value="">{editor.isActive("callout") ? "Lepas kotak" : "▣ Kotak…"}</option>
+          {CALLOUT_VARIANTS.map((v) => (
+            <option key={v} value={v}>
+              {CALLOUT_LABELS[v]}
+            </option>
+          ))}
+        </select>
         {btn("🔗 Tautan", editor.isActive("link"), () => {
           const prev = editor.getAttributes("link").href as string | undefined;
           const url = window.prompt("Alamat tautan (https://…)", prev ?? "https://");

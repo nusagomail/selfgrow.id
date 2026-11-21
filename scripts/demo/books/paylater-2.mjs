@@ -47,6 +47,8 @@ export const PAYLATER_2 = [
         "Kotak terbesar belum tentu yang paling mendesak. Perhatikan warnanya.",
       ],
       "Reaksi pertama Nadia adalah lemas. Rp10,6 juta hampir dua kali gajinya. Tapi setelah beberapa menit, dia menyadari sesuatu: angka itu terbatas. Ada ujungnya. Selama ini yang membuatnya cemas bukan angkanya, tapi ketidaktahuannya.",
+      ["quote", "Kita lebih sering menderita dalam bayangan daripada dalam kenyataan.", "Seneca"],
+      "Hampir dua ribu tahun lalu, filsuf Romawi itu sudah menangkap apa yang dialami Nadia malam itu. Yang membuat kita gelisah sering kali bukan masalahnya, tapi bayangan kita tentang masalah itu. Peta utang memindahkan masalah dari kepala ke atas kertas, dan di atas kertas, masalah selalu terlihat lebih kecil dan lebih bisa diatur.",
       ["h", "Langkah 3: hitung rasio cicilanmu"],
       "Bagi total cicilan per bulan dengan gaji bersihmu, lalu kalikan 100. Hasilnya adalah persentase gajimu yang sudah dipesan untuk utang sebelum kamu sempat membelanjakannya.",
       "Untuk Nadia: Rp1.588.200 ÷ Rp5.800.000 × 100 = 27,4%.",
@@ -68,15 +70,30 @@ export const PAYLATER_2 = [
         "quote",
         "Membayar minimum itu seperti berlari di treadmill: capek, berkeringat, tapi tidak ke mana-mana.",
       ],
-      ["h3", "Tugas Bab 5"],
       [
-        "ol",
+        "reflect",
+        [
+          "Utang mana yang selama ini paling kamu hindari untuk dilihat? Apa yang kamu takutkan dari angkanya?",
+          "Setelah semuanya tertulis, apakah rasa cemasmu bertambah, atau justru berkurang?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Utang yang samar lebih menakutkan daripada utang yang jelas.",
+          "Tulis semua utang dalam satu halaman dan cocokkan dengan catatan resmi OJK.",
+          "Rasio cicilan di atas 20% gaji adalah tanda untuk berhenti menambah dan mulai melunasi.",
+        ],
+      ],
+      [
+        "exercise",
         [
           "Buat tabel peta utangmu sendiri dengan lima kolom seperti tabel Nadia.",
           "Minta iDeb SLIK OJK atas namamu sendiri lewat kanal resmi.",
           "Hitung rasio cicilanmu dan tentukan zonamu.",
           "Tandai utang dengan biaya paling mahal menggunakan warna merah.",
         ],
+        "Tugas Bab 5",
       ],
     ],
   },
@@ -109,6 +126,7 @@ export const PAYLATER_2 = [
         ],
       ],
       "Perhatikan bahwa Nadia tidak menghapus semuanya. Dia masih nongkrong, masih sesekali pesan makanan, masih berlangganan satu aplikasi musik. Dia hanya menguranginya. Inilah kunci yang sering dilupakan: anggaran yang terlalu ketat akan runtuh dalam dua minggu. Pengurangan yang masuk akal bisa bertahan berbulan-bulan.",
+      "Nenek moyang kita sudah merumuskan prinsip ini jauh sebelum ada aplikasi keuangan: **sedikit demi sedikit, lama-lama menjadi bukit**. Rp700 ribu terdengar biasa saja. Dalam tujuh bulan, angka itu berubah menjadi hampir Rp5 juta yang menyerang utang.",
       ["img", "sebelum-sesudah", "Gaji yang sama, arah yang berbeda."],
       [
         "tip",
@@ -140,15 +158,35 @@ export const PAYLATER_2 = [
         "quote",
         "Melunasi utang adalah lari jarak jauh. Kalau kamu berlari terlalu kencang di kilometer pertama, kamu tidak akan sampai di garis akhir.",
       ],
-      ["h3", "Tugas Bab 6"],
       [
-        "ol",
+        "quote",
+        "Menghabiskan uang untuk menunjukkan kepada orang lain seberapa banyak uang yang kamu punya adalah cara tercepat untuk punya lebih sedikit uang.",
+        "Morgan Housel, The Psychology of Money (2020)",
+      ],
+      [
+        "reflect",
+        [
+          "Pengeluaran mana yang sebenarnya kamu lakukan supaya terlihat baik di mata orang lain?",
+          "Barang apa di sekitarmu yang lebih berguna sebagai uang daripada sebagai barang?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Uang untuk melunasi bisa ditemukan dari gaji yang sama: kebocoran kecil, barang tak terpakai, dan penghasilan tambahan kecil.",
+          "Kurangi, jangan hapus. Anggaran yang terlalu ketat runtuh dalam dua minggu.",
+          "Jangan pernah memotong makan bergizi, BPJS, dan Darurat Kecil.",
+        ],
+      ],
+      [
+        "exercise",
         [
           "Kelompokkan pengeluaranmu tiga bulan terakhir dan temukan empat pos yang bisa dikurangi.",
           "Tulis target pengurangan yang realistis untuk masing-masing pos.",
           "Daftar minimal lima barang yang bisa dijual minggu ini.",
           "Tentukan berapa uang ekstra per bulan yang bisa kamu arahkan ke pelunasan.",
         ],
+        "Tugas Bab 6",
       ],
     ],
   },
@@ -176,6 +214,11 @@ export const PAYLATER_2 = [
       ["h", "Jalan tengah ala Nadia"],
       "Nadia memilih gabungan keduanya. Uang hasil jual barang, sekitar Rp1,4 juta, dia pakai untuk melunasi dua utang kecil sekaligus di bulan pertama: headset (Rp524.800) dan skincare & baju (Rp930.000). Totalnya sedikit di atas Rp1,4 juta, sisanya ditutup dari uang ekstra bulan itu.",
       "Dua kemenangan di bulan pertama. Lebih dari itu, dua cicilan hilang dari daftar, sehingga Rp441 ribu per bulan langsung bebas.",
+      [
+        "fact",
+        "Penelitian terhadap ribuan nasabah program pengelolaan utang menemukan bahwa orang yang berhasil menutup lebih banyak akun utangnya satu per satu lebih mungkin melunasi seluruh utangnya, terlepas dari besarnya jumlah yang sudah dibayar. Kemenangan kecil ternyata menjaga semangat untuk perjalanan panjang.",
+        'Gal & McShane, "Can Small Victories Help Win the War?", Journal of Marketing Research, 2012',
+      ],
       "Setelah itu dia beralih ke longsoran. Uang ekstra Rp700 ribu ditambah Rp441 ribu yang sudah bebas, total Rp1,14 juta per bulan, dia arahkan ke pinjol legal yang biayanya tinggi. Pinjol itu lunas di bulan ketiga, bersamaan dengan sepatu lari yang memang selesai sesuai jadwal.",
       "Bola saljunya semakin besar. Mulai bulan keempat, ada sekitar Rp1,69 juta per bulan untuk menyerang kartu kredit. Utang yang tadinya terasa tidak akan pernah lunas itu habis di bulan keenam, di bulan yang sama dengan cicilan ponsel yang berakhir sesuai jadwal.",
       "Di bulan ketujuh, Nadia melunasi utang ke sepupunya. Dia mengantarkan uangnya langsung, bersama sekotak martabak.",
@@ -196,15 +239,30 @@ export const PAYLATER_2 = [
       ],
       ["h", "Bagaimana dengan utang ke keluarga?"],
       "Utang ke keluarga sering diletakkan di urutan terakhir karena tanpa bunga. Secara hitungan, itu masuk akal. Tapi jangan lupakan biaya lain yang tidak tertulis: hubungan. Bicarakan terus terang dengan keluarga yang meminjamkan. Jelaskan bahwa kamu sedang melunasi utang berbunga lebih dulu, dan berikan perkiraan kapan giliran mereka tiba. Kebanyakan keluarga akan menghargai kejujuran itu, jauh lebih dari diam dan menghindar.",
-      ["h3", "Tugas Bab 7"],
       [
-        "ol",
+        "reflect",
+        [
+          "Mana yang lebih menggerakkanmu: melihat angka bunga yang hemat, atau merasakan satu utang hilang dari daftar?",
+          "Siapa yang akan kamu ajak merayakan saat utang pertamamu lunas?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Bola salju: sisa terkecil dulu, demi kemenangan cepat.",
+          "Longsoran: bunga tertinggi dulu, demi biaya paling hemat.",
+          "Setiap cicilan yang lunas jangan dibiarkan menganggur; gulirkan ke utang berikutnya.",
+        ],
+      ],
+      [
+        "exercise",
         [
           "Pilih strategimu: bola salju, longsoran, atau jalan tengah.",
           "Urutkan utang di peta utangmu sesuai strategi yang dipilih.",
           "Hitung kira-kira di bulan ke berapa setiap utang akan lunas.",
           "Atur autodebet untuk semua cicilan minimum.",
         ],
+        "Tugas Bab 7",
       ],
     ],
   },

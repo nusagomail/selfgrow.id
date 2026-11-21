@@ -18,7 +18,15 @@ export function toNode(b, ctx = {}) {
   const [kind, value] = b;
   if (kind === "h") return { type: "heading", attrs: { level: 2 }, content: text(value) };
   if (kind === "h3") return { type: "heading", attrs: { level: 3 }, content: text(value) };
-  if (kind === "quote") return { type: "blockquote", content: [para(value)] };
+  if (kind === "quote") {
+    // ["quote", teks] atau ["quote", teks, tokoh] (kutipan bertokoh, D40).
+    const cite = b[2] ?? null;
+    return {
+      type: "blockquote",
+      ...(cite ? { attrs: { cite } } : {}),
+      content: [para(value)],
+    };
+  }
   if (kind === "hr") return { type: "horizontalRule" };
   if (kind === "img") {
     // ["img", nama, keterangan]: infografis isi buku, alamatnya dibuat oleh seed (D38).
@@ -58,6 +66,45 @@ export function toNode(b, ctx = {}) {
       type: "callout",
       attrs: { variant: kind === "warn" ? "warning" : kind },
       content: [para(value)],
+    };
+  }
+  // Unsur buku (D40):
+  //   ["reflect", [pertanyaan..]]        → kotak Renungkan
+  //   ["fact", teks, sumber]             → kotak Fakta, sumber di baris terakhir
+  //   ["summary", [poin..]]              → kotak Intisari
+  //   ["exercise", [langkah..], pengantar?] → kotak Latihan
+  if (kind === "reflect" || kind === "summary") {
+    return {
+      type: "callout",
+      attrs: { variant: kind },
+      content: [
+        {
+          type: "bulletList",
+          content: value.map((v) => ({ type: "listItem", content: [para(v)] })),
+        },
+      ],
+    };
+  }
+  if (kind === "exercise") {
+    const intro = b[2];
+    return {
+      type: "callout",
+      attrs: { variant: "exercise" },
+      content: [
+        ...(intro ? [para(intro)] : []),
+        {
+          type: "orderedList",
+          content: value.map((v) => ({ type: "listItem", content: [para(v)] })),
+        },
+      ],
+    };
+  }
+  if (kind === "fact") {
+    const source = b[2];
+    return {
+      type: "callout",
+      attrs: { variant: "fact" },
+      content: [para(value), ...(source ? [para(`Sumber: ${source}`)] : [])],
     };
   }
   throw new Error(`Blok tidak dikenal: ${kind}`);

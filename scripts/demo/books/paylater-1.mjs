@@ -26,7 +26,13 @@ export const PAYLATER_1 = [
         "quote",
         "Paylater tidak membuat barang jadi lebih murah. Paylater membuat harganya jadi lebih tidak terasa.",
       ],
-      "Kamu tidak sendirian. Sebuah survei anak muda pada 2026 menemukan lebih dari separuh responden usia 17 sampai 40 tahun pernah memakai paylater atau pinjaman online untuk membeli sesuatu, dan hampir setengahnya memakainya untuk kebutuhan mendesak. Artinya, bagi banyak orang, paylater bukan lagi soal gaya hidup. Ia sudah menjadi tambalan untuk gaji yang tidak cukup sampai akhir bulan.",
+      "Kamu tidak sendirian, dan ini bukan cerita segelintir orang.",
+      [
+        "fact",
+        "Survei terhadap 800 anak muda usia 17–40 tahun pada Maret 2026 menemukan sekitar 6 dari 10 responden pernah memakai pinjaman online atau paylater untuk membeli sesuatu. Hampir separuh dari mereka memakainya untuk kebutuhan mendesak seperti biaya berobat, bukan untuk gaya hidup.",
+        "survei Muda Bicara ID, Maret 2026, dikutip Zona Utara dan ANTARA",
+      ],
+      "Artinya, bagi banyak orang, paylater sudah lama berhenti menjadi soal gaya hidup. Ia menjadi tambalan untuk gaji yang tidak cukup sampai akhir bulan. Orang tua kita punya peribahasa untuk keadaan ini: **besar pasak daripada tiang**. Pengeluaran lebih besar dari pemasukan, dan selisihnya ditutup dengan janji membayar nanti.",
       ["h", "Kenapa buku ini bukan buku untuk menghakimi"],
       'Kalau kamu membuka buku ini sambil merasa bersalah, tarik napas dulu. Kamu tidak bodoh, tidak boros, dan bukan orang yang gagal. Kamu berhadapan dengan sistem yang dirancang oleh orang-orang pintar untuk membuatmu belanja lebih banyak, lebih cepat, dan lebih jarang berpikir. Tombol "bayar nanti" diletakkan di tempat yang paling mudah dijangkau. Angka cicilan ditulis lebih besar dari harga totalnya. Promo dibuat berakhir dalam hitungan jam.',
       'Melawan sistem seperti itu dengan modal "niat" saja memang berat. Yang kamu butuhkan adalah cara berpikir baru dan beberapa aturan sederhana yang bekerja bahkan saat kamu sedang lelah, sedih, atau tergoda.',
@@ -72,14 +78,35 @@ export const PAYLATER_1 = [
       ["h", "Satu permintaan sebelum lanjut"],
       "Bacalah buku ini pelan-pelan. Satu bab, lalu kerjakan tugasnya, baru lanjut ke bab berikutnya. Kebanyakan orang membaca buku keuangan sampai habis dalam semalam, merasa termotivasi, lalu tidak mengubah apa-apa. Lebih baik kamu selesai dalam dua minggu tapi benar-benar bergerak.",
       "Nadia butuh tujuh bulan untuk lepas. Mungkin kamu lebih cepat, mungkin lebih lama. Yang penting, mulai hari ini lingkarannya berhenti berputar.",
-      ["h3", "Tugas Bab 1"],
       [
-        "ol",
+        "quote",
+        "Waspadalah terhadap pengeluaran kecil. Kebocoran kecil bisa menenggelamkan kapal besar.",
+        "Benjamin Franklin, The Way to Wealth (1758)",
+      ],
+      [
+        "reflect",
+        [
+          'Kalau kamu jujur pada dirimu sendiri, kapan terakhir kali kamu menekan "bayar nanti", dan apa yang sebenarnya kamu rasakan saat itu?',
+          "Bagian mana dari cerita Nadia yang paling mirip dengan ceritamu?",
+          "Seperti apa hidupmu enam bulan dari sekarang kalau semua cicilan itu sudah lunas?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Paylater jarang menjerat lewat satu keputusan besar. Ia menjerat lewat banyak keputusan kecil yang terasa masuk akal.",
+          "Terjerat bukan tanda kamu bodoh atau boros. Kamu sedang berhadapan dengan sistem yang dirancang agar mudah berutang.",
+          "Jalan keluarnya punya empat tahap: berhenti menggali, melihat semuanya, melunasi dengan strategi, membangun pagar.",
+        ],
+      ],
+      [
+        "exercise",
         [
           "Kerjakan tes delapan pertanyaan di atas dan catat skormu.",
           "Tulis satu kalimat: kenapa kamu ingin lepas dari paylater? Untuk siapa?",
           "Siapkan waktu 30 menit besok untuk membaca Bab 2.",
         ],
+        "Tugas Bab 1",
       ],
     ],
   },
@@ -114,6 +141,13 @@ export const PAYLATER_1 = [
       ],
       ["img", "harga-sebenarnya", "Semakin ringan cicilannya, semakin berat total yang dibayar."],
       "Nadia memilih 12 bulan karena cicilannya paling ringan. Tanpa sadar, dia membayar Rp374 ribu lebih mahal. Itu hampir sepertiga harga headset-nya sendiri. Dengan uang sebanyak itu, dia bisa membeli headset kedua yang cukup layak.",
+      "Ada satu hal lagi yang membuat kita mau membayar lebih mahal tanpa sadar: bentuk pembayarannya sendiri.",
+      [
+        "fact",
+        "Dua peneliti MIT, Drazen Prelec dan Duncan Simester, melelang tiket pertandingan basket. Peserta yang diminta membayar dengan kartu kredit menawar jauh lebih tinggi, di salah satu lelang lebih dari dua kali lipat, dibanding peserta yang harus membayar tunai untuk tiket yang sama.",
+        'Prelec & Simester, "Always Leave Home Without It", Marketing Letters, 2001',
+      ],
+      "Paylater bekerja dengan cara yang mirip, bahkan lebih kuat, karena uangnya belum keluar sama sekali. Otak kita menilai mahal-murahnya sesuatu dari rasa berat saat membayar. Ketika rasa berat itu ditunda, harga terasa lebih ringan dari aslinya.",
       [
         "tip",
         "Rumus cepat yang bisa kamu hitung di kepala: biaya per bulan × jumlah bulan = tambahan harga. 2,6% × 12 bulan = 31,2%. Artinya barang itu 31% lebih mahal dari harga di etalase.",
@@ -142,14 +176,29 @@ export const PAYLATER_1 = [
         ],
       ],
       'Saat Nadia mengerjakan latihan ini, dia terdiam cukup lama. Ponsel yang dia kira seharga Rp4 juta ternyata akan dia bayar total hampir Rp5,25 juta. "Aku beli dua ponsel, tapi cuma pegang satu," katanya.',
-      ["h3", "Tugas Bab 2"],
       [
-        "ol",
+        "reflect",
+        [
+          "Dari tiga cicilan terbesarmu, mana yang sekarang terasa tidak sepadan dengan harga sebenarnya?",
+          "Kalau dulu kamu tahu total harganya sejak awal, apakah kamu tetap akan membelinya?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Ingat harga totalnya, bukan angka cicilannya.",
+          "Biaya per bulan × jumlah bulan = tambahan harga yang kamu bayar.",
+          "Setiap cicilan adalah gaji bulan depan yang sudah dibelanjakan hari ini.",
+        ],
+      ],
+      [
+        "exercise",
         [
           "Isi tabel latihan di atas untuk tiga cicilan terbesarmu.",
           "Buka pengaturan setiap aplikasi paylater dan baca bagian biaya serta denda keterlambatan.",
           "Tulis berapa total selisih yang kamu bayar dari tiga cicilan itu.",
         ],
+        "Tugas Bab 2",
       ],
     ],
   },
@@ -161,9 +210,19 @@ export const PAYLATER_1 = [
       ["h", "Otak kita lebih sayang pada hari ini"],
       "Para peneliti perilaku menyebutnya present bias, kecenderungan untuk lebih menghargai kesenangan sekarang dibanding kerugian di masa depan. Headset baru yang datang besok terasa nyata dan menyenangkan. Tagihan bulan Desember terasa jauh dan abstrak, seolah milik orang lain.",
       "Paylater bekerja tepat di celah itu. Ia memberikan kesenangan sekarang, lalu memindahkan rasa sakitnya ke masa depan, dan memotongnya kecil-kecil supaya tidak terasa.",
+      [
+        "fact",
+        'Ilmu ekonomi perilaku menunjukkan bahwa manusia tidak selalu memutuskan secara rasional soal uang. Salah satu tokohnya, Richard Thaler, menerima Hadiah Nobel Ekonomi 2017, antara lain untuk konsep akuntansi mental: kebiasaan kita memisahkan uang ke "rekening-rekening" di kepala dan memperlakukannya secara berbeda.',
+        "pengumuman Hadiah Nobel Ekonomi 2017, The Royal Swedish Academy of Sciences",
+      ],
       ["h", "Rasa sakit saat membayar yang hilang"],
       'Saat kamu membayar tunai, ada rasa "nyes" kecil ketika uang berpindah tangan. Rasa itu bukan musuh. Rasa itu adalah rem alami yang membuat kita berpikir dua kali. Peneliti menyebutnya pain of paying.',
       "Transfer digital mengurangi rasa itu. Paylater hampir menghapusnya. Tidak ada saldo yang berkurang hari ini, tidak ada uang yang berpindah. Remnya hilang.",
+      [
+        "fact",
+        "Penelitian dengan pemindaian otak menemukan bahwa melihat harga yang terasa terlalu mahal mengaktifkan insula, bagian otak yang juga berkaitan dengan rasa tidak nyaman. Aktivitas itu ikut memprediksi apakah seseorang akhirnya batal membeli.",
+        'Knutson dan kawan-kawan, "Neural Predictors of Purchases", jurnal Neuron, 2007',
+      ],
       "Coba bandingkan dua situasi ini:",
       [
         "table",
@@ -178,6 +237,13 @@ export const PAYLATER_1 = [
       ["h", "Akuntansi di kepala"],
       'Kita semua punya "rekening" imajiner di kepala. Uang makan, uang jajan, uang tabungan. Masalahnya, cicilan paylater sering tidak masuk ke rekening mana pun. Ia mengambang. Saat menghitung sisa uang bulan ini, kita lupa bahwa Rp131 ribu untuk headset, Rp437 ribu untuk ponsel, dan Rp310 ribu untuk skincare sudah dipesan.',
       "Itulah kenapa Nadia selalu kaget di tanggal 14. Di kepalanya, gaji Rp5,8 juta masih utuh. Di kenyataannya, Rp1,6 juta sudah pergi sebelum dia sempat memegangnya.",
+      "Ada satu lagi yang membuat lingkaran ini sulit diputus: kekhawatiran soal uang menghabiskan tenaga berpikir kita sendiri.",
+      [
+        "fact",
+        'Peneliti Sendhil Mullainathan dan Eldar Shafir menunjukkan bahwa kekurangan uang menyita "ruang" di pikiran. Dalam salah satu studi, petani tebu di India mendapat skor tes kemampuan berpikir yang lebih baik setelah panen, saat uangnya cukup, dibanding sebelum panen, saat uangnya menipis. Orangnya sama; yang berubah hanya beban pikirannya.',
+        'Mani, Mullainathan, Shafir & Zhao, jurnal Science, 2013; buku "Scarcity" (2013)',
+      ],
+      "Ini menjelaskan kenapa keputusan terburuk soal uang sering diambil di tanggal tua, saat kepala paling penuh. Bukan karena kita bodoh, tapi karena kekhawatiran sedang menyedot tenaga berpikir kita. Karena itu, strategi di buku ini sengaja dibuat sederhana dan sebisa mungkin berjalan otomatis.",
       ["h", "Pemicu yang paling sering"],
       "Dari cerita banyak orang yang terjerat paylater, pemicunya hampir selalu salah satu dari ini:",
       [
@@ -223,17 +289,32 @@ export const PAYLATER_1 = [
       'Nadia menemukan polanya dalam empat hari: hampir semua godaannya muncul antara jam 9 dan 11 malam, setelah lembur, saat dia rebahan sambil scroll. "Ternyata aku bukan suka belanja," katanya. "Aku capek, terus belanja itu cara paling gampang biar senang."',
       "Kalimat itu adalah awal perubahan. Kalau kamu tahu kapan dan kenapa kamu tergoda, kamu bisa menyiapkan jawabannya sebelum godaan itu datang.",
       [
+        "reflect",
+        [
+          'Pemicu mana yang paling sering membuatmu menekan "bayar nanti": lelah, takut ketinggalan, tanggal tua, atau merasa pantas?',
+          "Kalau belanja adalah caramu menenangkan diri, apa cara lain yang lebih murah tapi sama-sama menenangkan?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Otak kita lebih menyayangi hari ini daripada masa depan, dan paylater memanfaatkan itu.",
+          "Paylater menghapus rasa berat saat membayar, padahal rasa berat itu adalah rem alami kita.",
+          "Kenali pemicumu, maka kamu bisa menyiapkan jawabannya sebelum godaan datang.",
+        ],
+      ],
+      [
         "tip",
         "Kalau pemicumu adalah lelah di malam hari, coba pindahkan aplikasi belanja dari layar utama ponsel ke folder di halaman terakhir. Satu langkah tambahan sudah cukup untuk memberi jeda.",
       ],
-      ["h3", "Tugas Bab 3"],
       [
-        "ol",
+        "exercise",
         [
           "Mulai catatan pemicu tujuh hari mulai malam ini.",
           "Tandai dua pemicu di daftar di atas yang paling sering terjadi padamu.",
           "Pindahkan semua aplikasi belanja ke folder terpisah di halaman terakhir ponsel.",
         ],
+        "Tugas Bab 3",
       ],
     ],
   },
@@ -258,6 +339,21 @@ export const PAYLATER_1 = [
       ["h3", "Hari 3: aturan 48 jam"],
       "Buat satu aturan untuk dirimu sendiri: untuk barang di atas Rp200 ribu yang bukan kebutuhan mendesak, tunggu 48 jam sebelum membeli. Masukkan ke keranjang, lalu tutup aplikasinya.",
       "Aturan ini terdengar sepele, tapi hasilnya mengejutkan. Kebanyakan keinginan belanja hilang sendiri dalam dua hari. Nadia mencatat, dari 11 barang yang dia masukkan ke keranjang dalam sebulan pertama, hanya dua yang akhirnya dia beli, dan keduanya dia bayar tunai.",
+      'Ada cara untuk membuat aturan seperti ini lebih mungkin dijalankan: tulis dalam bentuk "jika... maka...".',
+      [
+        "fact",
+        'Kajian atas 94 penelitian menemukan bahwa rencana berbentuk "jika situasi X terjadi, maka aku akan melakukan Y" secara konsisten membantu orang menjalankan niatnya, jauh lebih baik daripada niat umum seperti "aku mau berhemat".',
+        "Gollwitzer & Sheeran, meta-analisis implementation intentions, 2006",
+      ],
+      [
+        "exercise",
+        [
+          "Jika aku tergoda belanja setelah jam 9 malam, maka aku masukkan ke keranjang lalu menutup aplikasinya.",
+          'Jika muncul notifikasi "limit naik", maka aku hapus notifikasinya tanpa membukanya.',
+          "Jika ada kebutuhan mendesak, maka aku cek rekening Darurat Kecil sebelum membuka aplikasi apa pun.",
+        ],
+        "Contoh rencana jika–maka milik Nadia. Tulis tiga versimu sendiri:",
+      ],
       ["h3", "Hari 4 dan 5: Darurat Kecil"],
       "Ingat kenapa Nadia mengambil pinjaman online di bulan Agustus? Karena ada tagihan berobat yang tidak terduga, dan dia tidak punya uang cadangan sama sekali. Selama tidak ada cadangan, setiap kejadian kecil akan memaksamu kembali ke paylater.",
       'Karena itu, buat satu rekening atau kantong digital terpisah bernama "Darurat Kecil". Targetnya bukan dana darurat penuh. Targetnya hanya Rp500 ribu sampai Rp1 juta, cukup untuk ban bocor, obat, atau ongkos mendadak.',
@@ -285,14 +381,29 @@ export const PAYLATER_1 = [
         "quote",
         "Tujuannya bukan menjadi orang yang tidak pernah berutang. Tujuannya menjadi orang yang memutuskan untuk berutang dengan sadar, bukan karena refleks.",
       ],
-      ["h3", "Tugas Bab 4"],
       [
-        "ol",
+        "reflect",
+        [
+          "Langkah mana dari tujuh langkah minggu ini yang paling berat untukmu, dan kenapa?",
+          "Siapa satu orang yang bisa kamu ajak bicara tentang rencana ini?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Sebelum melunasi, pastikan utangnya berhenti bertambah.",
+          'Rencana "jika–maka" lebih kuat daripada niat.',
+          "Darurat Kecil adalah alasan terkuat untuk tidak kembali ke paylater.",
+        ],
+      ],
+      [
+        "exercise",
         [
           "Jalankan tujuh langkah di gambar dan centang yang sudah selesai.",
           "Buka rekening Darurat Kecil dan lakukan setoran pertama.",
           "Tulis aturan 48 jam di catatan ponsel dan jadikan pengingat.",
         ],
+        "Tugas Bab 4",
       ],
     ],
   },
