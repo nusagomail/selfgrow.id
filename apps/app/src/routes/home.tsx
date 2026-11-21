@@ -1,4 +1,5 @@
 import type { SubscriptionStatus } from "@selfgrow/shared";
+import { activeTypeTab, availableTypeTabs } from "@selfgrow/shared";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ApiError, api, goToStorefront } from "../lib/api";
@@ -125,6 +126,7 @@ export function HomePage() {
   const [data, setData] = useState<HomeData | null>(null);
   const [error, setError] = useState(false);
   const [active, setActive] = useState<string>("semua");
+  const [jenis, setJenis] = useState<string | null>(null);
 
   useEffect(() => {
     api<HomeData>("/home")
@@ -159,9 +161,14 @@ export function HomePage() {
   }
 
   const sub = data.subscription;
-  const filled = sections.filter((s) => s.items.length > 0);
-  const shown =
-    active === "semua" ? filled : sections.filter((s) => s.slug === active && s.items.length > 0);
+  // Satu jenis konten sekaligus (D44); rak kategori hanya berisi jenis itu.
+  const allItems = sections.flatMap((s) => s.items);
+  const tabs = availableTypeTabs(allItems);
+  const tab = activeTypeTab(jenis, allItems);
+  const filled = sections
+    .map((s) => ({ ...s, items: tab ? s.items.filter((i) => i.type === tab.type) : s.items }))
+    .filter((s) => s.items.length > 0);
+  const shown = active === "semua" ? filled : filled.filter((s) => s.slug === active);
   const totalItems = filled.reduce((n, s) => n + s.items.length, 0);
 
   return (
@@ -216,6 +223,25 @@ export function HomePage() {
             ))}
           </div>
         </section>
+      )}
+
+      {tabs.length > 1 && (
+        <nav className="type-tabs" aria-label="Jenis konten">
+          {tabs.map((t) => (
+            <button
+              key={t.param}
+              type="button"
+              className="type-tab"
+              aria-pressed={tab?.type === t.type}
+              onClick={() => {
+                setJenis(t.param);
+                setActive("semua");
+              }}
+            >
+              {t.label} <span className="count">{t.count}</span>
+            </button>
+          ))}
+        </nav>
       )}
 
       <nav className="cat-chips" aria-label="Kategori">
