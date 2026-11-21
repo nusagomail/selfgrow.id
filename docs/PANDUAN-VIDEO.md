@@ -55,6 +55,10 @@ tersapu ke catatan, tiga batu besar jatuh ke pagi hari, dan slot cadangan bergar
 batu dengan tiga lingkaran kendali. Kekhawatiran jatuh sebagai kerikil berlabel lalu dipilah: yang
 di luar kendali memudar di cincin luar, yang dalam kendali bersinar di tengah.
 
+**Contoh keenam: "Dana Darurat dari Nol"** (`darurat.mjs` + `darurat.html`). Konsep: buku
+tabungan yang terbuka. Halaman pertama mencetak minggu buruk (paylater merah), halaman berganti,
+setoran tercetak bulan demi bulan, dan penarikan darurat dicap "tanpa utang".
+
 Panduan ini bukan cetakan. Setiap buku punya cara masuk yang berbeda. Buku keuangan mungkin
 dibuka dengan angka yang mengejutkan, buku tentang duka dibuka dengan satu kalimat yang
 lembut, buku kebiasaan dibuka dengan pertanyaan. Pilih adegan yang melayani buku itu, lalu

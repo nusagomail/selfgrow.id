@@ -1,5 +1,7 @@
 /** Ebook demo yang ditulis lengkap (slug → bab + infografis). Sisanya di katalog berisi kosong. */
 
+import { DARURAT_1 } from "./darurat-1.mjs";
+import { DARURAT_FIGURES } from "./darurat-figures.mjs";
 import { GULA_1 } from "./gula-1.mjs";
 import { GULA_FIGURES } from "./gula-figures.mjs";
 import { HARGA_1 } from "./harga-1.mjs";
@@ -65,5 +67,9 @@ export const FULL_BOOKS = {
   "stoik-untuk-hidup-sehari-hari": {
     chapters: STOIK_1,
     figures: STOIK_FIGURES,
+  },
+  "dana-darurat-dari-nol": {
+    chapters: DARURAT_1,
+    figures: DARURAT_FIGURES,
   },
 };
