@@ -1,5 +1,7 @@
 /** Ebook demo yang ditulis lengkap (slug → bab + infografis). Sisanya di katalog berisi kosong. */
 
+import { GULA_1 } from "./gula-1.mjs";
+import { GULA_FIGURES } from "./gula-figures.mjs";
 import { HARGA_1 } from "./harga-1.mjs";
 import { HARGA_FIGURES } from "./harga-figures.mjs";
 import { OVERTHINKING_1 } from "./overthinking-1.mjs";
@@ -35,5 +37,9 @@ export const FULL_BOOKS = {
   "hitung-harga-jual-yang-untung": {
     chapters: HARGA_1,
     figures: HARGA_FIGURES,
+  },
+  "kurangi-gula-tanpa-menderita": {
+    chapters: GULA_1,
+    figures: GULA_FIGURES,
   },
 };

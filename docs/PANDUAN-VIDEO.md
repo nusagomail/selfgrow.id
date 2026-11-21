@@ -31,6 +31,13 @@ Kotak adegan di bagian 2 tetap boleh dipakai sebagai bahan, tetapi bukan kerangk
 adegan baru di `template.html` bila konsep membutuhkannya (seperti `receipt` dan `breath`), dan
 susunan cover → isi → features → cta tidak wajib selain aturan di bagian 1.
 
+**Contoh pertama: "Kurangi Gula Tanpa Menderita"** (`intro-video/gula.mjs` + `gula.html`).
+Konsep: satu toples ukur di atas kertas periksa sepanjang video. Kubus gula (1 kubus = 1 sendok
+teh) jatuh mengikuti hari contoh sampai 68 g dan melewati garis 50 g; label gizi dibaca langsung
+dengan rumus 12 g × 2 sajian ÷ 4 = 6 sendok teh; lalu kubus keluar dari toples saat pilihan
+ditukar sampai 26 g. Template khusus cukup memenuhi kontrak yang sama (`window.DURATION`,
+`window.TIMELINE`, `window.render(t)`) dan didaftarkan lewat `template` di data video.
+
 Panduan ini bukan cetakan. Setiap buku punya cara masuk yang berbeda. Buku keuangan mungkin
 dibuka dengan angka yang mengejutkan, buku tentang duka dibuka dengan satu kalimat yang
 lembut, buku kebiasaan dibuka dengan pertanyaan. Pilih adegan yang melayani buku itu, lalu
