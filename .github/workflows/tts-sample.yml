@@ -28,6 +28,7 @@ jobs:
       # Hasil dikompres lalu dicetak sebagai base64 di log (artefak tidak terjangkau dari sesi pengembangan).
       - name: Cetak hasil
         run: |
+          sudo apt-get install -y -qq ffmpeg >/dev/null
           for f in tts-out/*.wav; do
             ffmpeg -loglevel error -y -i "$f" -c:a libopus -b:a 32k "${f%.wav}.ogg"
             echo "=== BEGIN $(basename "${f%.wav}") ==="
