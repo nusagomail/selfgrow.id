@@ -22,7 +22,7 @@ jobs:
             install: pip install --quiet torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu && pip install --quiet chatterbox-tts==0.1.1 "transformers==4.46.3" peft==0.11.1 huggingface_hub safetensors && pip install --quiet -U ml_dtypes
             script: chatterbox_id_sample.py
           - name: csm-id
-            install: pip install --quiet torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu && pip install --quiet "transformers>=4.52.1" soundfile accelerate
+            install: pip install --quiet torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu && pip install --quiet "transformers>=4.52.1" soundfile accelerate peft
             script: csm_id_sample.py
     name: ${{ matrix.name }}
     steps:
@@ -30,6 +30,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Daftar berkas model
+        run: curl -s "https://huggingface.co/api/models/Ellbendls/csm-1b-indonesian-fine-tuned" | python -c "import json,sys;print([s['rfilename'] for s in json.load(sys.stdin)['siblings']])"
       - name: Pasang
         run: |
           sudo apt-get install -y -qq ffmpeg >/dev/null
@@ -38,7 +40,7 @@ jobs:
         working-directory: scripts/tts
         run: python ${{ matrix.script }} && mv tts-out ../../tts-out
       - name: Contoh resmi pembuat model
-        if: matrix.name == 'chatterbox-id'
+        if: always() && matrix.name == 'chatterbox-id'
         run: |
           mkdir -p tts-out
           for f in example1 example2; do curl -sL -o "tts-out/cbid-resmi-$f.wav" "https://huggingface.co/grandhigh/Chatterbox-TTS-Indonesian/resolve/main/$f.wav"; done

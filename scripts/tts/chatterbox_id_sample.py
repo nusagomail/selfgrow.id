@@ -2,11 +2,16 @@
 import os
 import time
 
+import torch
 import torchaudio as ta
 from chatterbox.tts import ChatterboxTTS
 from huggingface_hub import hf_hub_download
 from lines import LINES
 from safetensors.torch import load_file
+
+# Versi 0.1.1 memuat sebagian berkas tanpa map_location; paksa ke CPU (runner tanpa GPU).
+_load = torch.load
+torch.load = lambda *a, **k: _load(*a, **{**k, "map_location": torch.device("cpu")})
 
 os.makedirs("tts-out", exist_ok=True)
 model = ChatterboxTTS.from_pretrained(device="cpu")

@@ -11,8 +11,18 @@ REPO = "Ellbendls/csm-1b-indonesian-fine-tuned"
 SPEAKERS = [int(s) for s in os.environ.get("SPEAKERS", "0,7,19,33,52,70").split(",")]
 
 os.makedirs("tts-out", exist_ok=True)
-model = CsmForConditionalGeneration.from_pretrained(REPO)
-processor = AutoProcessor.from_pretrained(REPO)
+# Repo berisi adapter LoRA: pasang di atas model dasarnya bila bobot penuh tidak ada.
+try:
+    model = CsmForConditionalGeneration.from_pretrained(REPO)
+except OSError:
+    from peft import PeftModel
+
+    base = CsmForConditionalGeneration.from_pretrained("unsloth/csm-1b")
+    model = PeftModel.from_pretrained(base, REPO).merge_and_unload()
+try:
+    processor = AutoProcessor.from_pretrained(REPO)
+except OSError:
+    processor = AutoProcessor.from_pretrained("unsloth/csm-1b")
 torch.manual_seed(1)
 for spk in SPEAKERS:
     for name, text in LINES.items():
