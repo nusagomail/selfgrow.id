@@ -63,7 +63,12 @@ const DRAG_START_PX = 8;
 const TURN_MS = 680;
 /** Lembar yang sudah terbuka melewati batas ini saat jari dilepas akan diselesaikan. */
 const COMMIT_AT = 0.22;
-const INTERACTIVE = "a,button,input,select,textarea,summary,label,[role=button]";
+/**
+ * Ketukan di sini tidak membalik halaman atau menyembunyikan header: kontrol, dan seluruh blok
+ * interaktif bab (kuis, tool tertanam) termasuk teks dan sela di antaranya (laporan bug D42).
+ */
+export const NO_TAP_ZONE =
+  "a,button,input,select,textarea,summary,label,[role=button],form,.quiz,.tool-embed,.embedded-tool";
 
 export function layoutFor(width: number, spreadMinWidth = 900): PagerLayout {
   const w = Math.max(1, width);
@@ -545,7 +550,7 @@ export function createPager(
       return;
     }
     if (Math.abs(dx) > DRAG_START_PX || Math.abs(e.clientY - startY) > DRAG_START_PX) return;
-    if ((e.target as Element | null)?.closest?.(INTERACTIVE)) return;
+    if ((e.target as Element | null)?.closest?.(NO_TAP_ZONE)) return;
     const rect = viewport.getBoundingClientRect();
     const x = (e.clientX - rect.left) / Math.max(1, rect.width);
     if (x < 0.3) prev();

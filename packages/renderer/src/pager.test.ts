@@ -155,3 +155,12 @@ describe("geometri lipatan", () => {
     }
   });
 });
+
+describe("zona tanpa ketuk", () => {
+  it("mencakup seluruh blok kuis dan tool, bukan hanya kontrolnya", async () => {
+    const { NO_TAP_ZONE } = await import("./pager");
+    for (const sel of ["input", "label", "button", ".quiz", ".tool-embed", ".embedded-tool"]) {
+      expect(NO_TAP_ZONE.split(",")).toContain(sel);
+    }
+  });
+});
