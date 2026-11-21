@@ -1,5 +1,7 @@
 /** Ebook demo yang ditulis lengkap (slug → bab + infografis). Sisanya di katalog berisi kosong. */
 
+import { HARGA_1 } from "./harga-1.mjs";
+import { HARGA_FIGURES } from "./harga-figures.mjs";
 import { OVERTHINKING_1 } from "./overthinking-1.mjs";
 import { OVERTHINKING_FIGURES } from "./overthinking-figures.mjs";
 import { PAYLATER_1 } from "./paylater-1.mjs";
@@ -29,5 +31,9 @@ export const FULL_BOOKS = {
   "keluar-dari-lingkaran-overthinking": {
     chapters: OVERTHINKING_1,
     figures: OVERTHINKING_FIGURES,
+  },
+  "hitung-harga-jual-yang-untung": {
+    chapters: HARGA_1,
+    figures: HARGA_FIGURES,
   },
 };
