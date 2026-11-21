@@ -36,6 +36,8 @@ async function findPublishedEbook(db: AppEnv["Variables"]["db"], slug: string) {
 }
 
 const MAX_BOOKMARKS_PER_EBOOK = 500;
+/** Id kuis berbeda yang boleh disimpan per user per ebook (D42). */
+const MAX_QUIZZES_PER_EBOOK = 50;
 
 export const ebooks = new Hono<AppEnv>()
   .use(requireAuth)
@@ -134,12 +136,23 @@ export const ebooks = new Hono<AppEnv>()
     const quizId = quizIdSchema.safeParse(c.req.param("quizId"));
     const body = quizResultBodySchema.safeParse(await c.req.json().catch(() => null));
     if (!quizId.success || !body.success) return c.json({ error: "invalid_body" }, 400);
-    if (!(await withinRateLimit(c, "tool"))) {
+    if (!(await withinRateLimit(c, "quiz"))) {
       c.header("Retry-After", "60");
       return c.json({ error: "rate_limited" }, 429);
     }
     const ebook = await findPublishedEbook(c.var.db, c.req.param("slug"));
     if (!ebook) return c.json({ error: "not_found" }, 404);
+    // Batasi jumlah id kuis berbeda per user per ebook (review keamanan PR #30).
+    const ids = await c.var.db
+      .selectDistinct({ quizId: schema.quizResults.quizId })
+      .from(schema.quizResults)
+      .where(
+        and(eq(schema.quizResults.userId, user.id), eq(schema.quizResults.contentId, ebook.id)),
+      )
+      .limit(MAX_QUIZZES_PER_EBOOK + 1);
+    if (ids.length >= MAX_QUIZZES_PER_EBOOK && !ids.some((r) => r.quizId === quizId.data)) {
+      return c.json({ error: "too_many_quizzes" }, 409);
+    }
     await c.var.db.insert(schema.quizResults).values({
       id: crypto.randomUUID(),
       userId: user.id,

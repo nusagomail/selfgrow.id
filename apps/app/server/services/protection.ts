@@ -14,7 +14,8 @@ import { writeAudit } from "./audit";
 // ---------------------------------------------------------------------------
 
 /** `media`: sampul & gambar isi, hanya dihitung saat cache edge meleset (D38). */
-export type RateGroup = "chapter" | "tool" | "template" | "auth" | "catalog" | "media";
+/** `quiz`: simpan skor kuis (D42), terpisah agar tidak menghabiskan jatah tool di bab yang sama. */
+export type RateGroup = "chapter" | "tool" | "template" | "auth" | "catalog" | "media" | "quiz";
 
 /** 429 bila melewati batas per IP (bila IP diketahui) atau per user (bila login). */
 export function rateLimit(group: RateGroup) {

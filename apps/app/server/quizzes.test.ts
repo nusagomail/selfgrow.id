@@ -92,4 +92,22 @@ describe("skor kuis", () => {
       .all<{ n: number }>();
     expect(results[0]?.n).toBe(20);
   });
+
+  it("maksimal 50 id kuis berbeda per ebook; kuis lama tetap bisa disimpan", async () => {
+    const slug = await ebook();
+    const u = await createUser();
+    const item = await env.DB.prepare("SELECT id FROM content_items WHERE slug = ?")
+      .bind(slug)
+      .first<{ id: string }>();
+    const stmt = env.DB.prepare(
+      "INSERT INTO quiz_results (id, user_id, content_id, quiz_id, score, max_score, created_at) VALUES (?, ?, ?, ?, 1, 2, ?)",
+    );
+    await env.DB.batch(
+      Array.from({ length: 50 }, (_, i) =>
+        stmt.bind(crypto.randomUUID(), u.id, item?.id, `kuis-${i}`, Date.now()),
+      ),
+    );
+    expect((await save(slug, u.token, "kuis-baru", { score: 1, maxScore: 2 })).status).toBe(409);
+    expect((await save(slug, u.token, "kuis-7", { score: 2, maxScore: 2 })).status).toBe(201);
+  });
 });
