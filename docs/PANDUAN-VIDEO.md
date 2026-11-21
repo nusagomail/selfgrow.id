@@ -47,6 +47,10 @@ nego diketik lalu jam berganti menjadi hitungan "diam", dan hasil akhir jatuh di
 dan satu meter suara tegak. Pemicu pagi menaikkan meter sampai merah, jeda 10 detik (dengan
 hitungan mundur) menurunkannya ke hijau, lalu kalimat batas tiga potong muncul.
 
+**Contoh keempat: "Seminggu dalam Satu Jam"** (`minggu.mjs` + `minggu.html`). Konsep: halaman
+planner dengan kalender Senin–Jumat dan jam ritual 60 menit yang terisi per bagian. Blok kacau
+tersapu ke catatan, tiga batu besar jatuh ke pagi hari, dan slot cadangan bergaris muncul.
+
 Panduan ini bukan cetakan. Setiap buku punya cara masuk yang berbeda. Buku keuangan mungkin
 dibuka dengan angka yang mengejutkan, buku tentang duka dibuka dengan satu kalimat yang
 lembut, buku kebiasaan dibuka dengan pertanyaan. Pilih adegan yang melayani buku itu, lalu

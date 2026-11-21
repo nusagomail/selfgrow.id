@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<!--
+  Video pengantar "Seminggu dalam Satu Jam" (D46): dirancang khusus. Satu dunia sepanjang video:
+  halaman planner bertitik dengan kalender Senin–Jumat. Minggu yang kacau penuh blok mendadak,
+  lalu jam ritual 60 menit berjalan: blok kacau tersapu ke catatan, tiga batu besar jatuh ke pagi
+  hari, rapat mengisi celah, dan slot cadangan bergaris muncul. Kontrak: DURATION, TIMELINE, render(t).
+-->
+<style>
+@font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: SgSerif; src: url(serif.woff2) format("woff2"); font-weight: 400; }
+@font-face { font-family: Hand; src: url(hand.woff2) format("woff2"); font-weight: 700; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 960px; height: 540px; overflow: hidden; }
+body { font-family: Jakarta, sans-serif; color: #2f3e5c; background: #fdfbf6; }
+#stage { position: absolute; inset: 0; background: #fdfbf6; background-image: radial-gradient(#d6cfbf 1.2px, transparent 1.3px); background-size: 22px 22px; }
+.washi { position: absolute; height: 22px; opacity: .9; }
+#cal { position: absolute; left: 36px; top: 74px; width: 520px; height: 380px; }
+.dh { position: absolute; top: 0; height: 28px; font-family: Hand, cursive; font-size: 26px; text-align: center; }
+.colbg { position: absolute; top: 32px; height: 340px; background: #fff; border-radius: 6px; box-shadow: inset 0 0 0 1px #e6dfd0; }
+.hr { position: absolute; left: 0; width: 40px; font-family: Hand, cursive; font-size: 17px; color: #8a7bc0; }
+.blk { position: absolute; border-radius: 6px; padding: 5px 7px; font-size: 12.5px; font-weight: 700; line-height: 1.2; overflow: hidden; }
+.blk.chaos { background: #f4d6cf; color: #8a3324; border: 1px solid #e3a597; }
+.blk.rock { background: #2f3e5c; color: #fff; font-size: 13px; }
+.blk.peb { background: #e7e2f6; color: #2f3e5c; }
+.blk.buf { background: repeating-linear-gradient(45deg, #f6ecc9 0 6px, #fff 6px 12px); color: #8a6d1c; border: 1px dashed #c7a23a; font-weight: 600; }
+#rclock { position: absolute; left: 596px; top: 30px; width: 70px; height: 70px; border-radius: 50%; box-shadow: 0 0 0 4px #fff, 0 3px 0 4px #e6dfd0; }
+#rclock::after { content: ""; position: absolute; inset: 17px; border-radius: 50%; background: #fdfbf6; }
+#rlabel { position: absolute; left: 680px; top: 44px; font-weight: 800; font-size: 15px; }
+#rlabel small { display: block; font-family: Hand, cursive; font-size: 20px; color: #8a7bc0; font-weight: 700; }
+.panel { position: absolute; left: 596px; right: 34px; top: 120px; bottom: 112px; opacity: 0; }
+.kick { font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #8a7bc0; }
+.big { font-family: SgSerif, serif; font-size: 34px; line-height: 1.12; margin-top: 8px; }
+.sub { font-size: 16px; line-height: 1.45; margin-top: 10px; }
+.sheet { margin-top: 12px; background: #fff; border-radius: 6px; padding: 10px 14px; box-shadow: 0 2px 0 #e6dfd0; }
+.sheet div { font-family: Hand, cursive; font-size: 21px; border-bottom: 1px solid #ece6d8; padding: 2px 0; }
+.math { margin-top: 14px; display: grid; gap: 8px; }
+.math div { background: #fff; border-radius: 6px; padding: 10px 12px; font-size: 16px; font-weight: 700; box-shadow: 0 2px 0 #e6dfd0; }
+.math b { font-family: SgSerif, serif; font-weight: 400; font-size: 24px; color: #8a6d1c; }
+.end { display: grid; grid-template-columns: 110px 1fr; gap: 16px; align-items: center; }
+.end img.cv { width: 110px; height: 165px; box-shadow: 0 10px 20px rgba(0,0,0,.2); border-radius: 3px 7px 7px 3px; }
+.end h1 { font-family: SgSerif, serif; font-weight: 400; font-size: 30px; line-height: 1.08; }
+.btn { display: inline-block; margin-top: 12px; background: #2f3e5c; color: #fff; font-weight: 800; font-size: 16px; padding: 10px 16px; border-radius: 6px; }
+.brand { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-weight: 800; }
+.brand img { width: 22px; height: 22px; }
+#wm { position: absolute; right: 22px; top: 18px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; }
+#wm img { width: 22px; height: 22px; }
+.sub-cap { position: absolute; left: 30px; right: 30px; bottom: 12px; text-align: center; z-index: 20; }
+.sub-cap span { display: inline-block; max-width: 820px; padding: 6px 14px; border-radius: 10px; background: rgba(47,62,92,.88); color: #fff; font-size: 17px; font-weight: 600; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="washi" style="left:40px;top:22px;width:140px;transform:rotate(-3deg);background:repeating-linear-gradient(45deg,#8a7bc0 0 8px,#a698d4 8px 16px)"></div>
+  <div class="washi" style="left:420px;top:26px;width:100px;transform:rotate(3deg);background:repeating-linear-gradient(90deg,#c7a23a 0 6px,#d8b85a 6px 12px)"></div>
+  <div id="cal"></div>
+  <div id="rclock"></div>
+  <div id="rlabel">Ritual 60 menit<small id="rpart">belum dimulai</small></div>
+</div>
+<div id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+<div class="sub-cap" id="cap"></div>
+<script>
+const D = window.DATA;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - (1 - x) ** 3;
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+const bounceOut = (x) => { const n = 7.5625, d = 2.75; if (x < 1 / d) return n * x * x; if (x < 2 / d) { const y = x - 1.5 / d; return n * y * y + 0.75; } if (x < 2.5 / d) { const y = x - 2.25 / d; return n * y * y + 0.9375; } const y = x - 2.625 / d; return n * y * y + 0.984375; };
+function fade(e, p, dist = 20, axis = "Y") { const k = easeOut(p); e.style.opacity = k; e.style.transform = `translate${axis}(${(1 - k) * dist}px)`; }
+
+const MIN = { hook: 8, dump: 8, rocks: 9, buffer: 9, end: 6 };
+const T = [];
+let cur = 0;
+for (const s of D.scenes) { const dur = Math.max(MIN[s.type] ?? 6, s.dur ?? 0); T.push({ type: s.type, start: cur, dur, say: s.say ?? null }); cur += dur; }
+window.DURATION = cur;
+window.TIMELINE = T.map(({ type, start, dur }) => ({ type, start, dur }));
+const B = Object.fromEntries(T.map((b) => [b.type, b]));
+const at = (type, f) => B[type].start + B[type].dur * f;
+
+// Kalender: 5 kolom, 7 baris jam (08–15), satu baris 48 px.
+const cal = $("cal");
+const COLX = (i) => 44 + i * 95;
+const ROWY = (r) => 36 + r * 48;
+["Sen", "Sel", "Rab", "Kam", "Jum"].forEach((d, i) => { const h = el("div", "dh", d); h.style.left = `${COLX(i)}px`; h.style.width = "90px"; cal.append(h); const bg = el("div", "colbg"); bg.style.left = `${COLX(i)}px`; bg.style.width = "90px"; cal.append(bg); });
+["08", "09", "10", "11", "13", "14", "15"].forEach((h, r) => { const x = el("div", "hr", `${h}.00`); x.style.top = `${ROWY(r)}px`; cal.append(x); });
+function block(cls, d, r, len, text) { const b = el("div", `blk ${cls}`, text); b.style.left = `${COLX(d) + 3}px`; b.style.width = "84px"; b.style.top = `${ROWY(r) + 2}px`; b.style.height = `${len * 48 - 6}px`; cal.append(b); return b; }
+
+const CHAOS = [[0, 0, 1, "Rapat dadakan!"], [0, 2, 2, "Balas klien SEKARANG"], [1, 0, 1, "Revisi cepat"], [1, 1, 2, "Grup kantor 99+"], [2, 1, 1, "Rapat dadakan!"], [2, 3, 2, "Surel mendesak"], [3, 0, 2, "Telepon atasan"], [3, 4, 1, "Laporan? besok saja"], [4, 0, 1, "Rapat lagi"], [4, 2, 3, "Kejar tenggat"], [1, 4, 2, "Pesan masuk"], [0, 5, 2, "Lembur?"]].map(([d, r, l, t]) => block("chaos", d, r, l, t));
+const ROCKS = [[0, 0, 2, "Batu: laporan klien"], [2, 0, 2, "Batu: rencana Q1"], [3, 3, 2, "Batu: pelatihan tim"]].map(([d, r, l, t]) => ({ b: block("rock", d, r, l, t), r }));
+const PEBS = [[0, 3, 1, "Rapat tim"], [1, 1, 1, "Rapat klien"], [1, 3, 2, "Surel & pesan"], [2, 4, 1, "Rapat"], [3, 0, 1, "Surel"], [4, 1, 1, "Rapat"], [4, 4, 1, "Cek akhir"]].map(([d, r, l, t]) => block("peb", d, r, l, t));
+const BUFS = [[0, 5, 1], [1, 6, 1], [2, 6, 1], [3, 6, 1], [4, 2, 2]].map(([d, r, l]) => block("buf", d, r, l, "cadangan"));
+
+const PARTS = [["Kosongkan kepala", 15, "#8a7bc0"], ["Tinjau minggu lalu", 10, "#c7a23a"], ["Pilih 3 batu besar", 10, "#2f3e5c"], ["Pasang di kalender", 20, "#5b8a72"], ["Cek akhir", 5, "#c4553d"]];
+// Menit ritual (0–60) mengikuti adegan: dump → 25, rocks → 35, buffer → 60.
+function minute(t) {
+  let m = 0;
+  if (B.dump) m += 25 * prog(t, B.dump.start + 0.3, B.dump.start + B.dump.dur - 0.3);
+  if (B.rocks) m += 10 * prog(t, B.rocks.start + 0.3, B.rocks.start + B.rocks.dur * 0.5);
+  if (B.buffer) m += 25 * prog(t, B.rocks.start + B.rocks.dur * 0.5, B.buffer.start + B.buffer.dur - 0.5);
+  return m;
+}
+
+const panels = {};
+function panel(type, build) { if (!B[type]) return; const p = el("div", "panel"); $("stage").append(p); panels[type] = { p, anim: build(p) }; }
+panel("hook", (p) => {
+  const k = el("div", "kick", "Minggu Tari, sebelum"), b = el("div", "big", "Diatur oleh siapa pun yang mengirim pesan paling cepat."), s = el("div", "sub", "Pekerjaan penting: terus tergeser ke minggu depan.");
+  p.append(k, b, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.3, 1.0), 20); fade(s, prog(t, d * 0.55, d * 0.55 + 0.5), 12); };
+});
+const DUMP = ["laporan klien (Jumat!)", "rencana Q1", "pelatihan anak baru", "bayar listrik", "hadiah ulang tahun Ibu", "balas Pak Arif"];
+panel("dump", (p) => {
+  const k = el("div", "kick", "1 · Kosongkan kepala"), b = el("div", "big", "Tulis semua yang mengganjal.");
+  const sh = el("div", "sheet"); const ls = DUMP.map((x) => { const r = el("div", "", `— ${x}`); sh.append(r); return r; });
+  p.append(k, b, sh);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.2, 0.8), 16); ls.forEach((r, i) => { fade(r, prog(t, 0.9 + i * 0.55, 1.3 + i * 0.55), 10, "X"); }); };
+});
+panel("rocks", (p) => {
+  const k = el("div", "kick", "3 · Batu besar dulu"), b = el("div", "big", "Tiga pekerjaan terpenting, dipasang paling awal."), s = el("div", "sub", "Di pagi hari, sebelum rapat dan pesan datang. Kerikil mengisi celahnya.");
+  p.append(k, b, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.2, 0.8), 16); fade(s, prog(t, d * 0.55, d * 0.55 + 0.5), 12); };
+});
+panel("buffer", (p) => {
+  const k = el("div", "kick", "4 · Jujur pada waktu"), b = el("div", "big", "Sisakan ±20% kosong.");
+  const m = el("div", "math");
+  const a = el("div"); a.append(el("span", "", "Perkiraan 3 jam × 1,5 → "), el("b", "", "4,5 jam"));
+  const c = el("div"); c.append(el("span", "", "40 jam − 12 jam rapat − 20% → "), el("b", "", "±22 jam fokus"));
+  m.append(a, c); p.append(k, b, m);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.2, 0.8), 16); fade(a, prog(t, d * 0.4, d * 0.4 + 0.5), 14, "X"); fade(c, prog(t, d * 0.62, d * 0.62 + 0.5), 14, "X"); };
+});
+panel("end", (p) => {
+  const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";
+  const tx = el("div"); tx.append(el("div", "kick", "Ebook SelfGrow · 6 bab"), el("h1", "", "Seminggu dalam Satu Jam"), el("div", "btn", "Baca Bab 1, gratis"));
+  const br = el("div", "brand"); const im = el("img"); im.src = "mark.png"; im.alt = ""; br.append(im, el("span", "", "SelfGrow")); tx.append(br);
+  w.append(cv, tx); p.append(w);
+  return (t) => { fade(cv, prog(t, 0.2, 0.9), 30); fade(tx, prog(t, 0.5, 1.2), 16, "X"); };
+});
+
+window.render = (t) => {
+  for (const b of T) {
+    const pn = panels[b.type]; if (!pn) continue;
+    const last = b === T[T.length - 1];
+    const inn = easeInOut(prog(t, b.start - 0.2, b.start + 0.25));
+    const out = last ? 1 : 1 - easeInOut(prog(t, b.start + b.dur - 0.25, b.start + b.dur + 0.2));
+    const o = Math.min(inn, out);
+    pn.p.style.opacity = o;
+    if (o > 0) pn.anim(t - b.start, b.dur);
+  }
+  // Blok kacau: bermunculan di adegan pembuka, lalu tersapu ke kanan (ke catatan) di adegan "kosongkan kepala".
+  CHAOS.forEach((b, i) => {
+    const tin = B.hook ? at("hook", 0.05 + (i / CHAOS.length) * 0.75) : 0;
+    const pin = easeOut(prog(t, tin, tin + 0.25));
+    const tout = B.dump ? at("dump", 0.12 + (i / CHAOS.length) * 0.5) : 1e9;
+    const po = easeInOut(prog(t, tout, tout + 0.6));
+    b.style.opacity = pin * (1 - po);
+    b.style.transform = `translate(${po * 420}px, ${-po * 60}px) scale(${(0.8 + 0.2 * pin) * (1 - 0.5 * po)}) rotate(${(i % 2 ? 1 : -1) * 3 * pin}deg)`;
+  });
+  ROCKS.forEach(({ b }, i) => {
+    const t0 = B.rocks ? at("rocks", 0.12 + i * 0.12) : 1e9;
+    const k = prog(t, t0, t0 + 0.6);
+    b.style.opacity = k > 0 ? 1 : 0;
+    b.style.transform = `translateY(${-(1 - bounceOut(k)) * 220}px)`;
+  });
+  PEBS.forEach((b, i) => { const t0 = B.rocks ? at("rocks", 0.6 + i * 0.05) : 1e9; fade(b, prog(t, t0, t0 + 0.4), 10); });
+  BUFS.forEach((b, i) => { const t0 = B.buffer ? at("buffer", 0.12 + i * 0.07) : 1e9; const k = easeOut(prog(t, t0, t0 + 0.4)); b.style.opacity = k; b.style.transform = `scale(${0.9 + 0.1 * k})`; });
+
+  const m = minute(t);
+  let acc = 0;
+  const stops = PARTS.map(([, len, c]) => { const a = acc; acc += len; const e = Math.min(m, acc); return e > a ? `${c} ${(a / 60) * 360}deg ${(e / 60) * 360}deg` : null; }).filter(Boolean);
+  $("rclock").style.background = `conic-gradient(${[...stops, `#e9e3d4 ${(m / 60) * 360}deg 360deg`].join(",")})`;
+  let part = "belum dimulai"; acc = 0;
+  for (const [n, len] of PARTS) { if (m > acc + 0.01) part = `${Math.round(m)} mnt · ${n}`; acc += len; }
+  if (m >= 59.5) part = "60 mnt · selesai";
+  $("rpart").textContent = part;
+
+  const cb = T.find((b) => t >= b.start && t < b.start + b.dur);
+  const line = D.captions && cb ? cb.say : null;
+  const cap = $("cap");
+  if (cap.dataset.line !== (line ?? "")) { cap.dataset.line = line ?? ""; cap.replaceChildren(); if (line) cap.append(el("span", "", line)); }
+};
+render(0);
+</script>
+</body>
+</html>

@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { GULA_FIGURE_CSS, GULA_FIGURES } from "./books/gula-figures.mjs";
 import { HARGA_FIGURE_CSS, HARGA_FIGURES } from "./books/harga-figures.mjs";
+import { MINGGU_FIGURE_CSS, MINGGU_FIGURES } from "./books/minggu-figures.mjs";
 import { NEGO_FIGURE_CSS, NEGO_FIGURES } from "./books/nego-figures.mjs";
 import { OVERTHINKING_FIGURE_CSS, OVERTHINKING_FIGURES } from "./books/overthinking-figures.mjs";
 import { FIGURE_CSS, FIGURES } from "./books/paylater-figures.mjs";
@@ -35,6 +36,7 @@ const SETS = {
   "kurangi-gula-tanpa-menderita": { figures: GULA_FIGURES, css: GULA_FIGURE_CSS },
   "berani-nego-gaji": { figures: NEGO_FIGURES, css: NEGO_FIGURE_CSS },
   "mengasuh-tanpa-teriak": { figures: TERIAK_FIGURES, css: TERIAK_FIGURE_CSS },
+  "seminggu-dalam-satu-jam": { figures: MINGGU_FIGURES, css: MINGGU_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,

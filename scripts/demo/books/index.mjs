@@ -4,6 +4,8 @@ import { GULA_1 } from "./gula-1.mjs";
 import { GULA_FIGURES } from "./gula-figures.mjs";
 import { HARGA_1 } from "./harga-1.mjs";
 import { HARGA_FIGURES } from "./harga-figures.mjs";
+import { MINGGU_1 } from "./minggu-1.mjs";
+import { MINGGU_FIGURES } from "./minggu-figures.mjs";
 import { NEGO_1 } from "./nego-1.mjs";
 import { NEGO_FIGURES } from "./nego-figures.mjs";
 import { OVERTHINKING_1 } from "./overthinking-1.mjs";
@@ -53,5 +55,9 @@ export const FULL_BOOKS = {
   "mengasuh-tanpa-teriak": {
     chapters: TERIAK_1,
     figures: TERIAK_FIGURES,
+  },
+  "seminggu-dalam-satu-jam": {
+    chapters: MINGGU_1,
+    figures: MINGGU_FIGURES,
   },
 };
