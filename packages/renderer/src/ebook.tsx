@@ -1,4 +1,4 @@
-import type { EbookDoc, EbookMark, EbookNode } from "@selfgrow/shared";
+import { CALLOUT_LABELS, type EbookDoc, type EbookMark, type EbookNode } from "@selfgrow/shared";
 import type { ReactNode } from "react";
 import { tableLayout } from "./table";
 
@@ -81,8 +81,17 @@ function renderNode(node: EbookNode, opts: RenderOptions, key: string): ReactNod
       );
     case "listItem":
       return <li key={key}>{renderNodes(node.content, opts, key)}</li>;
-    case "blockquote":
-      return <blockquote key={key}>{renderNodes(node.content, opts, key)}</blockquote>;
+    case "blockquote": {
+      const cite = node.attrs?.cite?.trim();
+      if (!cite) return <blockquote key={key}>{renderNodes(node.content, opts, key)}</blockquote>;
+      // Kutipan bertokoh (D40): nama tokoh tampil di bawah kutipan.
+      return (
+        <figure key={key} className="quote">
+          <blockquote>{renderNodes(node.content, opts, key)}</blockquote>
+          <figcaption>{cite}</figcaption>
+        </figure>
+      );
+    }
     case "horizontalRule":
       return <hr key={key} />;
     case "hardBreak":
@@ -151,7 +160,15 @@ function renderNode(node: EbookNode, opts: RenderOptions, key: string): ReactNod
     }
     case "callout":
       return (
-        <aside key={key} className={`callout callout-${node.attrs.variant}`} role="note">
+        <aside
+          key={key}
+          className={`callout callout-${node.attrs.variant}`}
+          role="note"
+          aria-label={CALLOUT_LABELS[node.attrs.variant]}
+        >
+          <span className="callout-label" aria-hidden="true">
+            {CALLOUT_LABELS[node.attrs.variant]}
+          </span>
           {renderNodes(node.content, opts, key)}
         </aside>
       );

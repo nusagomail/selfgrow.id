@@ -397,3 +397,90 @@
     content: none;
   }
 }
+
+/* Kotak unsur buku (D40): setiap varian punya warna dan label sendiri. */
+.book-flow .callout {
+  --c: var(--book-accent);
+  border-left-color: var(--c);
+  background: color-mix(in srgb, var(--c) 8%, transparent);
+}
+.book-flow .callout-info {
+  --c: #2a6fb0;
+}
+.book-flow .callout-warning {
+  --c: #c0602b;
+}
+.book-flow .callout-reflect {
+  --c: #7a55c2;
+  border-style: dashed;
+  border-left-style: solid;
+}
+.book-flow .callout-fact {
+  --c: #1f5f9e;
+}
+.book-flow .callout-summary {
+  --c: #c88a04;
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+}
+.book-flow .callout-exercise {
+  --c: #0f7a70;
+}
+.book[data-theme="night"] .book-flow .callout {
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+}
+.book-flow .callout-label {
+  display: block;
+  margin-bottom: 0.35em;
+  font-size: 0.7em;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c);
+}
+.book[data-theme="night"] .book-flow .callout-label {
+  color: color-mix(in srgb, var(--c) 55%, white);
+}
+/* Sumber di kotak Fakta: paragraf terakhir (bila lebih dari satu) tampil kecil. */
+.book-flow .callout-fact p:last-child:not(:nth-child(2)) {
+  font-size: 0.78em;
+  color: var(--book-muted);
+}
+.book-flow .callout-summary li,
+.book-flow .callout-summary p {
+  font-weight: 600;
+}
+
+/* Kutipan bertokoh (D40). */
+.book-flow figure.quote {
+  margin: 1.4em 0.4em;
+  text-align: center;
+}
+.book-flow figure.quote blockquote {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  color: var(--book-ink);
+  font-size: 1.12em;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: center;
+}
+.book-flow figure.quote blockquote::before {
+  content: "\201C";
+  display: block;
+  font-size: 2.4em;
+  line-height: 0.6;
+  height: 0.45em;
+  color: var(--book-accent);
+}
+.book-flow figure.quote figcaption {
+  margin-top: 0.5em;
+  font-size: 0.82em;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--book-muted);
+}
+.book-flow figure.quote figcaption::before {
+  content: "— ";
+}

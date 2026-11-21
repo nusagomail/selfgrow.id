@@ -272,6 +272,72 @@ textarea {
 .callout-warning {
   background: color-mix(in srgb, var(--danger) 10%, transparent);
 }
+/* Varian kotak & kutipan bertokoh di editor Studio dan halaman non-buku (D40). */
+.callout-label {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.callout-reflect {
+  background: color-mix(in srgb, #7a55c2 10%, transparent);
+  border-style: dashed;
+}
+.callout-fact {
+  background: color-mix(in srgb, #1f5f9e 10%, transparent);
+}
+.callout-summary {
+  background: color-mix(in srgb, #c88a04 14%, transparent);
+}
+.callout-exercise {
+  background: color-mix(in srgb, #0f7a70 10%, transparent);
+}
+.editor-body .callout::before {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.editor-body .callout-tip::before {
+  content: "Tips";
+}
+.editor-body .callout-info::before {
+  content: "Info";
+}
+.editor-body .callout-warning::before {
+  content: "Perhatian";
+}
+.editor-body .callout-reflect::before {
+  content: "Renungkan";
+}
+.editor-body .callout-fact::before {
+  content: "Fakta (tulis sumber di baris terakhir)";
+}
+.editor-body .callout-summary::before {
+  content: "Intisari";
+}
+.editor-body .callout-exercise::before {
+  content: "Latihan";
+}
+figure.quote {
+  margin: 16px 0;
+}
+figure.quote figcaption::before {
+  content: "— ";
+}
+.editor-body blockquote[data-cite]::after {
+  content: "— " attr(data-cite);
+  display: block;
+  margin-top: 4px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
 .no-select {
   user-select: none;
   -webkit-user-select: none;

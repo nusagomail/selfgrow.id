@@ -4,7 +4,7 @@
  * `@selfgrow/renderer`: hanya node yang dikenal, tautan & gambar diperiksa ulang, tanpa HTML mentah.
  */
 import { tableLayout } from "@selfgrow/renderer/table";
-import type { EbookNode } from "@selfgrow/shared";
+import { CALLOUT_LABELS, type EbookNode } from "@selfgrow/shared";
 import Marked from "./Marked.astro";
 
 interface Props {
@@ -39,7 +39,11 @@ const imgSrc = (src: string) =>
     ) : n.type === "listItem" ? (
       <li><Self nodes={n.content} /></li>
     ) : n.type === "blockquote" ? (
-      <blockquote><Self nodes={n.content} /></blockquote>
+      n.attrs?.cite?.trim() ? (
+        <figure class="quote"><blockquote><Self nodes={n.content} /></blockquote><figcaption>{n.attrs.cite.trim()}</figcaption></figure>
+      ) : (
+        <blockquote><Self nodes={n.content} /></blockquote>
+      )
     ) : n.type === "horizontalRule" ? (
       <hr />
     ) : n.type === "hardBreak" ? (
@@ -82,7 +86,7 @@ const imgSrc = (src: string) =>
     ) : n.type === "tableCell" ? (
       <td colspan={n.attrs?.colspan} rowspan={n.attrs?.rowspan}><Self nodes={n.content} /></td>
     ) : n.type === "callout" ? (
-      <aside class={`callout callout-${n.attrs.variant}`} role="note"><Self nodes={n.content} /></aside>
+      <aside class={`callout callout-${n.attrs.variant}`} role="note" aria-label={CALLOUT_LABELS[n.attrs.variant]}><span class="callout-label" aria-hidden="true">{CALLOUT_LABELS[n.attrs.variant]}</span><Self nodes={n.content} /></aside>
     ) : null,
   )
 }

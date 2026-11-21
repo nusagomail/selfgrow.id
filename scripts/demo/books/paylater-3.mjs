@@ -19,6 +19,12 @@ export const PAYLATER_3 = [
       "Yang perlu kamu tahu: ada aturan perlindungan konsumen dari OJK yang mengatur cara penagihan oleh lembaga resmi. Penagihan tidak boleh dilakukan dengan ancaman, kekerasan, kata-kata yang mempermalukan, atau menghubungi orang lain yang tidak terkait untuk menekanmu. Kamu tetap wajib membayar utangmu, tapi kamu juga berhak diperlakukan dengan layak.",
       ["h", "Jangan menghilang"],
       "Reaksi paling alami saat telat bayar adalah menghindar: tidak mengangkat telepon, tidak membaca pesan, berharap masalahnya reda sendiri. Sayangnya, yang terjadi justru sebaliknya. Denda bertambah, penagihan semakin sering, dan pilihan penyelesaian semakin sedikit.",
+      [
+        "quote",
+        "Ada hal-hal yang berada dalam kendali kita, dan ada yang tidak.",
+        "Epiktetos, Enchiridion",
+      ],
+      "Filsuf Stoa itu mengajarkan untuk memisahkan dua hal tersebut. Kamu tidak bisa mengendalikan denda yang sudah terjadi atau sikap penagih. Yang bisa kamu kendalikan: menghubungi pemberi pinjaman lebih dulu, berkata jujur, dan membayar apa yang sanggup kamu bayar. Fokus pada bagian itu, dan beban di kepala akan terasa lebih ringan.",
       "Lembaga keuangan resmi umumnya lebih terbuka bernegosiasi dengan nasabah yang datang lebih dulu, sebelum menunggak berbulan-bulan. Dari sisi mereka, nasabah yang membayar sedikit demi sedikit jauh lebih baik daripada nasabah yang menghilang.",
       ["h", "Cara menghubungi dan bernegosiasi"],
       "Hubungi layanan pelanggan resmi lewat aplikasi atau nomor yang tertera di situs resminya. Jelaskan kondisimu dengan jujur dan singkat. Tanyakan pilihan yang tersedia, misalnya perpanjangan tenor, keringanan denda, atau penjadwalan ulang pembayaran. Istilah resminya sering disebut restrukturisasi.",
@@ -52,14 +58,29 @@ export const PAYLATER_3 = [
       ["h", "Merawat diri di tengah tekanan"],
       "Utang yang menumpuk bukan hanya masalah keuangan. Ia menguras pikiran dan perasaan. Kalau kamu sulit tidur, kehilangan nafsu makan, atau terus-menerus merasa tidak berharga, itu tanda kamu butuh dukungan. Bicaralah dengan orang yang kamu percaya. Kalau perasaan itu sangat berat, mencari bantuan tenaga profesional seperti psikolog adalah langkah yang berani, bukan tanda lemah.",
       ["quote", "Utangmu adalah sesuatu yang kamu punya, bukan siapa dirimu."],
-      ["h3", "Tugas Bab 8"],
       [
-        "ol",
+        "reflect",
+        [
+          "Apa yang selama ini membuatmu menghindar dari tagihan: malu, takut, atau tidak tahu harus berkata apa?",
+          "Siapa yang bisa kamu hubungi hari ini untuk mulai menyelesaikannya?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Jangan menghilang. Pemberi pinjaman resmi lebih terbuka pada nasabah yang datang lebih dulu.",
+          "Minta kesepakatan tertulis dan jangan menutup utang dengan utang baru.",
+          "Satu tanda pinjol ilegal saja sudah cukup untuk tidak meminjam.",
+        ],
+      ],
+      [
+        "exercise",
         [
           "Kalau ada yang telat, hubungi layanan resminya minggu ini dengan contoh pesan di atas.",
           "Pastikan semua pemberi pinjamanmu terdaftar di OJK.",
           "Simpan nomor Kontak OJK 157 di ponselmu.",
         ],
+        "Tugas Bab 8",
       ],
     ],
   },
@@ -80,6 +101,7 @@ export const PAYLATER_3 = [
         ],
       ],
       "Perhatikan syarat ketiga. Paylater yang sehat dipakai oleh orang yang sebenarnya mampu membayar lunas. Kalau kamu memakai paylater karena tidak punya uang, itu bukan mengatur arus kas, itu berutang.",
+      "Ingat temuan di Bab 3: rasa berat saat membayar adalah rem alami otak kita. Paylater yang sehat mengembalikan rem itu. Kamu baru memakainya setelah memutuskan dengan sadar bahwa kamu sanggup membayar lunas, bukan karena tombolnya ada di depan mata.",
       ["h", "Empat pertanyaan sebelum menekan tombol"],
       'Nadia menempelkan empat pertanyaan ini di layar kunci ponselnya selama berbulan-bulan. Setiap kali tergoda, dia harus menjawab keempatnya dengan "ya".',
       ["img", "empat-pertanyaan", 'Satu saja jawaban "tidak" sudah cukup untuk berhenti.'],
@@ -104,17 +126,32 @@ export const PAYLATER_3 = [
       "Ingat rekening Darurat Kecil yang kamu buka di Bab 4? Setelah semua utang lunas, inilah saatnya membesarkannya. Arahkan uang yang tadinya untuk cicilan ke rekening ini. Targetnya tiga kali pengeluaran bulanan untuk yang masih lajang dengan pekerjaan tetap, dan lebih besar kalau kamu punya tanggungan atau penghasilan tidak menentu.",
       'Dana darurat adalah alasan terkuat kenapa kamu tidak akan kembali ke paylater. Saat kejadian tak terduga datang, dan pasti akan datang, kamu punya jawaban selain "bayar nanti".',
       [
+        "reflect",
+        [
+          "Untuk apa saja kamu benar-benar akan memakai paylater lagi, kalau memang ada?",
+          "Pagar mana yang paling kamu butuhkan supaya tidak kembali ke lingkaran lama?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Paylater yang sehat dipakai oleh orang yang sebenarnya mampu membayar lunas.",
+          'Empat pertanyaan sebelum menekan tombol; satu jawaban "tidak" berarti berhenti.',
+          "Uang bekas cicilan dialihkan ke dana darurat, bukan ke cicilan baru.",
+        ],
+      ],
+      [
         "tip",
         "Teruskan kebiasaan yang sudah terbentuk. Selama berbulan-bulan kamu sudah hidup tanpa uang cicilan itu. Pindahkan jumlah yang sama ke tabungan, dan kamu tidak akan merasa kehilangan apa pun.",
       ],
-      ["h3", "Tugas Bab 9"],
       [
-        "ol",
+        "exercise",
         [
           "Tulis empat pertanyaan di atas dan jadikan layar kunci ponselmu.",
           "Tentukan pagar mana saja yang akan kamu pasang.",
           "Tulis rencana pembagian untuk kenaikan gajimu berikutnya.",
         ],
+        "Tugas Bab 9",
       ],
     ],
   },
@@ -185,7 +222,35 @@ export const PAYLATER_3 = [
       ["h", "Untukmu yang baru memulai"],
       "Mungkin angkamu lebih besar dari angka Nadia. Mungkin jalanmu lebih panjang. Mungkin kamu akan tergelincir sekali dua kali di tengah jalan. Itu semua wajar. Yang membedakan orang yang berhasil bukan bulan-bulan tanpa kesalahan, tapi kemampuan untuk kembali ke jalur di bulan berikutnya.",
       "Mulailah dari yang paling kecil: matikan satu fitur, buka satu rekening, catat satu pengeluaran. Lalu lakukan lagi besok.",
+      ["quote", "Perjalanan seribu mil dimulai dari satu langkah.", "Laozi, Tao Te Ching"],
       "Terima kasih sudah membaca sampai akhir. Kamu sudah melakukan sesuatu yang tidak dilakukan kebanyakan orang: berhenti, melihat, dan memutuskan untuk berubah.",
+      [
+        "reflect",
+        [
+          "Ulangi tes delapan pertanyaan di Bab 1. Berapa skormu sekarang?",
+          "Apa satu hal yang paling berubah dalam caramu memandang uang setelah membaca buku ini?",
+          "Langkah kecil apa yang akan kamu lakukan besok pagi?",
+        ],
+      ],
+      [
+        "summary",
+        [
+          "Berhenti menggali lubang sebelum mulai melunasi.",
+          "Lihat semua utang di satu halaman; yang samar selalu lebih menakutkan.",
+          "Lunasi dengan strategi, rayakan setiap kemenangan kecil.",
+          "Pasang pagar dan bangun dana darurat supaya tidak kembali.",
+        ],
+      ],
+      ["h", "Bacaan lebih lanjut"],
+      [
+        "ul",
+        [
+          "Morgan Housel, **The Psychology of Money** (2020): tentang perilaku, bukan rumus, dalam mengelola uang.",
+          "Richard Thaler, **Misbehaving** (2015): kisah lahirnya ekonomi perilaku.",
+          "Sendhil Mullainathan & Eldar Shafir, **Scarcity** (2013): bagaimana kekurangan memengaruhi cara kita berpikir.",
+          "Henry Manampiring, **Filosofi Teras** (2018): stoisisme untuk kehidupan sehari-hari di Indonesia.",
+        ],
+      ],
       [
         "info",
         "Isi buku ini bersifat edukasi umum. Biaya, bunga, dan aturan setiap layanan bisa berbeda dan berubah dari waktu ke waktu. Selalu baca syarat resmi sebelum menyetujui, dan pertimbangkan berkonsultasi dengan perencana keuangan untuk keputusan besar.",

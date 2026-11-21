@@ -44,7 +44,33 @@ const markSchema = z.discriminatedUnion("type", [
 ]);
 export type EbookMark = z.infer<typeof markSchema>;
 
-export const CALLOUT_VARIANTS = ["tip", "info", "warning"] as const;
+/**
+ * Varian kotak (D40): tips, info, perhatian, ditambah unsur buku pengembangan diri:
+ * renungkan (pertanyaan refleksi), fakta (data/sains bersumber), intisari bab, latihan.
+ */
+export const CALLOUT_VARIANTS = [
+  "tip",
+  "info",
+  "warning",
+  "reflect",
+  "fact",
+  "summary",
+  "exercise",
+] as const;
+
+/** Label tampilan tiap varian kotak (Bahasa Indonesia). */
+export const CALLOUT_LABELS: Record<(typeof CALLOUT_VARIANTS)[number], string> = {
+  tip: "Tips",
+  info: "Info",
+  warning: "Perhatian",
+  reflect: "Renungkan",
+  fact: "Fakta",
+  summary: "Intisari",
+  exercise: "Latihan",
+};
+
+/** Batas panjang nama tokoh pada kutipan. */
+const MAX_CITE = 200;
 
 export type EbookNode =
   | { type: "text"; text: string; marks?: EbookMark[] }
@@ -53,7 +79,7 @@ export type EbookNode =
   | { type: "bulletList"; content: EbookNode[] }
   | { type: "orderedList"; attrs?: { start?: number }; content: EbookNode[] }
   | { type: "listItem"; content: EbookNode[] }
-  | { type: "blockquote"; content: EbookNode[] }
+  | { type: "blockquote"; attrs?: { cite?: string | null }; content: EbookNode[] }
   | { type: "horizontalRule" }
   | { type: "hardBreak" }
   | { type: "image"; attrs: { src: string; alt?: string | null; title?: string | null } }
@@ -92,7 +118,12 @@ export const ebookNodeSchema: z.ZodType<EbookNode> = z.lazy(() =>
       content: z.array(ebookNodeSchema),
     }),
     z.object({ type: z.literal("listItem"), content: z.array(ebookNodeSchema) }),
-    z.object({ type: z.literal("blockquote"), content: z.array(ebookNodeSchema) }),
+    z.object({
+      type: z.literal("blockquote"),
+      // Nama tokoh kutipan (opsional, D40).
+      attrs: z.object({ cite: z.string().max(MAX_CITE).nullish() }).optional(),
+      content: z.array(ebookNodeSchema),
+    }),
     z.object({ type: z.literal("horizontalRule") }),
     z.object({ type: z.literal("hardBreak") }),
     z.object({
