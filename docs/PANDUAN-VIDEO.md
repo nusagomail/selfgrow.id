@@ -37,6 +37,7 @@ Selebihnya bebas.
 | `features` | 2–4 kotak ikon: apa saja yang ada di dalam buku | Menonjolkan kuis, kalkulator, latihan, infografis |
 | `quote` | Satu kalimat kuat dari buku atau tokoh (+ nama) | Puncak emosi sebelum ajakan |
 | `chat` | Layar ponsel dengan pesan yang muncul bergiliran (ada animasi "sedang mengetik") + judul di samping | Buku komunikasi dan relasi; menunjukkan percakapan sebelum dan sesudah |
+| `breath` | Lingkaran yang mengembang–mengempis (tarik, tahan, hembus) + judul | Buku kesehatan mental, tidur, dan ketenangan; mengajak penonton merasakan isi buku |
 | `cta` | Kalimat pendek + tombol + logo | Selalu di akhir |
 
 Setiap adegan boleh memilih latar: `dark` (hijau tua), `paper` (krem), atau `night` (biru malam).
@@ -53,6 +54,7 @@ tetap muncul di setiap video.
 - **Kebiasaan**: question → cover → compare (pagi biasanya vs pagi baru) → stages → cta.
 - **Kesehatan mental**: cover (latar `night`) → quote → list (lembut, tanpa ✕) → features → cta. Tanpa angka mengejutkan.
 - **Karier**: bigNumber → cover → story → features → cta.
+- **Kesehatan mental (Keluar dari Lingkaran Overthinking)**: question (malam) → cover → quote → list → breath → cta, tema biru malam, musik tenang lambat, narasi lembut. Tanpa angka besar di awal.
 - **Komunikasi (Berani Bilang Tidak)**: chat (jawaban lama) → cover → bigNumber → list tokoh → chat (jawaban baru) → features → cta, dengan tema ungu-koral.
 
 ---

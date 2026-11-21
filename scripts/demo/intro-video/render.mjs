@@ -18,6 +18,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { writeMusic } from "./music.mjs";
+import { OVERTHINKING_INTRO } from "./overthinking.mjs";
 import { PAYLATER_INTRO } from "./paylater.mjs";
 import { SCROLL_INTRO } from "./scroll.mjs";
 import { TIDAK_INTRO } from "./tidak.mjs";
@@ -30,7 +31,9 @@ const FPS = 30;
 // Render satu video saja: --only <slug>
 const onlyArg = process.argv.indexOf("--only");
 const ONLY = onlyArg >= 0 ? process.argv[onlyArg + 1] : null;
-const VIDEOS = [PAYLATER_INTRO, SCROLL_INTRO, TIDAK_INTRO].filter((v) => !ONLY || v.slug === ONLY);
+const VIDEOS = [PAYLATER_INTRO, SCROLL_INTRO, TIDAK_INTRO, OVERTHINKING_INTRO].filter(
+  (v) => !ONLY || v.slug === ONLY,
+);
 const VOICE = { languageCode: "id-ID", name: "id-ID-Wavenet-A" };
 /** Jeda sebelum narasi mulai di tiap adegan, dan jeda setelahnya sebelum adegan berganti. */
 const LEAD = 0.6;

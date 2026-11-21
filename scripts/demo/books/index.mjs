@@ -1,4 +1,7 @@
 /** Ebook demo yang ditulis lengkap (slug → bab + infografis). Sisanya di katalog berisi kosong. */
+
+import { OVERTHINKING_1 } from "./overthinking-1.mjs";
+import { OVERTHINKING_FIGURES } from "./overthinking-figures.mjs";
 import { PAYLATER_1 } from "./paylater-1.mjs";
 import { PAYLATER_2 } from "./paylater-2.mjs";
 import { PAYLATER_3 } from "./paylater-3.mjs";
@@ -22,5 +25,9 @@ export const FULL_BOOKS = {
   "berani-bilang-tidak": {
     chapters: [...TIDAK_1, ...TIDAK_2],
     figures: TIDAK_FIGURES,
+  },
+  "keluar-dari-lingkaran-overthinking": {
+    chapters: OVERTHINKING_1,
+    figures: OVERTHINKING_FIGURES,
   },
 };
