@@ -4,6 +4,8 @@ import { GULA_1 } from "./gula-1.mjs";
 import { GULA_FIGURES } from "./gula-figures.mjs";
 import { HARGA_1 } from "./harga-1.mjs";
 import { HARGA_FIGURES } from "./harga-figures.mjs";
+import { NEGO_1 } from "./nego-1.mjs";
+import { NEGO_FIGURES } from "./nego-figures.mjs";
 import { OVERTHINKING_1 } from "./overthinking-1.mjs";
 import { OVERTHINKING_FIGURES } from "./overthinking-figures.mjs";
 import { PAYLATER_1 } from "./paylater-1.mjs";
@@ -41,5 +43,9 @@ export const FULL_BOOKS = {
   "kurangi-gula-tanpa-menderita": {
     chapters: GULA_1,
     figures: GULA_FIGURES,
+  },
+  "berani-nego-gaji": {
+    chapters: NEGO_1,
+    figures: NEGO_FIGURES,
   },
 };

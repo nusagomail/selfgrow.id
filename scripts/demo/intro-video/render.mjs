@@ -20,6 +20,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { GULA_INTRO } from "./gula.mjs";
 import { HARGA_INTRO } from "./harga.mjs";
 import { writeMusic } from "./music.mjs";
+import { NEGO_INTRO } from "./nego.mjs";
 import { OVERTHINKING_INTRO } from "./overthinking.mjs";
 import { PAYLATER_INTRO } from "./paylater.mjs";
 import { SCROLL_INTRO } from "./scroll.mjs";
@@ -40,6 +41,7 @@ const VIDEOS = [
   OVERTHINKING_INTRO,
   HARGA_INTRO,
   GULA_INTRO,
+  NEGO_INTRO,
 ].filter((v) => !ONLY || v.slug === ONLY);
 const VOICE = { languageCode: "id-ID", name: "id-ID-Wavenet-A" };
 /** Jeda sebelum narasi mulai di tiap adegan, dan jeda setelahnya sebelum adegan berganti. */
@@ -62,6 +64,10 @@ copyFileSync(
   join(work, "mono.woff2"),
 );
 copyFileSync(join(here, "../fonts/oswald-latin-600-normal.woff2"), join(work, "label.woff2"));
+copyFileSync(
+  join(here, "../fonts/dm-serif-display-latin-400-normal.woff2"),
+  join(work, "serif.woff2"),
+);
 const outDir = join(here, "../videos");
 mkdirSync(outDir, { recursive: true });
 

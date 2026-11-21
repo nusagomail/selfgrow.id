@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<!--
+  Video pengantar "Berani Nego Gaji" (D46): dirancang khusus. Satu dunia sepanjang video: papan
+  catur dan jam catur di atas meja arang. Jam menghitung sepuluh detik Raka menerima tawaran,
+  bidak bergerak untuk lima langkah negosiasi, jam berganti menjadi hitungan "diam", dan bidak
+  emas menutup papan dengan hasil akhir. Kontrak sama: DURATION, TIMELINE, render(t).
+-->
+<style>
+@font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: SgSerif; src: url(serif.woff2) format("woff2"); font-weight: 400; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 960px; height: 540px; overflow: hidden; }
+body { font-family: Jakarta, sans-serif; color: #f6f1e4; background: #1d1b18; }
+#stage { position: absolute; inset: 0; background: radial-gradient(120% 90% at 20% 30%, #3a332a 0%, #1d1b18 60%, #12110f 100%); }
+#board { position: absolute; left: 62px; top: 132px; width: 288px; height: 288px; display: grid; grid-template-columns: repeat(8, 1fr); box-shadow: 0 24px 50px rgba(0,0,0,.55); border: 6px solid #4a3f30; }
+.sq { position: relative; }
+.sq.l { background: #efe6cf; }
+.sq.d { background: #7a6248; }
+.pc { position: absolute; width: 36px; height: 36px; font-size: 34px; line-height: 36px; text-align: center; color: #c8a24a; text-shadow: 0 2px 0 #3a2c14, 0 4px 8px rgba(0,0,0,.5); transition: none; }
+.chip { position: absolute; padding: 3px 7px; border-radius: 4px; background: #c8a24a; color: #1d1b18; font-weight: 800; font-size: 12px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
+#clock { position: absolute; left: 102px; top: 38px; width: 208px; height: 74px; background: #4a3f30; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; box-shadow: 0 12px 24px rgba(0,0,0,.45); }
+#clock div { background: #12110f; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; font-weight: 800; font-size: 26px; }
+#clock .on { color: #ff8f73; }
+#clock small { position: absolute; top: -18px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #a79f8d; }
+.panel { position: absolute; left: 420px; right: 46px; top: 50px; bottom: 110px; opacity: 0; }
+.kick { font-size: 13px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #c8a24a; }
+.big { font-family: SgSerif, serif; font-size: 50px; line-height: 1.05; margin-top: 10px; }
+.sub { font-size: 20px; line-height: 1.45; margin-top: 16px; color: #d8d0bd; }
+.bars { display: flex; align-items: flex-end; gap: 14px; height: 210px; margin-top: 20px; border-bottom: 2px solid #a79f8d; }
+.bar { flex: 1; background: linear-gradient(#e0c06a, #8a6a1c); border-radius: 4px 4px 0 0; position: relative; }
+.bar span { position: absolute; bottom: -24px; left: 0; right: 0; text-align: center; font-size: 13px; color: #a79f8d; font-weight: 700; }
+.bar b { position: absolute; top: -22px; left: 0; right: 0; text-align: center; font-size: 13px; }
+.total { margin-top: 36px; font-family: SgSerif, serif; font-size: 42px; color: #c8a24a; }
+.list { display: grid; gap: 10px; margin-top: 16px; }
+.it { display: flex; align-items: center; gap: 14px; background: rgba(246,241,228,.06); border: 1px solid #4a3f30; border-radius: 8px; padding: 10px 14px; font-size: 19px; font-weight: 700; }
+.it span { font-size: 28px; color: #c8a24a; width: 30px; text-align: center; }
+.it.on { background: #f6f1e4; color: #1d1b18; border-color: #f6f1e4; }
+.it.on span { color: #8a6a1c; }
+.bubble { margin-top: 18px; background: #f6f1e4; color: #1d1b18; border-radius: 18px 18px 18px 4px; padding: 16px 20px; font-family: SgSerif, serif; font-size: 25px; line-height: 1.32; min-height: 140px; }
+.bubble mark { background: #e8d18f; color: #1d1b18; }
+.hush { display: flex; align-items: center; gap: 14px; margin-top: 18px; font-size: 20px; font-weight: 700; color: #d8d0bd; }
+.ring { width: 54px; height: 54px; border-radius: 50%; }
+.cmp { display: grid; grid-template-columns: 1fr 40px 1fr; align-items: center; margin-top: 18px; }
+.cmp .a, .cmp .b { border-radius: 10px; padding: 16px; text-align: center; }
+.cmp .a { border: 2px solid #7a6248; color: #a79f8d; }
+.cmp .b { background: #f6f1e4; color: #1d1b18; }
+.cmp .n { font-family: SgSerif, serif; font-size: 40px; }
+.cmp i { font-style: normal; text-align: center; font-size: 28px; color: #c8a24a; }
+.plus { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+.plus span { background: #c8a24a; color: #1d1b18; font-weight: 800; padding: 6px 12px; border-radius: 6px; font-size: 16px; }
+.end { display: grid; grid-template-columns: 150px 1fr; gap: 22px; align-items: center; }
+.end img.cv { width: 150px; height: 225px; box-shadow: 0 18px 34px rgba(0,0,0,.5); border-radius: 3px 8px 8px 3px; }
+.end h1 { font-family: SgSerif, serif; font-weight: 400; font-size: 44px; line-height: 1.05; }
+.end p { font-size: 16px; color: #d8d0bd; margin-top: 8px; }
+.btn { display: inline-block; margin-top: 16px; background: #c8a24a; color: #1d1b18; font-weight: 800; font-size: 20px; padding: 12px 22px; border-radius: 6px; }
+.brand { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-weight: 800; }
+.brand img { width: 26px; height: 26px; }
+#wm { position: absolute; right: 24px; top: 18px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; opacity: .85; }
+#wm img { width: 22px; height: 22px; }
+.sub-cap { position: absolute; left: 380px; right: 24px; bottom: 14px; text-align: center; z-index: 20; }
+.sub-cap span { display: inline-block; max-width: 560px; padding: 6px 14px; border-radius: 10px; background: rgba(0,0,0,.7); color: #fff; font-size: 18px; font-weight: 600; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="clock"><small>jam tawaran</small><div id="c1">00:10</div><div id="c2">—</div></div>
+  <div id="board"></div>
+</div>
+<div id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+<div class="sub-cap" id="cap"></div>
+<script>
+const D = window.DATA;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - (1 - x) ** 3;
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+function fade(e, p, dist = 20, axis = "Y") { const k = easeOut(p); e.style.opacity = k; e.style.transform = `translate${axis}(${(1 - k) * dist}px)`; }
+
+const MIN = { hook: 7, cost: 10, moves: 10, line: 9, result: 9, end: 6 };
+const T = [];
+let cur = 0;
+for (const s of D.scenes) { const dur = Math.max(MIN[s.type] ?? 6, s.dur ?? 0); T.push({ type: s.type, start: cur, dur, say: s.say ?? null }); cur += dur; }
+window.DURATION = cur;
+window.TIMELINE = T.map(({ type, start, dur }) => ({ type, start, dur }));
+const B = Object.fromEntries(T.map((b) => [b.type, b]));
+const at = (type, f) => B[type].start + B[type].dur * f;
+
+// Papan 8×8 (36 px per petak).
+const board = $("board");
+for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) board.append(el("div", `sq ${(r + c) % 2 ? "d" : "l"}`));
+const sqXY = (c, r) => ({ x: c * 34.5 + 0, y: r * 34.5 + 0 });
+// Lima bidak: posisi awal (di luar papan) → petak tujuan, mengikuti lima langkah.
+const MOVES = [
+  ["♟", [1, 8], [1, 5]],
+  ["♞", [6, 8], [5, 5]],
+  ["♝", [2, 8], [4, 4]],
+  ["♜", [0, 8], [0, 3]],
+  ["♛", [3, 8], [3, 2]],
+];
+const pieces = MOVES.map(([g]) => { const p = el("div", "pc", g); board.append(p); return p; });
+// Hasil akhir di papan.
+const CHIPS = [["Rp9,5 jt", 3, 1], ["Sertifikasi", 5, 3], ["Tinjauan 6 bln", 0, 6]];
+const chips = CHIPS.map(([t]) => { const c = el("div", "chip", t); board.append(c); return c; });
+
+const panels = {};
+function panel(type, build) { if (!B[type]) return; const p = el("div", "panel"); $("stage").append(p); panels[type] = { p, anim: build(p) }; }
+panel("hook", (p) => {
+  const k = el("div", "kick", "Raka, 27 tahun"), b = el("div", "big", "Sepuluh detik untuk bilang “saya terima.”"), s = el("div", "sub", "Tawaran pertama Rp8 juta. Tanpa bertanya, tanpa menawar.");
+  p.append(k, b, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.5)); fade(b, prog(t, 0.3, 1.1), 24); fade(s, prog(t, d * 0.5, d * 0.5 + 0.6), 14); };
+});
+panel("cost", (p) => {
+  p.append(el("div", "kick", "Harga diam: selisih Rp1 juta/bulan"));
+  const vals = [13, 14.04, 15.16, 16.38, 17.69];
+  const bars = el("div", "bars");
+  const bs = vals.map((v, i) => { const b = el("div", "bar"); b.append(el("b", "", `${v.toFixed(1).replace(".", ",")} jt`), el("span", "", `Tahun ${i + 1}`)); bars.append(b); return b; });
+  const tot = el("div", "total", "");
+  p.append(bars, tot);
+  return (t, d) => {
+    bs.forEach((b, i) => { const k = easeOut(prog(t, 0.5 + i * 0.7, 1.2 + i * 0.7)); b.style.height = `${(vals[i] / 18) * 200 * k}px`; b.style.opacity = k > 0 ? 1 : 0; });
+    const k = easeOut(prog(t, d * 0.62, d * 0.62 + 1.4));
+    tot.textContent = k > 0 ? `≈ Rp${Math.round(76 * k)} juta dalam 5 tahun` : "";
+  };
+});
+const STEPS = ["Riset angka", "Tentukan rentang", "Siapkan bukti", "Sebut angka, lalu diam", "Tawar paketnya"];
+const moveAt = (i) => at("moves", 0.12 + i * 0.16);
+panel("moves", (p) => {
+  p.append(el("div", "kick", "Lima langkah"));
+  const l = el("div", "list");
+  const its = STEPS.map((s, i) => { const it = el("div", "it"); it.append(el("span", "", MOVES[i][0]), el("div", "", s)); l.append(it); return it; });
+  p.append(l);
+  return (t) => { its.forEach((it, i) => { const t0 = moveAt(i) - B.moves.start; fade(it, prog(t, t0 - 0.2, t0 + 0.3), 20, "X"); it.classList.toggle("on", t >= t0 && t < t0 + 1.8); }); };
+});
+const LINE = ["Berdasarkan riset gaji untuk peran ini, rentang yang saya harapkan ", "Rp9,5 sampai Rp11 juta", "."];
+panel("line", (p) => {
+  p.append(el("div", "kick", "Kalimat yang bisa kamu pakai"));
+  const bub = el("div", "bubble");
+  const a = el("span"), m = el("mark"), c = el("span");
+  bub.append(a, m, c);
+  const hush = el("div", "hush"); const ring = el("div", "ring"); hush.append(ring, el("span", "", "Lalu diam. Biarkan hening bekerja."));
+  p.append(bub, hush);
+  const full = LINE.join("");
+  return (t, d) => {
+    const n = Math.round(full.length * easeInOut(prog(t, 0.3, d * 0.45)));
+    const x = full.slice(0, n);
+    a.textContent = x.slice(0, LINE[0].length);
+    m.textContent = x.slice(LINE[0].length, LINE[0].length + LINE[1].length);
+    c.textContent = x.slice(LINE[0].length + LINE[1].length);
+    fade(hush, prog(t, d * 0.55, d * 0.55 + 0.5), 12);
+    const k = prog(t, d * 0.55, d * 0.55 + 3);
+    ring.style.background = `conic-gradient(#c8a24a ${k * 360}deg, #4a3f30 0)`;
+  };
+});
+panel("result", (p) => {
+  p.append(el("div", "kick", "Setahun kemudian, Raka menawar"));
+  const cmp = el("div", "cmp");
+  const a = el("div", "a"); a.append(el("div", "", "Dulu"), el("div", "n", "Rp8 jt"));
+  const b = el("div", "b"); b.append(el("div", "", "Sekarang"), el("div", "n", "Rp9,5 jt"));
+  cmp.append(a, el("i", "", "→"), b);
+  const plus = el("div", "plus"); plus.append(el("span", "", "+ Rp5 jt sertifikasi"), el("span", "", "+ tinjauan gaji 6 bulan"));
+  p.append(cmp, plus);
+  return (t, d) => { fade(a, prog(t, 0.2, 0.7)); fade(b, prog(t, 1.0, 1.6), 24, "X"); fade(plus, prog(t, d * 0.55, d * 0.55 + 0.6), 14); };
+});
+panel("end", (p) => {
+  const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";
+  const tx = el("div"); tx.append(el("div", "kick", "Ebook SelfGrow · 6 bab · 2 alat bantu"), el("h1", "", "Berani Nego Gaji"), el("p", "", "Riset angka, siapkan bukti, ucapkan dengan tenang."), el("div", "btn", "Baca Bab 1, gratis"));
+  const br = el("div", "brand"); const im = el("img"); im.src = "mark.png"; im.alt = ""; br.append(im, el("span", "", "SelfGrow")); tx.append(br);
+  w.append(cv, tx); p.append(w);
+  return (t) => { fade(cv, prog(t, 0.2, 0.9), 40); fade(tx, prog(t, 0.6, 1.3), 20, "X"); };
+});
+
+window.render = (t) => {
+  for (const b of T) {
+    const pn = panels[b.type]; if (!pn) continue;
+    const last = b === T[T.length - 1];
+    const inn = easeInOut(prog(t, b.start - 0.2, b.start + 0.25));
+    const out = last ? 1 : 1 - easeInOut(prog(t, b.start + b.dur - 0.25, b.start + b.dur + 0.2));
+    const o = Math.min(inn, out);
+    pn.p.style.opacity = o;
+    if (o > 0) pn.anim(t - b.start, b.dur);
+  }
+  // Jam: hitung mundur 10 detik di adegan pembuka; "diam" berjalan di adegan kalimat.
+  const c1 = $("c1"), c2 = $("c2");
+  if (B.hook && t < B.hook.start + B.hook.dur) {
+    const s = Math.max(0, Math.ceil(10 * (1 - prog(t, 0.6, B.hook.dur - 0.6))));
+    c1.textContent = `00:${String(s).padStart(2, "0")}`; c1.className = s <= 3 ? "on" : ""; c2.textContent = "—";
+  } else if (B.line && t >= B.line.start && t < B.line.start + B.line.dur) {
+    const k = prog(t, at("line", 0.55), at("line", 0.55) + 3);
+    c1.textContent = "00:00"; c1.className = ""; c2.textContent = k > 0 ? `diam ${Math.min(3, Math.floor(k * 3) + 1)}` : "—"; c2.className = k > 0 ? "on" : "";
+  } else { c1.textContent = "00:00"; c1.className = ""; c2.textContent = "—"; c2.className = ""; }
+
+  // Bidak: masuk dari tepi bawah ke petaknya saat langkahnya disebut.
+  MOVES.forEach(([, from, to], i) => {
+    const k = B.moves ? easeInOut(prog(t, moveAt(i) - 0.1, moveAt(i) + 0.6)) : 0;
+    const a = sqXY(...from), b = sqXY(...to);
+    const pc = pieces[i];
+    pc.style.left = `${a.x + (b.x - a.x) * k}px`;
+    pc.style.top = `${a.y + (b.y - a.y) * k - Math.sin(k * Math.PI) * 18}px`;
+    pc.style.opacity = k > 0 ? 1 : 0;
+  });
+  // Hasil: label emas jatuh di papan.
+  CHIPS.forEach(([, c, r], i) => {
+    const k = B.result ? easeOut(prog(t, at("result", 0.25 + i * 0.15), at("result", 0.25 + i * 0.15) + 0.5)) : 0;
+    const p = sqXY(c, r);
+    chips[i].style.left = `${p.x}px`;
+    chips[i].style.top = `${p.y + 6 - (1 - k) * 30}px`;
+    chips[i].style.opacity = k;
+  });
+  // Papan sedikit redup saat panel angka penuh.
+  $("board").style.filter = B.cost && t >= B.cost.start && t < B.cost.start + B.cost.dur ? "brightness(.7)" : "none";
+
+  const cb = T.find((b) => t >= b.start && t < b.start + b.dur);
+  const line = D.captions && cb ? cb.say : null;
+  const cap = $("cap");
+  if (cap.dataset.line !== (line ?? "")) { cap.dataset.line = line ?? ""; cap.replaceChildren(); if (line) cap.append(el("span", "", line)); }
+};
+render(0);
+</script>
+</body>
+</html>

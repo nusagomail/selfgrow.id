@@ -38,6 +38,11 @@ dengan rumus 12 g × 2 sajian ÷ 4 = 6 sendok teh; lalu kubus keluar dari toples
 ditukar sampai 26 g. Template khusus cukup memenuhi kontrak yang sama (`window.DURATION`,
 `window.TIMELINE`, `window.render(t)`) dan didaftarkan lewat `template` di data video.
 
+**Contoh kedua: "Berani Nego Gaji"** (`nego.mjs` + `nego.html`). Konsep: papan catur dan jam
+catur. Jam menghitung sepuluh detik tokoh menerima tawaran, batang emas menunjukkan harga diam
+(selisih Rp1 juta/bulan ≈ Rp76 juta dalam lima tahun), bidak bergerak untuk lima langkah, kalimat
+nego diketik lalu jam berganti menjadi hitungan "diam", dan hasil akhir jatuh di papan.
+
 Panduan ini bukan cetakan. Setiap buku punya cara masuk yang berbeda. Buku keuangan mungkin
 dibuka dengan angka yang mengejutkan, buku tentang duka dibuka dengan satu kalimat yang
 lembut, buku kebiasaan dibuka dengan pertanyaan. Pilih adegan yang melayani buku itu, lalu
