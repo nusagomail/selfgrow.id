@@ -13,7 +13,8 @@ import { writeAudit } from "./audit";
 // Rate limit
 // ---------------------------------------------------------------------------
 
-export type RateGroup = "chapter" | "tool" | "template" | "auth" | "catalog";
+/** `media`: sampul & gambar isi, hanya dihitung saat cache edge meleset (D38). */
+export type RateGroup = "chapter" | "tool" | "template" | "auth" | "catalog" | "media";
 
 /** 429 bila melewati batas per IP (bila IP diketahui) atau per user (bila login). */
 export function rateLimit(group: RateGroup) {
@@ -32,6 +33,12 @@ export async function withinRateLimit(c: Context<AppEnv>, group: RateGroup): Pro
   const userId = c.var.user?.id;
   try {
     const checks: Promise<{ success: boolean }>[] = [];
+    // Gambar memakai binding sendiri dengan batas longgar dan tidak dihitung per user.
+    if (group === "media") {
+      if (ip) checks.push(c.env.RL_MEDIA.limit({ key: `${group}:${ip}` }));
+      const results = await Promise.all(checks);
+      return results.every((r) => r.success);
+    }
     if (ip) checks.push(c.env.RL_IP.limit({ key: `${group}:${ip}` }));
     if (userId) checks.push(c.env.RL_USER.limit({ key: `${group}:${userId}` }));
     const results = await Promise.all(checks);

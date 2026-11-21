@@ -2,6 +2,7 @@ import { and, eq, schema } from "@selfgrow/db";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { edgeCache } from "../services/edge-cache";
+import { rateLimit } from "../services/protection";
 
 /**
  * Gambar di dalam isi konten (ilustrasi & infografis ebook, D38). Alamatnya `/api/v1/assets/{id}`
@@ -16,10 +17,12 @@ export const contentImageKey = (contentId: string, assetId: string, ext: "png" |
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const IMAGE_MIME = new Set(["image/png", "image/jpeg", "image/webp"]);
 
-// Tanpa rate limit (D38): satu bab bisa memuat banyak gambar, id-nya acak, dan respons
-// disajikan dari cache edge setelah permintaan pertama.
+// Cache edge lebih dulu; hanya permintaan yang meleset dihitung batas "media" per IP (D38).
 export const assets = new Hono<AppEnv>()
-  .use(edgeCache(60, "public, max-age=60"))
+  .use(
+    edgeCache({ ttlSeconds: 60, defaultCacheControl: "public, max-age=60", isImage: () => true }),
+  )
+  .use(rateLimit("media"))
   .get("/:assetId", async (c) => {
     const id = c.req.param("assetId");
     if (!UUID.test(id)) return c.json({ error: "not_found" }, 404);

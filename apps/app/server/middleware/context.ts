@@ -5,6 +5,7 @@ import { AUTH_BASE_PATH, createAuth } from "../auth/auth";
 import type { AppEnv } from "../env";
 
 const CATALOG_BASE_PATH = `${API_BASE_PATH}/catalog`;
+const ASSETS_BASE_PATH = `${API_BASE_PATH}/assets`;
 
 /** Menyiapkan db, auth, dan sesi (cookie atau bearer) untuk setiap request API. */
 export const contextMiddleware = createMiddleware<AppEnv>(async (c, next) => {
@@ -13,9 +14,13 @@ export const contextMiddleware = createMiddleware<AppEnv>(async (c, next) => {
   c.set("db", db);
   c.set("auth", auth);
 
-  // Endpoint Better Auth membaca sesinya sendiri; katalog publik tidak butuh sesi
-  // (respons sama untuk semua orang dan di-cache, review keamanan PR #14).
-  if (c.req.path.startsWith(AUTH_BASE_PATH) || c.req.path.startsWith(CATALOG_BASE_PATH)) {
+  // Endpoint Better Auth membaca sesinya sendiri; katalog publik dan gambar isi konten tidak
+  // butuh sesi (respons sama untuk semua orang dan di-cache, review keamanan PR #14 & D38).
+  if (
+    c.req.path.startsWith(AUTH_BASE_PATH) ||
+    c.req.path.startsWith(CATALOG_BASE_PATH) ||
+    c.req.path.startsWith(ASSETS_BASE_PATH)
+  ) {
     c.set("user", null);
     c.set("session", null);
     return next();

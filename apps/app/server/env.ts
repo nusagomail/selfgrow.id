@@ -30,6 +30,8 @@ export interface Env {
   /** Rate limit (jendela 60 detik): per user per kelompok endpoint, dan per IP. */
   RL_USER: RateLimit;
   RL_IP: RateLimit;
+  /** Batas per IP untuk sampul & gambar isi (D38), jauh lebih longgar dari RL_IP. */
+  RL_MEDIA: RateLimit;
   /** Penghitung bab berbeda per jam per user (deteksi scraping, BLUEPRINT bagian 8). */
   READ_GUARD: DurableObjectNamespace<import("./durable/read-guard").ReadGuard>;
   /** Ambang bab berbeda per jam sebelum akun dibekukan sementara. Default 60. */

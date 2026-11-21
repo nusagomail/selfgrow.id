@@ -72,6 +72,16 @@ describe("sampul", () => {
     );
     expect(statuses.filter((st: number) => st === 429)).toHaveLength(0);
     expect((await call("/api/v1/catalog/covers/bukan-uuid")).status).toBe(404);
+    // Dari satu IP: 130 sampul (lebih dari batas katalog 120/menit) tetap lolos lewat batas
+    // "media" yang terpisah dan longgar.
+    const ip = `203.0.113.${Math.floor(Math.random() * 200)}`;
+    const fromIp = await Promise.all(
+      Array.from(
+        { length: 130 },
+        async () => (await call(coverUrl, { headers: { "cf-connecting-ip": ip } })).status,
+      ),
+    );
+    expect(fromIp.filter((st: number) => st === 429)).toHaveLength(0);
 
     // Reader (halaman sampul buku) ikut menerima alamat sampul.
     const reader = await createUser();

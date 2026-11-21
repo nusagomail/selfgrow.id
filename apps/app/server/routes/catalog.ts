@@ -127,9 +127,16 @@ const isImagePath = (path: string) => /\/covers\/[^/]+$/.test(path);
 
 export const catalog = new Hono<AppEnv>()
   // Cache edge DULU, baru rate limit: halaman rak memuat 100+ sampul sekaligus (D38), dan
-  // respons yang sudah ter-cache tidak membebani D1/R2 sehingga tidak perlu dibatasi.
-  .use(edgeCache(EDGE_TTL_SECONDS, PUBLIC_CACHE))
-  .use(async (c, next) => (isImagePath(c.req.path) ? next() : rateLimit("catalog")(c, next)))
+  // respons yang sudah ter-cache tidak membebani D1/R2 sehingga tidak perlu dihitung.
+  .use(
+    edgeCache({
+      ttlSeconds: EDGE_TTL_SECONDS,
+      defaultCacheControl: PUBLIC_CACHE,
+      isImage: isImagePath,
+    }),
+  )
+  // Sampul memakai batas "media" per IP (hanya saat cache meleset); data katalog tetap "catalog".
+  .use(async (c, next) => rateLimit(isImagePath(c.req.path) ? "media" : "catalog")(c, next))
 
   /** Semua kategori beserta topik dan jumlah konten terbitnya (untuk menu & beranda). */
   .get("/categories", async (c) => {
