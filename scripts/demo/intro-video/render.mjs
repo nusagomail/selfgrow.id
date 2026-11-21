@@ -5,13 +5,14 @@
  *
  * Suara:
  * - Musik latar disintesis sendiri (music.mjs), selalu ada.
+ * - Narasi rekaman jadi (voice/{slug}/{indeks adegan}.mp3, mis. dari ElevenLabs) dipakai bila ada.
  * - Narasi dari `say` tiap adegan lewat Google Cloud Text-to-Speech. Kunci API tidak ada di
  *   kode: disisipkan proxy jaringan lingkungan (network secret untuk texttospeech.googleapis.com).
  *   Bila tidak tersedia, video tetap jadi dengan musik saja. Musik dikecilkan otomatis saat
  *   narasi berbicara (ducking).
  */
 import { execFileSync } from "node:child_process";
-import { copyFileSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -92,6 +93,13 @@ for (const base of VIDEOS) {
   if (!process.argv.includes("--no-voice") && !process.argv.includes("--keys")) {
     for (const [i, s] of data.scenes.entries()) {
       if (!s.say) continue;
+      // Narasi yang sudah direkam (mis. dari ElevenLabs) di voice/{slug}/{i}.mp3 diutamakan.
+      const recorded = join(here, "voice", data.slug, `${i}.mp3`);
+      if (existsSync(recorded)) {
+        s.dur = LEAD + ffprobeSeconds(recorded) + TAIL;
+        clips.push({ scene: i, file: recorded });
+        continue;
+      }
       const file = join(work, `say-${i}.wav`);
       const secs = await speak(s.say, file, data.voice ?? VOICE);
       if (secs === null) {
@@ -167,10 +175,10 @@ for (const base of VIDEOS) {
     const labels = clips.map((_, k) => `[n${k}]`).join("");
     filter = [
       ...parts,
-      `${labels}amix=inputs=${clips.length}:normalize=0,volume=1.6,asplit=2[nv][sc]`,
+      `${labels}amix=inputs=${clips.length}:normalize=0,volume=1.6,apad,asplit=2[nv][sc]`,
       "[1:a]volume=0.55[m]",
       "[m][sc]sidechaincompress=threshold=0.02:ratio=10:attack=30:release=600[duck]",
-      "[duck][nv]amix=inputs=2:normalize=0,alimiter=limit=0.95[a]",
+      "[duck][nv]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]",
     ].join(";");
   } else {
     filter = "[1:a]volume=0.6[a]";
