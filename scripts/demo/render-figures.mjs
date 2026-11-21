@@ -7,6 +7,7 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { GULA_FIGURE_CSS, GULA_FIGURES } from "./books/gula-figures.mjs";
 import { HARGA_FIGURE_CSS, HARGA_FIGURES } from "./books/harga-figures.mjs";
 import { OVERTHINKING_FIGURE_CSS, OVERTHINKING_FIGURES } from "./books/overthinking-figures.mjs";
 import { FIGURE_CSS, FIGURES } from "./books/paylater-figures.mjs";
@@ -29,6 +30,7 @@ const SETS = {
   "lepas-dari-scroll-tanpa-ujung": { figures: SCROLL_FIGURES, css: SCROLL_FIGURE_CSS },
   "berani-bilang-tidak": { figures: TIDAK_FIGURES, css: TIDAK_FIGURE_CSS },
   "hitung-harga-jual-yang-untung": { figures: HARGA_FIGURES, css: HARGA_FIGURE_CSS },
+  "kurangi-gula-tanpa-menderita": { figures: GULA_FIGURES, css: GULA_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,
@@ -39,6 +41,7 @@ const extraFonts = [
   ["SgHand", "caveat-latin-700-normal.woff2", 700],
   ["SgSerif", "dm-serif-display-latin-400-normal.woff2", 400],
   ["SgMono", "jetbrains-mono-latin-500-normal.woff2", 500],
+  ["SgLabel", "oswald-latin-600-normal.woff2", 600],
 ]
   .map(
     ([family, file, weight]) =>

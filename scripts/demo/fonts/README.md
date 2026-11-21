@@ -8,3 +8,4 @@ dikirim ke aplikasi.
 
 Sumber: paket @fontsource/caveat dan @fontsource/dm-serif-display.
 - `jetbrains-mono-latin-500-normal.woff2`: JetBrains Mono (huruf mesin ketik untuk nota), SIL Open Font License 1.1. Sumber: @fontsource/jetbrains-mono.
+- `oswald-latin-600-normal.woff2`: Oswald (huruf tegak sempit ala label gizi), SIL Open Font License 1.1. Sumber: @fontsource/oswald.
