@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<!-- Template video pengantar ebook (D41), 16:9. Diisi window.DATA lalu window.render(t). -->
+<style>
+@font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 960px; height: 540px; overflow: hidden; background: #073e1f; }
+body { font-family: Jakarta, sans-serif; color: #fff; }
+.scene { position: absolute; inset: 0; overflow: hidden; opacity: 0; }
+.kicker { font-size: 13px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #f4ac13; }
+.wm { position: absolute; right: 26px; bottom: 20px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; opacity: .85; z-index: 10; }
+.wm img { width: 22px; height: 22px; }
+.dark { background: radial-gradient(110% 90% at 85% 0%, #1d7a34 0%, #073e1f 55%, #04260f 100%); }
+.paper { background: radial-gradient(100% 80% at 50% 0%, #fffdf7, #f3ead8); color: #10241a; }
+
+/* S1 sampul + judul */
+#s1 .cover { position: absolute; left: 110px; top: 70px; width: 260px; height: 390px; border-radius: 5px 12px 12px 5px; overflow: hidden; box-shadow: 0 34px 60px rgba(0,0,0,.45); }
+#s1 .cover img { width: 100%; height: 100%; display: block; }
+#s1 .cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.28), rgba(255,255,255,.16) 4px, transparent 16px); }
+#s1 .txt { position: absolute; left: 430px; right: 70px; top: 120px; }
+#s1 h1 { font-size: 48px; line-height: 1.04; letter-spacing: -.025em; margin-top: 12px; }
+#s1 .sub { font-size: 19px; line-height: 1.45; color: #cfe6d3; margin-top: 16px; }
+#s1 .meta { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+#s1 .meta span { padding: 7px 14px; border-radius: 99px; background: rgba(255,255,255,.12); font-weight: 700; font-size: 14px; }
+
+/* S2 untuk siapa */
+#s2 h2, #s4 h2, #s5 h2 { position: absolute; left: 80px; right: 80px; top: 64px; font-size: 38px; letter-spacing: -.02em; }
+#s2 .list { position: absolute; left: 80px; right: 80px; top: 160px; display: grid; gap: 22px; }
+.item { display: flex; align-items: center; gap: 16px; font-size: 26px; font-weight: 600; }
+.item .dot { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: #1d7a34; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; }
+
+/* S3 cerita */
+#s3 .who { position: absolute; left: 80px; top: 70px; width: 380px; }
+#s3 .who h2 { font-size: 38px; letter-spacing: -.02em; margin-top: 10px; }
+#s3 .who p { font-size: 20px; color: #cfe6d3; margin-top: 10px; line-height: 1.4; }
+#s3 .avatar { width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(150deg, #f4ac13, #e07a1f); display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 800; color: #073e1f; }
+#s3 .stats { position: absolute; left: 500px; right: 70px; top: 110px; display: grid; gap: 16px; }
+.stat { background: rgba(255,255,255,.1); border-radius: 18px; padding: 16px 22px; display: flex; align-items: baseline; gap: 14px; }
+.stat b { font-size: 44px; letter-spacing: -.02em; color: #f4ac13; }
+.stat span { font-size: 20px; font-weight: 700; }
+#s3 .end { position: absolute; left: 80px; right: 80px; bottom: 70px; font-size: 22px; font-weight: 700; color: #fff; }
+
+/* S4 tahap */
+#s4 .stages { position: absolute; left: 80px; right: 80px; top: 150px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.stage { background: #fff; border-radius: 20px; padding: 20px 18px; min-height: 250px; box-shadow: 0 16px 34px rgba(7,62,31,.14); display: flex; flex-direction: column; gap: 12px; border-top: 6px solid #1d7a34; }
+.stage .n { width: 44px; height: 44px; border-radius: 50%; background: #1d7a34; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; }
+.stage .t { font-size: 21px; font-weight: 800; line-height: 1.2; }
+.stage .b { margin-top: auto; font-size: 15px; font-weight: 800; color: #1d7a34; letter-spacing: .04em; }
+
+/* S5 fitur */
+#s5 .feats { position: absolute; left: 80px; right: 80px; top: 150px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.feat { display: flex; align-items: center; gap: 18px; background: rgba(255,255,255,.1); border-radius: 20px; padding: 22px; font-size: 21px; font-weight: 700; line-height: 1.3; }
+.feat .ic { font-size: 38px; }
+
+/* S6 kutipan + ajakan */
+#s6 .quote { position: absolute; left: 110px; right: 110px; top: 130px; text-align: center; font-size: 32px; font-weight: 700; line-height: 1.35; color: #10241a; }
+#s6 .quote::before { content: "\201C"; display: block; font-size: 80px; line-height: .6; height: 34px; color: #1d7a34; }
+#s6 .cta { position: absolute; left: 0; right: 0; top: 330px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+#s6 .btn { background: #1d7a34; color: #fff; border-radius: 99px; padding: 18px 40px; font-weight: 800; font-size: 26px; box-shadow: 0 14px 30px rgba(29,122,52,.35); }
+#s6 .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 22px; color: #10241a; }
+#s6 .brand img { width: 34px; height: 34px; }
+</style>
+</head>
+<body>
+<div class="scene dark" id="s1">
+  <div class="cover" id="cover"><img id="coverimg" alt=""></div>
+  <div class="txt" id="s1txt"><div class="kicker" id="kicker"></div><h1 id="title">Judul</h1><p class="sub" id="sub"></p><div class="meta" id="meta"></div></div>
+</div>
+<div class="scene paper" id="s2"><h2 id="aud-title">Untuk siapa</h2><div class="list" id="aud"></div></div>
+<div class="scene dark" id="s3">
+  <div class="who" id="who"><div class="avatar">N</div><h2 id="story-title">Cerita</h2><p id="story-lines"></p></div>
+  <div class="stats" id="stats"></div>
+  <div class="end" id="story-end"></div>
+</div>
+<div class="scene paper" id="s4"><h2 id="stages-title">Tahap</h2><div class="stages" id="stages"></div></div>
+<div class="scene dark" id="s5"><h2 id="feat-title">Isi</h2><div class="feats" id="feats"></div></div>
+<div class="scene paper" id="s6"><div class="quote" id="quote"></div><div class="cta" id="cta"><div class="btn" id="btn"></div><div class="brand"><img src="mark.png" alt=""><span>SelfGrow</span></div></div></div>
+<div class="wm" id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+
+<script>
+const D = window.DATA;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - (1 - x) ** 3;
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+const back = (x) => { const c = 1.5; return 1 + (c + 1) * (x - 1) ** 3 + c * (x - 1) ** 2; };
+function rise(e, p, dist = 24, axis = "Y") { e.style.opacity = p; e.style.transform = `translate${axis}(${(1 - p) * dist}px)`; }
+
+// Isi dari data (textContent, tanpa HTML).
+$("coverimg").src = "cover.jpg";
+$("kicker").textContent = D.kicker; $("title").textContent = D.title; $("sub").textContent = D.subtitle;
+for (const m of D.meta) $("meta").append(el("span", "", m));
+$("aud-title").textContent = D.audienceTitle;
+D.audience.forEach((a) => { const it = el("div", "item"); it.append(el("span", "dot", "✓"), el("span", "", a)); $("aud").append(it); });
+$("story-title").textContent = D.story.title;
+$("story-lines").textContent = D.story.lines.join(" · ");
+D.story.stats.forEach(([b, s]) => { const st = el("div", "stat"); st.append(el("b", "", b), el("span", "", s)); $("stats").append(st); });
+$("story-end").textContent = D.story.end;
+$("stages-title").textContent = D.stagesTitle;
+D.stages.forEach(([t, b], i) => { const s = el("div", "stage"); s.append(el("div", "n", String(i + 1)), el("div", "t", t), el("div", "b", b)); $("stages").append(s); });
+$("feat-title").textContent = D.featuresTitle;
+D.features.forEach(([ic, t]) => { const f = el("div", "feat"); f.append(el("span", "ic", ic), el("span", "", t)); $("feats").append(f); });
+$("quote").textContent = D.quote; $("btn").textContent = D.cta;
+
+const SC = { s1: [0, 6.5], s2: [6.5, 14.5], s3: [14.5, 23], s4: [23, 34], s5: [34, 42.5], s6: [42.5, 52] };
+const DUR = 52, FADE = 0.4;
+function vis(id, t) {
+  const [a, b] = SC[id];
+  const inn = a === 0 ? 1 : easeInOut(prog(t, a - FADE, a + FADE * 0.3));
+  const out = b >= DUR ? 1 : 1 - easeInOut(prog(t, b - FADE * 0.3, b + FADE));
+  return Math.min(inn, out);
+}
+
+window.DURATION = DUR;
+window.render = (t) => {
+  for (const id of Object.keys(SC)) $(id).style.opacity = vis(id, t);
+  $("wm").style.opacity = t > 6.5 && t < 42 ? 0.85 : 0;
+  $("wm").style.color = ["s2", "s4"].some((id) => t >= SC[id][0] && t < SC[id][1]) ? "#10241a" : "#fff";
+
+  // S1
+  const c = back(prog(t, 0.2, 1.3));
+  $("cover").style.opacity = clamp(c * 1.4);
+  $("cover").style.transform = `translateY(${(1 - c) * 80}px) perspective(900px) rotateY(${12 * (1 - prog(t, 0.5, 4))}deg)`;
+  rise($("kicker"), easeOut(prog(t, 0.9, 1.4)), 16, "X");
+  rise($("title"), easeOut(prog(t, 1.1, 1.8)), 30, "X");
+  rise($("sub"), easeOut(prog(t, 1.7, 2.4)), 20, "X");
+  [...$("meta").children].forEach((m, i) => {
+    rise(m, easeOut(prog(t, 2.5 + i * 0.25, 2.9 + i * 0.25)), 14);
+  });
+
+  // S2
+  const t2 = t - SC.s2[0];
+  rise($("aud-title"), easeOut(prog(t2, 0.2, 0.8)));
+  [...$("aud").children].forEach((it, i) => {
+    rise(it, easeOut(prog(t2, 1.0 + i * 1.1, 1.5 + i * 1.1)), 30, "X");
+    it.querySelector(".dot").style.transform = `scale(${back(prog(t2, 1.2 + i * 1.1, 1.6 + i * 1.1))})`;
+  });
+
+  // S3
+  const t3 = t - SC.s3[0];
+  rise($("who"), easeOut(prog(t3, 0.2, 0.9)));
+  [...$("stats").children].forEach((s, i) => {
+    rise(s, easeOut(prog(t3, 1.6 + i * 0.9, 2.1 + i * 0.9)), 40, "X");
+  });
+  rise($("story-end"), easeOut(prog(t3, 5.4, 6.0)));
+
+  // S4
+  const t4 = t - SC.s4[0];
+  rise($("stages-title"), easeOut(prog(t4, 0.2, 0.8)));
+  [...$("stages").children].forEach((s, i) => {
+    const p = back(prog(t4, 1.0 + i * 1.6, 1.6 + i * 1.6));
+    s.style.opacity = clamp(p * 1.5);
+    s.style.transform = `translateY(${(1 - p) * 50}px)`;
+  });
+
+  // S5
+  const t5 = t - SC.s5[0];
+  rise($("feat-title"), easeOut(prog(t5, 0.2, 0.8)));
+  [...$("feats").children].forEach((f, i) => {
+    const p = back(prog(t5, 1.0 + i * 1.1, 1.5 + i * 1.1));
+    f.style.opacity = clamp(p * 1.5); f.style.transform = `scale(${0.85 + 0.15 * p})`;
+  });
+
+  // S6
+  const t6 = t - SC.s6[0];
+  const q = easeOut(prog(t6, 0.2, 1.0));
+  const qOut = easeInOut(prog(t6, 4.6, 5.2));
+  $("quote").style.opacity = q * (1 - qOut * 0.0);
+  $("quote").style.transform = `translateY(${(1 - q) * 20 - qOut * 40}px) scale(${1 - qOut * 0.12})`;
+  const k = back(prog(t6, 4.8, 5.6));
+  $("cta").style.opacity = clamp(k * 1.4);
+  $("cta").style.transform = `translateY(${(1 - k) * 40 + 20}px)`;
+  $("btn").style.transform = `scale(${1 + 0.035 * Math.sin(Math.max(0, t6 - 6) * 5) * prog(t6, 6, 6.4)})`;
+};
+render(0);
+</script>
+</body>
+</html>

@@ -185,6 +185,9 @@ export const contentItems = sqliteTable(
     level: text("level", { enum: ["beginner", "intermediate", "advanced"] }),
     categoryId: text("category_id").references(() => categories.id),
     coverAssetId: text("cover_asset_id"),
+    /** Video pengantar ebook (D41) dan gambar sampul videonya (poster). */
+    introVideoAssetId: text("intro_video_asset_id"),
+    introPosterAssetId: text("intro_poster_asset_id"),
     publishedAt: integer("published_at", { mode: "timestamp_ms" }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),

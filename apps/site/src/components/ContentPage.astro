@@ -1,7 +1,14 @@
 ---
 import type { EbookDoc } from "@selfgrow/shared";
 import Base from "../layouts/Base.astro";
-import { ACCESS_LABEL, appUrl, type ContentDetail, contentPath, siteCover } from "../lib/api";
+import {
+  ACCESS_LABEL,
+  appUrl,
+  type ContentDetail,
+  contentPath,
+  siteCover,
+  siteVideo,
+} from "../lib/api";
 import "@selfgrow/renderer/book.css";
 import Nodes from "./ebook/Nodes.astro";
 
@@ -13,6 +20,7 @@ const { data, preview } = Astro.props;
 const base = Astro.site ?? new URL(Astro.url.origin);
 const url = new URL(contentPath(data), base).toString();
 const cover = siteCover(data.coverUrl);
+const intro = siteVideo(data.introVideo);
 
 const TYPE_LABEL = { ebook: "Ebook", tool: "Tool", template: "Template", program: "Program" };
 const APP_PATH = { ebook: "/baca", tool: "/tools", template: "/template", program: "/program" };
@@ -123,6 +131,16 @@ const crumbs = {
       </div>
     </div>
   </section>
+
+  {intro && (
+    <section class="container intro-video" aria-labelledby="intro-title">
+      <h2 id="intro-title">Kenali buku ini dalam 1 menit</h2>
+      <video controls playsinline preload="metadata" poster={intro.poster ?? undefined}>
+        <source src={intro.src} type="video/mp4" />
+        Peramban kamu tidak bisa memutar video ini.
+      </video>
+    </section>
+  )}
 
   <div class="container layout">
     <div class="main">
@@ -376,6 +394,23 @@ const crumbs = {
     padding-left: 20px;
     display: grid;
     gap: 8px;
+  }
+  .intro-video {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 900px;
+    padding-top: 28px;
+  }
+  .intro-video h2 {
+    font-size: 1.15rem;
+  }
+  .intro-video video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    background: #04260f;
+    box-shadow: var(--shadow);
   }
   .preview {
     display: flex;

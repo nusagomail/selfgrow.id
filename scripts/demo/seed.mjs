@@ -70,6 +70,23 @@ catalogBooks().forEach((b, i) => {
   );
   uploads.push({ key: coverKey, file: coverFile, type: "image/jpeg" });
 
+  // Video pengantar + poster (D41), bila sudah dirender ke scripts/demo/videos/.
+  const videoFile = join(here, "videos", `${b.slug}.mp4`);
+  const posterFile = join(here, "videos", `${b.slug}.jpg`);
+  if (existsSync(videoFile) && existsSync(posterFile)) {
+    const videoId = uid(`video:${b.slug}`);
+    const posterId = uid(`poster:${b.slug}`);
+    const videoKey = `content-videos/${contentId}/${videoId}.mp4`;
+    const posterKey = `content-images/${contentId}/${posterId}.jpg`;
+    sql.push(
+      `INSERT OR IGNORE INTO assets (id, r2_key, mime, size, uploaded_by, created_at) VALUES (${q(videoId)}, ${q(videoKey)}, 'video/mp4', ${statSync(videoFile).size}, NULL, ${now});`,
+      `INSERT OR IGNORE INTO assets (id, r2_key, mime, size, uploaded_by, created_at) VALUES (${q(posterId)}, ${q(posterKey)}, 'image/jpeg', ${statSync(posterFile).size}, NULL, ${now});`,
+      `UPDATE content_items SET intro_video_asset_id = ${q(videoId)}, intro_poster_asset_id = ${q(posterId)} WHERE id = ${q(contentId)};`,
+    );
+    uploads.push({ key: videoKey, file: videoFile, type: "video/mp4" });
+    uploads.push({ key: posterKey, file: posterFile, type: "image/jpeg" });
+  }
+
   const full = FULL_BOOKS[b.slug];
   if (!full) return;
   const image = (name) => {

@@ -53,6 +53,8 @@ export interface ContentDetail {
   summary: string | null;
   access: Access;
   comingSoon?: boolean;
+  /** Video pengantar (D41): alamat app, diubah ke /video & /gambar lewat siteVideo(). */
+  introVideo?: { url: string; posterUrl: string | null } | null;
   coverUrl: string | null;
   category: { slug: string; name: string } | null;
   topic: { slug: string; name: string } | null;
@@ -135,4 +137,12 @@ export function appUrl(path = "/"): string {
 /** Cache edge singkat untuk halaman publik (isi sama untuk semua pengunjung). */
 export function setPublicCache(headers: Headers, seconds = 120) {
   headers.set("Cache-Control", `public, max-age=60, s-maxage=${seconds}`);
+}
+
+/** Alamat video pengantar & poster di domain etalase (proxy /video dan /gambar, D41). */
+export function siteVideo(v: { url: string; posterUrl: string | null } | null | undefined) {
+  const id = v?.url.split("/").pop();
+  if (!v || !id) return null;
+  const posterId = v.posterUrl?.split("/").pop();
+  return { src: `/video/${id}`, poster: posterId ? `/gambar/${posterId}` : null };
 }

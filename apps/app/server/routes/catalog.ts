@@ -10,6 +10,7 @@ import { edgeCache } from "../services/edge-cache";
 import { inChunks, type PublishedProgram, programKeys } from "../services/programs";
 import { rateLimit } from "../services/protection";
 import { readJson } from "../services/template-storage";
+import { introMedia } from "./videos";
 
 /**
  * Katalog publik untuk etalase `site` (BLUEPRINT bagian 5 & 10): kategori, topik, dan konten
@@ -336,6 +337,7 @@ export const catalog = new Hono<AppEnv>()
       summary: item.summary,
       access,
       comingSoon: item.type === "ebook" && (ebook?.chapters.length ?? 0) === 0,
+      introVideo: introMedia(item),
       coverUrl: coverPath(item.coverAssetId),
       category: category ? { slug: category.slug, name: category.name } : null,
       topic: topic ? { slug: topic.slug, name: topic.name } : null,

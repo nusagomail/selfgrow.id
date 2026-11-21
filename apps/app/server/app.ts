@@ -22,6 +22,7 @@ import { studioTemplates } from "./routes/studio-templates";
 import { studioTools } from "./routes/studio-tools";
 import { templates } from "./routes/templates";
 import { tools } from "./routes/tools";
+import { videos } from "./routes/videos";
 import { rateLimit } from "./services/protection";
 
 /**
@@ -59,6 +60,7 @@ api.route("/profile", profile);
 api.route("/library", library);
 api.route("/catalog", catalog);
 api.route("/assets", assets);
+api.route("/videos", videos);
 api.route("/ebooks", ebooks);
 api.route("/studio/tools", studioTools);
 api.route("/studio/templates", studioTemplates);

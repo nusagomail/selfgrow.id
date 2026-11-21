@@ -21,6 +21,8 @@ type EbookMeta = {
     title: string;
     summary: string | null;
     coverUrl: string | null;
+    /** Video pengantar (D41). */
+    introVideo?: { url: string; posterUrl: string | null } | null;
   };
   chapters: Chapter[];
   progress: { chapterId: string; position: number } | null;
@@ -163,6 +165,21 @@ export function EbookToc() {
           )}
         </div>
       </div>
+      {meta.ebook.introVideo && (
+        <section className="intro-video" aria-labelledby="intro-title">
+          <h2 id="intro-title">Kenali buku ini dalam 1 menit</h2>
+          {/* biome-ignore lint/a11y/useMediaCaption: video pengantar tanpa suara; seluruh isinya teks di layar (D41) */}
+          <video
+            controls
+            playsInline
+            preload="metadata"
+            poster={meta.ebook.introVideo.posterUrl ?? undefined}
+          >
+            <source src={meta.ebook.introVideo.url} type="video/mp4" />
+            Peramban kamu tidak bisa memutar video ini.
+          </video>
+        </section>
+      )}
       <section className="card book-toc">
         <h2>Daftar isi</h2>
         <ol>

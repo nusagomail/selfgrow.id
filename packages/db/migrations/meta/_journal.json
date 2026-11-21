@@ -57,6 +57,13 @@
       "when": 1795202596874,
       "tag": "0007_template_downloads",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1795252388223,
+      "tag": "0008_intro_video",
+      "breakpoints": true
     }
   ]
 }
