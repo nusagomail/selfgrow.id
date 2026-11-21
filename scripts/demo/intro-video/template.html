@@ -2,7 +2,11 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<!-- Template video pengantar ebook (D41), 16:9. Diisi window.DATA lalu window.render(t). -->
+<!--
+  Template video pengantar ebook (D41, D43), 16:9. Kotak adegan, bukan urutan tetap:
+  window.DATA.scenes berisi adegan pilihan penulis (lihat docs/PANDUAN-VIDEO.md).
+  window.render(t) menggambar detik ke-t; window.TIMELINE memberi awal & durasi tiap adegan.
+-->
 <style>
 @font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
 * { box-sizing: border-box; margin: 0; }
@@ -10,74 +14,102 @@ html, body { width: 960px; height: 540px; overflow: hidden; background: #073e1f;
 body { font-family: Jakarta, sans-serif; color: #fff; }
 .scene { position: absolute; inset: 0; overflow: hidden; opacity: 0; }
 .kicker { font-size: 13px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #f4ac13; }
-.wm { position: absolute; right: 26px; bottom: 20px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; opacity: .85; z-index: 10; }
+.paper .kicker { color: #b0570f; }
+.wm { position: absolute; right: 26px; bottom: 20px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; opacity: 0; z-index: 10; }
 .wm img { width: 22px; height: 22px; }
 .dark { background: radial-gradient(110% 90% at 85% 0%, #1d7a34 0%, #073e1f 55%, #04260f 100%); }
 .paper { background: radial-gradient(100% 80% at 50% 0%, #fffdf7, #f3ead8); color: #10241a; }
+.night { background: radial-gradient(120% 100% at 20% 0%, #23304d 0%, #10182b 60%, #090d18 100%); }
+.h2 { position: absolute; left: 80px; right: 80px; top: 64px; font-size: 38px; letter-spacing: -.02em; line-height: 1.12; }
+.sub-cap { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; z-index: 20; }
+.sub-cap span { display: inline-block; max-width: 760px; padding: 6px 14px; border-radius: 10px; background: rgba(0,0,0,.62); color: #fff; font-size: 19px; font-weight: 600; line-height: 1.35; }
 
-/* S1 sampul + judul */
-#s1 .cover { position: absolute; left: 110px; top: 70px; width: 260px; height: 390px; border-radius: 5px 12px 12px 5px; overflow: hidden; box-shadow: 0 34px 60px rgba(0,0,0,.45); }
-#s1 .cover img { width: 100%; height: 100%; display: block; }
-#s1 .cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.28), rgba(255,255,255,.16) 4px, transparent 16px); }
-#s1 .txt { position: absolute; left: 430px; right: 70px; top: 120px; }
-#s1 h1 { font-size: 48px; line-height: 1.04; letter-spacing: -.025em; margin-top: 12px; }
-#s1 .sub { font-size: 19px; line-height: 1.45; color: #cfe6d3; margin-top: 16px; }
-#s1 .meta { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
-#s1 .meta span { padding: 7px 14px; border-radius: 99px; background: rgba(255,255,255,.12); font-weight: 700; font-size: 14px; }
+/* cover */
+.cover-s .cover { position: absolute; left: 110px; top: 70px; width: 260px; height: 390px; border-radius: 5px 12px 12px 5px; overflow: hidden; box-shadow: 0 34px 60px rgba(0,0,0,.45); }
+.cover-s .cover img { width: 100%; height: 100%; display: block; }
+.cover-s .cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.28), rgba(255,255,255,.16) 4px, transparent 16px); }
+.cover-s .txt { position: absolute; left: 430px; right: 70px; top: 120px; }
+.cover-s h1 { font-size: 48px; line-height: 1.04; letter-spacing: -.025em; margin-top: 12px; }
+.cover-s .sub { font-size: 19px; line-height: 1.45; opacity: .85; margin-top: 16px; }
+.cover-s .meta { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+.cover-s .meta span { padding: 7px 14px; border-radius: 99px; background: rgba(255,255,255,.12); font-weight: 700; font-size: 14px; }
+.paper.cover-s .meta span { background: rgba(7,62,31,.08); }
 
-/* S2 untuk siapa */
-#s2 h2, #s4 h2, #s5 h2 { position: absolute; left: 80px; right: 80px; top: 64px; font-size: 38px; letter-spacing: -.02em; }
-#s2 .list { position: absolute; left: 80px; right: 80px; top: 160px; display: grid; gap: 22px; }
-.item { display: flex; align-items: center; gap: 16px; font-size: 26px; font-weight: 600; }
+/* list */
+.list-s .list { position: absolute; left: 80px; right: 80px; top: 160px; display: grid; gap: 22px; }
+.item { display: flex; align-items: center; gap: 16px; font-size: 26px; font-weight: 600; line-height: 1.25; }
 .item .dot { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: #1d7a34; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; }
+.item .dot.x { background: #b42318; color: #fff; }
+.dark .item .dot, .night .item .dot { background: #f4ac13; color: #073e1f; }
+.dark .item .dot.x, .night .item .dot.x { background: #e5533f; color: #fff; }
 
-/* S3 cerita */
-#s3 .who { position: absolute; left: 80px; top: 70px; width: 380px; }
-#s3 .who h2 { font-size: 38px; letter-spacing: -.02em; margin-top: 10px; }
-#s3 .who p { font-size: 20px; color: #cfe6d3; margin-top: 10px; line-height: 1.4; }
-#s3 .avatar { width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(150deg, #f4ac13, #e07a1f); display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 800; color: #073e1f; }
-#s3 .stats { position: absolute; left: 500px; right: 70px; top: 110px; display: grid; gap: 16px; }
+/* story */
+.story-s .who { position: absolute; left: 80px; top: 70px; width: 380px; }
+.story-s .who h2 { font-size: 38px; letter-spacing: -.02em; margin-top: 10px; }
+.story-s .who p { font-size: 20px; opacity: .85; margin-top: 10px; line-height: 1.4; }
+.avatar { width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(150deg, #f4ac13, #e07a1f); display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 800; color: #073e1f; }
+.story-s .stats { position: absolute; left: 500px; right: 70px; top: 110px; display: grid; gap: 16px; }
 .stat { background: rgba(255,255,255,.1); border-radius: 18px; padding: 16px 22px; display: flex; align-items: baseline; gap: 14px; }
+.paper .stat { background: #fff; box-shadow: 0 10px 24px rgba(7,62,31,.1); }
 .stat b { font-size: 44px; letter-spacing: -.02em; color: #f4ac13; }
+.paper .stat b { color: #b0570f; }
 .stat span { font-size: 20px; font-weight: 700; }
-#s3 .end { position: absolute; left: 80px; right: 80px; bottom: 70px; font-size: 22px; font-weight: 700; color: #fff; }
+.story-s .end { position: absolute; left: 80px; right: 80px; bottom: 70px; font-size: 22px; font-weight: 700; }
 
-/* S4 tahap */
-#s4 .stages { position: absolute; left: 80px; right: 80px; top: 150px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.stage { background: #fff; border-radius: 20px; padding: 20px 18px; min-height: 250px; box-shadow: 0 16px 34px rgba(7,62,31,.14); display: flex; flex-direction: column; gap: 12px; border-top: 6px solid #1d7a34; }
+/* bigNumber */
+.big-s .box { position: absolute; left: 80px; right: 80px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 14px; }
+.big-s .num { font-size: 120px; font-weight: 800; letter-spacing: -.04em; line-height: 1; color: #f4ac13; }
+.paper.big-s .num { color: #b0570f; }
+.big-s .lbl { font-size: 28px; font-weight: 700; max-width: 720px; line-height: 1.3; }
+.big-s .note { font-size: 15px; opacity: .7; max-width: 640px; }
+
+/* question */
+.q-s .box { position: absolute; left: 110px; right: 110px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+.q-s .qt { font-size: 44px; font-weight: 800; line-height: 1.18; letter-spacing: -.02em; }
+.q-s .qs { font-size: 22px; opacity: .8; line-height: 1.4; }
+
+/* compare */
+.cmp-s .cols { position: absolute; left: 80px; right: 80px; top: 150px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.col { border-radius: 20px; padding: 22px; display: grid; gap: 12px; align-content: start; min-height: 290px; }
+.col h3 { font-size: 22px; letter-spacing: .02em; }
+.col p { font-size: 20px; font-weight: 600; line-height: 1.3; }
+.col.l { background: rgba(180,35,24,.1); border-top: 6px solid #b42318; }
+.col.r { background: rgba(29,122,52,.12); border-top: 6px solid #1d7a34; }
+.dark .col.l, .night .col.l { background: rgba(255,255,255,.07); border-top-color: #ff8a7a; }
+.dark .col.r, .night .col.r { background: rgba(255,255,255,.13); border-top-color: #f4ac13; }
+
+/* stages */
+.stages-s .stages { position: absolute; left: 80px; right: 80px; top: 150px; display: grid; gap: 16px; }
+.stage { background: #fff; color: #10241a; border-radius: 20px; padding: 20px 18px; min-height: 250px; box-shadow: 0 16px 34px rgba(7,62,31,.14); display: flex; flex-direction: column; gap: 12px; border-top: 6px solid #1d7a34; }
 .stage .n { width: 44px; height: 44px; border-radius: 50%; background: #1d7a34; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; }
 .stage .t { font-size: 21px; font-weight: 800; line-height: 1.2; }
 .stage .b { margin-top: auto; font-size: 15px; font-weight: 800; color: #1d7a34; letter-spacing: .04em; }
 
-/* S5 fitur */
-#s5 .feats { position: absolute; left: 80px; right: 80px; top: 150px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+/* features */
+.feat-s .feats { position: absolute; left: 80px; right: 80px; top: 150px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .feat { display: flex; align-items: center; gap: 18px; background: rgba(255,255,255,.1); border-radius: 20px; padding: 22px; font-size: 21px; font-weight: 700; line-height: 1.3; }
+.paper .feat { background: #fff; box-shadow: 0 10px 24px rgba(7,62,31,.1); }
 .feat .ic { font-size: 38px; }
 
-/* S6 kutipan + ajakan */
-#s6 .quote { position: absolute; left: 110px; right: 110px; top: 130px; text-align: center; font-size: 32px; font-weight: 700; line-height: 1.35; color: #10241a; }
-#s6 .quote::before { content: "\201C"; display: block; font-size: 80px; line-height: .6; height: 34px; color: #1d7a34; }
-#s6 .cta { position: absolute; left: 0; right: 0; top: 330px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
-#s6 .btn { background: #1d7a34; color: #fff; border-radius: 99px; padding: 18px 40px; font-weight: 800; font-size: 26px; box-shadow: 0 14px 30px rgba(29,122,52,.35); }
-#s6 .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 22px; color: #10241a; }
-#s6 .brand img { width: 34px; height: 34px; }
+/* quote */
+.quote-s .box { position: absolute; left: 110px; right: 110px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 18px; }
+.quote-s .qt { font-size: 32px; font-weight: 700; line-height: 1.35; }
+.quote-s .qt::before { content: "\201C"; display: block; font-size: 80px; line-height: .6; height: 34px; color: #1d7a34; }
+.dark.quote-s .qt::before, .night.quote-s .qt::before { color: #f4ac13; }
+.quote-s .cite { font-size: 18px; font-weight: 700; opacity: .75; }
+
+/* cta */
+.cta-s .box { position: absolute; left: 110px; right: 110px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 26px; }
+.cta-s .lead { font-size: 30px; font-weight: 700; line-height: 1.35; }
+.cta-s .btn { background: #1d7a34; color: #fff; border-radius: 99px; padding: 18px 40px; font-weight: 800; font-size: 26px; box-shadow: 0 14px 30px rgba(29,122,52,.35); }
+.dark.cta-s .btn, .night.cta-s .btn { background: #f4ac13; color: #073e1f; }
+.cta-s .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 22px; }
+.cta-s .brand img { width: 34px; height: 34px; }
 </style>
 </head>
 <body>
-<div class="scene dark" id="s1">
-  <div class="cover" id="cover"><img id="coverimg" alt=""></div>
-  <div class="txt" id="s1txt"><div class="kicker" id="kicker"></div><h1 id="title">Judul</h1><p class="sub" id="sub"></p><div class="meta" id="meta"></div></div>
-</div>
-<div class="scene paper" id="s2"><h2 id="aud-title">Untuk siapa</h2><div class="list" id="aud"></div></div>
-<div class="scene dark" id="s3">
-  <div class="who" id="who"><div class="avatar">N</div><h2 id="story-title">Cerita</h2><p id="story-lines"></p></div>
-  <div class="stats" id="stats"></div>
-  <div class="end" id="story-end"></div>
-</div>
-<div class="scene paper" id="s4"><h2 id="stages-title">Tahap</h2><div class="stages" id="stages"></div></div>
-<div class="scene dark" id="s5"><h2 id="feat-title">Isi</h2><div class="feats" id="feats"></div></div>
-<div class="scene paper" id="s6"><div class="quote" id="quote"></div><div class="cta" id="cta"><div class="btn" id="btn"></div><div class="brand"><img src="mark.png" alt=""><span>SelfGrow</span></div></div></div>
 <div class="wm" id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+<div class="sub-cap" id="cap"></div>
 
 <script>
 const D = window.DATA;
@@ -89,92 +121,247 @@ const easeOut = (x) => 1 - (1 - x) ** 3;
 const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
 const back = (x) => { const c = 1.5; return 1 + (c + 1) * (x - 1) ** 3 + c * (x - 1) ** 2; };
 function rise(e, p, dist = 24, axis = "Y") { e.style.opacity = p; e.style.transform = `translate${axis}(${(1 - p) * dist}px)`; }
+/** Jarak antar butir yang muncul bergiliran: mulai `from`, selesai sekitar 60% durasi adegan. */
+const stagger = (n, dur, from = 1.0, maxStep = 1.2) => Math.max(0.25, Math.min(maxStep, (dur * 0.6 - from) / Math.max(1, n)));
 
-// Isi dari data (textContent, tanpa HTML).
-$("coverimg").src = "cover.jpg";
-$("kicker").textContent = D.kicker; $("title").textContent = D.title; $("sub").textContent = D.subtitle;
-for (const m of D.meta) $("meta").append(el("span", "", m));
-$("aud-title").textContent = D.audienceTitle;
-D.audience.forEach((a) => { const it = el("div", "item"); it.append(el("span", "dot", "✓"), el("span", "", a)); $("aud").append(it); });
-$("story-title").textContent = D.story.title;
-$("story-lines").textContent = D.story.lines.join(" · ");
-D.story.stats.forEach(([b, s]) => { const st = el("div", "stat"); st.append(el("b", "", b), el("span", "", s)); $("stats").append(st); });
-$("story-end").textContent = D.story.end;
-$("stages-title").textContent = D.stagesTitle;
-D.stages.forEach(([t, b], i) => { const s = el("div", "stage"); s.append(el("div", "n", String(i + 1)), el("div", "t", t), el("div", "b", b)); $("stages").append(s); });
-$("feat-title").textContent = D.featuresTitle;
-D.features.forEach(([ic, t]) => { const f = el("div", "feat"); f.append(el("span", "ic", ic), el("span", "", t)); $("feats").append(f); });
-$("quote").textContent = D.quote; $("btn").textContent = D.cta;
+/*
+ * Kotak adegan. Setiap jenis: build(scene, root) mengisi elemen dan mengembalikan
+ * animate(tLokal, durasi). min(scene) = durasi minimum bila tidak ada narasi.
+ * Semua teks lewat textContent.
+ */
+const KINDS = {
+  cover: {
+    bg: "dark",
+    min: () => 6.5,
+    build(s, r) {
+      r.classList.add("cover-s");
+      const cv = el("div", "cover"); const img = el("img"); img.src = "cover.jpg"; img.alt = ""; cv.append(img);
+      const tx = el("div", "txt");
+      const k = el("div", "kicker", s.kicker ?? ""); const h = el("h1", "", s.title); const sub = el("p", "sub", s.subtitle ?? "");
+      const meta = el("div", "meta"); for (const m of s.meta ?? []) meta.append(el("span", "", m));
+      tx.append(k, h, sub, meta); r.append(cv, tx);
+      return (t) => {
+        const c = back(prog(t, 0.2, 1.3));
+        cv.style.opacity = clamp(c * 1.4);
+        cv.style.transform = `translateY(${(1 - c) * 80}px) perspective(900px) rotateY(${12 * (1 - prog(t, 0.5, 4))}deg)`;
+        rise(k, easeOut(prog(t, 0.9, 1.4)), 16, "X");
+        rise(h, easeOut(prog(t, 1.1, 1.8)), 30, "X");
+        rise(sub, easeOut(prog(t, 1.7, 2.4)), 20, "X");
+        [...meta.children].forEach((m, i) => { rise(m, easeOut(prog(t, 2.5 + i * 0.25, 2.9 + i * 0.25)), 14); });
+      };
+    },
+  },
+  list: {
+    bg: "paper",
+    min: (s) => 2.5 + s.items.length * 1.4,
+    build(s, r) {
+      r.classList.add("list-s");
+      const h = el("h2", "h2", s.title); const list = el("div", "list");
+      s.items.forEach((a, i) => {
+        const it = el("div", "item");
+        const mark = s.mark === "number" ? String(i + 1) : s.mark === "x" ? "✕" : "✓";
+        it.append(el("span", `dot${s.mark === "x" ? " x" : ""}`, mark), el("span", "", a));
+        list.append(it);
+      });
+      r.append(h, list);
+      return (t, dur) => {
+        rise(h, easeOut(prog(t, 0.2, 0.8)));
+        const st = stagger(s.items.length, dur);
+        [...list.children].forEach((it, i) => {
+          rise(it, easeOut(prog(t, 1.0 + i * st, 1.5 + i * st)), 30, "X");
+          it.firstChild.style.transform = `scale(${back(prog(t, 1.2 + i * st, 1.6 + i * st))})`;
+        });
+      };
+    },
+  },
+  story: {
+    bg: "dark",
+    min: (s) => 4 + (s.stats?.length ?? 0) * 1.1,
+    build(s, r) {
+      r.classList.add("story-s");
+      const who = el("div", "who");
+      who.append(el("div", "avatar", s.initial ?? "•"), el("h2", "", s.title), el("p", "", (s.lines ?? []).join(" · ")));
+      const stats = el("div", "stats");
+      for (const [b, l] of s.stats ?? []) { const st = el("div", "stat"); st.append(el("b", "", b), el("span", "", l)); stats.append(st); }
+      const end = el("div", "end", s.end ?? "");
+      r.append(who, stats, end);
+      return (t, dur) => {
+        rise(who, easeOut(prog(t, 0.2, 0.9)));
+        const st = stagger(stats.children.length, dur * 0.8, 1.6, 0.9);
+        [...stats.children].forEach((x, i) => { rise(x, easeOut(prog(t, 1.6 + i * st, 2.1 + i * st)), 40, "X"); });
+        const e0 = Math.max(2.5, dur - 2.6);
+        rise(end, easeOut(prog(t, e0, e0 + 0.6)));
+      };
+    },
+  },
+  bigNumber: {
+    bg: "night",
+    min: () => 5,
+    build(s, r) {
+      r.classList.add("big-s");
+      const box = el("div", "box");
+      const k = el("div", "kicker", s.kicker ?? ""); const n = el("div", "num", s.value);
+      const l = el("div", "lbl", s.label ?? ""); const note = el("div", "note", s.note ?? "");
+      box.append(k, n, l, note); r.append(box);
+      // Angka di depan nilai (mis. "Rp1,6 jt", "73%") dihitung naik; sisanya tetap.
+      const m = /^(\D*)(\d+(?:[.,]\d+)?)(.*)$/.exec(s.value);
+      return (t) => {
+        rise(k, easeOut(prog(t, 0.2, 0.7)), 14);
+        const p = easeOut(prog(t, 0.5, 2.0));
+        n.style.opacity = clamp(p * 2);
+        n.style.transform = `scale(${0.7 + 0.3 * back(prog(t, 0.5, 1.3))})`;
+        if (m) {
+          const dec = (m[2].split(/[.,]/)[1] ?? "").length;
+          const v = Number(m[2].replace(",", ".")) * p;
+          n.textContent = `${m[1]}${v.toFixed(dec).replace(".", ",")}${m[3]}`;
+        }
+        rise(l, easeOut(prog(t, 1.6, 2.2)), 18);
+        rise(note, easeOut(prog(t, 2.4, 3.0)), 10);
+      };
+    },
+  },
+  question: {
+    bg: "dark",
+    min: () => 4.5,
+    build(s, r) {
+      r.classList.add("q-s");
+      const box = el("div", "box");
+      const q = el("div", "qt", s.text); const sub = el("div", "qs", s.sub ?? "");
+      box.append(q, sub); r.append(box);
+      return (t) => { rise(q, easeOut(prog(t, 0.3, 1.2)), 30); rise(sub, easeOut(prog(t, 1.6, 2.3)), 16); };
+    },
+  },
+  compare: {
+    bg: "paper",
+    min: (s) => 3 + Math.max(s.left.items.length, s.right.items.length) * 1.2,
+    build(s, r) {
+      r.classList.add("cmp-s");
+      const h = el("h2", "h2", s.title ?? ""); const cols = el("div", "cols");
+      const col = (side, c) => { const x = el("div", `col ${side}`); x.append(el("h3", "", c.title)); for (const it of c.items) x.append(el("p", "", it)); return x; };
+      const L = col("l", s.left); const R = col("r", s.right);
+      cols.append(L, R); r.append(h, cols);
+      return (t, dur) => {
+        rise(h, easeOut(prog(t, 0.2, 0.8)));
+        const half = Math.max(1.6, dur * 0.42);
+        for (const [c, t0] of [[L, 0.9], [R, 0.9 + half]]) {
+          rise(c, easeOut(prog(t, t0, t0 + 0.6)), 30);
+          [...c.querySelectorAll("p")].forEach((p, i) => { rise(p, easeOut(prog(t, t0 + 0.5 + i * 0.5, t0 + 0.9 + i * 0.5)), 14); });
+        }
+      };
+    },
+  },
+  stages: {
+    bg: "paper",
+    min: (s) => 2.5 + s.items.length * 1.6,
+    build(s, r) {
+      r.classList.add("stages-s");
+      const h = el("h2", "h2", s.title); const g = el("div", "stages");
+      g.style.gridTemplateColumns = `repeat(${s.items.length}, 1fr)`;
+      s.items.forEach(([t, b], i) => { const x = el("div", "stage"); x.append(el("div", "n", String(i + 1)), el("div", "t", t), el("div", "b", b ?? "")); g.append(x); });
+      r.append(h, g);
+      return (t, dur) => {
+        rise(h, easeOut(prog(t, 0.2, 0.8)));
+        const st = stagger(s.items.length, dur, 1.0, 1.6);
+        [...g.children].forEach((x, i) => {
+          const p = back(prog(t, 1.0 + i * st, 1.6 + i * st));
+          x.style.opacity = clamp(p * 1.5); x.style.transform = `translateY(${(1 - p) * 50}px)`;
+        });
+      };
+    },
+  },
+  features: {
+    bg: "dark",
+    min: (s) => 2.5 + s.items.length * 1.2,
+    build(s, r) {
+      r.classList.add("feat-s");
+      const h = el("h2", "h2", s.title); const g = el("div", "feats");
+      for (const [ic, t] of s.items) { const f = el("div", "feat"); f.append(el("span", "ic", ic), el("span", "", t)); g.append(f); }
+      r.append(h, g);
+      return (t, dur) => {
+        rise(h, easeOut(prog(t, 0.2, 0.8)));
+        const st = stagger(s.items.length, dur);
+        [...g.children].forEach((f, i) => {
+          const p = back(prog(t, 1.0 + i * st, 1.5 + i * st));
+          f.style.opacity = clamp(p * 1.5); f.style.transform = `scale(${0.85 + 0.15 * p})`;
+        });
+      };
+    },
+  },
+  quote: {
+    bg: "paper",
+    min: (s) => Math.max(4.5, s.text.length / 16),
+    build(s, r) {
+      r.classList.add("quote-s");
+      const box = el("div", "box"); const q = el("div", "qt", s.text); const c = el("div", "cite", s.cite ? `— ${s.cite}` : "");
+      box.append(q, c); r.append(box);
+      return (t) => { rise(q, easeOut(prog(t, 0.2, 1.0)), 20); rise(c, easeOut(prog(t, 1.4, 2.0)), 10); };
+    },
+  },
+  cta: {
+    bg: "paper",
+    min: () => 5,
+    build(s, r) {
+      r.classList.add("cta-s");
+      const box = el("div", "box");
+      const lead = el("div", "lead", s.lead ?? ""); const btn = el("div", "btn", s.button);
+      const brand = el("div", "brand"); const img = el("img"); img.src = "mark.png"; img.alt = ""; brand.append(img, el("span", "", "SelfGrow"));
+      if (s.lead) box.append(lead);
+      box.append(btn, brand); r.append(box);
+      return (t) => {
+        rise(lead, easeOut(prog(t, 0.2, 0.9)), 20);
+        const k = back(prog(t, s.lead ? 1.0 : 0.3, s.lead ? 1.8 : 1.1));
+        btn.style.opacity = clamp(k * 1.4);
+        btn.style.transform = `translateY(${(1 - k) * 30}px) scale(${1 + 0.035 * Math.sin(Math.max(0, t - 2.2) * 5) * prog(t, 2.2, 2.6)})`;
+        rise(brand, easeOut(prog(t, 1.6, 2.2)), 10);
+      };
+    },
+  },
+};
 
-const SC = { s1: [0, 6.5], s2: [6.5, 14.5], s3: [14.5, 23], s4: [23, 34], s5: [34, 42.5], s6: [42.5, 52] };
-const DUR = 52, FADE = 0.4;
-function vis(id, t) {
-  const [a, b] = SC[id];
-  const inn = a === 0 ? 1 : easeInOut(prog(t, a - FADE, a + FADE * 0.3));
-  const out = b >= DUR ? 1 : 1 - easeInOut(prog(t, b - FADE * 0.3, b + FADE));
-  return Math.min(inn, out);
+// Bangun adegan dan garis waktu. Durasi: `dur` dari data (mis. panjang narasi) atau minimum jenisnya.
+const FADE = 0.4;
+const timeline = [];
+let cursor = 0;
+for (const s of D.scenes) {
+  const kind = KINDS[s.type];
+  if (!kind) throw new Error(`Jenis adegan tidak dikenal: ${s.type}`);
+  const bg = s.bg ?? kind.bg;
+  const root = el("div", `scene ${bg}`);
+  document.body.insertBefore(root, $("wm"));
+  const animate = kind.build(s, root);
+  const dur = Math.max(kind.min(s), s.dur ?? 0);
+  timeline.push({ type: s.type, start: cursor, dur, root, animate, bg, caption: s.say ?? null });
+  cursor += dur;
 }
+const DUR = cursor;
 
 window.DURATION = DUR;
+window.TIMELINE = timeline.map(({ type, start, dur }) => ({ type, start, dur }));
 window.render = (t) => {
-  for (const id of Object.keys(SC)) $(id).style.opacity = vis(id, t);
-  $("wm").style.opacity = t > 6.5 && t < 42 ? 0.85 : 0;
-  $("wm").style.color = ["s2", "s4"].some((id) => t >= SC[id][0] && t < SC[id][1]) ? "#10241a" : "#fff";
-
-  // S1
-  const c = back(prog(t, 0.2, 1.3));
-  $("cover").style.opacity = clamp(c * 1.4);
-  $("cover").style.transform = `translateY(${(1 - c) * 80}px) perspective(900px) rotateY(${12 * (1 - prog(t, 0.5, 4))}deg)`;
-  rise($("kicker"), easeOut(prog(t, 0.9, 1.4)), 16, "X");
-  rise($("title"), easeOut(prog(t, 1.1, 1.8)), 30, "X");
-  rise($("sub"), easeOut(prog(t, 1.7, 2.4)), 20, "X");
-  [...$("meta").children].forEach((m, i) => {
-    rise(m, easeOut(prog(t, 2.5 + i * 0.25, 2.9 + i * 0.25)), 14);
+  let current = null;
+  timeline.forEach((sc, i) => {
+    const a = sc.start;
+    const b = sc.start + sc.dur;
+    const inn = i === 0 ? 1 : easeInOut(prog(t, a - FADE, a + FADE * 0.3));
+    const out = i === timeline.length - 1 ? 1 : 1 - easeInOut(prog(t, b - FADE * 0.3, b + FADE));
+    const o = Math.min(inn, out);
+    sc.root.style.opacity = o;
+    sc.root.style.visibility = o > 0 ? "visible" : "hidden";
+    if (o > 0) sc.animate(t - a, sc.dur);
+    if (t >= a && t < b) current = sc;
   });
-
-  // S2
-  const t2 = t - SC.s2[0];
-  rise($("aud-title"), easeOut(prog(t2, 0.2, 0.8)));
-  [...$("aud").children].forEach((it, i) => {
-    rise(it, easeOut(prog(t2, 1.0 + i * 1.1, 1.5 + i * 1.1)), 30, "X");
-    it.querySelector(".dot").style.transform = `scale(${back(prog(t2, 1.2 + i * 1.1, 1.6 + i * 1.1))})`;
-  });
-
-  // S3
-  const t3 = t - SC.s3[0];
-  rise($("who"), easeOut(prog(t3, 0.2, 0.9)));
-  [...$("stats").children].forEach((s, i) => {
-    rise(s, easeOut(prog(t3, 1.6 + i * 0.9, 2.1 + i * 0.9)), 40, "X");
-  });
-  rise($("story-end"), easeOut(prog(t3, 5.4, 6.0)));
-
-  // S4
-  const t4 = t - SC.s4[0];
-  rise($("stages-title"), easeOut(prog(t4, 0.2, 0.8)));
-  [...$("stages").children].forEach((s, i) => {
-    const p = back(prog(t4, 1.0 + i * 1.6, 1.6 + i * 1.6));
-    s.style.opacity = clamp(p * 1.5);
-    s.style.transform = `translateY(${(1 - p) * 50}px)`;
-  });
-
-  // S5
-  const t5 = t - SC.s5[0];
-  rise($("feat-title"), easeOut(prog(t5, 0.2, 0.8)));
-  [...$("feats").children].forEach((f, i) => {
-    const p = back(prog(t5, 1.0 + i * 1.1, 1.5 + i * 1.1));
-    f.style.opacity = clamp(p * 1.5); f.style.transform = `scale(${0.85 + 0.15 * p})`;
-  });
-
-  // S6
-  const t6 = t - SC.s6[0];
-  const q = easeOut(prog(t6, 0.2, 1.0));
-  const qOut = easeInOut(prog(t6, 4.6, 5.2));
-  $("quote").style.opacity = q * (1 - qOut * 0.0);
-  $("quote").style.transform = `translateY(${(1 - q) * 20 - qOut * 40}px) scale(${1 - qOut * 0.12})`;
-  const k = back(prog(t6, 4.8, 5.6));
-  $("cta").style.opacity = clamp(k * 1.4);
-  $("cta").style.transform = `translateY(${(1 - k) * 40 + 20}px)`;
-  $("btn").style.transform = `scale(${1 + 0.035 * Math.sin(Math.max(0, t6 - 6) * 5) * prog(t6, 6, 6.4)})`;
+  const wm = $("wm");
+  const showWm = current && current.type !== "cover" && current.type !== "cta";
+  wm.style.opacity = showWm ? 0.85 : 0;
+  wm.style.color = current && current.bg === "paper" ? "#10241a" : "#fff";
+  // Teks narasi di layar (subtitle), bila DATA.captions aktif.
+  const cap = $("cap");
+  const line = current && D.captions ? current.caption : null;
+  if (cap.dataset.line !== (line ?? "")) {
+    cap.dataset.line = line ?? "";
+    cap.replaceChildren();
+    if (line) cap.append(el("span", "", line));
+  }
 };
 render(0);
 </script>
