@@ -59,6 +59,10 @@ di luar kendali memudar di cincin luar, yang dalam kendali bersinar di tengah.
 tabungan yang terbuka. Halaman pertama mencetak minggu buruk (paylater merah), halaman berganti,
 setoran tercetak bulan demi bulan, dan penarikan darurat dicap "tanpa utang".
 
+**Contoh ketujuh: "Burnout Bukan Lemah"** (`burnout.mjs` + `burnout.html`). Konsep: langit senja
+dan satu baterai besar yang terkuras hari demi hari, retak untuk tiga tanda burnout WHO, lalu
+diisi kembali oleh empat jenis pemulihan yang dicolokkan satu per satu.
+
 Panduan ini bukan cetakan. Setiap buku punya cara masuk yang berbeda. Buku keuangan mungkin
 dibuka dengan angka yang mengejutkan, buku tentang duka dibuka dengan satu kalimat yang
 lembut, buku kebiasaan dibuka dengan pertanyaan. Pilih adegan yang melayani buku itu, lalu

@@ -1504,4 +1504,82 @@ export const DEMO_TOOLS = [
       ],
     },
   },
+  {
+    slug: "cek-tiga-tanda-burnout",
+    topic: "top_burnout",
+    title: "Cek Tiga Tanda Burnout",
+    summary: "Nilai tiga tanda burnout menurut WHO dan lihat mana yang paling menonjol.",
+    config: {
+      version: 1,
+      intro:
+        "Nilai dua minggu terakhir, 1 = hampir tidak pernah, 5 = hampir setiap hari. Ini bukan diagnosis.",
+      submitLabel: "Lihat hasil",
+      inputs: [
+        {
+          key: "lelah",
+          label: "Lelah yang tidak hilang walau sudah tidur atau libur",
+          type: "number",
+          required: true,
+          min: 1,
+          max: 5,
+          unit: "/5",
+          placeholder: "4",
+        },
+        {
+          key: "jarak",
+          label: "Sinis, malas peduli, atau ingin menjauh dari pekerjaan",
+          type: "number",
+          required: true,
+          min: 1,
+          max: 5,
+          unit: "/5",
+          placeholder: "3",
+        },
+        {
+          key: "mampu",
+          label: "Merasa tidak lagi mampu atau hasil kerja tidak berarti",
+          type: "number",
+          required: true,
+          min: 1,
+          max: 5,
+          unit: "/5",
+          placeholder: "3",
+        },
+      ],
+      computed: [
+        {
+          key: "total",
+          label: "Total (3–15)",
+          formula: "lelah + jarak + mampu",
+          format: "number",
+          show: true,
+        },
+        {
+          key: "utama",
+          label: "Tanda yang paling menonjol",
+          formula:
+            'if(and(lelah >= jarak, lelah >= mampu), "kelelahan", if(jarak >= mampu, "menjauh dari pekerjaan", "merasa tidak mampu"))',
+          format: "text",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "total >= 11",
+          text: "Skormu {{total}}. Ketiga tanda cukup kuat. Bicarakan dengan tenaga kesehatan atau psikolog, dan pertimbangkan bicara dengan atasan tentang beban kerja.",
+          variant: "warning",
+        },
+        {
+          when: "and(total >= 7, total < 11)",
+          text: "Skormu {{total}}, paling menonjol: {{utama}}. Mulai pemulihan dari Bab 4 dan lihat pola beban kerjamu di Bab 5.",
+          variant: "tip",
+        },
+        {
+          when: "total < 7",
+          text: "Skormu {{total}}. Tanda burnout masih rendah. Jaga kebiasaan pemulihanmu supaya tetap begitu.",
+          variant: "info",
+        },
+      ],
+    },
+  },
 ];

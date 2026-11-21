@@ -17,6 +17,7 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { BURNOUT_INTRO } from "./burnout.mjs";
 import { DARURAT_INTRO } from "./darurat.mjs";
 import { GULA_INTRO } from "./gula.mjs";
 import { HARGA_INTRO } from "./harga.mjs";
@@ -50,6 +51,7 @@ const VIDEOS = [
   MINGGU_INTRO,
   STOIK_INTRO,
   DARURAT_INTRO,
+  BURNOUT_INTRO,
 ].filter((v) => !ONLY || v.slug === ONLY);
 const VOICE = { languageCode: "id-ID", name: "id-ID-Wavenet-A" };
 /** Jeda sebelum narasi mulai di tiap adegan, dan jeda setelahnya sebelum adegan berganti. */
