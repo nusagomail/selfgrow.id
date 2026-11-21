@@ -19,13 +19,17 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { writeMusic } from "./music.mjs";
 import { PAYLATER_INTRO } from "./paylater.mjs";
+import { SCROLL_INTRO } from "./scroll.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "../../..");
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const FPS = 30;
-const VIDEOS = [PAYLATER_INTRO];
+// Render satu video saja: --only <slug>
+const onlyArg = process.argv.indexOf("--only");
+const ONLY = onlyArg >= 0 ? process.argv[onlyArg + 1] : null;
+const VIDEOS = [PAYLATER_INTRO, SCROLL_INTRO].filter((v) => !ONLY || v.slug === ONLY);
 const VOICE = { languageCode: "id-ID", name: "id-ID-Wavenet-A" };
 /** Jeda sebelum narasi mulai di tiap adegan, dan jeda setelahnya sebelum adegan berganti. */
 const LEAD = 0.6;

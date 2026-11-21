@@ -8,6 +8,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { FIGURE_CSS, FIGURES } from "./books/paylater-figures.mjs";
+import { SCROLL_FIGURE_CSS, SCROLL_FIGURES } from "./books/scroll-figures.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "../..");
@@ -20,7 +21,12 @@ const font = pathToFileURL(
   ),
 ).href;
 
-const SETS = { "lepas-dari-jerat-paylater": { figures: FIGURES, css: FIGURE_CSS } };
+const SETS = {
+  "lepas-dari-jerat-paylater": { figures: FIGURES, css: FIGURE_CSS },
+  "lepas-dari-scroll-tanpa-ujung": { figures: SCROLL_FIGURES, css: SCROLL_FIGURE_CSS },
+};
+// Render satu buku saja: node render-figures.mjs <slug>
+const only = process.argv[2];
 
 const browser = await chromium.launch();
 const tab = await browser.newPage({
@@ -30,6 +36,7 @@ const tab = await browser.newPage({
 const work = join(tmpdir(), "selfgrow-figures");
 mkdirSync(work, { recursive: true });
 for (const [slug, set] of Object.entries(SETS)) {
+  if (only && slug !== only) continue;
   const out = join(here, "figures", slug);
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { recursive: true });

@@ -321,6 +321,11 @@
 .book-flow .table-wrap {
   overflow: visible;
   margin: 1em 0;
+  /* Tabel pendek tidak dipotong antarhalaman; baris judul tidak ditinggal sendirian. */
+  break-inside: avoid;
+}
+.book-flow tr:first-child {
+  break-after: avoid;
 }
 .book-flow table {
   table-layout: auto;
