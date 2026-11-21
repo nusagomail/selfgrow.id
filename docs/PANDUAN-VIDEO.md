@@ -36,10 +36,16 @@ Selebihnya bebas.
 | `stages` | 2–5 tahap berurutan dengan label bab | Buku berjalur (program, langkah demi langkah) |
 | `features` | 2–4 kotak ikon: apa saja yang ada di dalam buku | Menonjolkan kuis, kalkulator, latihan, infografis |
 | `quote` | Satu kalimat kuat dari buku atau tokoh (+ nama) | Puncak emosi sebelum ajakan |
+| `chat` | Layar ponsel dengan pesan yang muncul bergiliran (ada animasi "sedang mengetik") + judul di samping | Buku komunikasi dan relasi; menunjukkan percakapan sebelum dan sesudah |
 | `cta` | Kalimat pendek + tombol + logo | Selalu di akhir |
 
 Setiap adegan boleh memilih latar: `dark` (hijau tua), `paper` (krem), atau `night` (biru malam).
 Selang-seling latar membantu mata merasakan pergantian adegan.
+
+**Tema warna per buku.** Warna bawaan adalah hijau SelfGrow. Supaya video ikut identitas bukunya,
+data video boleh memuat `theme` (latar `dark`/`night`/`paper`, warna `accent` dan `primary`).
+Contoh: "Berani Bilang Tidak" memakai ungu tua dan koral, sama dengan infografisnya. Logo SelfGrow
+tetap muncul di setiap video.
 
 ### Contoh susunan yang berbeda
 
@@ -47,6 +53,7 @@ Selang-seling latar membantu mata merasakan pergantian adegan.
 - **Kebiasaan**: question → cover → compare (pagi biasanya vs pagi baru) → stages → cta.
 - **Kesehatan mental**: cover (latar `night`) → quote → list (lembut, tanpa ✕) → features → cta. Tanpa angka mengejutkan.
 - **Karier**: bigNumber → cover → story → features → cta.
+- **Komunikasi (Berani Bilang Tidak)**: chat (jawaban lama) → cover → bigNumber → list tokoh → chat (jawaban baru) → features → cta, dengan tema ungu-koral.
 
 ---
 
