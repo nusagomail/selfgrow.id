@@ -126,6 +126,34 @@ dijalankan (bab akhir), dan penutup yang memberi harapan.
 
 ---
 
+## 4a. Identitas visual per buku (jangan terasa seperti template)
+
+Setiap buku harus terasa punya "wajah" sendiri. Pembaca yang membuka dua buku SelfGrow berturut-turut
+tidak boleh merasa sedang membaca formulir yang sama dengan isi berbeda. Sebelum menulis, rancang
+dulu identitasnya, baru menulis:
+
+1. **Bentuk cerita.** Satu tokoh yang diikuti sampai akhir (Paylater, Scroll), beberapa tokoh dalam
+   situasi berbeda (Berani Bilang Tidak), tanpa tokoh sama sekali, atau surat untuk pembaca. Pilih
+   yang paling cocok dengan topiknya.
+2. **Jenis gambar.** Tanyakan: bentuk apa yang paling menjelaskan gagasan buku ini? Buku keuangan
+   cocok dengan grafik dan tabel hitungan; buku komunikasi dengan tangkapan chat, spektrum, dan
+   kartu kalimat; buku emosi mungkin dengan ilustrasi tenang tanpa angka sama sekali. Jangan
+   mengulang jenis gambar buku sebelumnya hanya karena sudah ada.
+3. **Gaya gambar.** Warna, huruf, dan bentuk kartu infografis dirancang per buku (lihat
+   `scripts/demo/books/*-figures.mjs`). Tiga buku pertama memakai tiga gaya berbeda: kartu krem
+   berangka, kartu krem dengan grid hari, dan stiker bergaris tebal dengan huruf serif dan tulisan
+   tangan.
+4. **Unsur interaktif yang sesuai.** Kuis ya/tidak, kuis berskala, kalkulator angka, atau tool yang
+   menyusun kalimat. Pilih yang melayani tujuan bab, bukan karena "setiap buku harus punya kuis".
+5. **Irama bab.** Variasikan pembuka (cerita, percakapan, pertanyaan, data) dan penutup (renungan,
+   intisari, latihan, satu kalimat kuat). Tidak setiap bab perlu ditutup dengan kotak yang sama.
+6. **Video ikut identitasnya.** Susunan adegan dan tema warna video mengikuti buku (PANDUAN-VIDEO).
+
+Pertanyaan pemeriksa: *"Kalau sampulnya ditutup, apakah orang bisa menebak ini buku yang mana dari
+gambar dan iramanya saja?"*
+
+---
+
 ## 5. Gaya bahasa
 
 - Sapa pembaca dengan **"kamu"**, kecuali kategori dan pembacanya menuntut lain.

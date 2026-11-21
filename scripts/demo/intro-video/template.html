@@ -98,6 +98,20 @@ body { font-family: Jakarta, sans-serif; color: #fff; }
 .dark.quote-s .qt::before, .night.quote-s .qt::before { color: #f4ac13; }
 .quote-s .cite { font-size: 18px; font-weight: 700; opacity: .75; }
 
+/* chat */
+.chat-s .wrap { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: center; padding: 0 80px; }
+.chat-s .side .kicker { margin-bottom: 12px; }
+.chat-s .side h2 { font-size: 36px; line-height: 1.15; letter-spacing: -.02em; }
+.chat-s .side p { font-size: 19px; opacity: .8; margin-top: 12px; line-height: 1.4; }
+.chat-s .phone { background: #f2ece6; border-radius: 30px; padding: 18px 14px; height: 440px; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; box-shadow: 0 24px 50px rgba(0,0,0,.35); border: 6px solid #1b1420; overflow: hidden; }
+.chat-s .who { position: absolute; top: 0; }
+.bubble { max-width: 82%; padding: 10px 13px; border-radius: 16px; font-size: 16px; line-height: 1.35; color: #1b1420; }
+.bubble.them { background: #fff; align-self: flex-start; border-bottom-left-radius: 4px; }
+.bubble.me { background: #ffd9c7; align-self: flex-end; border-bottom-right-radius: 4px; }
+.bubble.me.good { background: #bfe8e4; }
+.typing { align-self: flex-end; background: #ffd9c7; border-radius: 16px; padding: 10px 14px; display: flex; gap: 5px; }
+.typing i { width: 8px; height: 8px; border-radius: 50%; background: #8a6f78; display: block; }
+
 /* cta */
 .cta-s .box { position: absolute; left: 110px; right: 110px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 26px; }
 .cta-s .lead { font-size: 30px; font-weight: 700; line-height: 1.35; }
@@ -113,6 +127,24 @@ body { font-family: Jakarta, sans-serif; color: #fff; }
 
 <script>
 const D = window.DATA;
+// Tema warna per buku (opsional): latar gelap/malam dan warna aksen, supaya video ikut identitas buku.
+if (D.theme) {
+  const t = D.theme;
+  const css = [
+    t.dark && `.dark{background:${t.dark}}`,
+    t.night && `.night{background:${t.night}}`,
+    t.paper && `.paper{background:${t.paper}}`,
+    t.accent &&
+      `.kicker,.big-s .num,.stat b,.dark .kicker,.night .kicker{color:${t.accent}}.dark .item .dot,.night .item .dot,.dark.cta-s .btn,.night.cta-s .btn{background:${t.accent};color:${t.accentInk ?? "#fff"}}.dark.quote-s .qt::before,.night.quote-s .qt::before{color:${t.accent}}`,
+    t.primary &&
+      `.paper .kicker{color:${t.primary}}.paper.cta-s .btn,.item .dot,.stage .n{background:${t.primary}}.stage{border-top-color:${t.primary}}.stage .b,.quote-s .qt::before{color:${t.primary}}`,
+  ]
+    .filter(Boolean)
+    .join("");
+  const st = document.createElement("style");
+  st.textContent = css;
+  document.head.append(st);
+}
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -295,6 +327,48 @@ const KINDS = {
       const box = el("div", "box"); const q = el("div", "qt", s.text); const c = el("div", "cite", s.cite ? `— ${s.cite}` : "");
       box.append(q, c); r.append(box);
       return (t) => { rise(q, easeOut(prog(t, 0.2, 1.0)), 20); rise(c, easeOut(prog(t, 1.4, 2.0)), 10); };
+    },
+  },
+  chat: {
+    bg: "night",
+    min: (s) => 2.5 + s.messages.length * 1.6,
+    build(s, r) {
+      r.classList.add("chat-s");
+      const wrap = el("div", "wrap");
+      const side = el("div", "side");
+      side.append(el("div", "kicker", s.kicker ?? ""), el("h2", "", s.title ?? ""), el("p", "", s.sub ?? ""));
+      const phone = el("div", "phone");
+      const items = s.messages.map((m) => {
+        const b = el("div", `bubble ${m.from}${m.good ? " good" : ""}`, m.text);
+        let typing = null;
+        if (m.from === "me") {
+          typing = el("div", "typing");
+          typing.append(el("i"), el("i"), el("i"));
+          phone.append(typing);
+        }
+        phone.append(b);
+        return { b, typing };
+      });
+      wrap.append(side, phone);
+      r.append(wrap);
+      return (t, dur) => {
+        rise(side, easeOut(prog(t, 0.2, 0.9)), 24, "X");
+        const step = Math.max(0.9, Math.min(2.2, (dur * 0.8 - 0.8) / Math.max(1, items.length)));
+        items.forEach(({ b, typing }, i) => {
+          const t0 = 0.8 + i * step;
+          const typeFor = typing ? Math.min(0.9, step * 0.5) : 0;
+          if (typing) {
+            const on = t >= t0 && t < t0 + typeFor;
+            typing.style.display = on ? "flex" : "none";
+            [...typing.children].forEach((d, k) => { d.style.opacity = 0.35 + 0.65 * Math.abs(Math.sin((t - t0) * 6 + k * 0.8)); });
+          }
+          const shown = t >= t0 + typeFor;
+          b.style.display = shown ? "block" : "none";
+          const p = easeOut(prog(t, t0 + typeFor, t0 + typeFor + 0.35));
+          b.style.opacity = p;
+          b.style.transform = `translateY(${(1 - p) * 12}px) scale(${0.96 + 0.04 * p})`;
+        });
+      };
     },
   },
   cta: {
