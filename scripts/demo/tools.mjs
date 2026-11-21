@@ -815,4 +815,151 @@ export const DEMO_TOOLS = [
       ],
     },
   },
+  {
+    slug: "biaya-tidak-nego",
+    topic: "top_gaji-negosiasi",
+    title: "Kalkulator Biaya Tidak Menawar",
+    summary:
+      "Berapa uang yang hilang dalam lima tahun kalau gaji awalmu lebih rendah dari seharusnya.",
+    config: {
+      version: 1,
+      intro:
+        "Kenaikan gaji biasanya dihitung dalam persen dari gaji lama. Selisih kecil di awal ikut naik setiap tahun.",
+      submitLabel: "Hitung",
+      inputs: [
+        {
+          key: "selisih",
+          label: "Selisih gaji per bulan (yang bisa kamu dapat kalau menawar)",
+          type: "number",
+          required: true,
+          min: 0,
+          unit: "Rp",
+          placeholder: "1000000",
+        },
+        {
+          key: "naik",
+          label: "Rata-rata kenaikan gaji per tahun",
+          type: "number",
+          required: true,
+          min: 0,
+          max: 50,
+          unit: "%",
+          placeholder: "8",
+        },
+        {
+          key: "bulan",
+          label: "Gaji dibayar berapa kali setahun (12 + THR = 13)",
+          type: "number",
+          required: true,
+          min: 12,
+          max: 16,
+          placeholder: "13",
+        },
+      ],
+      computed: [
+        {
+          key: "g",
+          label: "Faktor kenaikan",
+          formula: "1 + naik / 100",
+          format: "number",
+          show: false,
+        },
+        {
+          key: "tahun1",
+          label: "Hilang di tahun pertama",
+          formula: "selisih * bulan",
+          format: "currency_idr",
+          show: true,
+        },
+        {
+          key: "lima",
+          label: "Hilang dalam 5 tahun",
+          formula: "round(selisih * bulan * (1 + g + g * g + g * g * g + g * g * g * g))",
+          format: "currency_idr",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "selisih > 0",
+          text: "Percakapan 10 menit dengan HR bernilai sekitar {{lima}} dalam lima tahun. Itu alasan yang cukup untuk menyiapkan diri.",
+          variant: "info",
+        },
+      ],
+    },
+  },
+  {
+    slug: "penyusun-kalimat-nego",
+    topic: "top_gaji-negosiasi",
+    title: "Penyusun Kalimat Nego Gaji",
+    summary: "Menyusun jawaban yang sopan dan jelas saat HR bertanya atau memberi tawaran.",
+    config: {
+      version: 1,
+      intro: "Isi dengan angka hasil risetmu. Kalimatnya bisa langsung kamu latih dan sesuaikan.",
+      submitLabel: "Susun kalimat",
+      inputs: [
+        {
+          key: "situasi",
+          label: "Situasinya",
+          type: "select",
+          required: true,
+          options: [
+            { value: "tanya", label: "HR bertanya gaji yang diharapkan" },
+            { value: "tawar", label: "Tawaran sudah datang, angkanya di bawah harapan" },
+            { value: "naik", label: "Minta kenaikan ke atasan" },
+          ],
+        },
+        {
+          key: "bawah",
+          label: "Batas bawah rentangmu (tulis seperti diucapkan)",
+          type: "text",
+          required: true,
+          placeholder: "9,5 juta",
+        },
+        {
+          key: "atas",
+          label: "Batas atas rentangmu",
+          type: "text",
+          required: true,
+          placeholder: "11 juta",
+        },
+        {
+          key: "alasan",
+          label: "Alasan terkuatmu",
+          type: "select",
+          required: true,
+          options: [
+            { value: "pasar", label: "Data gaji pasar untuk peran ini" },
+            { value: "hasil", label: "Hasil kerja yang terukur" },
+            { value: "skill", label: "Keahlian khusus yang dibutuhkan peran ini" },
+          ],
+        },
+      ],
+      computed: [
+        {
+          key: "dasar",
+          label: "Alasan",
+          formula:
+            'if(alasan == "pasar", "Berdasarkan riset gaji untuk peran dan pengalaman seperti ini", if(alasan == "hasil", "Melihat hasil yang sudah saya capai, termasuk yang kita bahas tadi", "Mengingat keahlian khusus yang dibutuhkan di peran ini"))',
+          format: "text",
+          show: false,
+        },
+        {
+          key: "kalimat",
+          label: "Kalimatmu",
+          formula:
+            'if(situasi == "tanya", concat("Terima kasih sudah bertanya. ", dasar, ", rentang yang saya harapkan Rp", bawah, " sampai Rp", atas, " per bulan. Saya terbuka mendiskusikan paket secara keseluruhan."), if(situasi == "tawar", concat("Terima kasih atas tawarannya, saya senang sekali dengan peran ini. ", dasar, ", saya berharap angkanya bisa di kisaran Rp", bawah, " sampai Rp", atas, ". Apakah ada ruang untuk itu?"), concat("Saya ingin membicarakan kompensasi saya. ", dasar, ", saya mengusulkan penyesuaian ke kisaran Rp", bawah, " sampai Rp", atas, ". Apa yang perlu saya tunjukkan supaya ini bisa disetujui?")))',
+          format: "text",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "1 == 1",
+          text: "Setelah menyebut angka, berhenti bicara. Biarkan hening sebentar; jangan buru-buru menurunkan angkamu sendiri.",
+          variant: "tip",
+        },
+      ],
+    },
+  },
 ];
