@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<!--
+  Video pengantar "Burnout Bukan Lemah" (D46): dirancang khusus. Satu dunia sepanjang video:
+  langit senja dan satu baterai besar milik Nadia. Baterai terkuras hari demi hari, tiga retakan
+  muncul untuk tiga tanda burnout WHO, lalu empat jenis pemulihan dicolokkan satu per satu dan
+  mengisinya kembali. Kontrak: DURATION, TIMELINE, render(t).
+-->
+<style>
+@font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: SgSerif; src: url(serif.woff2) format("woff2"); font-weight: 400; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 960px; height: 540px; overflow: hidden; }
+body { font-family: Jakarta, sans-serif; color: #3a2f3f; }
+#stage { position: absolute; inset: 0; background: linear-gradient(160deg, #ffd9c2 0%, #f6dfe3 45%, #e5dcf3 100%); }
+#bat { position: absolute; left: 110px; top: 70px; width: 200px; height: 350px; border: 10px solid #3a2f3f; border-radius: 30px; background: rgba(255,255,255,.55); overflow: hidden; }
+#cap { position: absolute; left: 175px; top: 48px; width: 70px; height: 24px; border-radius: 8px 8px 0 0; background: #3a2f3f; }
+#fill { position: absolute; left: 10px; right: 10px; bottom: 10px; border-radius: 16px; }
+#pct { position: absolute; left: 110px; top: 200px; width: 200px; text-align: center; font-family: SgSerif, serif; font-size: 56px; color: #3a2f3f; text-shadow: 0 2px 0 rgba(255,255,255,.6); }
+#day { position: absolute; left: 110px; top: 438px; width: 200px; text-align: center; font-weight: 800; font-size: 20px; }
+.crack { position: absolute; height: 4px; background: #3a2f3f; border-radius: 2px; transform-origin: left center; }
+.plug { position: absolute; left: 330px; padding: 8px 14px; border-radius: 999px; background: #6f9a7c; color: #fff; font-weight: 800; font-size: 15px; white-space: nowrap; }
+.plug::before { content: ""; position: absolute; right: 100%; top: 50%; width: 26px; height: 4px; background: #6f9a7c; }
+.panel { position: absolute; left: 540px; right: 40px; top: 64px; bottom: 112px; opacity: 0; }
+.kick { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: #a0607a; }
+.big { font-family: SgSerif, serif; font-style: italic; font-size: 36px; line-height: 1.12; margin-top: 8px; }
+.sub { font-size: 17px; line-height: 1.45; margin-top: 10px; }
+.sig { display: grid; gap: 10px; margin-top: 14px; }
+.sig div { background: rgba(255,255,255,.75); border-radius: 16px; padding: 10px 14px; font-size: 17px; font-weight: 600; }
+.sig b { font-family: SgSerif, serif; font-weight: 400; font-size: 22px; margin-right: 8px; }
+.src { font-size: 13px; color: #6d5f70; margin-top: 10px; }
+.end { display: grid; grid-template-columns: 110px 1fr; gap: 16px; align-items: center; }
+.end img.cv { width: 110px; height: 165px; box-shadow: 0 10px 22px rgba(0,0,0,.2); border-radius: 3px 7px 7px 3px; }
+.end h1 { font-family: SgSerif, serif; font-style: italic; font-weight: 400; font-size: 34px; line-height: 1.08; }
+.btn { display: inline-block; margin-top: 12px; background: #3a2f3f; color: #fff; font-weight: 800; font-size: 16px; padding: 10px 18px; border-radius: 999px; }
+.brand { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-weight: 800; }
+.brand img { width: 22px; height: 22px; }
+#wm { position: absolute; right: 22px; top: 18px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; }
+#wm img { width: 22px; height: 22px; }
+.sub-cap { position: absolute; left: 30px; right: 30px; bottom: 12px; text-align: center; z-index: 20; }
+.sub-cap span { display: inline-block; max-width: 820px; padding: 6px 14px; border-radius: 12px; background: rgba(58,47,63,.85); color: #fff; font-size: 17px; font-weight: 600; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cap"></div>
+  <div id="bat"><div id="fill"></div></div>
+  <div id="pct">80%</div>
+  <div id="day">Senin</div>
+</div>
+<div id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+<div class="sub-cap" id="cap2"></div>
+<script>
+const D = window.DATA;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - (1 - x) ** 3;
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+function fade(e, p, dist = 20, axis = "Y") { const k = easeOut(p); e.style.opacity = k; e.style.transform = `translate${axis}(${(1 - k) * dist}px)`; }
+
+const MIN = { week: 10, who: 11, recover: 12, end: 6 };
+const T = [];
+let cur = 0;
+for (const s of D.scenes) { const dur = Math.max(MIN[s.type] ?? 6, s.dur ?? 0); T.push({ type: s.type, start: cur, dur, say: s.say ?? null }); cur += dur; }
+window.DURATION = cur;
+window.TIMELINE = T.map(({ type, start, dur }) => ({ type, start, dur }));
+const B = Object.fromEntries(T.map((b) => [b.type, b]));
+const at = (type, f) => B[type].start + B[type].dur * f;
+
+// Minggu Nadia: nilai baterai per hari (sama dengan infografis Bab 2).
+const DAYS = [["Senin", 80], ["Selasa", 62], ["Rabu", 45], ["Kamis", 25], ["Jumat", 8], ["Sabtu", 20], ["Minggu", 34]];
+const PLUGS = [["Lepas dari urusan kerja", 0.12], ["Rileks", 0.3], ["Belajar hal baru", 0.48], ["Kendali atas waktu", 0.66]];
+const plugs = PLUGS.map(([t], i) => { const p = el("div", "plug", t); p.style.top = `${120 + i * 66}px`; $("stage").append(p); return p; });
+const CR = [[30, 90, 70, 25], [110, 180, 60, -30], [40, 260, 90, 15]];
+const cracks = CR.map(([x, y, w, r]) => { const c = el("div", "crack"); c.style.left = `${x}px`; c.style.top = `${y}px`; c.style.width = `${w}px`; c.style.rotate = `${r}deg`; $("bat").append(c); return c; });
+
+function level(t) {
+  let v = 80;
+  let day = "Senin";
+  if (B.week) {
+    const k = prog(t, B.week.start + 0.5, B.week.start + B.week.dur - 0.6) * (DAYS.length - 1);
+    const i = Math.min(DAYS.length - 2, Math.floor(k));
+    const f = easeInOut(k - i);
+    v = DAYS[i][1] + (DAYS[i + 1][1] - DAYS[i][1]) * f;
+    day = DAYS[f > 0.5 ? i + 1 : i][0];
+  }
+  if (B.who && t >= B.who.start) { v = 34; day = "Senin lagi"; }
+  if (B.recover && t >= B.recover.start) {
+    PLUGS.forEach(([, f]) => { v += 11 * easeOut(prog(t, at("recover", f) + 0.3, at("recover", f) + 1.2)); });
+    day = "tiga bulan kemudian";
+  }
+  return { v, day };
+}
+
+const panels = {};
+function panel(type, build) { if (!B[type]) return; const p = el("div", "panel"); $("stage").append(p); panels[type] = { p, anim: build(p) }; }
+panel("week", (p) => {
+  const k = el("div", "kick", "Catatan energi Nadia"), b = el("div", "big", "Senin 80%. Jumat 8%."), s = el("div", "sub", "Akhir pekan hanya mengisi sedikit. Senin berikutnya mulai dari angka yang lebih rendah.");
+  p.append(k, b, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.3, 1.0), 20); fade(s, prog(t, d * 0.6, d * 0.6 + 0.6), 12); };
+});
+panel("who", (p) => {
+  const k = el("div", "kick", "Bukan lemah: fenomena pekerjaan");
+  const g = el("div", "sig");
+  const rows = [["Terkuras", "lelah yang tidak hilang"], ["Menjauh", "sinis pada pekerjaan"], ["Tak berdaya", "merasa tidak lagi mampu"]].map(([a, b]) => { const r = el("div"); r.append(el("b", "", a), el("span", "", b)); g.append(r); return r; });
+  const src = el("div", "src", "WHO, ICD-11 (2019)");
+  p.append(k, g, src);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); rows.forEach((r, i) => { fade(r, prog(t, d * (0.3 + i * 0.15), d * (0.3 + i * 0.15) + 0.5), 20, "X"); }); fade(src, prog(t, d * 0.8, d * 0.8 + 0.4), 8); };
+});
+panel("recover", (p) => {
+  const k = el("div", "kick", "Ilmunya: empat cara mengisi ulang"), b = el("div", "big", "Tidur itu penting, tapi bukan satu-satunya."), s = el("div", "sub", "Lepas dari urusan kerja, rileks, belajar hal baru, dan memegang kendali atas waktu sendiri.");
+  const src = el("div", "src", "Sonnentag & Fritz (2007)");
+  p.append(k, b, s, src);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.3, 1.0), 20); fade(s, prog(t, d * 0.35, d * 0.35 + 0.6), 12); fade(src, prog(t, d * 0.8, d * 0.8 + 0.4), 8); };
+});
+panel("end", (p) => {
+  const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";
+  const tx = el("div"); tx.append(el("div", "kick", "Ebook SelfGrow · 6 bab"), el("h1", "", "Burnout Bukan Lemah"), el("div", "btn", "Baca Bab 1, gratis"));
+  const br = el("div", "brand"); const im = el("img"); im.src = "mark.png"; im.alt = ""; br.append(im, el("span", "", "SelfGrow")); tx.append(br);
+  w.append(cv, tx); p.append(w);
+  return (t) => { fade(cv, prog(t, 0.2, 0.9), 30); fade(tx, prog(t, 0.5, 1.2), 16, "X"); };
+});
+
+window.render = (t) => {
+  for (const b of T) {
+    const pn = panels[b.type]; if (!pn) continue;
+    const last = b === T[T.length - 1];
+    const inn = easeInOut(prog(t, b.start - 0.2, b.start + 0.25));
+    const out = last ? 1 : 1 - easeInOut(prog(t, b.start + b.dur - 0.25, b.start + b.dur + 0.2));
+    const o = Math.min(inn, out);
+    pn.p.style.opacity = o;
+    if (o > 0) pn.anim(t - b.start, b.dur);
+  }
+  const { v, day } = level(t);
+  const fill = $("fill");
+  fill.style.height = `${(330 * v) / 100}px`;
+  fill.style.background = v < 30 ? "#e0703b" : v < 55 ? "#e9b36c" : "#6f9a7c";
+  $("pct").textContent = `${Math.round(v)}%`;
+  $("day").textContent = day;
+  // Retakan muncul untuk tiga tanda, lalu memudar saat pemulihan.
+  cracks.forEach((c, i) => {
+    const on = B.who ? easeOut(prog(t, at("who", 0.3 + i * 0.15), at("who", 0.3 + i * 0.15) + 0.4)) : 0;
+    const off = B.recover ? easeInOut(prog(t, at("recover", 0.7), at("recover", 0.95))) : 0;
+    c.style.transform = `scaleX(${on})`;
+    c.style.opacity = 1 - off;
+  });
+  plugs.forEach((p, i) => {
+    const f = PLUGS[i][1];
+    const k = B.recover ? easeOut(prog(t, at("recover", f), at("recover", f) + 0.5)) : 0;
+    p.style.opacity = k;
+    p.style.transform = `translateX(${(1 - k) * 60}px)`;
+  });
+
+  const cb = T.find((b) => t >= b.start && t < b.start + b.dur);
+  const line = D.captions && cb ? cb.say : null;
+  const cap = $("cap2");
+  if (cap.dataset.line !== (line ?? "")) { cap.dataset.line = line ?? ""; cap.replaceChildren(); if (line) cap.append(el("span", "", line)); }
+};
+render(0);
+</script>
+</body>
+</html>

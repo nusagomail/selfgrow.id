@@ -1,5 +1,7 @@
 /** Ebook demo yang ditulis lengkap (slug → bab + infografis). Sisanya di katalog berisi kosong. */
 
+import { BURNOUT_1 } from "./burnout-1.mjs";
+import { BURNOUT_FIGURES } from "./burnout-figures.mjs";
 import { DARURAT_1 } from "./darurat-1.mjs";
 import { DARURAT_FIGURES } from "./darurat-figures.mjs";
 import { GULA_1 } from "./gula-1.mjs";
@@ -71,5 +73,9 @@ export const FULL_BOOKS = {
   "dana-darurat-dari-nol": {
     chapters: DARURAT_1,
     figures: DARURAT_FIGURES,
+  },
+  "burnout-bukan-lemah": {
+    chapters: BURNOUT_1,
+    figures: BURNOUT_FIGURES,
   },
 };
