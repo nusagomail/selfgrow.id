@@ -175,10 +175,10 @@ for (const base of VIDEOS) {
     const labels = clips.map((_, k) => `[n${k}]`).join("");
     filter = [
       ...parts,
-      `${labels}amix=inputs=${clips.length}:normalize=0,volume=1.6,asplit=2[nv][sc]`,
+      `${labels}amix=inputs=${clips.length}:normalize=0,volume=1.6,apad,asplit=2[nv][sc]`,
       "[1:a]volume=0.55[m]",
       "[m][sc]sidechaincompress=threshold=0.02:ratio=10:attack=30:release=600[duck]",
-      "[duck][nv]amix=inputs=2:normalize=0,alimiter=limit=0.95[a]",
+      "[duck][nv]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]",
     ].join(";");
   } else {
     filter = "[1:a]volume=0.6[a]";
