@@ -1,4 +1,5 @@
 ---
+import { activeTypeTab, availableTypeTabs } from "@selfgrow/shared";
 import ItemCard from "../components/ItemCard.astro";
 import Shelf from "../components/Shelf.astro";
 import Base from "../layouts/Base.astro";
@@ -6,12 +7,17 @@ import { appUrl, getCategories, getItems } from "../lib/api";
 
 // Beranda etalase seperti YouTube (D35): semua konten terbit tampil, difilter per kategori lewat
 // ?kategori=slug (tanpa JavaScript). Gratis bisa langsung dicoba, Premium untuk pelanggan.
-const [categories, items] = await Promise.all([getCategories(), getItems()]);
+const [categories, allItems] = await Promise.all([getCategories(), getItems()]);
+// Satu jenis konten sekaligus (D44): ?jenis=ebook|tools|template|program, bawaan tab pertama.
+const tabs = availableTypeTabs(allItems);
+const tab = activeTypeTab(Astro.url.searchParams.get("jenis"), allItems);
+const items = tab ? allItems.filter((i) => i.type === tab.type) : allItems;
+const jenisQ = tab && tab !== tabs[0] ? `jenis=${tab.param}&` : "";
 const active = Astro.url.searchParams.get("kategori") ?? "semua";
 const withContent = categories.filter((c) => items.some((i) => i.category?.slug === c.slug));
 const shown = active === "semua" ? items : items.filter((i) => i.category?.slug === active);
 const activeCat = categories.find((c) => c.slug === active);
-const freeCount = items.filter((i) => i.access !== "premium" && !i.comingSoon).length;
+const freeCount = allItems.filter((i) => i.access !== "premium" && !i.comingSoon).length;
 const SHELF_MAX = 12;
 
 const faqs = [
@@ -72,12 +78,25 @@ const siteLd = {
   </section>
 
   <section class="container feed" id="konten">
+    {tabs.length > 1 && (
+      <nav class="type-tabs" aria-label="Jenis konten">
+        {tabs.map((t, idx) => (
+          <a
+            href={idx === 0 ? "/#konten" : `/?jenis=${t.param}#konten`}
+            class="type-tab"
+            aria-current={tab?.type === t.type ? "page" : undefined}
+          >
+            {t.label} <span class="count">{t.count}</span>
+          </a>
+        ))}
+      </nav>
+    )}
     <nav class="chips" aria-label="Filter kategori">
-      <a href="/#konten" class="chip" aria-current={active === "semua" ? "page" : undefined}>
+      <a href={jenisQ ? `/?${jenisQ.slice(0, -1)}#konten` : "/#konten"} class="chip" aria-current={active === "semua" ? "page" : undefined}>
         Semua <span class="count">{items.length}</span>
       </a>
       {withContent.map((c) => (
-        <a href={`/?kategori=${c.slug}#konten`} class="chip" aria-current={active === c.slug ? "page" : undefined}>
+        <a href={`/?${jenisQ}kategori=${c.slug}#konten`} class="chip" aria-current={active === c.slug ? "page" : undefined}>
           {c.name} <span class="count">{items.filter((i) => i.category?.slug === c.slug).length}</span>
         </a>
       ))}
@@ -102,7 +121,7 @@ const siteLd = {
             <Shelf
               title={c.name}
               hook={c.hook}
-              href={`/?kategori=${c.slug}#konten`}
+              href={`/?${jenisQ}kategori=${c.slug}#konten`}
               count={inCat.length}
               items={inCat.slice(0, SHELF_MAX)}
             />
@@ -178,6 +197,31 @@ const siteLd = {
     display: flex;
     flex-direction: column;
     gap: 20px;
+  }
+  .type-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .type-tab {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    font-weight: 700;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+  }
+  .type-tab .count {
+    font-weight: 600;
+    font-size: 0.85em;
+    opacity: 0.7;
+  }
+  .type-tab[aria-current="page"] {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
   }
   .chips {
     display: flex;

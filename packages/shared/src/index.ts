@@ -1,4 +1,5 @@
 export { z } from "zod";
+export * from "./catalog-tabs";
 export * from "./constants";
 export * from "./ebook";
 export * from "./formula";
