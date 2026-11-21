@@ -1,4 +1,6 @@
 /** "Lepas dari Jerat Paylater" bab 8–10. Lihat paylater-1.mjs. */
+import { SKOR_JERAT } from "./paylater-interactive.mjs";
+
 export const PAYLATER_3 = [
   {
     title: "Kalau Sudah Telat Bayar",
@@ -200,6 +202,9 @@ export const PAYLATER_3 = [
           "Ulangi tes delapan pertanyaan dari Bab 1.",
         ],
       ],
+      ["h", "Tes ulang: seberapa jauh kamu bergerak?"],
+      "Ingat tes di Bab 1? Jawab lagi delapan pertanyaan yang sama. Kalau kamu sudah mengisinya di Bab 1, skor lamamu akan muncul sebagai pembanding.",
+      ["quiz", SKOR_JERAT],
       ["h", "Ritual lima menit setiap minggu"],
       "Kebiasaan yang paling menentukan bukan yang paling besar, tapi yang paling rutin. Pilih satu waktu tetap, misalnya Minggu malam sebelum tidur, dan jawab tiga pertanyaan ini:",
       [

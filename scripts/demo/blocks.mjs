@@ -68,6 +68,14 @@ export function toNode(b, ctx = {}) {
       content: [para(value)],
     };
   }
+  // Unsur interaktif (D42):
+  //   ["quiz", attrs]                    → kuis/tes diri dengan skor langsung
+  //   ["tool", slug, judul?, pengantar?] → tool yang ditanam
+  //   ["chart", attrs]                   → grafik bergerak
+  if (kind === "quiz") return { type: "quiz", attrs: value };
+  if (kind === "tool")
+    return { type: "toolEmbed", attrs: { slug: value, title: b[2] ?? null, intro: b[3] ?? null } };
+  if (kind === "chart") return { type: "animChart", attrs: value };
   // Unsur buku (D40):
   //   ["reflect", [pertanyaan..]]        → kotak Renungkan
   //   ["fact", teks, sumber]             → kotak Fakta, sumber di baris terakhir

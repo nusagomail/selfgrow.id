@@ -1,10 +1,12 @@
 import "@selfgrow/renderer/book.css";
 import { EbookContent } from "@selfgrow/renderer";
+import { enhanceInteractive } from "@selfgrow/renderer/interactive";
 import { createPager, type Pager, type PagerState } from "@selfgrow/renderer/pager";
 import type { EbookDoc } from "@selfgrow/shared";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
-import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ApiError, api } from "../lib/api";
+import { EmbeddedTool } from "./embedded-tool";
 
 type Chapter = {
   id: string;
@@ -292,6 +294,20 @@ export function ChapterReader() {
   const next = meta && idx >= 0 ? meta.chapters[idx + 1] : undefined;
   const ready = Boolean(meta && chapter && chapter.id === chapterId);
 
+  // Isi bab dirender sekali per bab: unsur interaktif (kuis, tool) menyimpan keadaannya sendiri
+  // dan tidak boleh tersusun ulang saat state reader lain berubah.
+  const doc = chapter?.doc;
+  const content = useMemo(
+    () =>
+      doc ? (
+        <EbookContent
+          doc={doc}
+          options={{ renderTool: (attrs) => <EmbeddedTool attrs={attrs} /> }}
+        />
+      ) : null,
+    [doc],
+  );
+
   // Layar penuh seperti buku: halaman di belakang tidak ikut bergulir.
   useEffect(() => {
     if (!ready) return;
@@ -360,12 +376,48 @@ export function ChapterReader() {
       verticalSwipe: true,
     });
     pagerRef.current = pager;
+
+    // Kuis (D42): tampilkan skor sebelumnya, simpan skor baru.
+    let stopInteractive: (() => void) | null = null;
+    let cancelled = false;
+    const startInteractive = (
+      previous: { quizId: string; score: number; createdAt: string }[] = [],
+    ) => {
+      if (cancelled) return;
+      for (const form of flow.querySelectorAll<HTMLFormElement>("form.quiz")) {
+        const last = previous.find((r) => r.quizId === form.dataset.quizId);
+        if (!last) continue;
+        form.dataset.lastScore = String(last.score);
+        form.dataset.lastDate = new Intl.DateTimeFormat("id-ID", {
+          day: "numeric",
+          month: "short",
+        }).format(new Date(last.createdAt));
+      }
+      stopInteractive = enhanceInteractive(flow, {
+        onQuizComplete: ({ quizId, score, maxScore }) => {
+          void api(`/ebooks/${s}/quizzes/${encodeURIComponent(quizId)}`, {
+            method: "POST",
+            body: JSON.stringify({ score, maxScore }),
+          }).catch(() => {});
+        },
+      });
+    };
+    if (flow.querySelector("form.quiz")) {
+      api<{ results: { quizId: string; score: number; createdAt: string }[] }>(
+        `/ebooks/${s}/quizzes`,
+      )
+        .then((r) => startInteractive(r.results))
+        .catch(() => startInteractive());
+    } else startInteractive();
+
     return () => {
+      cancelled = true;
+      stopInteractive?.();
       sendProgress(pager.state(), true);
       pager.destroy();
       pagerRef.current = null;
     };
-  }, [ready, meta, chapterId, next, prev, goChapter, sendProgress]);
+  }, [ready, meta, chapterId, next, prev, goChapter, sendProgress, s]);
 
   // Ukuran huruf berubah: tata ulang halaman (posisi baca dipertahankan).
   // biome-ignore lint/correctness/useExhaustiveDependencies: dipicu perubahan ukuran huruf
@@ -515,7 +567,7 @@ export function ChapterReader() {
               <h1 className="book-chapter-title">{chapter.title}</h1>
               <span className="book-ornament" />
             </header>
-            <EbookContent doc={chapter.doc} />
+            {content}
             <section className="book-end">
               <p className="book-end-title">{next ? `Akhir Bab ${number}` : "Tamat"}</p>
               {next && !next.locked ? (

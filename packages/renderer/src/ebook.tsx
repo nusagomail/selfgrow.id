@@ -1,5 +1,15 @@
-import { CALLOUT_LABELS, type EbookDoc, type EbookMark, type EbookNode } from "@selfgrow/shared";
+import {
+  type AnimChartAttrs,
+  CALLOUT_LABELS,
+  type EbookDoc,
+  type EbookMark,
+  type EbookNode,
+  type QuizAttrs,
+  type ToolEmbedAttrs,
+} from "@selfgrow/shared";
+import type React from "react";
 import type { ReactNode } from "react";
+import { barWidths, formatChartValue } from "./interactive-format";
 import { tableLayout } from "./table";
 
 /**
@@ -10,6 +20,8 @@ import { tableLayout } from "./table";
 export interface RenderOptions {
   /** Ubah teks sebelum ditampilkan (dipakai watermark forensik). */
   transformText?: (text: string) => string;
+  /** Tool yang ditanam di bab (D42). Tanpa ini tampil kartu ajakan statis. */
+  renderTool?: (attrs: ToolEmbedAttrs, key: string) => ReactNode;
 }
 
 const SAFE_HREF = /^(https?:\/\/|mailto:)/i;
@@ -172,9 +184,126 @@ function renderNode(node: EbookNode, opts: RenderOptions, key: string): ReactNod
           {renderNodes(node.content, opts, key)}
         </aside>
       );
+    case "quiz":
+      return <Quiz key={key} attrs={node.attrs} t={opts.transformText ?? ((x) => x)} />;
+    case "toolEmbed":
+      return opts.renderTool ? (
+        <div key={key} className="tool-embed">
+          {opts.renderTool(node.attrs, key)}
+        </div>
+      ) : (
+        <aside key={key} className="tool-embed tool-embed-static">
+          <span className="callout-label">Coba langsung</span>
+          <b>{node.attrs.title ?? "Kalkulator interaktif"}</b>
+          {node.attrs.intro ? <p>{node.attrs.intro}</p> : null}
+          <p className="tool-embed-note">
+            Kalkulator ini bisa diisi langsung di aplikasi SelfGrow.
+          </p>
+        </aside>
+      );
+    case "animChart":
+      return <AnimChart key={key} attrs={node.attrs} />;
     default:
       return null;
   }
+}
+
+/**
+ * Kuis / tes diri (D42). Markup statis yang dihidupkan oleh `enhanceInteractive`: pilihan
+ * berupa radio asli, skor dihitung dari `data-points`, pita hasil disalin dari daftar tersembunyi.
+ */
+function Quiz({ attrs, t }: { attrs: QuizAttrs; t: (x: string) => string }) {
+  return (
+    <form className="quiz" data-quiz-id={attrs.id} aria-label={attrs.title}>
+      <span className="callout-label">Tes diri</span>
+      <p className="quiz-title">{t(attrs.title)}</p>
+      {attrs.intro ? <p className="quiz-intro">{t(attrs.intro)}</p> : null}
+      <ol className="quiz-qs">
+        {attrs.questions.map((q, qi) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: urutan pertanyaan tetap
+          <li key={qi}>
+            <fieldset>
+              <legend>{t(q.q)}</legend>
+              {q.options.map((o, oi) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: urutan pilihan tetap
+                <label key={oi} className="quiz-opt">
+                  <input type="radio" name={`q${qi}`} value={oi} data-points={o.points} />
+                  <span>{t(o.label)}</span>
+                </label>
+              ))}
+            </fieldset>
+          </li>
+        ))}
+      </ol>
+      <ul className="quiz-bands" hidden>
+        {attrs.results.map((r, ri) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: urutan hasil tetap
+          <li key={ri} data-min={r.min} data-max={r.max}>
+            <b>{t(r.title)}</b>
+            {r.text ? <span>{t(r.text)}</span> : null}
+          </li>
+        ))}
+      </ul>
+      <div className="quiz-result" aria-live="polite" hidden />
+      <p className="quiz-hint">Jawab semua pertanyaan untuk melihat skormu.</p>
+    </form>
+  );
+}
+
+/** Grafik bergerak (D42): batang tumbuh dan angka berhitung saat halaman terlihat. */
+function AnimChart({ attrs }: { attrs: AnimChartAttrs }) {
+  const widths = barWidths(attrs.items);
+  return (
+    <figure
+      className={`anim-chart anim-kind-${attrs.kind}`}
+      data-anim=""
+      data-format={attrs.format}
+    >
+      <figcaption className="anim-title">{attrs.title}</figcaption>
+      {attrs.kind === "bars" ? (
+        <div className="anim-bars">
+          {attrs.items.map((it, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: urutan data tetap
+            <div key={i} className="anim-row">
+              <span className="anim-label">{it.label}</span>
+              <span className="anim-track">
+                <span
+                  className="anim-bar"
+                  style={
+                    {
+                      "--w": `${widths[i]}%`,
+                      "--c": it.color ?? undefined,
+                      "--i": i,
+                    } as React.CSSProperties
+                  }
+                />
+              </span>
+              <span className="anim-num" data-value={it.value}>
+                {formatChartValue(it.value, attrs.format)}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="anim-counters">
+          {attrs.items.map((it, i) => (
+            <div
+              // biome-ignore lint/suspicious/noArrayIndexKey: urutan data tetap
+              key={i}
+              className="anim-counter"
+              style={{ "--c": it.color ?? undefined } as React.CSSProperties}
+            >
+              <b className="anim-num" data-value={it.value}>
+                {formatChartValue(it.value, attrs.format)}
+              </b>
+              <span>{it.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {attrs.note ? <p className="anim-note">{attrs.note}</p> : null}
+    </figure>
+  );
 }
 
 export function EbookContent({ doc, options = {} }: { doc: EbookDoc; options?: RenderOptions }) {

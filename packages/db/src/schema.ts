@@ -330,6 +330,25 @@ export const readingProgress = sqliteTable(
   (t) => [primaryKey({ columns: [t.userId, t.contentId] })],
 );
 
+/** Skor kuis/tes diri di dalam ebook (D42), milik user; riwayat untuk membandingkan skor. */
+export const quizResults = sqliteTable(
+  "quiz_results",
+  {
+    id: id(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    contentId: text("content_id")
+      .notNull()
+      .references(() => contentItems.id, { onDelete: "cascade" }),
+    quizId: text("quiz_id").notNull(),
+    score: integer("score").notNull(),
+    maxScore: integer("max_score").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("quiz_results_user_content_idx").on(t.userId, t.contentId, t.quizId)],
+);
+
 export const bookmarks = sqliteTable(
   "bookmarks",
   {

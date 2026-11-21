@@ -244,7 +244,18 @@ export function createPager(
 
   const screens = () => screensFor(pages, layout.cols);
   const state = () => stateFor(current, pages, layout.cols);
-  const emit = () => options.onChange?.(state());
+  /** Unsur bergerak (D42) di layar yang sedang tampil diberi kelas `in-view` (sekali saja). */
+  const markInView = () => {
+    const vp = viewport.getBoundingClientRect();
+    for (const el of flow.querySelectorAll<HTMLElement>("[data-anim]:not(.in-view)")) {
+      const r = el.getBoundingClientRect();
+      if (r.left < vp.right - 4 && r.right > vp.left + 4) el.classList.add("in-view");
+    }
+  };
+  const emit = () => {
+    options.onChange?.(state());
+    markInView();
+  };
 
   const showScreen = (screen: number) => {
     flow.style.transform = `translate3d(${-screen * layout.step * layout.cols}px,0,0)`;
@@ -425,12 +436,17 @@ export function createPager(
 
   // --- Navigasi -------------------------------------------------------------------------------
 
-  const relayout = () => {
+  /**
+   * Tata ulang halaman. `keepScreen`: isi bab berubah (hasil kuis, jawaban tool) sehingga
+   * layar yang sedang dibaca dipertahankan; selain itu (ukuran layar/huruf) posisi relatif.
+   */
+  const relayout = (keepScreen = false) => {
     if (destroyed) return;
     settle();
     const before = initialized ? fractionOf(current, screens()) : null;
     measure();
-    if (before !== null) current = screenAtFraction(before, screens());
+    if (before !== null && keepScreen) current = clampScreen(current, screens());
+    else if (before !== null) current = screenAtFraction(before, screens());
     else {
       const start = options.startAt ?? 0;
       current =
@@ -561,6 +577,23 @@ export function createPager(
   // Gambar yang selesai dimuat dan huruf web dapat mengubah jumlah halaman.
   const onLoad = () => relayout();
   const resize = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(onLoad);
+  // Isi yang bertambah di dalam bab (hasil kuis, jawaban tool) ikut menata ulang halaman.
+  let pendingContent = 0;
+  const content =
+    typeof MutationObserver === "undefined"
+      ? null
+      : new MutationObserver((records) => {
+          // Angka grafik yang sedang berhitung tidak mengubah tata letak: abaikan.
+          const relevant = records.some((r) => {
+            const el = r.target instanceof Element ? r.target : r.target.parentElement;
+            return !el?.closest("[data-anim]");
+          });
+          if (!relevant || pendingContent) return;
+          pendingContent = requestAnimationFrame(() => {
+            pendingContent = 0;
+            relayout(true);
+          });
+        });
 
   viewport.addEventListener("pointerdown", onDown);
   viewport.addEventListener("pointermove", onMove);
@@ -569,6 +602,13 @@ export function createPager(
   flow.addEventListener("load", onLoad, true);
   keyTarget.addEventListener("keydown", onKey);
   resize?.observe(viewport);
+  content?.observe(flow, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ["hidden"],
+  });
   relayout();
   void document.fonts?.ready.then(onLoad);
 
@@ -588,6 +628,8 @@ export function createPager(
       flow.removeEventListener("load", onLoad, true);
       keyTarget.removeEventListener("keydown", onKey);
       resize?.disconnect();
+      content?.disconnect();
+      if (pendingContent) cancelAnimationFrame(pendingContent);
     },
   };
 }

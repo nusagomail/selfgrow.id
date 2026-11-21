@@ -1,11 +1,17 @@
 import type { EbookDoc } from "@selfgrow/shared";
-import { CALLOUT_LABELS, CALLOUT_VARIANTS } from "@selfgrow/shared";
+import {
+  CALLOUT_LABELS,
+  CALLOUT_VARIANTS,
+  DEFAULT_INTERACTIVE_ATTRS,
+  type InteractiveKind,
+} from "@selfgrow/shared";
 import Image from "@tiptap/extension-image";
 import { TableKit } from "@tiptap/extension-table";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Callout, QuoteCite } from "./callout";
+import { AnimChartNode, InteractiveDialog, QuizNode, ToolEmbedNode } from "./interactive-nodes";
 
 /**
  * Editor blok Tiptap (BLUEPRINT bagian 5). Hanya dimuat di Studio (lazy).
@@ -19,6 +25,7 @@ export function ChapterEditor({
   onChange: (doc: EbookDoc) => void;
 }) {
   const onChangeRef = useRef(onChange);
+  const [inserting, setInserting] = useState<InteractiveKind | null>(null);
   onChangeRef.current = onChange;
 
   const editor = useEditor({
@@ -37,6 +44,9 @@ export function ChapterEditor({
       Callout,
       QuoteCite,
       TableKit.configure({ table: { resizable: false } }),
+      QuizNode,
+      ToolEmbedNode,
+      AnimChartNode,
     ],
     content: doc,
     onUpdate: ({ editor: e }) => onChangeRef.current(e.getJSON() as EbookDoc),
@@ -142,10 +152,24 @@ export function ChapterEditor({
             {btn("Hapus tabel", false, () => chain().deleteTable().run())}
           </>
         )}
+        {btn("＋ Kuis", false, () => setInserting("quiz"), "Sisipkan kuis/tes diri dengan skor")}
+        {btn("＋ Tool", false, () => setInserting("toolEmbed"), "Sisipkan tool yang bisa dipakai")}
+        {btn("＋ Grafik", false, () => setInserting("animChart"), "Sisipkan grafik bergerak")}
         {btn("↶", false, () => chain().undo().run(), "Urungkan")}
         {btn("↷", false, () => chain().redo().run(), "Ulangi")}
       </div>
       <EditorContent editor={editor} className="editor-body ebook-content" />
+      {inserting && (
+        <InteractiveDialog
+          kind={inserting}
+          initial={DEFAULT_INTERACTIVE_ATTRS[inserting]}
+          onCancel={() => setInserting(null)}
+          onSave={(attrs) => {
+            chain().insertContent({ type: inserting, attrs }).run();
+            setInserting(null);
+          }}
+        />
+      )}
     </div>
   );
 }

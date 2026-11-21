@@ -9,7 +9,10 @@ import { toDoc as toDocJs } from "../../../scripts/demo/blocks.mjs";
 import { FULL_BOOKS as FULL_JS } from "../../../scripts/demo/books/index.mjs";
 // @ts-expect-error -- modul JS di luar paket, tanpa deklarasi tipe
 import { catalogBooks as catalogJs } from "../../../scripts/demo/catalog.mjs";
+// @ts-expect-error -- modul JS di luar paket, tanpa deklarasi tipe
+import { DEMO_TOOLS as TOOLS_JS } from "../../../scripts/demo/tools.mjs";
 import { ebookDocSchema } from "./ebook";
+import { toolConfigSchema } from "./tool";
 
 type Book = { slug: string; title: string; category: string; topic: string };
 type Full = Record<
@@ -53,6 +56,18 @@ describe("katalog demo", () => {
       expect(used.size).toBe(Object.keys(full.figures).length);
     });
   }
+
+  it("tool demo valid dan setiap tool yang ditanam di ebook tersedia", () => {
+    const tools = TOOLS_JS as { slug: string; config: unknown }[];
+    for (const t of tools) {
+      const r = toolConfigSchema.safeParse(t.config);
+      expect(r.success, `${t.slug}: ${JSON.stringify(r.error?.issues)}`).toBe(true);
+    }
+    const slugs = new Set(tools.map((t) => t.slug));
+    const embedded = JSON.stringify(FULL).match(/"tool","([a-z0-9-]+)"/g) ?? [];
+    for (const m of embedded) expect(slugs.has(m.split('"')[3] ?? "")).toBe(true);
+    expect(embedded.length).toBeGreaterThan(0);
+  });
 
   it("teks tebal dan tabel diubah ke node yang benar", () => {
     const doc = toDoc([

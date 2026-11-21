@@ -1225,3 +1225,150 @@ select {
   background: #04260f;
   box-shadow: 0 14px 30px rgb(7 62 31 / 18%);
 }
+
+/* Tool di dalam bab (D42): form ringkas yang menyatu dengan halaman buku. */
+.book-flow .embedded-tool .field span {
+  font-size: 0.85em;
+}
+.book-flow .embedded-tool input,
+.book-flow .embedded-tool select {
+  font-size: 0.95em;
+  padding: 0.45em 0.6em;
+  background: var(--book-bg);
+  color: var(--book-ink);
+  border-color: var(--book-line);
+}
+.book-flow .embedded-tool .btn {
+  margin-top: 0.4em;
+}
+.book-flow .embedded-tool .card,
+.book-flow .embedded-tool .stack {
+  gap: 0.5em;
+}
+
+/* Unsur interaktif di editor Studio (D42) */
+.editor-body .sg-inode {
+  margin: 14px 0;
+  border: 1px dashed var(--primary);
+  border-radius: 10px;
+  background: var(--surface-alt);
+  padding: 10px 12px;
+}
+.editor-body .sg-inode.is-selected {
+  outline: 2px solid var(--primary);
+}
+.sg-inode-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.sg-inode-kind {
+  font-weight: 700;
+}
+.sg-inode-sum {
+  flex: 1 1 160px;
+  color: var(--muted);
+  min-width: 0;
+}
+.sg-dialog {
+  width: min(640px, calc(100vw - 24px));
+  max-height: calc(100dvh - 32px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+}
+.sg-dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+.sg-dialog h3 {
+  margin: 0;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sg-dialog-body {
+  padding: 12px 16px;
+  display: grid;
+  gap: 10px;
+  overflow: auto;
+  max-height: calc(100dvh - 190px);
+}
+.sg-dialog-body h4 {
+  margin: 8px 0 0;
+}
+.sg-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+.sg-dialog-errors {
+  margin: 0 16px;
+  color: var(--danger);
+  font-size: 0.9em;
+}
+.sg-field {
+  display: grid;
+  gap: 4px;
+  flex: 1 1 140px;
+}
+.sg-field > span {
+  font-weight: 600;
+  font-size: 0.9em;
+}
+.sg-field small {
+  color: var(--muted);
+}
+.sg-dialog input:not([type="color"]),
+.sg-dialog select,
+.sg-dialog textarea {
+  min-height: 36px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  background: var(--surface);
+  color: var(--text);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.sg-group {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.sg-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.sg-row > input:not(.sg-num):not([type="color"]) {
+  flex: 1 1 160px;
+  width: auto;
+}
+.sg-dialog input.sg-num {
+  width: 76px;
+}
+.sg-dialog input.sg-num-wide {
+  width: 140px;
+}
+.sg-unit {
+  color: var(--muted);
+  font-size: 0.9em;
+}
+.sg-dialog input[type="color"] {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 36px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
