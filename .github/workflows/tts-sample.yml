@@ -25,6 +25,15 @@ jobs:
           pip install --quiet chatterbox-tts==0.1.7
       - name: Buat contoh suara
         run: python scripts/tts/sample.py
+      # Hasil dikompres lalu dicetak sebagai base64 di log (artefak tidak terjangkau dari sesi pengembangan).
+      - name: Cetak hasil
+        run: |
+          for f in tts-out/*.wav; do
+            ffmpeg -loglevel error -y -i "$f" -c:a libopus -b:a 32k "${f%.wav}.ogg"
+            echo "=== BEGIN $(basename "${f%.wav}") ==="
+            base64 -w 0 "${f%.wav}.ogg"; echo
+            echo "=== END ==="
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: contoh-narasi
