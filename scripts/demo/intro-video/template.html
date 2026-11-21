@@ -482,7 +482,9 @@ const KINDS = {
         clip.style.height = `${shown + 12}px`;
         if (stamp) {
           stamp.style.top = `${H + 4}px`;
-          const k = back(prog(t, tEnd + 0.7, tEnd + 1.1));
+          // Cap jatuh menjelang akhir adegan, saat narasi sampai pada kesimpulannya.
+          const s0 = Math.max(tEnd + 0.7, dur - 3.4);
+          const k = back(prog(t, s0, s0 + 0.4));
           stamp.style.opacity = clamp(k * 1.5);
           stamp.style.transform = `rotate(-12deg) scale(${2.2 - 1.2 * k})`;
         }

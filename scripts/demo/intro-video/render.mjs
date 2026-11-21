@@ -17,8 +17,8 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { writeMusic } from "./music.mjs";
 import { HARGA_INTRO } from "./harga.mjs";
+import { writeMusic } from "./music.mjs";
 import { OVERTHINKING_INTRO } from "./overthinking.mjs";
 import { PAYLATER_INTRO } from "./paylater.mjs";
 import { SCROLL_INTRO } from "./scroll.mjs";
@@ -51,7 +51,10 @@ copyFileSync(
   join(work, "font.woff2"),
 );
 copyFileSync(join(root, "apps/site/public/brand/mark-192.png"), join(work, "mark.png"));
-copyFileSync(join(here, "../fonts/jetbrains-mono-latin-500-normal.woff2"), join(work, "mono.woff2"));
+copyFileSync(
+  join(here, "../fonts/jetbrains-mono-latin-500-normal.woff2"),
+  join(work, "mono.woff2"),
+);
 copyFileSync(join(here, "template.html"), join(work, "template.html"));
 const outDir = join(here, "../videos");
 mkdirSync(outDir, { recursive: true });

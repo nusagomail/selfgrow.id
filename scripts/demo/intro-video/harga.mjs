@@ -64,7 +64,8 @@ export const HARGA_INTRO = {
       type: "bigNumber",
       kicker: "Hasil bulan pertama Dina",
       value: "Rp450 ribu",
-      label: "untung bersih, setelah harga naik ke Rp4.500, meski penjualan turun dari 40 ke 26 risol sehari",
+      label:
+        "untung bersih, setelah harga naik ke Rp4.500, meski penjualan turun dari 40 ke 26 risol sehari",
       note: "Contoh ilustrasi di dalam buku",
       say: "Harga Dina naik jadi empat ribu lima ratus. Penjualannya turun, tapi untuk pertama kalinya usahanya untung, sekitar empat ratus lima puluh ribu di bulan pertama.",
     },
