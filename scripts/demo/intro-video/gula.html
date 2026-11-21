@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<!--
+  Video pengantar "Kurangi Gula Tanpa Menderita" (D46): dirancang khusus, bukan kotak adegan.
+  Satu dunia sepanjang video: kertas periksa mint dan satu toples ukur. Kubus gula (1 kubus =
+  1 sendok teh ≈ 4 g) jatuh mengikuti hari contoh (68 g), label dibaca langsung, lalu kubus
+  keluar saat pilihan ditukar (26 g). Setiap `beat` di DATA.scenes punya `say` (narasi).
+  Kontrak sama dengan template.html: window.DURATION, window.TIMELINE, window.render(t).
+-->
+<style>
+@font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: Label; src: url(label.woff2) format("woff2"); font-weight: 600; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 960px; height: 540px; overflow: hidden; }
+body { font-family: Jakarta, sans-serif; color: #111816; background: #dff3ec; }
+#stage { position: absolute; inset: 0; transform-origin: 50% 50%;
+  background-image: linear-gradient(rgba(15,118,110,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(15,118,110,.08) 1px, transparent 1px);
+  background-size: 24px 24px; background-color: #dff3ec; }
+.lab { font-family: Label, sans-serif; text-transform: uppercase; letter-spacing: .02em; }
+/* toples */
+#jar { position: absolute; left: 70px; top: 120px; width: 230px; height: 320px; border: 4px solid #111816; border-top: 0; border-radius: 0 0 26px 26px; background: rgba(255,255,255,.55); }
+#jar::before { content: ""; position: absolute; left: -14px; right: -14px; top: -10px; height: 10px; border: 4px solid #111816; border-radius: 6px; background: #fff; }
+.line { position: absolute; left: -4px; right: -4px; border-top: 3px dashed #111816; }
+.line span { position: absolute; left: 100%; top: -13px; margin-left: 12px; white-space: nowrap; font-size: 13px; font-weight: 800; padding: 2px 6px; border: 2px solid #111816; background: #fff; }
+.line.who { border-color: #0f766e; }
+.line.who span { color: #0f766e; border-color: #0f766e; }
+.cube { position: absolute; width: 52px; height: 56px; }
+#clock { position: absolute; left: 70px; top: 52px; display: flex; gap: 10px; align-items: center; }
+#clock .t { font-family: Label, sans-serif; font-size: 34px; background: #111816; color: #fff; padding: 2px 12px; }
+#meter { position: absolute; left: 70px; top: 452px; width: 230px; text-align: center; font-family: Label, sans-serif; font-size: 30px; }
+#meter small { font-family: Jakarta, sans-serif; font-weight: 700; font-size: 16px; margin-left: 6px; }
+/* panel kanan */
+.panel { position: absolute; left: 490px; right: 50px; top: 60px; bottom: 90px; opacity: 0; }
+.kick { font-family: Label, sans-serif; font-size: 15px; letter-spacing: .14em; color: #0f766e; text-transform: uppercase; }
+.q { font-family: Label, sans-serif; font-size: 46px; line-height: 1.05; text-transform: uppercase; margin-top: 10px; }
+.qs { font-size: 21px; font-weight: 600; line-height: 1.4; margin-top: 22px; }
+.log { display: grid; gap: 10px; margin-top: 12px; }
+.lg { display: grid; grid-template-columns: 62px 34px 1fr auto; align-items: center; gap: 8px; background: #fff; border: 2px solid #111816; padding: 8px 12px; font-weight: 700; font-size: 17px; }
+.lg .tm { font-family: Label, sans-serif; font-size: 20px; }
+.lg .ic { font-size: 24px; }
+.lg .g { font-family: Label, sans-serif; font-size: 22px; color: #0f766e; }
+.tot { margin-top: 12px; display: flex; align-items: baseline; gap: 12px; background: #111816; color: #fff; padding: 8px 14px; font-weight: 700; }
+.tot b { font-family: Label, sans-serif; font-size: 34px; }
+.tot .over { margin-left: auto; color: #ffb39c; font-size: 16px; }
+.label { background: #fff; border: 3px solid #111816; padding: 8px 12px; font-size: 15px; width: 300px; }
+.label .lt { font-family: Label, sans-serif; font-size: 22px; border-bottom: 8px solid #111816; padding-bottom: 3px; margin-bottom: 3px; }
+.lr { display: flex; justify-content: space-between; padding: 4px; border-bottom: 1px solid #111816; }
+.lr.hl { outline: 3px solid #e4572e; background: #ffe0d6; font-weight: 800; }
+.formula { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: Label, sans-serif; font-size: 30px; }
+.formula span { opacity: 0; }
+.formula .res { background: #111816; color: #fff; padding: 0 10px; }
+.lim { display: grid; gap: 14px; margin-top: 14px; }
+.limr { display: flex; align-items: center; gap: 16px; background: #fff; border: 2px solid #111816; padding: 12px 16px; }
+.limr b { font-family: Label, sans-serif; font-size: 52px; line-height: 1; white-space: nowrap; flex-shrink: 0; }
+.limr span { font-size: 18px; font-weight: 700; line-height: 1.3; }
+.limr.who b { color: #0f766e; }
+.sw { display: grid; gap: 10px; margin-top: 12px; }
+.swr { display: grid; grid-template-columns: 1fr 26px 1fr; align-items: center; gap: 4px; }
+.swr div { background: #fff; border: 2px solid #111816; padding: 8px 10px; font-weight: 700; font-size: 15px; line-height: 1.25; min-height: 56px; display: flex; align-items: center; }
+.swr div:last-child { border-color: #0f766e; background: #f3fbf8; }
+.swr i { font-style: normal; text-align: center; font-weight: 800; font-size: 20px; }
+.big2 { font-family: Label, sans-serif; font-size: 64px; margin-top: 16px; display: flex; gap: 18px; align-items: center; }
+.big2 s { color: #e4572e; text-decoration-thickness: 5px; }
+.big2 em { font-style: normal; color: #0f766e; }
+.steps { display: flex; align-items: flex-end; gap: 10px; margin-top: 18px; height: 200px; }
+.st { flex: 1; background: #fff; border: 2px solid #111816; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 10px; text-align: center; }
+.st b { font-family: Label, sans-serif; font-size: 20px; }
+.st span { font-size: 15px; font-weight: 700; color: #0f766e; }
+.fact { margin-top: 18px; font-size: 18px; font-weight: 600; line-height: 1.4; border-left: 5px solid #0f766e; padding-left: 12px; }
+.end { display: grid; grid-template-columns: 150px 1fr; gap: 22px; align-items: center; }
+.end img.cv { width: 150px; height: 225px; box-shadow: 0 18px 34px rgba(0,0,0,.3); border-radius: 3px 8px 8px 3px; }
+.end h1 { font-family: Label, sans-serif; font-size: 40px; line-height: 1.05; text-transform: uppercase; }
+.end p { font-size: 16px; font-weight: 600; margin-top: 8px; }
+.btn { display: inline-block; margin-top: 16px; background: #111816; color: #fff; font-weight: 800; font-size: 20px; padding: 12px 22px; }
+.brand { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-weight: 800; }
+.brand img { width: 26px; height: 26px; }
+#wm { position: absolute; right: 24px; top: 20px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; opacity: .85; }
+#wm img { width: 22px; height: 22px; }
+.sub-cap { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; z-index: 20; }
+.sub-cap span { display: inline-block; max-width: 800px; padding: 6px 14px; border-radius: 10px; background: rgba(17,24,22,.82); color: #fff; font-size: 18px; font-weight: 600; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="clock"><span class="t">07.00</span><span class="lab" style="font-size:16px">hari contoh</span></div>
+  <div id="jar">
+    <div class="line" id="l50"><span>50 g · Kemenkes</span></div>
+    <div class="line who" id="l25"><span>25 g · WHO</span></div>
+  </div>
+  <div id="meter"><span id="mg">0 g</span><small id="ms">0 sendok teh</small></div>
+</div>
+<div id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+<div class="sub-cap" id="cap"></div>
+<script>
+const D = window.DATA;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - (1 - x) ** 3;
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+const bounce = (x) => { const n = 7.5625, d = 2.75; if (x < 1 / d) return n * x * x; if (x < 2 / d) return n * (x -= 1.5 / d) * x + 0.75; if (x < 2.5 / d) return n * (x -= 2.25 / d) * x + 0.9375; return n * (x -= 2.625 / d) * x + 0.984375; };
+const fmt = (n) => n.toLocaleString("id-ID", { maximumFractionDigits: 1 });
+
+// Garis waktu: setiap beat berdurasi `dur` (panjang narasi) atau minimumnya.
+const MIN = { hook: 6, day: 12, label: 11, limits: 7, swap: 12, ladder: 8, end: 7 };
+const T = [];
+let cur = 0;
+for (const s of D.scenes) { const dur = Math.max(MIN[s.type] ?? 6, s.dur ?? 0); T.push({ type: s.type, start: cur, dur, say: s.say ?? null }); cur += dur; }
+window.DURATION = cur;
+window.TIMELINE = T.map(({ type, start, dur }) => ({ type, start, dur }));
+const B = Object.fromEntries(T.map((b) => [b.type, b]));
+const at = (type, f) => B[type].start + B[type].dur * f;
+
+// Hari contoh (sama dengan buku): jam, ikon, nama, jumlah kubus (sendok teh).
+const ITEMS = [
+  ["07.00", "🍵", "Teh manis, 2 sendok", 2, 0.1],
+  ["10.30", "🧋", "Es kopi susu gula aren", 7, 0.3],
+  ["13.00", "🥛", "Susu cokelat, sebotol", 6, 0.5],
+  ["16.00", "🍰", "Kue sore", 2, 0.68],
+];
+// Waktu jatuh tiap kubus.
+const drops = [];
+for (const [, , , n, f] of ITEMS) for (let k = 0; k < n; k++) drops.push(() => at("day", f) + 0.35 + k * 0.16);
+// Level setelah penukaran: susu -6, kopi -3,5, teh -1 → 6,5 kubus (26 g).
+const SWAPS = [[0.3, 6], [0.48, 3.5], [0.64, 1]];
+function level(t) {
+  let L = drops.filter((d) => t >= d() + 0.45).length;
+  if (!B.swap) return L;
+  for (const [f, n] of SWAPS) L -= n * easeInOut(prog(t, at("swap", f), at("swap", f) + 0.9));
+  return L;
+}
+
+// Kubus SVG, dibangun lewat DOM (tanpa innerHTML).
+const NS = "http://www.w3.org/2000/svg";
+function cubeSvg(over) {
+  const top = over ? "#ffe3da" : "#ffffff", left = over ? "#f6b8a5" : "#e3ece9", right = over ? "#f0a088" : "#c9d8d3", line = over ? "#e4572e" : "#6f8c85";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("width", "52"); svg.setAttribute("height", "56"); svg.setAttribute("viewBox", "0 0 52 56");
+  const g = document.createElementNS(NS, "g");
+  g.setAttribute("stroke", line); g.setAttribute("stroke-width", "1.5"); g.setAttribute("stroke-linejoin", "round");
+  for (const [pts, fill] of [["0,13 26,0 52,13 26,26", top], ["0,13 26,26 26,56 0,43", left], ["26,26 52,13 52,43 26,56", right]]) {
+    const pg = document.createElementNS(NS, "polygon"); pg.setAttribute("points", pts); pg.setAttribute("fill", fill); g.append(pg);
+  }
+  svg.append(g);
+  return svg;
+}
+const jar = $("jar");
+const PITCH = 40;
+const slot = (i) => ({ x: 22 + (i % 3) * 64 + (Math.floor(i / 3) % 2) * 6, y: 320 - 60 - Math.floor(i / 3) * PITCH });
+// Garis batas: 12,5 dan 6,25 kubus.
+$("l50").style.top = `${320 - 12 - (12.5 / 3) * PITCH}px`;
+$("l25").style.top = `${320 - 12 - (6.25 / 3) * PITCH}px`;
+const cubes = drops.map((_, i) => {
+  const c = el("div", "cube");
+  c.append(cubeSvg(i >= 13));
+  jar.append(c);
+  return c;
+});
+
+// Panel kanan, satu per beat.
+const panels = {};
+function panel(type, build) { if (!B[type]) return; const p = el("div", "panel"); $("stage").append(p); panels[type] = { p, anim: build(p) }; }
+panel("hook", (p) => {
+  const k = el("div", "kick", "Tebak dulu"), q = el("div", "q", "Berapa sendok gula yang kamu makan kemarin?"), s = el("div", "qs", "Kebanyakan orang hanya menghitung gula yang dituang sendiri.");
+  p.append(k, q, s);
+  return (t, d) => { fade(q, prog(t, 0.2, 0.9), 24); fade(s, prog(t, d * 0.45, d * 0.45 + 0.6), 14); fade(k, prog(t, 0, 0.5), 10); };
+});
+panel("day", (p) => {
+  p.append(el("div", "kick", "Satu hari biasa"));
+  const log = el("div", "log");
+  const rows = ITEMS.map(([tm, ic, nm, n]) => { const r = el("div", "lg"); r.append(el("span", "tm", tm), el("span", "ic", ic), el("span", "", nm), el("span", "g", `+${n * 4} g`)); log.append(r); return r; });
+  const tot = el("div", "tot"); tot.append(el("span", "", "Total"), el("b", "", "68 g"), el("span", "over", "+18 g di atas batas"));
+  p.append(log, tot);
+  return (t, d) => { ITEMS.forEach(([, , , , f], i) => fade(rows[i], prog(t, d * f, d * f + 0.5), 30, "X")); fade(tot, prog(t, d * 0.84, d * 0.84 + 0.5), 14); };
+});
+panel("label", (p) => {
+  p.append(el("div", "kick", "Ilmunya: tiga baris label"));
+  const lb = el("div", "label"); const lt = el("div", "lt", "INFORMASI NILAI GIZI"); lb.append(lt);
+  const rows = [["Takaran saji", "200 ml", 1], ["Jumlah sajian per kemasan", "2", 2], ["Energi total", "130 kkal"], ["Karbohidrat total", "22 g"], ["Gula", "12 g", 3], ["Garam (natrium)", "95 mg"]].map(([k, v, h]) => { const r = el("div", "lr"); r.append(el("span", "", k), el("span", "", v)); r.dataset.h = h ?? ""; lb.append(r); return r; });
+  const f = el("div", "formula"); const parts = ["12 g", "×", "2", "=", "24 g", "÷ 4 =", "6 sdt"].map((x, i) => { const s = el("span", i === 6 ? "res" : "", x); f.append(s); return s; });
+  p.append(lb, f);
+  return (t, d) => {
+    fade(lb, prog(t, 0.1, 0.7), 20);
+    for (const r of rows) { const h = Number(r.dataset.h); r.classList.toggle("hl", h > 0 && t > d * (0.08 + h * 0.13)); }
+    parts.forEach((s, i) => { s.style.opacity = easeOut(prog(t, d * 0.55 + i * 0.25, d * 0.55 + i * 0.25 + 0.3)); });
+  };
+});
+panel("limits", (p) => {
+  p.append(el("div", "kick", "Batas sehari"));
+  const g = el("div", "lim");
+  const a = el("div", "limr"); a.append(el("b", "", "50 g"), el("span", "", "paling banyak sehari, anjuran Kemenkes (±12 sendok teh)"));
+  const b = el("div", "limr who"); b.append(el("b", "", "25 g"), el("span", "", "idealnya, menurut WHO (±6 sendok teh)"));
+  g.append(a, b); p.append(g);
+  return (t, d) => { fade(a, prog(t, 0.2, 0.8), 20); fade(b, prog(t, d * 0.45, d * 0.45 + 0.6), 20); };
+});
+panel("swap", (p) => {
+  p.append(el("div", "kick", "Tukar, bukan berhenti"));
+  const g = el("div", "sw");
+  const rows = [["🥛 Susu cokelat sebotol", "Susu tawar / air putih"], ["🧋 Es kopi susu", "“Gulanya setengah, ya”"], ["🍵 Teh 2 sendok", "Teh 1 sendok"]].map(([a, b]) => { const r = el("div", "swr"); r.append(el("div", "", a), el("i", "", "→"), el("div", "", b)); g.append(r); return r; });
+  const big = el("div", "big2"); big.append(el("s", "", "68 g"), el("span", "", "→"), el("em", "", "26 g"));
+  p.append(g, big);
+  return (t, d) => { SWAPS.forEach(([f], i) => fade(rows[i], prog(t, d * f - 0.5, d * f), 26, "X")); fade(big, prog(t, d * 0.8, d * 0.8 + 0.5), 14); };
+});
+panel("ladder", (p) => {
+  p.append(el("div", "kick", "Lalu latih lidahmu"));
+  const s = el("div", "steps");
+  const st = [["Sekarang", "2 sdt", 200], ["Minggu 1", "1,5 sdt", 165], ["Minggu 2", "1 sdt", 130], ["Minggu 3", "½ sdt", 95]].map(([a, b, h]) => { const x = el("div", "st"); x.style.height = `${h}px`; x.append(el("b", "", a), el("span", "", b)); s.append(x); return x; });
+  const f = el("div", "fact", "Turun seperempat setiap minggu. Lidah yang terbiasa sedikit manis merasakan manis lebih kuat.");
+  p.append(s, f);
+  return (t, d) => { st.forEach((x, i) => fade(x, prog(t, 0.3 + i * 0.5, 0.8 + i * 0.5), 30)); fade(f, prog(t, d * 0.55, d * 0.55 + 0.6), 12); };
+});
+panel("end", (p) => {
+  const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";
+  const tx = el("div"); tx.append(el("div", "kick", "Ebook SelfGrow · 6 bab · 2 kalkulator"), el("h1", "", "Kurangi Gula Tanpa Menderita"), el("p", "", "Baca label, hitung harimu, tukar pilihan, latih lidah."), el("div", "btn", "Baca Bab 1, gratis"));
+  const br = el("div", "brand"); const im = el("img"); im.src = "mark.png"; im.alt = ""; br.append(im, el("span", "", "SelfGrow")); tx.append(br);
+  w.append(cv, tx); p.append(w);
+  return (t) => { fade(cv, prog(t, 0.2, 0.9), 40); fade(tx, prog(t, 0.6, 1.3), 20, "X"); };
+});
+function fade(e, p, dist = 20, axis = "Y") { const k = easeOut(p); e.style.opacity = k; e.style.transform = `translate${axis}(${(1 - k) * dist}px)`; }
+
+window.render = (t) => {
+  // Kamera: mendekat sedikit ke label saat dibaca, kembali sesudahnya.
+  let z = 1;
+  if (B.label) z += 0.05 * easeInOut(prog(t, B.label.start, B.label.start + 1)) * (1 - easeInOut(prog(t, B.label.start + B.label.dur - 0.8, B.label.start + B.label.dur + 0.2)));
+  $("stage").style.transform = `scale(${z})`;
+  $("stage").style.transformOrigin = "70% 45%";
+
+  // Panel aktif (silang 0,4 detik).
+  for (const b of T) {
+    const pn = panels[b.type]; if (!pn) continue;
+    const o = Math.min(easeInOut(prog(t, b.start - 0.2, b.start + 0.25)), 1 - easeInOut(prog(t, b.start + b.dur - 0.25, b.start + b.dur + 0.2)));
+    const last = b === T[T.length - 1];
+    pn.p.style.opacity = last ? easeInOut(prog(t, b.start - 0.2, b.start + 0.25)) : o;
+    if (pn.p.style.opacity > 0) pn.anim(t - b.start, b.dur);
+  }
+
+  // Kubus: jatuh lalu (saat penukaran) melayang keluar.
+  const L = level(t);
+  cubes.forEach((c, i) => {
+    const d = drops[i]();
+    const s = slot(i);
+    if (t < d) { c.style.opacity = 0; return; }
+    const p = prog(t, d, d + 0.45);
+    const y = -80 + (s.y + 80) * bounce(p);
+    // keep: 1 = utuh, 0,5 = setengah kubus (tampil kecil), < 0,5 = melayang keluar.
+    const keep = t < d + 0.45 ? 1 : clamp(L - i);
+    let sc = 1, dx = 0, dy = 0, op = clamp(p * 3);
+    if (keep < 1 && keep >= 0.5) sc = 0.55 + 0.45 * ((keep - 0.5) * 2);
+    if (keep < 0.5) { const f = easeOut((0.5 - keep) * 2); sc = 0.55; dx = 180 * f; dy = -140 * f; op *= 1 - f; }
+    c.style.opacity = op;
+    c.style.transform = `translate(${s.x + dx}px, ${y + dy}px) scale(${sc})`;
+  });
+  const g = Math.max(0, Math.round(L * 4));
+  $("mg").textContent = `${g} g`;
+  $("ms").textContent = `${fmt(g / 4)} sendok teh`;
+  $("mg").style.color = g > 50 ? "#e4572e" : g <= 26 && t > (B.swap?.start ?? 1e9) ? "#0f766e" : "#111816";
+
+  // Jam berjalan sepanjang hari contoh.
+  let clock = "07.00";
+  for (const [tm, , , , f] of ITEMS) if (B.day && t >= at("day", f)) clock = tm;
+  if (B.day && t >= at("day", 0.9)) clock = "21.00";
+  if (B.swap && t >= B.swap.start) clock = "besoknya";
+  $("clock").firstChild.textContent = clock;
+
+  // Narasi di layar.
+  const cb = T.find((b) => t >= b.start && t < b.start + b.dur);
+  const line = D.captions && cb ? cb.say : null;
+  const cap = $("cap");
+  if (cap.dataset.line !== (line ?? "")) { cap.dataset.line = line ?? ""; cap.replaceChildren(); if (line) cap.append(el("span", "", line)); }
+};
+render(0);
+</script>
+</body>
+</html>
