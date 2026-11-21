@@ -38,6 +38,7 @@ Selebihnya bebas.
 | `quote` | Satu kalimat kuat dari buku atau tokoh (+ nama) | Puncak emosi sebelum ajakan |
 | `chat` | Layar ponsel dengan pesan yang muncul bergiliran (ada animasi "sedang mengetik") + judul di samping | Buku komunikasi dan relasi; menunjukkan percakapan sebelum dan sesudah |
 | `breath` | Lingkaran yang mengembang–mengempis (tarik, tahan, hembus) + judul | Buku kesehatan mental, tidur, dan ketenangan; mengajak penonton merasakan isi buku |
+| `receipt` | Struk/nota yang tercetak baris demi baris dari mesin kasir, baris yang terlupa ditandai, lalu total dan cap (mis. "RUGI") + judul di samping | Buku bisnis dan keuangan yang punya hitungan konkret |
 | `cta` | Kalimat pendek + tombol + logo | Selalu di akhir |
 
 Setiap adegan boleh memilih latar: `dark` (hijau tua), `paper` (krem), atau `night` (biru malam).
@@ -55,6 +56,7 @@ tetap muncul di setiap video.
 - **Kesehatan mental**: cover (latar `night`) → quote → list (lembut, tanpa ✕) → features → cta. Tanpa angka mengejutkan.
 - **Karier**: bigNumber → cover → story → features → cta.
 - **Kesehatan mental (Keluar dari Lingkaran Overthinking)**: question (malam) → cover → quote → list → breath → cta, tema biru malam, musik tenang lambat, narasi lembut. Tanpa angka besar di awal.
+- **Bisnis (Hitung Harga Jual yang Untung)**: question → receipt (nota HPP risol Dina, cap "RUGI Rp250") → cover → stages → bigNumber hasil → features → cta, tema kertas kraft dan oranye, musik semangat.
 - **Komunikasi (Berani Bilang Tidak)**: chat (jawaban lama) → cover → bigNumber → list tokoh → chat (jawaban baru) → features → cta, dengan tema ungu-koral.
 
 ---
@@ -69,7 +71,8 @@ tetap muncul di setiap video.
 - Musik latar dibuat sendiri oleh skrip (bebas royalti). Pilih `music.mood`:
   `hangat` (optimis), `tenang` (reflektif, cocok untuk kesehatan mental dan makna hidup),
   `semangat` (karier, kebugaran, bisnis). Musik otomatis mengecil saat narator berbicara.
-- Narasi memakai Google Cloud Text-to-Speech. Kuncinya disimpan sebagai network secret
+- Narasi rekaman (mis. ElevenLabs, suara Putri Maharani) disimpan di `intro-video/voice/{slug}/{nomor adegan}.mp3` dan diutamakan.
+- Cadangan: Google Cloud Text-to-Speech. Kuncinya disimpan sebagai network secret
   lingkungan, tidak pernah di kode. Tanpa kunci, video tetap jadi dengan musik saja.
 
 ---
