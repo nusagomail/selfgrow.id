@@ -97,8 +97,8 @@ describe("EbookContent", () => {
         },
       ],
     });
-    expect(out).toContain("<th><p><span>Hari</span></p></th>");
-    expect(out).toContain("<td><p><span>Olahraga</span></p></td>");
+    expect(out).toContain('<th data-label="Hari"><p><span>Hari</span></p></th>');
+    expect(out).toContain('<td data-label="Tugas"><p><span>Olahraga</span></p></td>');
   });
 
   it("transformText dipakai untuk setiap teks", () => {

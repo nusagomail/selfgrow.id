@@ -3,6 +3,7 @@
  * Render isi bab ebook (JSON yang lolos `ebookDocSchema`) untuk halaman publik, setara
  * `@selfgrow/renderer`: hanya node yang dikenal, tautan & gambar diperiksa ulang, tanpa HTML mentah.
  */
+import { tableLayout } from "@selfgrow/renderer/table";
 import type { EbookNode } from "@selfgrow/shared";
 import Marked from "./Marked.astro";
 
@@ -49,7 +50,31 @@ const imgSrc = (src: string) =>
         {n.attrs.title && <figcaption>{n.attrs.title}</figcaption>}
       </figure>
     ) : n.type === "table" ? (
-      <div class="table-wrap"><table><tbody><Self nodes={n.content} /></tbody></table></div>
+      (() => {
+        // Label kolom per sel: tabel lebar tampil sebagai kartu di layar sempit (D39).
+        const layout = tableLayout(n);
+        return (
+          <div class="table-wrap">
+            <table class={layout.wide ? "wide" : undefined}>
+              <tbody>
+                {n.content.map((row) =>
+                  row.type === "tableRow" ? (
+                    <tr>
+                      {row.content.map((cell, ci) =>
+                        cell.type === "tableHeader" ? (
+                          <th colspan={cell.attrs?.colspan} rowspan={cell.attrs?.rowspan} data-label={layout.labels[ci] || undefined}><Self nodes={cell.content} /></th>
+                        ) : cell.type === "tableCell" ? (
+                          <td colspan={cell.attrs?.colspan} rowspan={cell.attrs?.rowspan} data-label={layout.labels[ci] || undefined}><Self nodes={cell.content} /></td>
+                        ) : null,
+                      )}
+                    </tr>
+                  ) : null,
+                )}
+              </tbody>
+            </table>
+          </div>
+        );
+      })()
     ) : n.type === "tableRow" ? (
       <tr><Self nodes={n.content} /></tr>
     ) : n.type === "tableHeader" ? (
