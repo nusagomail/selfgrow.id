@@ -364,4 +364,68 @@ export const DEMO_TOOLS = [
       ],
     },
   },
+  {
+    slug: "pemilah-kekhawatiran",
+    topic: "top_overthinking",
+    title: "Pemilah Kekhawatiran",
+    summary: "Pilah satu kekhawatiran: perlu ditindak, dijadwalkan, atau dilepaskan.",
+    config: {
+      version: 1,
+      intro: "Tulis satu hal yang sedang berputar di kepalamu, lalu jawab tiga pertanyaan singkat.",
+      submitLabel: "Pilah",
+      inputs: [
+        {
+          key: "hal",
+          label: "Apa yang kamu khawatirkan?",
+          type: "text",
+          required: true,
+          placeholder: "presentasi hari Kamis",
+        },
+        {
+          key: "kendali",
+          label: "Bisakah kamu melakukan sesuatu tentang ini?",
+          type: "select",
+          required: true,
+          options: [
+            { value: "ya", label: "Ya, ada yang bisa kulakukan" },
+            { value: "sebagian", label: "Sebagian saja" },
+            { value: "tidak", label: "Tidak, di luar kendaliku" },
+          ],
+        },
+        {
+          key: "kapan",
+          label: "Kapan hal ini terjadi?",
+          type: "select",
+          required: true,
+          options: [
+            { value: "sekarang", label: "Hari ini atau besok" },
+            { value: "nanti", label: "Minggu ini atau lebih jauh" },
+            { value: "mungkin", label: "Belum tentu terjadi" },
+          ],
+        },
+      ],
+      computed: [
+        {
+          key: "langkah",
+          label: "Langkahmu",
+          formula:
+            'if(kendali == "tidak", concat("Kekhawatiran tentang ", hal, " ada di luar kendalimu. Tulis di jurnal, akui rasanya, lalu kembalikan perhatian ke napas atau ke hal kecil di depanmu (Bab 5)."), if(kapan == "sekarang", concat("Untuk ", hal, ": pilih satu langkah terkecil yang bisa kamu lakukan dalam 10 menit, lalu kerjakan sekarang atau tulis jamnya."), if(kapan == "nanti", concat("Untuk ", hal, ": tulis rencananya di kertas, lalu simpan untuk waktu khawatirmu besok (Bab 4). Malam ini tidak perlu diselesaikan."), concat("Untuk ", hal, ": ini masih “bagaimana kalau”. Tulis kemungkinan terburuk, terbaik, dan yang paling mungkin. Biasanya yang paling mungkin jauh lebih ringan."))))',
+          format: "text",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: 'kendali == "sebagian"',
+          text: "Pisahkan bagian yang bisa kamu kendalikan dari yang tidak. Kerjakan bagian pertama, relakan bagian kedua.",
+          variant: "info",
+        },
+        {
+          when: 'kapan == "mungkin"',
+          text: "Dalam satu penelitian, lebih dari 90% kekhawatiran orang dengan kecemasan berlebih ternyata tidak terjadi.",
+          variant: "tip",
+        },
+      ],
+    },
+  },
 ];

@@ -112,6 +112,12 @@ body { font-family: Jakarta, sans-serif; color: #fff; }
 .typing { align-self: flex-end; background: #ffd9c7; border-radius: 16px; padding: 10px 14px; display: flex; gap: 5px; }
 .typing i { width: 8px; height: 8px; border-radius: 50%; background: #8a6f78; display: block; }
 
+/* breath */
+.breath-s .box { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; }
+.breath-s .bt { font-size: 30px; font-weight: 700; text-align: center; max-width: 720px; line-height: 1.3; }
+.breath-s .orb { width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff8dc, #f3e6b5 45%, #c9b8f0 100%); box-shadow: 0 0 80px rgba(243,230,181,.45); }
+.breath-s .bl { font-size: 24px; font-weight: 600; letter-spacing: .04em; opacity: .9; }
+
 /* cta */
 .cta-s .box { position: absolute; left: 110px; right: 110px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 26px; }
 .cta-s .lead { font-size: 30px; font-weight: 700; line-height: 1.35; }
@@ -368,6 +374,42 @@ const KINDS = {
           b.style.opacity = p;
           b.style.transform = `translateY(${(1 - p) * 12}px) scale(${0.96 + 0.04 * p})`;
         });
+      };
+    },
+  },
+  breath: {
+    bg: "night",
+    min: () => 12,
+    build(s, r) {
+      r.classList.add("breath-s");
+      const box = el("div", "box");
+      const t1 = el("div", "bt", s.title ?? "");
+      const orb = el("div", "orb");
+      const lbl = el("div", "bl", "");
+      box.append(t1, orb, lbl);
+      r.append(box);
+      // Siklus 4 detik tarik, 2 tahan, 4 hembus (ditampilkan perlahan, satu atau dua putaran).
+      const steps = s.steps ?? ["Tarik napas…", "Tahan…", "Hembuskan…"];
+      return (t) => {
+        rise(t1, easeOut(prog(t, 0.2, 1.0)), 16);
+        const c = Math.max(0, t - 1.2) % 10;
+        let k;
+        let label;
+        if (c < 4) {
+          k = easeInOut(c / 4);
+          label = steps[0];
+        } else if (c < 6) {
+          k = 1;
+          label = steps[1];
+        } else {
+          k = 1 - easeInOut((c - 6) / 4);
+          label = steps[2];
+        }
+        const on = t > 1.2 ? 1 : prog(t, 0.6, 1.2);
+        orb.style.opacity = on;
+        orb.style.transform = `scale(${0.55 + 0.55 * k})`;
+        if (lbl.textContent !== label) lbl.textContent = t > 1.2 ? label : "";
+        lbl.style.opacity = on;
       };
     },
   },
