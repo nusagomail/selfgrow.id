@@ -104,7 +104,7 @@ panel("hook", (p) => {
   const sh = el("div", "shout", "DIMAS! IBU SUDAH BILANG TIGA KALI!");
   p.append(ch, sh);
   return (t, d) => {
-    TRIG.forEach(([, , f], i) => fade(cs[i], prog(t, d * f - 0.1, d * f + 0.35), 16));
+    TRIG.forEach(([, , f], i) => { fade(cs[i], prog(t, d * f - 0.1, d * f + 0.35), 16); });
     const k = easeOut(prog(t, d * 0.76, d * 0.76 + 0.25));
     sh.style.opacity = k; sh.style.fontSize = `${30 + 22 * k}px`;
     sh.style.transform = `rotate(${-2 * k}deg) translateX(${Math.sin(t * 40) * 3 * k * (1 - prog(t, d * 0.8, d * 0.95))}px)`;
@@ -128,7 +128,7 @@ panel("pause", (p) => {
     const k = prog(t, d * 0.2, d * 0.2 + 8);
     ring.textContent = String(Math.max(0, Math.ceil(10 * (1 - k))));
     ring.style.background = `conic-gradient(#3b2f2f ${k * 360}deg, #efe5d6 0)`;
-    st.forEach((x, i) => fade(x, prog(t, d * (0.22 + i * 0.16), d * (0.22 + i * 0.16) + 0.5), 20));
+    st.forEach((x, i) => { fade(x, prog(t, d * (0.22 + i * 0.16), d * (0.22 + i * 0.16) + 0.5), 20); });
   };
 });
 panel("line", (p) => {
@@ -137,7 +137,7 @@ panel("line", (p) => {
   const ls = [["Namai perasaan", "“Kamu kesal ya.”", COL.sky], ["Pasang batas", "“Boleh kesal, tapi tidak boleh melempar.”", COL.coral], ["Dua pilihan", "“Mau tarik napas bareng, atau peluk dulu?”", COL.leaf]].map(([a, b, c]) => { const r = el("div", "ln"); const k = el("b", "", a); k.style.background = c; r.append(k, el("span", "", b)); g.append(r); return r; });
   const n = el("div", "note", "suara kecil, setinggi mata anak");
   p.append(g, n);
-  return (t, d) => { ls.forEach((r, i) => fade(r, prog(t, d * (0.12 + i * 0.25), d * (0.12 + i * 0.25) + 0.5), 24, "X")); fade(n, prog(t, d * 0.85, d * 0.85 + 0.5), 10); };
+  return (t, d) => { ls.forEach((r, i) => { fade(r, prog(t, d * (0.12 + i * 0.25), d * (0.12 + i * 0.25) + 0.5), 24, "X"); }); fade(n, prog(t, d * 0.85, d * 0.85 + 0.5), 10); };
 });
 panel("end", (p) => {
   const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";
