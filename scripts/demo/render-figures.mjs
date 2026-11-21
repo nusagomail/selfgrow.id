@@ -7,6 +7,7 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { DARURAT_FIGURE_CSS, DARURAT_FIGURES } from "./books/darurat-figures.mjs";
 import { GULA_FIGURE_CSS, GULA_FIGURES } from "./books/gula-figures.mjs";
 import { HARGA_FIGURE_CSS, HARGA_FIGURES } from "./books/harga-figures.mjs";
 import { MINGGU_FIGURE_CSS, MINGGU_FIGURES } from "./books/minggu-figures.mjs";
@@ -39,6 +40,7 @@ const SETS = {
   "mengasuh-tanpa-teriak": { figures: TERIAK_FIGURES, css: TERIAK_FIGURE_CSS },
   "seminggu-dalam-satu-jam": { figures: MINGGU_FIGURES, css: MINGGU_FIGURE_CSS },
   "stoik-untuk-hidup-sehari-hari": { figures: STOIK_FIGURES, css: STOIK_FIGURE_CSS },
+  "dana-darurat-dari-nol": { figures: DARURAT_FIGURES, css: DARURAT_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,

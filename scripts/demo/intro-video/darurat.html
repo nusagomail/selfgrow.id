@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<!--
+  Video pengantar "Dana Darurat dari Nol" (D46): dirancang khusus. Satu dunia sepanjang video:
+  buku tabungan yang terbuka. Halaman pertama mencetak minggu buruk Bagas (saldo kecil, cicilan
+  paylater merah); halaman berganti; setoran Rp300.000 tercetak bulan demi bulan; penarikan layar
+  HP dibayar dari saldo dan dicap "tanpa utang". Kontrak: DURATION, TIMELINE, render(t).
+-->
+<style>
+@font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: Mono; src: url(mono.woff2) format("woff2"); font-weight: 500; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 960px; height: 540px; overflow: hidden; }
+body { font-family: Jakarta, sans-serif; color: #1e2a33; background: #dfe9e3; }
+#stage { position: absolute; inset: 0; background: radial-gradient(120% 100% at 20% 10%, #eef5f0 0%, #d6e3db 60%, #c3d4ca 100%); }
+#book { position: absolute; left: 40px; top: 46px; width: 480px; height: 400px; background: #1f4e79; border-radius: 10px; padding: 12px; box-shadow: 0 18px 40px rgba(31,78,121,.3); }
+#page { position: relative; width: 100%; height: 100%; background: #f5f9f4; border-radius: 6px; overflow: hidden;
+  background-image: repeating-radial-gradient(circle at 0 0, transparent 0 14px, rgba(63,143,107,.08) 14px 15px), repeating-radial-gradient(circle at 100% 100%, transparent 0 14px, rgba(31,78,121,.07) 14px 15px); }
+.ph { display: grid; grid-template-columns: 62px 1fr 108px 108px; padding: 10px 12px; background: #1f4e79; color: #fff; font-family: Mono, monospace; font-size: 11px; letter-spacing: .08em; }
+.ph span:nth-child(3), .ph span:nth-child(4) { text-align: right; }
+.row { position: absolute; left: 0; right: 0; display: grid; grid-template-columns: 62px 1fr 108px 108px; padding: 9px 12px; font-family: Mono, monospace; font-size: 14px; border-bottom: 1px solid #c9d9cf; }
+.row span:nth-child(3), .row span:nth-child(4) { text-align: right; }
+.row.red { color: #b5473a; background: #fbecea; }
+.row.blue { color: #1f4e79; font-weight: 700; }
+#pageno { position: absolute; right: 14px; bottom: 10px; font-family: Mono, monospace; font-size: 11px; color: #7a8c95; }
+#stamp { position: absolute; left: 150px; bottom: 34px; width: 120px; height: 120px; border-radius: 50%; border: 4px solid #1f4e79; color: #1f4e79; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 800; font-size: 18px; line-height: 1.1; transform: rotate(-14deg); opacity: 0; }
+#flip { position: absolute; inset: 0; background: #e9f1ec; transform-origin: left center; opacity: 0; border-radius: 6px; }
+.panel { position: absolute; left: 560px; right: 36px; top: 60px; bottom: 112px; opacity: 0; }
+.kick { font-family: Mono, monospace; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #3f8f6b; }
+.big { font-size: 34px; font-weight: 800; color: #1f4e79; line-height: 1.12; margin-top: 8px; }
+.sub { font-size: 17px; line-height: 1.45; margin-top: 10px; }
+.calc { margin-top: 14px; background: #fff; border-left: 5px solid #1f4e79; padding: 12px 14px; font-family: Mono, monospace; font-size: 17px; line-height: 1.6; }
+.calc b { color: #1f4e79; font-size: 20px; }
+.lad { display: flex; align-items: flex-end; gap: 8px; margin-top: 14px; height: 150px; }
+.lad div { flex: 1; background: #fff; border: 2px solid #1f4e79; border-radius: 6px 6px 0 0; padding: 6px; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; justify-content: flex-end; }
+.lad div b { font-family: Mono, monospace; font-size: 15px; }
+.lad div.on { background: #1f4e79; color: #fff; }
+.end { display: grid; grid-template-columns: 110px 1fr; gap: 16px; align-items: center; }
+.end img.cv { width: 110px; height: 165px; box-shadow: 0 10px 22px rgba(0,0,0,.25); border-radius: 3px 7px 7px 3px; }
+.end h1 { font-size: 28px; font-weight: 800; color: #1f4e79; line-height: 1.1; }
+.btn { display: inline-block; margin-top: 12px; background: #1f4e79; color: #fff; font-weight: 800; font-size: 16px; padding: 10px 16px; border-radius: 6px; }
+.brand { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-weight: 800; }
+.brand img { width: 22px; height: 22px; }
+#wm { position: absolute; right: 22px; top: 18px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; }
+#wm img { width: 22px; height: 22px; }
+.sub-cap { position: absolute; left: 30px; right: 30px; bottom: 12px; text-align: center; z-index: 20; }
+.sub-cap span { display: inline-block; max-width: 820px; padding: 6px 14px; border-radius: 10px; background: rgba(31,78,121,.9); color: #fff; font-size: 17px; font-weight: 600; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="book"><div id="page">
+    <div class="ph"><span>TGL</span><span>KETERANGAN</span><span>MUTASI</span><span>SALDO</span></div>
+    <div id="stamp">TANPA<br>UTANG</div>
+    <div id="pageno">HAL. 1</div>
+    <div id="flip"></div>
+  </div></div>
+</div>
+<div id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+<div class="sub-cap" id="cap"></div>
+<script>
+const D = window.DATA;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - (1 - x) ** 3;
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+function fade(e, p, dist = 20, axis = "Y") { const k = easeOut(p); e.style.opacity = k; e.style.transform = `translate${axis}(${(1 - k) * dist}px)`; }
+const rp = (n) => n.toLocaleString("id-ID");
+
+const MIN = { hook: 9, rule: 10, start: 9, used: 7, end: 6 };
+const T = [];
+let cur = 0;
+for (const s of D.scenes) { const dur = Math.max(MIN[s.type] ?? 6, s.dur ?? 0); T.push({ type: s.type, start: cur, dur, say: s.say ?? null }); cur += dur; }
+window.DURATION = cur;
+window.TIMELINE = T.map(({ type, start, dur }) => ({ type, start, dur }));
+const B = Object.fromEntries(T.map((b) => [b.type, b]));
+const at = (type, f) => B[type].start + B[type].dur * f;
+
+const page = $("page");
+function row(cls, d, k, m, s, i) { const r = el("div", `row ${cls}`); r.append(el("span", "", d), el("span", "", k), el("span", "", m), el("span", "", s)); r.style.top = `${36 + i * 38}px`; page.insertBefore(r, $("stamp")); return r; }
+// Halaman 1: minggu buruk.
+const P1 = [
+  ["25-01", "GAJI MASUK", "+5.200.000", "5.200.000", ""],
+  ["26-01", "BELANJA & KOS", "-4.560.000", "640.000", ""],
+  ["05-02", "SERVIS → PAYLATER", "–", "640.000", "red"],
+  ["05-03", "CICILAN+BUNGA 1/3", "–", "…", "red"],
+].map(([d, k, m, s, c], i) => ({ r: row(c, d, k, m, s, i), f: 0.08 + i * 0.16 }));
+// Halaman 2: dana darurat.
+const P2 = [
+  ["01-02", "SETORAN OTOMATIS", 300000, 300000, ""],
+  ["01-03", "SETORAN OTOMATIS", 300000, 600000, ""],
+  ["28-03", "SISIHAN THR 50%", 1000000, 1600000, ""],
+  ["01-04", "SETORAN OTOMATIS", 300000, 1900000, ""],
+].map(([d, k, m, s, c], i) => ({ r: row(c, d, k, `+${rp(m)}`, rp(s), i), f: 0.15 + i * 0.17 }));
+const OUT = row("blue", "12-04", "TARIK: LAYAR HP", "-650.000", "1.250.000", 4);
+
+const panels = {};
+function panel(type, build) { if (!B[type]) return; const p = el("div", "panel"); $("stage").append(p); panels[type] = { p, anim: build(p) }; }
+panel("hook", (p) => {
+  const k = el("div", "kick", "Rabu pagi"), b = el("div", "big", "Motor mogok. Rp2,8 juta."), s = el("div", "sub", "Saldo Rp640 ribu, gajian masih dua minggu lagi. Jalan keluarnya: paylater tiga bulan.");
+  p.append(k, b, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.3, 1.0), 20); fade(s, prog(t, d * 0.45, d * 0.45 + 0.6), 12); };
+});
+panel("rule", (p) => {
+  const k = el("div", "kick", "Ilmunya: hitung dari pengeluaran wajib");
+  const c = el("div", "calc"); c.append(el("div", "", "Rp3,5 jt × 3 bulan"), el("b", "", "= Rp10,5 juta"));
+  const l = el("div", "lad");
+  const st = [["Tangga 1", "1 jt", 64], ["Tangga 2", "3,5 jt", 104], ["Tangga 3", "10,5 jt", 150]].map(([a, b, h]) => { const x = el("div"); x.style.height = `${h}px`; x.append(el("span", "", a), el("b", "", b)); l.append(x); return x; });
+  const s = el("div", "sub", "3–6 bulan pengeluaran wajib. Mulai dari tangga pertama.");
+  p.append(k, c, l, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(c, prog(t, 0.4, 1.0), 16); st.forEach((x, i) => { fade(x, prog(t, d * (0.45 + i * 0.1), d * (0.45 + i * 0.1) + 0.4), 30); x.classList.toggle("on", i === 0 && t > d * 0.75); }); fade(s, prog(t, d * 0.75, d * 0.75 + 0.5), 10); };
+});
+panel("start", (p) => {
+  const k = el("div", "kick", "Halaman baru"), b = el("div", "big", "Rp10.000 sehari, otomatis setiap gajian."), s = el("div", "sub", "Ditambah separuh THR. Kecil, tapi tidak pernah lupa.");
+  p.append(k, b, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.3, 1.0), 20); fade(s, prog(t, d * 0.5, d * 0.5 + 0.6), 12); };
+});
+panel("used", (p) => {
+  const k = el("div", "kick", "Bulan ketiga"), b = el("div", "big", "Layar HP pecah. Dibayar tanpa utang."), s = el("div", "sub", "Lalu setoran berjalan lagi seperti biasa.");
+  p.append(k, b, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.3, 1.0), 20); fade(s, prog(t, d * 0.55, d * 0.55 + 0.5), 12); };
+});
+panel("end", (p) => {
+  const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";
+  const tx = el("div"); tx.append(el("div", "kick", "Ebook SelfGrow · 6 bab · 2 kalkulator"), el("h1", "", "Dana Darurat dari Nol"), el("div", "btn", "Baca Bab 1, gratis"));
+  const br = el("div", "brand"); const im = el("img"); im.src = "mark.png"; im.alt = ""; br.append(im, el("span", "", "SelfGrow")); tx.append(br);
+  w.append(cv, tx); p.append(w);
+  return (t) => { fade(cv, prog(t, 0.2, 0.9), 30); fade(tx, prog(t, 0.5, 1.2), 16, "X"); };
+});
+
+window.render = (t) => {
+  for (const b of T) {
+    const pn = panels[b.type]; if (!pn) continue;
+    const last = b === T[T.length - 1];
+    const inn = easeInOut(prog(t, b.start - 0.2, b.start + 0.25));
+    const out = last ? 1 : 1 - easeInOut(prog(t, b.start + b.dur - 0.25, b.start + b.dur + 0.2));
+    const o = Math.min(inn, out);
+    pn.p.style.opacity = o;
+    if (o > 0) pn.anim(t - b.start, b.dur);
+  }
+  // Halaman berganti di awal adegan "start".
+  const flipAt = B.start ? B.start.start : 1e9;
+  const fl = prog(t, flipAt - 0.4, flipAt + 0.5);
+  $("flip").style.opacity = fl > 0 && fl < 1 ? 1 : 0;
+  $("flip").style.transform = `scaleX(${1 - Math.abs(fl * 2 - 1)})`;
+  const onP2 = t >= flipAt + 0.05;
+  $("pageno").textContent = onP2 ? "HAL. 2 · DANA DARURAT" : "HAL. 1";
+  // Cetak baris: muncul dari kiri seperti printer buku tabungan.
+  const print = (r, t0) => { const k = prog(t, t0, t0 + 0.6); r.style.clipPath = `inset(0 ${100 - k * 100}% 0 0)`; r.style.opacity = k > 0 ? 1 : 0; };
+  for (const { r, f } of P1) { if (onP2) { r.style.opacity = 0; continue; } print(r, B.hook ? at("hook", f) : 0); }
+  for (const { r, f } of P2) { if (!onP2) { r.style.opacity = 0; continue; } print(r, at("start", f)); }
+  if (onP2 && B.used) print(OUT, at("used", 0.15)); else OUT.style.opacity = 0;
+  const sk = B.used ? easeOut(prog(t, at("used", 0.45), at("used", 0.45) + 0.35)) : 0;
+  $("stamp").style.opacity = sk * 0.85;
+  $("stamp").style.transform = `rotate(-14deg) scale(${1.8 - 0.8 * sk})`;
+
+  const cb = T.find((b) => t >= b.start && t < b.start + b.dur);
+  const line = D.captions && cb ? cb.say : null;
+  const cap = $("cap");
+  if (cap.dataset.line !== (line ?? "")) { cap.dataset.line = line ?? ""; cap.replaceChildren(); if (line) cap.append(el("span", "", line)); }
+};
+render(0);
+</script>
+</body>
+</html>
