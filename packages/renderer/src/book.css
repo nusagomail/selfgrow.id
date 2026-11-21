@@ -314,3 +314,86 @@
 .book[data-theme="night"] .book-flow figure img {
   filter: brightness(0.88);
 }
+
+/* Tabel di buku (D39): tidak boleh digulir ke samping karena geser = membalik halaman.
+   Semua tabel dipaskan ke lebar halaman; tabel lebar (4+ kolom) di layar sempit menjadi kartu
+   per baris dengan label kolom dari baris judul. */
+.book-flow .table-wrap {
+  overflow: visible;
+  margin: 1em 0;
+}
+.book-flow table {
+  table-layout: auto;
+  width: 100%;
+  font-size: 0.86em;
+  line-height: 1.4;
+}
+.book-flow th,
+.book-flow td {
+  /* Angka (Rp3.200.000) tidak boleh terpotong di tengah; hanya kata yang terlalu panjang
+     untuk satu sel yang dipatahkan. */
+  overflow-wrap: break-word;
+  hyphens: none;
+  text-align: left;
+  vertical-align: top;
+}
+.book-flow th {
+  background: color-mix(in srgb, var(--book-accent) 10%, transparent);
+}
+.book-flow th p,
+.book-flow td p {
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .book-flow table.wide,
+  .book-flow table.wide tbody,
+  .book-flow table.wide tr,
+  .book-flow table.wide td {
+    display: block;
+    width: 100%;
+  }
+  .book-flow table.wide {
+    font-size: 0.9em;
+  }
+  .book-flow table.wide tr:first-child {
+    display: none;
+  }
+  .book-flow table.wide tr {
+    border: 1px solid var(--book-line);
+    border-radius: 12px;
+    padding: 0.5em 0.8em;
+    margin-bottom: 0.6em;
+    background: color-mix(in srgb, var(--book-accent) 4%, transparent);
+    break-inside: avoid;
+  }
+  .book-flow table.wide td {
+    border: 0;
+    padding: 0.18em 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.9em;
+    text-align: right;
+  }
+  .book-flow table.wide td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    max-width: 50%;
+    text-align: left;
+    font-weight: 700;
+    color: var(--book-muted);
+  }
+  /* Kolom pertama = judul kartu. */
+  .book-flow table.wide td:first-child {
+    display: block;
+    text-align: left;
+    font-weight: 800;
+    font-size: 1.05em;
+    padding-bottom: 0.3em;
+    margin-bottom: 0.2em;
+    border-bottom: 1px dashed var(--book-line);
+  }
+  .book-flow table.wide td:first-child::before {
+    content: none;
+  }
+}

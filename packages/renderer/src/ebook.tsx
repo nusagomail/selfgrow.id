@@ -1,5 +1,6 @@
 import type { EbookDoc, EbookMark, EbookNode } from "@selfgrow/shared";
 import type { ReactNode } from "react";
+import { tableLayout } from "./table";
 
 /**
  * Render isi bab (JSON yang sudah lolos `ebookDocSchema`) menjadi elemen React.
@@ -100,14 +101,43 @@ function renderNode(node: EbookNode, opts: RenderOptions, key: string): ReactNod
           {node.attrs.title ? <figcaption>{node.attrs.title}</figcaption> : null}
         </figure>
       );
-    case "table":
+    case "table": {
+      // Label kolom di tiap sel supaya tabel lebar bisa tampil sebagai kartu di layar sempit.
+      const layout = tableLayout(node);
       return (
         <div key={key} className="table-wrap">
-          <table>
-            <tbody>{renderNodes(node.content, opts, key)}</tbody>
+          <table className={layout.wide ? "wide" : undefined}>
+            <tbody>
+              {node.content.map((row, r) => {
+                const rk = `${key}.${r}`;
+                if (row.type !== "tableRow") return renderNode(row, opts, rk);
+                return (
+                  <tr key={rk}>
+                    {row.content.map((cell, ci) => {
+                      const ck = `${rk}.${ci}`;
+                      if (cell.type !== "tableCell" && cell.type !== "tableHeader") {
+                        return renderNode(cell, opts, ck);
+                      }
+                      const Tag = cell.type === "tableHeader" ? "th" : "td";
+                      return (
+                        <Tag
+                          key={ck}
+                          colSpan={cell.attrs?.colspan}
+                          rowSpan={cell.attrs?.rowspan}
+                          data-label={layout.labels[ci] || undefined}
+                        >
+                          {renderNodes(cell.content, opts, ck)}
+                        </Tag>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
           </table>
         </div>
       );
+    }
     case "tableRow":
       return <tr key={key}>{renderNodes(node.content, opts, key)}</tr>;
     case "tableHeader":
