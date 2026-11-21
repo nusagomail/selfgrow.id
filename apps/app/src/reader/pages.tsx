@@ -149,6 +149,12 @@ export function EbookToc() {
                 : "Mulai membaca"}
             </Link>
           )}
+          {meta.chapters.length === 0 && (
+            <p className="banner">
+              <b>Segera terbit.</b> Isi ebook ini sedang ditulis. Kamu akan menemukannya di sini
+              begitu bab pertama terbit.
+            </p>
+          )}
           {lockedCount > 0 && (
             <p className="muted small">
               {lockedCount} bab terbuka setelah berlangganan. Bab berlabel Gratis bisa dibaca
@@ -334,6 +340,7 @@ export function ChapterReader() {
       },
       onEdge: (dir) => goChapter(dir === "next" ? next : prev, dir === "prev"),
       onTapCenter: () => setChrome((c) => !c),
+      verticalSwipe: true,
     });
     pagerRef.current = pager;
     return () => {

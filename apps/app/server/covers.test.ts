@@ -61,6 +61,18 @@ describe("sampul", () => {
     };
     expect(list.items.find((i) => i.slug === slug)?.coverUrl).toBe(coverUrl);
 
+    // Rak memuat 100+ sampul sekaligus: sampul tidak ikut rate limit katalog (D38), termasuk
+    // untuk user login yang batas per-user-nya 30/menit.
+    const shopper = await createUser();
+    const statuses = await Promise.all(
+      Array.from(
+        { length: 40 },
+        async () => (await call(coverUrl, { token: shopper.token })).status,
+      ),
+    );
+    expect(statuses.filter((st: number) => st === 429)).toHaveLength(0);
+    expect((await call("/api/v1/catalog/covers/bukan-uuid")).status).toBe(404);
+
     // Reader (halaman sampul buku) ikut menerima alamat sampul.
     const reader = await createUser();
     const meta = (await (await call(`/api/v1/ebooks/${slug}`, { token: reader.token })).json()) as {

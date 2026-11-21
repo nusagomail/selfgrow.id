@@ -1,0 +1,88 @@
+---
+import type { FeedItem } from "../lib/api";
+import ItemCard from "./ItemCard.astro";
+
+/** Satu rak buku: judul kategori + deretan sampul yang digulir ke samping (D38). */
+interface Props {
+  title: string;
+  hook?: string | null;
+  href: string;
+  count: number;
+  items: FeedItem[];
+}
+const { title, hook, href, count, items } = Astro.props;
+---
+
+<section class="shelf">
+  <div class="shelf-head">
+    <div class="shelf-title">
+      <h2>{title}</h2>
+      {hook && <p class="hook">{hook}</p>}
+    </div>
+    <a href={href} class="more">Lihat semua <span class="n">{count}</span></a>
+  </div>
+  <div class="row" role="list">
+    {items.map((i) => (
+      <div class="slot" role="listitem"><ItemCard item={i} /></div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .shelf {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .shelf-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .shelf-title {
+    min-width: 0;
+  }
+  .shelf h2 {
+    font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+  }
+  .hook {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-top: 2px;
+  }
+  .more {
+    flex-shrink: 0;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .more .n {
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(112px, 30vw, 150px);
+    gap: clamp(12px, 2.4vw, 20px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding: 6px 2px 14px;
+    margin-inline: -2px;
+    scrollbar-width: thin;
+  }
+  .slot {
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+  /* Papan rak di bawah sampul. */
+  .shelf .row {
+    background:
+      linear-gradient(var(--line), var(--line)) bottom / 100% 1px no-repeat;
+  }
+</style>

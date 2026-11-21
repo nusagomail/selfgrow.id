@@ -1,9 +1,15 @@
 name: Seed konten demo (staging)
 
-# Mengisi 10 ebook DEMO + sampul ke D1 & R2 staging (D36). Hanya dijalankan manual
-# (Actions → Seed konten demo → Run workflow). Idempoten; tidak pernah menyentuh production.
+# Mengisi katalog DEMO (100 ebook bersampul, satu ditulis lengkap) ke D1 & R2 staging (D38).
+# Hanya dijalankan manual (Actions → Seed konten demo → Run workflow). Idempoten; tidak pernah
+# menyentuh production. Pilihan "hapus" menghapus SEMUA ebook staging lebih dulu.
 on:
   workflow_dispatch:
+    inputs:
+      hapus:
+        description: "Hapus semua ebook staging (beserta sampul & isi) sebelum mengisi"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -29,6 +35,13 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         working-directory: apps/app
         run: npx wrangler d1 migrations apply DB --env staging --remote
+      - name: Hapus semua ebook staging
+        if: ${{ inputs.hapus }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        working-directory: apps/app
+        run: node ../../scripts/demo/purge.mjs --staging
       - name: Isi konten demo
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

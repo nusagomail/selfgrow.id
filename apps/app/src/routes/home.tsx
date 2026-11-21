@@ -13,6 +13,8 @@ type Item = {
   /** Ditandai gratis di Studio: terbuka untuk semua user login (D35). */
   free: boolean;
   locked: boolean;
+  /** Ebook terbit yang isinya belum ada (D38). */
+  comingSoon?: boolean;
   coverUrl: string | null;
 };
 type Section = { slug: string; name: string; hook: string | null; items: Item[] };
@@ -40,41 +42,54 @@ const TYPE_LABEL: Record<ItemType, string> = {
   program: "Program",
 };
 
-/** Kartu konten. Terkunci tetap bisa diklik: halaman konten menampilkan ajakan berlangganan. */
+/**
+ * Kartu buku seperti di rak toko buku (D38): sampul tegak, judul, satu label akses.
+ * Terkunci tetap bisa diklik: halaman konten menampilkan ajakan berlangganan.
+ */
 function ItemCard({ item }: { item: Item }) {
-  const common = { className: `item-card${item.locked ? " is-locked" : ""}` };
+  const label = item.comingSoon
+    ? { text: "Segera", cls: "soon" }
+    : item.free
+      ? { text: "Gratis", cls: "free" }
+      : !item.locked && !item.freePreview
+        ? null
+        : item.freePreview && item.locked
+          ? { text: "Bab 1 gratis", cls: "free" }
+          : item.locked
+            ? { text: "Terkunci", cls: "locked" }
+            : null;
   const body = (
     <>
-      {item.coverUrl && (
-        <span className="item-cover">
-          <img src={item.coverUrl} alt="" loading="lazy" decoding="async" />
-        </span>
-      )}
-      <span className="item-top">
-        <span className={`type-tag ${item.type}`}>{TYPE_LABEL[item.type]}</span>
-        {item.locked ? (
-          <span className="lock-tag" title="Untuk pelanggan">
-            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <span className={`book-cover${item.coverUrl ? "" : " is-empty"}`}>
+        {item.coverUrl ? (
+          <img src={item.coverUrl} alt={`Sampul ${item.title}`} loading="lazy" decoding="async" />
+        ) : (
+          <span className="book-fallback">
+            <span className="small">{TYPE_LABEL[item.type]}</span>
+            <span className="strong">{item.title}</span>
+          </span>
+        )}
+      </span>
+      <span className="book-title">{item.title}</span>
+      {label && (
+        <span className={`book-label ${label.cls}`}>
+          {label.cls === "locked" && (
+            <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true">
               <path
                 d="M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5z"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.6"
                 strokeLinejoin="round"
               />
             </svg>
-            Terkunci
-          </span>
-        ) : item.free ? (
-          <span className="free-tag">Gratis</span>
-        ) : item.freePreview ? (
-          <span className="free-tag">Bab gratis</span>
-        ) : null}
-      </span>
-      <span className="item-title">{item.title}</span>
-      {item.summary && <span className="item-summary">{item.summary}</span>}
+          )}
+          {label.text}
+        </span>
+      )}
     </>
   );
+  const common = { className: "book-card", title: item.summary ?? item.title };
   switch (item.type) {
     case "ebook":
       return (
@@ -102,6 +117,8 @@ function ItemCard({ item }: { item: Item }) {
       );
   }
 }
+
+const SHELF_MAX = 12;
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -236,11 +253,23 @@ export function HomePage() {
         shown.map((s) => (
           <section key={s.slug} className="shelf-section">
             <div className="shelf-head">
-              <h2>{s.name}</h2>
-              {s.hook && <p className="muted small">"{s.hook}"</p>}
+              <div>
+                <h2>{s.name}</h2>
+                {s.hook && <p className="muted small">"{s.hook}"</p>}
+              </div>
+              {active === "semua" && s.items.length > SHELF_MAX - 1 && (
+                <button
+                  type="button"
+                  className="linklike shelf-more"
+                  onClick={() => setActive(s.slug)}
+                >
+                  Lihat semua <span className="muted">{s.items.length}</span>
+                </button>
+              )}
             </div>
-            <div className="item-grid">
-              {s.items.map((i) => (
+            {/* Semua kategori: rak yang digulir ke samping. Satu kategori: grid sampul. */}
+            <div className={active === "semua" ? "book-shelf" : "book-grid"}>
+              {(active === "semua" ? s.items.slice(0, SHELF_MAX) : s.items).map((i) => (
                 <ItemCard key={`${i.type}-${i.slug}`} item={i} />
               ))}
             </div>

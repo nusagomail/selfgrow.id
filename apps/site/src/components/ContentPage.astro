@@ -95,16 +95,26 @@ const crumbs = {
       </nav>
       <div class="tags">
         <span class="type-tag">{TYPE_LABEL[data.type]}</span>
-        <span class:list={["access", data.access]}>{ACCESS_LABEL[data.access]}</span>
+        {data.comingSoon ? (
+          <span class="access soon">Segera terbit</span>
+        ) : (
+          <span class:list={["access", data.access]}>{ACCESS_LABEL[data.access]}</span>
+        )}
       </div>
       <h1>{data.title}</h1>
       {data.summary && <p class="summary">{data.summary}</p>}
       <div class="cta">
-        <a href={appLink} class="btn btn-gold">{verb}</a>
+        {data.comingSoon ? (
+          <a href={loginThen} class="btn btn-gold">Kabari saya saat terbit</a>
+        ) : (
+          <a href={appLink} class="btn btn-gold">{verb}</a>
+        )}
         {data.access !== "free" && <a href="/harga" class="btn btn-outline-light">Lihat harga</a>}
       </div>
       <p class="note">
-        {data.access === "free"
+        {data.comingSoon
+          ? "Segera terbit. Isi ebook ini sedang ditulis; masuk dengan Google supaya kamu dikabari."
+          : data.access === "free"
           ? "Gratis. Cukup masuk dengan akun Google."
           : data.access === "preview"
             ? "Bab gratis bisa dibaca di bawah ini tanpa login. Bab lainnya untuk pelanggan."
@@ -165,6 +175,9 @@ const crumbs = {
       {data.ebook && (
         <div class="card">
           <h2>Daftar isi</h2>
+          {data.ebook.chapters.length === 0 && (
+            <p class="muted toc-empty">Daftar isi muncul saat bab pertama terbit.</p>
+          )}
           <ol class="toc">
             {data.ebook.chapters.map((ch) => (
               <li class:list={{ free: ch.free }}>
@@ -298,6 +311,10 @@ const crumbs = {
   .access.preview {
     background: var(--green-100);
     color: var(--green-900);
+  }
+  .access.soon {
+    background: rgb(255 255 255 / 15%);
+    color: var(--gold);
   }
   .access.premium {
     background: var(--gold);
