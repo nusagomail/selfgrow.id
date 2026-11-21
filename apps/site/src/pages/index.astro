@@ -1,5 +1,6 @@
 ---
 import ItemCard from "../components/ItemCard.astro";
+import Shelf from "../components/Shelf.astro";
 import Base from "../layouts/Base.astro";
 import { appUrl, getCategories, getItems } from "../lib/api";
 
@@ -10,7 +11,8 @@ const active = Astro.url.searchParams.get("kategori") ?? "semua";
 const withContent = categories.filter((c) => items.some((i) => i.category?.slug === c.slug));
 const shown = active === "semua" ? items : items.filter((i) => i.category?.slug === active);
 const activeCat = categories.find((c) => c.slug === active);
-const freeCount = items.filter((i) => i.access !== "premium").length;
+const freeCount = items.filter((i) => i.access !== "premium" && !i.comingSoon).length;
+const SHELF_MAX = 12;
 
 const faqs = [
   {
@@ -82,11 +84,7 @@ const siteLd = {
       <a href="/kategori" class="chip all">Semua kategori →</a>
     </nav>
 
-    {shown.length > 0 ? (
-      <div class="grid feed-grid">
-        {shown.map((i) => <ItemCard item={i} />)}
-      </div>
-    ) : (
+    {items.length === 0 ? (
       <div class="empty">
         <h2>Konten sedang disiapkan</h2>
         <p class="muted">
@@ -94,6 +92,26 @@ const siteLd = {
           terbit dan mendapat harga founding member.
         </p>
         <a href={appUrl("/masuk?auto=1")} class="btn btn-primary">Daftar gratis</a>
+      </div>
+    ) : active === "semua" ? (
+      // Etalase toko buku: satu rak per kategori, sampul digulir ke samping (D38).
+      <div class="shelves">
+        {withContent.map((c) => {
+          const inCat = items.filter((i) => i.category?.slug === c.slug);
+          return (
+            <Shelf
+              title={c.name}
+              hook={c.hook}
+              href={`/?kategori=${c.slug}#konten`}
+              count={inCat.length}
+              items={inCat.slice(0, SHELF_MAX)}
+            />
+          );
+        })}
+      </div>
+    ) : (
+      <div class="book-grid">
+        {shown.map((i) => <ItemCard item={i} />)}
       </div>
     )}
   </section>
@@ -179,8 +197,15 @@ const siteLd = {
   .chips .all {
     border-style: dashed;
   }
-  .feed-grid {
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  .shelves {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 4vw, 40px);
+  }
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(clamp(104px, 28vw, 150px), 1fr));
+    gap: 22px clamp(12px, 2.4vw, 22px);
   }
   .empty {
     display: flex;

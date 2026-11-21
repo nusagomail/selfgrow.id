@@ -3,6 +3,7 @@ import { currentProgramDay } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { FREE_TIER, requireAuth } from "../middleware/guards";
+import { ebooksWithChapters, isComingSoon } from "../services/coming-soon";
 import { coverPath } from "../services/covers";
 import { getAccessStatus } from "../services/entitlements";
 import { inChunks } from "../services/programs";
@@ -138,6 +139,7 @@ export const home = new Hono<AppEnv>()
     ]);
 
     const free = new Set(freeRows.map((r) => r.contentId));
+    const filled = await ebooksWithChapters(c.var.db, items);
     const rootOf = new Map<string, string>();
     for (const cat of categories) rootOf.set(cat.id, cat.parentId ?? cat.id);
     const view = items.map((i) => {
@@ -151,6 +153,7 @@ export const home = new Hono<AppEnv>()
         freePreview,
         free: isFree,
         coverUrl: coverPath(i.coverAssetId),
+        comingSoon: isComingSoon(i, filled),
         // Terkunci = belum berlangganan, bukan konten gratis, dan tidak ada bagian gratis.
         locked: !access.active && !isFree && !freePreview,
         category: i.categoryId ? (rootOf.get(i.categoryId) ?? null) : null,

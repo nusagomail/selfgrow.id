@@ -1,3 +1,4 @@
+import { env } from "cloudflare:test";
 /**
  * Taksonomi & katalog publik (D30): 10 kategori + topik dari migrasi, konten hanya bisa
  * ditempatkan di topik, katalog publik hanya menampilkan konten terbit tanpa isi berbayar.
@@ -98,8 +99,29 @@ describe("katalog publik", () => {
       topic: "utang-pinjol-paylater",
     });
     expect(Object.keys(item ?? {}).sort()).toEqual(
-      ["access", "coverUrl", "publishedAt", "slug", "summary", "title", "topic", "type"].sort(),
+      [
+        "access",
+        "comingSoon",
+        "coverUrl",
+        "publishedAt",
+        "slug",
+        "summary",
+        "title",
+        "topic",
+        "type",
+      ].sort(),
     );
+    // Belum ada bab terbit: tampil sebagai "Segera" (D38).
+    expect(item?.comingSoon).toBe(true);
+    await env.DB.prepare(
+      "INSERT INTO ebook_chapters (id, content_id, \"order\", title, status, is_free_preview, r2_key, word_count, created_at, updated_at) VALUES (?, ?, 0, 'Bab 1', 'published', 0, 'x', 1, ?, ?)",
+    )
+      .bind(crypto.randomUUID(), eb.id, Date.now(), Date.now())
+      .run();
+    const items = (await (await call("/api/v1/catalog/items")).json()) as {
+      items: { slug: string; comingSoon: boolean }[];
+    };
+    expect(items.items.find((i) => i.slug === eb.slug)?.comingSoon).toBe(false);
 
     const list = (await (await call("/api/v1/catalog/categories")).json()) as { categories: Cat[] };
     expect(list.categories[0]?.count).toBeGreaterThanOrEqual(1);

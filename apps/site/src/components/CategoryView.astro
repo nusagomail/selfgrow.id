@@ -38,7 +38,7 @@ const total = topics.reduce((n, t) => n + t.count, 0);
   </nav>
 
   {items.length > 0 ? (
-    <div class="grid items">
+    <div class="book-grid">
       {items.map((i) => (
         <ItemCard item={{ ...i, category: null }} />
       ))}
@@ -62,6 +62,11 @@ const total = topics.reduce((n, t) => n + t.count, 0);
 </section>
 
 <style>
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(clamp(104px, 28vw, 150px), 1fr));
+    gap: 22px clamp(12px, 2.4vw, 22px);
+  }
   .cat-hero {
     background: var(--surface-alt);
     border-bottom: 1px solid var(--line);

@@ -3,8 +3,10 @@ import { type ContentType, contentTypeSchema } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { FREE_TIER } from "../middleware/guards";
+import { ebooksWithChapters, isComingSoon } from "../services/coming-soon";
 import { coverPath } from "../services/covers";
 import { ebookKeys, readDoc } from "../services/ebook-storage";
+import { edgeCache } from "../services/edge-cache";
 import { inChunks, type PublishedProgram, programKeys } from "../services/programs";
 import { rateLimit } from "../services/protection";
 import { readJson } from "../services/template-storage";
@@ -18,6 +20,7 @@ const PUBLIC_CACHE = "public, max-age=60";
 const EDGE_TTL_SECONDS = 60;
 
 const MAX_ITEMS = 200;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 type CategoryRow = {
   id: string;
@@ -119,29 +122,21 @@ async function publicChapters(db: AppEnv["Variables"]["db"], contentId: string) 
     .orderBy(asc(schema.ebookChapters.order));
 }
 
+/** Gambar sampul tidak pernah berubah (id baru setiap unggah) dan id-nya acak. */
+const isImagePath = (path: string) => /\/covers\/[^/]+$/.test(path);
+
 export const catalog = new Hono<AppEnv>()
-  .use(rateLimit("catalog"))
-  .use(async (c, next) => {
-    // Kunci cache hanya URL (tanpa cookie/header), karena isinya sama untuk semua orang.
-    const useCache = c.env.ENVIRONMENT !== "test" && typeof caches !== "undefined";
-    const key = new Request(c.req.url, { method: "GET" });
-    if (useCache) {
-      const hit = await caches.default.match(key);
-      // Salinan: respons dari cache tidak bisa diubah, sedangkan middleware lain menambah header.
-      if (hit) return new Response(hit.body, hit);
-    }
-    await next();
-    if (c.res.status !== 200) return;
-    if (!c.res.headers.has("Cache-Control")) c.header("Cache-Control", PUBLIC_CACHE);
-    if (useCache) {
-      const copy = c.res.clone();
-      const headers = new Headers(copy.headers);
-      headers.set("Cache-Control", `public, max-age=${EDGE_TTL_SECONDS}`);
-      c.executionCtx.waitUntil(
-        caches.default.put(key, new Response(copy.body, { status: 200, headers })),
-      );
-    }
-  })
+  // Cache edge DULU, baru rate limit: halaman rak memuat 100+ sampul sekaligus (D38), dan
+  // respons yang sudah ter-cache tidak membebani D1/R2 sehingga tidak perlu dihitung.
+  .use(
+    edgeCache({
+      ttlSeconds: EDGE_TTL_SECONDS,
+      defaultCacheControl: PUBLIC_CACHE,
+      isImage: isImagePath,
+    }),
+  )
+  // Sampul memakai batas "media" per IP (hanya saat cache meleset); data katalog tetap "catalog".
+  .use(async (c, next) => rateLimit(isImagePath(c.req.path) ? "media" : "catalog")(c, next))
 
   /** Semua kategori beserta topik dan jumlah konten terbitnya (untuk menu & beranda). */
   .get("/categories", async (c) => {
@@ -203,7 +198,10 @@ export const catalog = new Hono<AppEnv>()
       .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0))
       .slice(0, MAX_ITEMS);
     const topicById = new Map(topics.map((t) => [t.id, t.slug]));
-    const access = await accessLabels(c.var.db, items);
+    const [access, filled] = await Promise.all([
+      accessLabels(c.var.db, items),
+      ebooksWithChapters(c.var.db, items),
+    ]);
     return c.json({
       category: toCategory(root),
       topic: selected ? toCategory(selected) : null,
@@ -219,6 +217,7 @@ export const catalog = new Hono<AppEnv>()
         summary: i.summary,
         topic: i.categoryId ? (topicById.get(i.categoryId) ?? null) : null,
         access: access.get(i.id) ?? "premium",
+        comingSoon: isComingSoon(i, filled),
         coverUrl: coverPath(i.coverAssetId),
         publishedAt: i.publishedAt?.toISOString() ?? null,
       })),
@@ -230,6 +229,7 @@ export const catalog = new Hono<AppEnv>()
    * jadi aman di-cache lama.
    */
   .get("/covers/:assetId", async (c) => {
+    if (!UUID.test(c.req.param("assetId"))) return c.json({ error: "not_found" }, 404);
     const rows = await c.var.db
       .select({ r2Key: schema.assets.r2Key, mime: schema.assets.mime })
       .from(schema.assets)
@@ -280,7 +280,10 @@ export const catalog = new Hono<AppEnv>()
       const cat = id ? byId.get(id) : undefined;
       return cat?.parentId ? byId.get(cat.parentId) : cat;
     };
-    const access = await accessLabels(c.var.db, rows);
+    const [access, filled] = await Promise.all([
+      accessLabels(c.var.db, rows),
+      ebooksWithChapters(c.var.db, rows),
+    ]);
     return c.json({
       items: rows.map((i) => {
         const root = rootOf(i.categoryId);
@@ -290,6 +293,7 @@ export const catalog = new Hono<AppEnv>()
           title: i.title,
           summary: i.summary,
           access: access.get(i.id) ?? "premium",
+          comingSoon: isComingSoon(i, filled),
           coverUrl: coverPath(i.coverAssetId),
           category: root ? { slug: root.slug, name: root.name } : null,
           publishedAt: i.publishedAt?.toISOString() ?? null,
@@ -331,6 +335,7 @@ export const catalog = new Hono<AppEnv>()
       title: item.title,
       summary: item.summary,
       access,
+      comingSoon: item.type === "ebook" && (ebook?.chapters.length ?? 0) === 0,
       coverUrl: coverPath(item.coverAssetId),
       category: category ? { slug: category.slug, name: category.name } : null,
       topic: topic ? { slug: topic.slug, name: topic.name } : null,

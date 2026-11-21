@@ -28,6 +28,8 @@ export interface CatalogItem {
   summary: string | null;
   topic: string | null;
   access: Access;
+  /** Ebook terbit yang isinya belum ada (D38). */
+  comingSoon?: boolean;
   coverUrl: string | null;
   publishedAt: string | null;
 }
@@ -38,6 +40,7 @@ export interface FeedItem {
   title: string;
   summary: string | null;
   access: Access;
+  comingSoon?: boolean;
   coverUrl: string | null;
   category: { slug: string; name: string } | null;
   publishedAt: string | null;
@@ -49,6 +52,7 @@ export interface ContentDetail {
   title: string;
   summary: string | null;
   access: Access;
+  comingSoon?: boolean;
   coverUrl: string | null;
   category: { slug: string; name: string } | null;
   topic: { slug: string; name: string } | null;

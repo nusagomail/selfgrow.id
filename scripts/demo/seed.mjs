@@ -1,6 +1,6 @@
 /**
- * Isi konten DEMO (10 ebook + sampul) ke D1 & R2 (D36). Idempoten: id dibuat dari slug, jadi
- * menjalankan ulang tidak menggandakan data; isi bab & sampul ditimpa dengan versi terbaru.
+ * Isi katalog DEMO (100 ebook bersampul, satu ditulis lengkap) ke D1 & R2 (D38). Idempoten: id
+ * dibuat dari slug, jadi menjalankan ulang tidak menggandakan data.
  *
  *   cd apps/app && node ../../scripts/demo/seed.mjs --local     # dev lokal
  *   cd apps/app && node ../../scripts/demo/seed.mjs --staging   # lewat GitHub Actions
@@ -9,12 +9,13 @@
  */
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdtempSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { toDoc, words } from "./blocks.mjs";
-import { EBOOKS } from "./ebooks.mjs";
+import { FULL_BOOKS } from "./books/index.mjs";
+import { catalogBooks } from "./catalog.mjs";
 
 const mode = process.argv.includes("--staging")
   ? "staging"
@@ -31,42 +32,66 @@ const target = mode === "staging" ? ["--env", "staging", "--remote"] : ["--local
 const work = mkdtempSync(join(tmpdir(), "selfgrow-demo-"));
 
 /** UUID deterministik dari nama (agar idempoten). */
-function uid(name) {
+export function uid(name) {
   const h = createHash("sha256").update(`selfgrow-demo:${name}`).digest("hex");
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-4${h.slice(13, 16)}-a${h.slice(17, 20)}-${h.slice(20, 32)}`;
 }
 const q = (v) =>
   v === null ? "NULL" : typeof v === "number" ? String(v) : `'${String(v).replace(/'/g, "''")}'`;
-function wrangler(args) {
-  execFileSync("npx", ["wrangler", ...args], { stdio: ["ignore", "ignore", "inherit"] });
+
+function wrangler(args, attempts = 3) {
+  for (let i = 1; ; i++) {
+    try {
+      execFileSync("npx", ["wrangler", ...args], { stdio: ["ignore", "ignore", "inherit"] });
+      return;
+    } catch (e) {
+      // Galat sementara dari API Cloudflare (mis. 500) cukup diulang.
+      if (i >= attempts) throw e;
+      console.warn(`Ulangi (${i}/${attempts - 1})…`);
+    }
+  }
 }
 
 const now = Date.now();
 const sql = [];
 const uploads = [];
 
-EBOOKS.forEach((e, i) => {
-  const contentId = uid(`ebook:${e.slug}`);
-  const coverId = uid(`cover:${e.slug}`);
-  const coverFile = join(here, "covers", `${e.slug}.jpg`);
+catalogBooks().forEach((b, i) => {
+  const contentId = uid(`ebook:${b.slug}`);
+  const coverId = uid(`cover:${b.slug}`);
+  const coverFile = join(here, "covers", `${b.slug}.jpg`);
+  if (!existsSync(coverFile)) throw new Error(`Sampul belum dirender: ${b.slug}`);
   const coverKey = `covers/${contentId}/${coverId}.jpg`;
-  // Slug yang sudah dipakai konten lain (buatan pemilik) dilewati, tidak ditimpa: baris konten
-  // diabaikan (ON CONFLICT DO NOTHING) dan bab hanya dibuat bila baris demo-nya ada.
-  // Terbit berurutan supaya urutan katalog stabil.
+  // Terbit berurutan supaya urutan rak stabil (urutan katalog).
   const publishedAt = now - i * 60_000;
   sql.push(
     `INSERT OR IGNORE INTO assets (id, r2_key, mime, size, uploaded_by, created_at) VALUES (${q(coverId)}, ${q(coverKey)}, 'image/jpeg', ${statSync(coverFile).size}, NULL, ${now});`,
-    `INSERT INTO content_items (id, type, slug, title, summary, tier, status, category_id, cover_asset_id, published_at, created_at, updated_at) VALUES (${q(contentId)}, 'ebook', ${q(e.slug)}, ${q(e.title)}, ${q(e.summary)}, 'all', 'published', ${q(e.topic)}, ${q(coverId)}, ${publishedAt}, ${now}, ${now}) ON CONFLICT(id) DO UPDATE SET title = excluded.title, summary = excluded.summary, category_id = excluded.category_id, updated_at = excluded.updated_at ON CONFLICT DO NOTHING;`,
+    `INSERT INTO content_items (id, type, slug, title, summary, tier, status, category_id, cover_asset_id, published_at, created_at, updated_at) VALUES (${q(contentId)}, 'ebook', ${q(b.slug)}, ${q(b.title)}, ${q(b.subtitle)}, 'all', 'published', ${q(b.topic)}, ${q(coverId)}, ${publishedAt}, ${now}, ${now}) ON CONFLICT(id) DO UPDATE SET title = excluded.title, summary = excluded.summary, category_id = excluded.category_id, cover_asset_id = excluded.cover_asset_id, status = 'published', updated_at = excluded.updated_at ON CONFLICT DO NOTHING;`,
   );
   uploads.push({ key: coverKey, file: coverFile, type: "image/jpeg" });
 
-  e.chapters.forEach((ch, order) => {
-    const chapterId = uid(`chapter:${e.slug}:${order}`);
+  const full = FULL_BOOKS[b.slug];
+  if (!full) return;
+  const image = (name) => {
+    const assetId = uid(`img:${b.slug}:${name}`);
+    const file = join(here, "figures", b.slug, `${name}.png`);
+    if (!existsSync(file)) throw new Error(`Infografis belum dirender: ${b.slug}/${name}`);
+    const key = `content-images/${contentId}/${assetId}.png`;
+    if (!uploads.some((u) => u.key === key)) {
+      sql.push(
+        `INSERT OR IGNORE INTO assets (id, r2_key, mime, size, uploaded_by, created_at) VALUES (${q(assetId)}, ${q(key)}, 'image/png', ${statSync(file).size}, NULL, ${now});`,
+      );
+      uploads.push({ key, file, type: "image/png" });
+    }
+    return `/api/v1/assets/${assetId}`;
+  };
+  const ctx = { image, alt: (name) => full.figures[name]?.alt };
+  full.chapters.forEach((ch, order) => {
+    const chapterId = uid(`chapter:${b.slug}:${order}`);
     const draftKey = `ebooks/${contentId}/chapters/${chapterId}.json`;
     const publishedKey = `ebooks/${contentId}/published/${chapterId}.json`;
-    const doc = toDoc(ch.blocks);
     const file = join(work, `${chapterId}.json`);
-    writeFileSync(file, JSON.stringify(doc));
+    writeFileSync(file, JSON.stringify(toDoc(ch.blocks, ctx)));
     sql.push(
       `INSERT INTO ebook_chapters (id, content_id, "order", title, status, is_free_preview, r2_key, word_count, created_at, updated_at) SELECT ${q(chapterId)}, ${q(contentId)}, ${order}, ${q(ch.title)}, 'published', ${order === 0 ? 1 : 0}, ${q(draftKey)}, ${words(ch.blocks)}, ${now}, ${now} WHERE EXISTS (SELECT 1 FROM content_items WHERE id = ${q(contentId)}) ON CONFLICT(id) DO UPDATE SET title = excluded.title, word_count = excluded.word_count, updated_at = excluded.updated_at;`,
     );

@@ -4,7 +4,6 @@
  * `@selfgrow/renderer`: hanya node yang dikenal, tautan & gambar diperiksa ulang, tanpa HTML mentah.
  */
 import type { EbookNode } from "@selfgrow/shared";
-import { appUrl } from "../../lib/api";
 import Marked from "./Marked.astro";
 
 interface Props {
@@ -13,8 +12,9 @@ interface Props {
 const { nodes = [] } = Astro.props;
 const Self = Astro.self;
 const SAFE_IMG = /^(https:\/\/[^\s]+|\/api\/v1\/assets\/[A-Za-z0-9_-]+)$/;
-// Aset Studio dilayani aplikasi; di etalase alamatnya dibuat lengkap.
-const imgSrc = (src: string) => (src.startsWith("/") ? appUrl(src) : src);
+// Gambar isi konten dilayani dari domain etalase sendiri lewat /gambar/{id} (D38).
+const imgSrc = (src: string) =>
+  src.startsWith("/api/v1/assets/") ? `/gambar/${src.slice("/api/v1/assets/".length)}` : src;
 ---
 
 {

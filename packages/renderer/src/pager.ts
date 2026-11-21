@@ -42,6 +42,11 @@ export type PagerOptions = {
   onTapCenter?: () => void;
   /** Elemen yang mendengar tombol panah. Default: window. */
   keyTarget?: HTMLElement | Window;
+  /**
+   * Geser atas/bawah juga membalik halaman (atas = maju, bawah = mundur). Hanya untuk reader
+   * layar penuh; di halaman yang bisa digulir biarkan false supaya gulir vertikal tetap jalan.
+   */
+  verticalSwipe?: boolean;
 };
 
 export type Pager = {
@@ -224,6 +229,10 @@ export function createPager(
   options: PagerOptions = {},
 ): Pager {
   const marker = flow.querySelector<HTMLElement>(".book-marker");
+  // Gambar di halaman yang belum terlihat tetap dimuat sekarang supaya jumlah halaman tidak
+  // bergeser saat sedang membaca (lazy-load tidak bekerja baik di kolom yang digeser).
+  for (const img of flow.querySelectorAll("img")) img.loading = "eager";
+  if (options.verticalSwipe) viewport.style.touchAction = "none";
   let layout = layoutFor(viewport.clientWidth, options.spreadMinWidth);
   let pages = 1;
   let current = 0;
@@ -480,20 +489,31 @@ export function createPager(
     startX = e.clientX;
     startY = e.clientY;
   };
+  /** Sumbu geseran yang sedang berjalan. */
+  let axis: "x" | "y" = "x";
+  const delta = (e: PointerEvent) => (axis === "x" ? e.clientX - startX : e.clientY - startY);
+
   const onMove = (e: PointerEvent) => {
     if (!tracking || e.pointerType === "mouse") return;
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
     if (!dragging) {
-      if (Math.abs(dx) < DRAG_START_PX || Math.abs(dx) < Math.abs(dy)) return;
+      const horizontal = Math.abs(dx) >= DRAG_START_PX && Math.abs(dx) >= Math.abs(dy);
+      const vertical =
+        options.verticalSwipe === true &&
+        Math.abs(dy) >= DRAG_START_PX &&
+        Math.abs(dy) > Math.abs(dx);
+      if (!horizontal && !vertical) return;
       dragging = true;
-      dragDir = dx < 0 ? 1 : -1;
+      axis = horizontal ? "x" : "y";
+      // Geser ke kiri atau ke atas = maju; ke kanan atau ke bawah = mundur.
+      dragDir = (horizontal ? dx : dy) < 0 ? 1 : -1;
       if (!reducedMotion) turn = startTurn(dragDir);
     }
     if (!turn || !dragDir) return;
     // Tepi kertas mengikuti jari, sedikit lebih cepat supaya satu geseran pendek cukup.
-    const span = layout.step * 1.2;
-    turn.progress = Math.min(1, Math.max(0, (-dragDir * dx) / span));
+    const span = axis === "x" ? layout.step * 1.2 : viewport.clientHeight * 0.6;
+    turn.progress = Math.min(1, Math.max(0, (-dragDir * delta(e)) / span));
     render(turn);
   };
   const onUp = (e: PointerEvent) => {
@@ -504,7 +524,7 @@ export function createPager(
       dragging = false;
       const t = turn;
       if (t) animate(t, t.progress >= COMMIT_AT ? 1 : 0);
-      else if (dragDir && Math.abs(dx) >= SWIPE_MIN_PX) turnPage(dragDir);
+      else if (dragDir && Math.abs(delta(e)) >= SWIPE_MIN_PX) turnPage(dragDir);
       dragDir = null;
       return;
     }

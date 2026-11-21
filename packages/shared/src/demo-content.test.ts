@@ -6,25 +6,51 @@ import { describe, expect, it } from "vitest";
 // @ts-expect-error -- modul JS di luar paket, tanpa deklarasi tipe
 import { toDoc as toDocJs } from "../../../scripts/demo/blocks.mjs";
 // @ts-expect-error -- modul JS di luar paket, tanpa deklarasi tipe
-import { EBOOKS as EBOOKS_JS } from "../../../scripts/demo/ebooks.mjs";
+import { FULL_BOOKS as FULL_JS } from "../../../scripts/demo/books/index.mjs";
+// @ts-expect-error -- modul JS di luar paket, tanpa deklarasi tipe
+import { catalogBooks as catalogJs } from "../../../scripts/demo/catalog.mjs";
 import { ebookDocSchema } from "./ebook";
 
-type Demo = { slug: string; chapters: { title: string; blocks: unknown[] }[] };
-const EBOOKS = EBOOKS_JS as Demo[];
-const toDoc = toDocJs as (blocks: unknown[]) => unknown;
+type Book = { slug: string; title: string; category: string; topic: string };
+type Full = Record<
+  string,
+  { chapters: { title: string; blocks: unknown[] }[]; figures: Record<string, { alt: string }> }
+>;
+const books = (catalogJs as () => Book[])();
+const FULL = FULL_JS as Full;
+const toDoc = toDocJs as (
+  blocks: unknown[],
+  ctx?: { image?: (n: string) => string; alt?: (n: string) => string | undefined },
+) => unknown;
 
-describe("konten demo", () => {
-  it("slug unik dan setiap ebook punya bab", () => {
-    expect(new Set(EBOOKS.map((e) => e.slug)).size).toBe(EBOOKS.length);
-    for (const e of EBOOKS) expect(e.chapters.length).toBeGreaterThan(0);
+describe("katalog demo", () => {
+  it("100 judul, 10 per kategori, slug unik", () => {
+    expect(books).toHaveLength(100);
+    expect(new Set(books.map((b) => b.slug)).size).toBe(100);
+    const perCat = new Map<string, number>();
+    for (const b of books) perCat.set(b.category, (perCat.get(b.category) ?? 0) + 1);
+    expect([...perCat.values()]).toEqual(Array(10).fill(10));
+    for (const b of books) expect(b.slug).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+    for (const b of books) expect(b.topic).toMatch(/^top_[a-z0-9-]+$/);
   });
 
-  for (const e of EBOOKS) {
-    it(`${e.slug}: semua bab lolos skema`, () => {
-      for (const ch of e.chapters) {
-        const r = ebookDocSchema.safeParse(toDoc(ch.blocks));
-        expect(r.success, `${e.slug} / ${ch.title}`).toBe(true);
+  for (const [slug, full] of Object.entries(FULL)) {
+    it(`${slug}: semua bab lolos skema, gambar memakai alamat aset`, () => {
+      expect(books.some((b) => b.slug === slug)).toBe(true);
+      const used = new Set<string>();
+      for (const ch of full.chapters) {
+        const doc = toDoc(ch.blocks, {
+          image: (n) => {
+            expect(full.figures[n], `gambar ${n}`).toBeDefined();
+            used.add(n);
+            return "/api/v1/assets/00000000-0000-4000-a000-000000000000";
+          },
+          alt: (n) => full.figures[n]?.alt,
+        });
+        const r = ebookDocSchema.safeParse(doc);
+        expect(r.success, `${slug} / ${ch.title}`).toBe(true);
       }
+      expect(used.size).toBe(Object.keys(full.figures).length);
     });
   }
 
