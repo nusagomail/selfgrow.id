@@ -1263,4 +1263,89 @@ export const DEMO_TOOLS = [
       ],
     },
   },
+  {
+    slug: "latihan-skenario-terburuk",
+    topic: "top_stoikisme",
+    title: "Latihan Skenario Terburuk",
+    summary:
+      "Latihan stoik premeditatio malorum: membayangkan hal buruk dengan tenang, lalu menyiapkan langkah.",
+    config: {
+      version: 1,
+      intro:
+        "Tujuannya bukan menakut-nakuti diri, tapi mengubah kecemasan yang kabur menjadi rencana yang jelas.",
+      submitLabel: "Susun rencana",
+      inputs: [
+        {
+          key: "peristiwa",
+          label: "Hal yang kamu khawatirkan",
+          type: "text",
+          required: true,
+          placeholder: "presentasi besok ditolak klien",
+        },
+        {
+          key: "peluang",
+          label: "Seberapa mungkin terjadi?",
+          type: "number",
+          required: true,
+          min: 1,
+          max: 10,
+          unit: "/10",
+          placeholder: "4",
+        },
+        {
+          key: "dampak",
+          label: "Kalau terjadi, seberapa berat dampaknya?",
+          type: "number",
+          required: true,
+          min: 1,
+          max: 10,
+          unit: "/10",
+          placeholder: "6",
+        },
+        {
+          key: "langkah",
+          label: "Satu langkah yang bisa kamu lakukan kalau itu terjadi",
+          type: "text",
+          required: true,
+          placeholder: "minta masukan spesifik dan kirim revisi dalam dua hari",
+        },
+        {
+          key: "kendali",
+          label: "Satu hal dalam kendalimu hari ini untuk mencegahnya",
+          type: "text",
+          required: true,
+          placeholder: "latihan presentasi dua kali malam ini",
+        },
+      ],
+      computed: [
+        {
+          key: "bobot",
+          label: "Bobot kekhawatiran (peluang × dampak, maks 100)",
+          formula: "peluang * dampak",
+          format: "number",
+          show: true,
+        },
+        {
+          key: "rencana",
+          label: "Rencanamu",
+          formula:
+            'concat("Kalau ", peristiwa, ", aku akan ", langkah, ". Hari ini, yang ada dalam kendaliku: ", kendali, ".")',
+          format: "text",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "bobot >= 50",
+          text: "Bobotnya tinggi ({{bobot}}). Kerjakan langkah pencegahan hari ini juga, lalu lepaskan sisanya.",
+          variant: "warning",
+        },
+        {
+          when: "bobot < 50",
+          text: "Bobotnya {{bobot}}. Pikiranmu mungkin membesarkannya. Kamu sudah punya rencana; tidak perlu memikirkannya berulang-ulang.",
+          variant: "tip",
+        },
+      ],
+    },
+  },
 ];

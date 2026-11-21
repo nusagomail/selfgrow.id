@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<!--
+  Video pengantar "Stoik untuk Hidup Sehari-hari" (D46): dirancang khusus. Satu dunia sepanjang
+  video: lempeng batu dengan tiga lingkaran kendali yang dipahat. Kekhawatiran sehari-hari jatuh
+  sebagai kerikil berlabel, lalu dipilah: yang di luar kendali bergeser ke cincin luar dan memudar,
+  yang dalam kendali bersinar di tengah. Kontrak: DURATION, TIMELINE, render(t).
+-->
+<style>
+@font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: SgSerif; src: url(serif.woff2) format("woff2"); font-weight: 400; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 960px; height: 540px; overflow: hidden; }
+body { font-family: Jakarta, sans-serif; color: #2e2b27; background: #d9d3c7; }
+#stage { position: absolute; inset: 0; background: radial-gradient(110% 90% at 30% 20%, #f1eee8 0%, #e3ddd2 50%, #c9c1b2 100%); }
+#ring3, #ring2, #ring1 { position: absolute; border-radius: 50%; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+#disc { position: absolute; left: 40px; top: 40px; width: 420px; height: 420px; }
+#ring3 { width: 420px; height: 420px; background: #d4cdc0; box-shadow: inset 0 0 0 2px #b0a796, inset 0 4px 12px rgba(0,0,0,.12); }
+#ring2 { width: 280px; height: 280px; background: #e9e4da; box-shadow: inset 0 0 0 2px #b0a796; }
+#ring1 { width: 140px; height: 140px; background: #5f6f52; box-shadow: 0 6px 16px rgba(0,0,0,.25); }
+.rl { position: absolute; left: 50%; transform: translateX(-50%); font-size: 11px; letter-spacing: .2em; font-weight: 800; white-space: nowrap; }
+.peb { position: absolute; padding: 7px 12px; border-radius: 22px 18px 24px 16px; background: #8f887c; color: #fff; font-weight: 700; font-size: 13px; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,.25); }
+.peb.in { background: #f6f3ed; color: #2e2b27; border: 2px solid #5f6f52; }
+.panel { position: absolute; left: 500px; right: 40px; top: 70px; bottom: 110px; opacity: 0; }
+.tag { font-size: 11px; letter-spacing: .26em; color: #a8743a; font-weight: 800; }
+.big { font-family: SgSerif, serif; font-size: 36px; line-height: 1.15; margin-top: 10px; letter-spacing: .02em; }
+.quote { font-family: SgSerif, serif; font-size: 30px; line-height: 1.25; margin-top: 14px; text-transform: uppercase; letter-spacing: .05em; text-shadow: 0 1px 0 #fff; }
+.cite { margin-top: 10px; font-size: 15px; color: #6d665b; font-style: italic; }
+.rule { height: 2px; width: 60%; background: linear-gradient(90deg, #a8743a, transparent); margin-top: 14px; }
+.lst { margin-top: 16px; display: grid; gap: 10px; }
+.lst div { padding: 10px 14px; font-size: 17px; font-weight: 600; background: #f6f3ed; box-shadow: 0 1px 0 #b0a796; }
+.lst b { color: #5f6f52; }
+.lst i { font-style: normal; color: #8f887c; }
+.ev { margin-top: 16px; background: #2e2b27; color: #f1eee8; font-family: SgSerif, serif; font-size: 22px; padding: 12px 16px; }
+.jd { margin-top: 10px; padding: 12px 16px; font-size: 19px; font-weight: 600; }
+.jd.old { background: #ddd6ca; color: #6d665b; }
+.jd.new { background: #f6f3ed; border-left: 5px solid #5f6f52; }
+.end { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: center; }
+.end img.cv { width: 120px; height: 180px; box-shadow: 0 12px 24px rgba(0,0,0,.3); border-radius: 3px 7px 7px 3px; }
+.end h1 { font-family: SgSerif, serif; font-weight: 400; font-size: 32px; line-height: 1.1; text-transform: uppercase; letter-spacing: .03em; }
+.btn { display: inline-block; margin-top: 14px; background: #2e2b27; color: #f1eee8; font-weight: 800; font-size: 17px; padding: 11px 18px; }
+.brand { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-weight: 800; }
+.brand img { width: 22px; height: 22px; }
+#wm { position: absolute; right: 22px; top: 18px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; }
+#wm img { width: 22px; height: 22px; }
+.sub-cap { position: absolute; left: 470px; right: 20px; bottom: 12px; text-align: center; z-index: 20; }
+.sub-cap span { display: inline-block; max-width: 460px; padding: 6px 14px; background: rgba(46,43,39,.88); color: #f1eee8; font-size: 16px; font-weight: 600; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="disc">
+    <div id="ring3"></div><div id="ring2"></div><div id="ring1"></div>
+    <div class="rl" style="top:14px;color:#8f887c">DI LUAR KENDALI</div>
+    <div class="rl" style="top:84px;color:#a8743a">BISA DIPENGARUHI</div>
+    <div class="rl" style="top:152px;color:#fff">DALAM KENDALI</div>
+  </div>
+</div>
+<div id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+<div class="sub-cap" id="cap"></div>
+<script>
+const D = window.DATA;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - (1 - x) ** 3;
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+function fade(e, p, dist = 20, axis = "Y") { const k = easeOut(p); e.style.opacity = k; e.style.transform = `translate${axis}(${(1 - k) * dist}px)`; }
+
+const MIN = { hook: 8, question: 8, sort: 10, judge: 9, end: 6 };
+const T = [];
+let cur = 0;
+for (const s of D.scenes) { const dur = Math.max(MIN[s.type] ?? 6, s.dur ?? 0); T.push({ type: s.type, start: cur, dur, say: s.say ?? null }); cur += dur; }
+window.DURATION = cur;
+window.TIMELINE = T.map(({ type, start, dur }) => ({ type, start, dur }));
+const B = Object.fromEntries(T.map((b) => [b.type, b]));
+const at = (type, f) => B[type].start + B[type].dur * f;
+
+// Kerikil: [label, zona (1 dalam, 3 luar), posisi tumpukan (x, y), posisi akhir (x, y)] dalam koordinat cakram 420×420.
+const P = [
+  ["Macet", 3, [140, 250], [20, 120]],
+  ["Hujan", 3, [230, 280], [330, 90]],
+  ["Pikiran atasan", 3, [170, 310], [10, 300]],
+  ["Harga naik", 3, [260, 220], [300, 350]],
+  ["Masa lalu", 3, [110, 190], [290, 30]],
+  ["Komentar orang", 3, [240, 340], [140, 380]],
+  ["Menyiapkan data", 1, [180, 160], [150, 176]],
+  ["Sikapku", 1, [200, 230], [172, 212]],
+  ["Usahaku", 1, [150, 280], [168, 246]],
+];
+const pebs = P.map(([t, z]) => { const p = el("div", `peb${z === 1 ? " in" : ""}`, t); $("disc").append(p); return p; });
+
+const panels = {};
+function panel(type, build) { if (!B[type]) return; const p = el("div", "panel"); $("stage").append(p); panels[type] = { p, anim: build(p) }; }
+panel("hook", (p) => {
+  const k = el("div", "tag", "SENIN, 07.20"), b = el("div", "big", "Energi habis separuh sebelum jam delapan.");
+  p.append(k, b);
+  return (t) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.3, 1.0), 20); };
+});
+panel("question", (p) => {
+  const k = el("div", "tag", "SATU PERTANYAAN"), q = el("div", "quote", "Ini dalam kendaliku, atau tidak?"), r = el("div", "rule"), c = el("div", "cite", "— Epiktetos, dua ribu tahun lalu");
+  p.append(k, q, r, c);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(q, prog(t, 0.4, 1.4), 16); r.style.width = `${60 * easeOut(prog(t, 1.2, 2.2))}%`; fade(c, prog(t, d * 0.55, d * 0.55 + 0.5), 10); };
+});
+panel("sort", (p) => {
+  const k = el("div", "tag", "PILAH");
+  const l = el("div", "lst");
+  const a = el("div"); a.append(el("i", "", "Di luar kendali → "), el("span", "", "lepaskan"));
+  const b = el("div"); b.append(el("b", "", "Dalam kendali → "), el("span", "", "kerjakan sepenuh hati"));
+  l.append(a, b); p.append(k, l);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(a, prog(t, d * 0.2, d * 0.2 + 0.5), 16, "X"); fade(b, prog(t, d * 0.55, d * 0.55 + 0.5), 16, "X"); };
+});
+panel("judge", (p) => {
+  const k = el("div", "tag", "BUKAN KEJADIANNYA, TAPI PENILAIANNYA");
+  const e = el("div", "ev", "Macet satu jam");
+  const o = el("div", "jd old", "“Hariku rusak.”"), n = el("div", "jd new", "“Satu jam untuk podcast yang tertunda.”");
+  p.append(k, e, o, n);
+  return (t, d) => {
+    fade(k, prog(t, 0, 0.4)); fade(e, prog(t, 0.2, 0.7), 14); fade(o, prog(t, d * 0.25, d * 0.25 + 0.4), 12);
+    o.style.textDecoration = t > d * 0.5 ? "line-through" : "none";
+    fade(n, prog(t, d * 0.55, d * 0.55 + 0.5), 12, "X");
+  };
+});
+panel("end", (p) => {
+  const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";
+  const tx = el("div"); tx.append(el("div", "tag", "EBOOK SELFGROW · 6 BAB"), el("h1", "", "Stoik untuk Hidup Sehari-hari"), el("div", "btn", "Baca Bab 1, gratis"));
+  const br = el("div", "brand"); const im = el("img"); im.src = "mark.png"; im.alt = ""; br.append(im, el("span", "", "SelfGrow")); tx.append(br);
+  w.append(cv, tx); p.append(w);
+  return (t) => { fade(cv, prog(t, 0.2, 0.9), 30); fade(tx, prog(t, 0.5, 1.2), 16, "X"); };
+});
+
+window.render = (t) => {
+  for (const b of T) {
+    const pn = panels[b.type]; if (!pn) continue;
+    const last = b === T[T.length - 1];
+    const inn = easeInOut(prog(t, b.start - 0.2, b.start + 0.25));
+    const out = last ? 1 : 1 - easeInOut(prog(t, b.start + b.dur - 0.25, b.start + b.dur + 0.2));
+    const o = Math.min(inn, out);
+    pn.p.style.opacity = o;
+    if (o > 0) pn.anim(t - b.start, b.dur);
+  }
+  // Kerikil jatuh menumpuk di adegan pembuka, lalu dipilah ke cincinnya.
+  P.forEach(([, z, pile, fin], i) => {
+    const tin = B.hook ? at("hook", 0.05 + i * 0.08) : 0;
+    const fall = easeOut(prog(t, tin, tin + 0.5));
+    const ts = B.sort ? at("sort", 0.1 + (i % 6) * 0.06 + (z === 1 ? 0.35 : 0)) : 1e9;
+    const k = easeInOut(prog(t, ts, ts + 0.8));
+    const x = pile[0] + (fin[0] - pile[0]) * k;
+    const y = pile[1] - (1 - fall) * 300 + (fin[1] - pile[1]) * k;
+    const pe = pebs[i];
+    pe.style.left = `${x}px`; pe.style.top = `${y}px`;
+    pe.style.opacity = fall * (z === 3 ? 1 - 0.55 * k : 1);
+    pe.style.transform = `rotate(${(1 - k) * ((i % 3) - 1) * 8}deg) scale(${z === 1 ? 1 + 0.06 * k : 1 - 0.1 * k})`;
+  });
+  // Lingkaran tengah menyala saat yang dalam kendali masuk.
+  const glow = B.sort ? easeOut(prog(t, at("sort", 0.5), at("sort", 0.8))) : 0;
+  $("ring1").style.boxShadow = `0 6px 16px rgba(0,0,0,.25), 0 0 ${40 * glow}px ${10 * glow}px rgba(168,116,58,${0.5 * glow})`;
+
+  const cb = T.find((b) => t >= b.start && t < b.start + b.dur);
+  const line = D.captions && cb ? cb.say : null;
+  const cap = $("cap");
+  if (cap.dataset.line !== (line ?? "")) { cap.dataset.line = line ?? ""; cap.replaceChildren(); if (line) cap.append(el("span", "", line)); }
+};
+render(0);
+</script>
+</body>
+</html>

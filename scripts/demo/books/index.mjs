@@ -17,6 +17,8 @@ import { FIGURES } from "./paylater-figures.mjs";
 import { SCROLL_1 } from "./scroll-1.mjs";
 import { SCROLL_2 } from "./scroll-2.mjs";
 import { SCROLL_FIGURES } from "./scroll-figures.mjs";
+import { STOIK_1 } from "./stoik-1.mjs";
+import { STOIK_FIGURES } from "./stoik-figures.mjs";
 import { TERIAK_1 } from "./teriak-1.mjs";
 import { TERIAK_FIGURES } from "./teriak-figures.mjs";
 import { TIDAK_1 } from "./tidak-1.mjs";
@@ -59,5 +61,9 @@ export const FULL_BOOKS = {
   "seminggu-dalam-satu-jam": {
     chapters: MINGGU_1,
     figures: MINGGU_FIGURES,
+  },
+  "stoik-untuk-hidup-sehari-hari": {
+    chapters: STOIK_1,
+    figures: STOIK_FIGURES,
   },
 };
