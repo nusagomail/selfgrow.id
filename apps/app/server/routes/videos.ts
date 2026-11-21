@@ -86,6 +86,7 @@ export const videos = new Hono<AppEnv>().use(rateLimit("media")).get("/:assetId"
     const range = parseRange(rangeHeader, size);
     if (!range) {
       headers.set("Content-Range", `bytes */${size}`);
+      headers.set("Cache-Control", "no-store");
       return new Response(null, { status: 416, headers });
     }
     const obj = await c.env.CONTENT.get(asset.r2Key, { range });

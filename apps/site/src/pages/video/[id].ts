@@ -32,6 +32,7 @@ export const GET: APIRoute = async ({ params, request }) => {
     "X-Content-Type-Options": "nosniff",
   });
   if (type) out.set("Content-Type", type);
+  if (res.status === 416) out.set("Cache-Control", "no-store");
   for (const h of ["Content-Range", "Content-Length"]) {
     const v = res.headers.get(h);
     if (v) out.set(h, v);

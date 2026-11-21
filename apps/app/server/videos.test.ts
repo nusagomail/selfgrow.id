@@ -57,7 +57,9 @@ describe("video pengantar", () => {
     expect(new Uint8Array(await r.arrayBuffer())).toEqual(BYTES.slice(10, 20));
     const tail = await call(url, { headers: { range: "bytes=-5" } });
     expect(new Uint8Array(await tail.arrayBuffer())).toEqual(BYTES.slice(95));
-    expect((await call(url, { headers: { range: "bytes=500-" } })).status).toBe(416);
+    const bad = await call(url, { headers: { range: "bytes=500-" } });
+    expect(bad.status).toBe(416);
+    expect(bad.headers.get("cache-control")).toBe("no-store");
   });
 
   it("draft, video yang tidak ditautkan ke konten, dan jenis non-video → 404", async () => {

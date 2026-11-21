@@ -175,7 +175,7 @@ export function EbookToc() {
             preload="metadata"
             poster={meta.ebook.introVideo.posterUrl ?? undefined}
           >
-            <source src={meta.ebook.introVideo.url} type="video/mp4" />
+            <source src={meta.ebook.introVideo.url} />
             Peramban kamu tidak bisa memutar video ini.
           </video>
         </section>

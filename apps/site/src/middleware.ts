@@ -13,6 +13,8 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
   const cacheable =
     ctx.request.method === "GET" &&
     !ctx.request.headers.has("range") &&
+    // Video tidak disimpan di cache halaman: berkas besar dan harus segera hilang bila dicabut.
+    !ctx.url.pathname.startsWith("/video/") &&
     env.ENVIRONMENT !== "local" &&
     typeof caches !== "undefined";
   const key = new Request(ctx.url.toString(), { method: "GET" });
