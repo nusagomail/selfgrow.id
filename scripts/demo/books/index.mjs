@@ -15,6 +15,8 @@ import { FIGURES } from "./paylater-figures.mjs";
 import { SCROLL_1 } from "./scroll-1.mjs";
 import { SCROLL_2 } from "./scroll-2.mjs";
 import { SCROLL_FIGURES } from "./scroll-figures.mjs";
+import { TERIAK_1 } from "./teriak-1.mjs";
+import { TERIAK_FIGURES } from "./teriak-figures.mjs";
 import { TIDAK_1 } from "./tidak-1.mjs";
 import { TIDAK_2 } from "./tidak-2.mjs";
 import { TIDAK_FIGURES } from "./tidak-figures.mjs";
@@ -47,5 +49,9 @@ export const FULL_BOOKS = {
   "berani-nego-gaji": {
     chapters: NEGO_1,
     figures: NEGO_FIGURES,
+  },
+  "mengasuh-tanpa-teriak": {
+    chapters: TERIAK_1,
+    figures: TERIAK_FIGURES,
   },
 };

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<!--
+  Video pengantar "Mengasuh Tanpa Teriak" (D46): dirancang khusus. Satu dunia sepanjang video:
+  pintu kulkas berwarna krem dengan magnet kertas, dan satu "meter suara" tegak yang naik
+  setiap kali pagi makin kacau sampai merah. Jeda 10 detik menurunkan meter ke kuning lalu
+  hijau, dan kalimat batas muncul dengan suara kecil. Kontrak sama: DURATION, TIMELINE, render(t).
+-->
+<style>
+@font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: Hand; src: url(hand.woff2) format("woff2"); font-weight: 700; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 960px; height: 540px; overflow: hidden; }
+body { font-family: Jakarta, sans-serif; color: #3b2f2f; background: #fff7ec; }
+#stage { position: absolute; inset: 0; background: #fff7ec;
+  background-image: radial-gradient(circle at 96% 6%, #ffd16655 0 90px, transparent 91px), radial-gradient(circle at 2% 98%, #8ecae655 0 120px, transparent 121px); }
+.handle { position: absolute; left: 20px; top: 120px; width: 14px; height: 260px; border-radius: 7px; background: #e6d8c4; }
+#meter { position: absolute; left: 92px; top: 92px; width: 92px; height: 330px; border-radius: 46px; background: #fff; box-shadow: inset 0 0 0 5px #3b2f2f, 0 10px 0 rgba(59,47,47,.12); padding: 16px 14px; display: flex; flex-direction: column-reverse; gap: 5px; }
+.seg { flex: 1; border-radius: 8px; background: #efe5d6; }
+#face { position: absolute; left: 196px; top: 210px; width: 110px; text-align: center; font-size: 56px; }
+#clock { position: absolute; left: 78px; top: 36px; font-weight: 800; font-size: 28px; background: #3b2f2f; color: #fff7ec; padding: 4px 14px; border-radius: 12px; }
+#lvl { position: absolute; left: 70px; top: 438px; width: 140px; text-align: center; font-weight: 800; font-size: 17px; }
+.panel { position: absolute; left: 340px; right: 44px; top: 48px; bottom: 112px; opacity: 0; }
+.kick { font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #a0614f; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.chip { border-radius: 18px; padding: 10px 14px; font-weight: 800; font-size: 18px; box-shadow: 0 6px 0 rgba(59,47,47,.12); }
+.shout { margin-top: 22px; font-weight: 800; letter-spacing: -.02em; line-height: 1; color: #d9482b; }
+.big { font-size: 40px; font-weight: 800; line-height: 1.12; margin-top: 10px; letter-spacing: -.01em; }
+.note { font-family: Hand, cursive; font-size: 30px; color: #c95a3e; margin-top: 14px; }
+.lesson { margin-top: 18px; background: #fff; border-radius: 20px; padding: 16px 20px; font-size: 20px; font-weight: 600; line-height: 1.4; box-shadow: 0 6px 0 rgba(59,47,47,.1); }
+.steps { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+.st { border-radius: 20px 24px 18px 26px; padding: 14px 16px; font-weight: 800; font-size: 19px; box-shadow: 0 6px 0 rgba(59,47,47,.12); }
+.st small { display: block; font-weight: 600; font-size: 14px; margin-top: 4px; }
+.ring { position: absolute; left: 0; top: 200px; width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; }
+.ring::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: #fff7ec; z-index: -1; }
+.lines { display: grid; gap: 12px; margin-top: 16px; }
+.ln { display: grid; grid-template-columns: 150px 1fr; background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 0 rgba(59,47,47,.1); }
+.ln b { display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; font-size: 15px; }
+.ln span { padding: 12px 16px; font-size: 19px; font-weight: 600; line-height: 1.3; }
+.end { display: grid; grid-template-columns: 150px 1fr; gap: 22px; align-items: center; }
+.end img.cv { width: 150px; height: 225px; box-shadow: 0 14px 0 rgba(59,47,47,.15); border-radius: 4px 10px 10px 4px; }
+.end h1 { font-size: 40px; font-weight: 800; line-height: 1.05; }
+.end p { font-size: 16px; margin-top: 8px; }
+.btn { display: inline-block; margin-top: 16px; background: #ff7a59; color: #fff; font-weight: 800; font-size: 20px; padding: 12px 22px; border-radius: 99px; box-shadow: 0 6px 0 #c95a3e; }
+.brand { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-weight: 800; }
+.brand img { width: 26px; height: 26px; }
+#wm { position: absolute; right: 24px; top: 18px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; }
+#wm img { width: 22px; height: 22px; }
+.sub-cap { position: absolute; left: 320px; right: 24px; bottom: 14px; text-align: center; z-index: 20; }
+.sub-cap span { display: inline-block; max-width: 600px; padding: 6px 14px; border-radius: 12px; background: rgba(59,47,47,.85); color: #fff; font-size: 18px; font-weight: 600; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="handle"></div>
+  <div id="clock">06.42</div>
+  <div id="meter"></div>
+  <div id="face">🙂</div>
+  <div id="lvl">tenang</div>
+</div>
+<div id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+<div class="sub-cap" id="cap"></div>
+<script>
+const D = window.DATA;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - (1 - x) ** 3;
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+function fade(e, p, dist = 20, axis = "Y") { const k = easeOut(p); e.style.opacity = k; e.style.transform = `translate${axis}(${(1 - k) * dist}px)`; }
+const COL = { coral: "#ff7a59", butter: "#ffd166", sky: "#8ecae6", leaf: "#95c47a" };
+
+const MIN = { hook: 9, cost: 8, pause: 11, line: 11, end: 6 };
+const T = [];
+let cur = 0;
+for (const s of D.scenes) { const dur = Math.max(MIN[s.type] ?? 6, s.dur ?? 0); T.push({ type: s.type, start: cur, dur, say: s.say ?? null }); cur += dur; }
+window.DURATION = cur;
+window.TIMELINE = T.map(({ type, start, dur }) => ({ type, start, dur }));
+const B = Object.fromEntries(T.map((b) => [b.type, b]));
+const at = (type, f) => B[type].start + B[type].dur * f;
+
+// Meter 12 petak: 0–5 hijau, 6–8 kuning, 9–11 merah.
+const N = 12;
+const segs = Array.from({ length: N }, () => { const s = el("div", "seg"); $("meter").append(s); return s; });
+const segColor = (i) => (i < 6 ? COL.leaf : i < 9 ? COL.butter : COL.coral);
+// Pemicu pagi di adegan pembuka menaikkan meter satu per satu.
+const TRIG = [["🧦 Kaus kaki belum dipakai", COL.sky, 0.12], ["🥛 Susu tumpah", COL.butter, 0.3], ["🛵 Ojek menunggu", COL.leaf, 0.46], ["📱 Rapat dimajukan", COL.coral, 0.6]];
+function level(t) {
+  let L = 2;
+  if (B.hook) { for (const [, , f] of TRIG) L += 2 * easeOut(prog(t, at("hook", f), at("hook", f) + 0.5)); L += 2 * easeOut(prog(t, at("hook", 0.76), at("hook", 0.76) + 0.3)); }
+  if (B.pause) L -= 8 * easeInOut(prog(t, at("pause", 0.25), at("pause", 0.85)));
+  return clamp(L, 0, N);
+}
+
+const panels = {};
+function panel(type, build) { if (!B[type]) return; const p = el("div", "panel"); $("stage").append(p); panels[type] = { p, anim: build(p) }; }
+panel("hook", (p) => {
+  p.append(el("div", "kick", "Pagi Bu Laras"));
+  const ch = el("div", "chips");
+  const cs = TRIG.map(([t, c]) => { const x = el("div", "chip", t); x.style.background = c; ch.append(x); return x; });
+  const sh = el("div", "shout", "DIMAS! IBU SUDAH BILANG TIGA KALI!");
+  p.append(ch, sh);
+  return (t, d) => {
+    TRIG.forEach(([, , f], i) => fade(cs[i], prog(t, d * f - 0.1, d * f + 0.35), 16));
+    const k = easeOut(prog(t, d * 0.76, d * 0.76 + 0.25));
+    sh.style.opacity = k; sh.style.fontSize = `${30 + 22 * k}px`;
+    sh.style.transform = `rotate(${-2 * k}deg) translateX(${Math.sin(t * 40) * 3 * k * (1 - prog(t, d * 0.8, d * 0.95))}px)`;
+  };
+});
+panel("cost", (p) => {
+  const k = el("div", "kick", "Berhasil… sesaat");
+  const b = el("div", "big", "Anak bergerak lebih cepat.");
+  const l = el("div", "lesson", "Tapi yang ia pelajari: “Ibu baru serius kalau sudah berteriak.”");
+  const n = el("div", "note", "dan orang dewasa berteriak saat kesal");
+  p.append(k, b, l, n);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.2, 0.8), 20); fade(l, prog(t, d * 0.35, d * 0.35 + 0.6), 16); fade(n, prog(t, d * 0.7, d * 0.7 + 0.6), 10); };
+});
+panel("pause", (p) => {
+  p.append(el("div", "kick", "Di zona kuning: jeda 10 detik"));
+  const ring = el("div", "ring", "10"); p.append(ring);
+  const g = el("div", "steps");
+  const st = [["Berhenti bicara", "tutup mulut, buka telapak tangan", COL.coral], ["Napas panjang", "hembus lebih lama dari tarik", COL.sky], ["Kalimat diri", "“dia sedang kesulitan”", COL.butter], ["Turunkan badan", "setinggi mata anak", COL.leaf]].map(([a, b, c], i) => { const x = el("div", "st", a); x.append(el("small", "", b)); x.style.background = c; x.style.rotate = `${[-1.5, 1, -1, 1.5][i]}deg`; g.append(x); return x; });
+  p.append(g);
+  return (t, d) => {
+    const k = prog(t, d * 0.2, d * 0.2 + 8);
+    ring.textContent = String(Math.max(0, Math.ceil(10 * (1 - k))));
+    ring.style.background = `conic-gradient(#3b2f2f ${k * 360}deg, #efe5d6 0)`;
+    st.forEach((x, i) => fade(x, prog(t, d * (0.22 + i * 0.16), d * (0.22 + i * 0.16) + 0.5), 20));
+  };
+});
+panel("line", (p) => {
+  p.append(el("div", "kick", "Lalu, kalimat tiga potong"));
+  const g = el("div", "lines");
+  const ls = [["Namai perasaan", "“Kamu kesal ya.”", COL.sky], ["Pasang batas", "“Boleh kesal, tapi tidak boleh melempar.”", COL.coral], ["Dua pilihan", "“Mau tarik napas bareng, atau peluk dulu?”", COL.leaf]].map(([a, b, c]) => { const r = el("div", "ln"); const k = el("b", "", a); k.style.background = c; r.append(k, el("span", "", b)); g.append(r); return r; });
+  const n = el("div", "note", "suara kecil, setinggi mata anak");
+  p.append(g, n);
+  return (t, d) => { ls.forEach((r, i) => fade(r, prog(t, d * (0.12 + i * 0.25), d * (0.12 + i * 0.25) + 0.5), 24, "X")); fade(n, prog(t, d * 0.85, d * 0.85 + 0.5), 10); };
+});
+panel("end", (p) => {
+  const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";
+  const tx = el("div"); tx.append(el("div", "kick", "Ebook SelfGrow · 6 bab · 2 alat bantu"), el("h1", "", "Mengasuh Tanpa Teriak"), el("p", "", "Kenali termometermu, ambil jeda, ucapkan batas dengan tenang."), el("div", "btn", "Baca Bab 1, gratis"));
+  const br = el("div", "brand"); const im = el("img"); im.src = "mark.png"; im.alt = ""; br.append(im, el("span", "", "SelfGrow")); tx.append(br);
+  w.append(cv, tx); p.append(w);
+  return (t) => { fade(cv, prog(t, 0.2, 0.9), 40); fade(tx, prog(t, 0.6, 1.3), 20, "X"); };
+});
+
+window.render = (t) => {
+  for (const b of T) {
+    const pn = panels[b.type]; if (!pn) continue;
+    const last = b === T[T.length - 1];
+    const inn = easeInOut(prog(t, b.start - 0.2, b.start + 0.25));
+    const out = last ? 1 : 1 - easeInOut(prog(t, b.start + b.dur - 0.25, b.start + b.dur + 0.2));
+    const o = Math.min(inn, out);
+    pn.p.style.opacity = o;
+    if (o > 0) pn.anim(t - b.start, b.dur);
+  }
+  const L = level(t);
+  segs.forEach((s, i) => { const f = clamp(L - i); s.style.background = f > 0.5 ? segColor(i) : "#efe5d6"; s.style.transform = `scaleX(${f > 0.5 ? 1 : 0.9})`; });
+  const zone = L > 9 ? 2 : L > 6 ? 1 : 0;
+  $("face").textContent = ["🙂", "😬", "😡"][zone];
+  $("lvl").textContent = ["tenang", "zona kuning", "zona merah"][zone];
+  $("lvl").style.color = ["#4f7d3a", "#b8860b", "#d9482b"][zone];
+  const shake = zone === 2 ? Math.sin(t * 50) * 2 : 0;
+  $("meter").style.transform = `translateX(${shake}px)`;
+  let clock = "06.42";
+  if (B.pause && t >= B.pause.start) clock = "06.43";
+  if (B.line && t >= B.line.start) clock = "06.44";
+  if (B.end && t >= B.end.start) clock = "06.50";
+  $("clock").textContent = clock;
+
+  const cb = T.find((b) => t >= b.start && t < b.start + b.dur);
+  const line = D.captions && cb ? cb.say : null;
+  const cap = $("cap");
+  if (cap.dataset.line !== (line ?? "")) { cap.dataset.line = line ?? ""; cap.replaceChildren(); if (line) cap.append(el("span", "", line)); }
+};
+render(0);
+</script>
+</body>
+</html>

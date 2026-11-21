@@ -13,6 +13,7 @@ import { NEGO_FIGURE_CSS, NEGO_FIGURES } from "./books/nego-figures.mjs";
 import { OVERTHINKING_FIGURE_CSS, OVERTHINKING_FIGURES } from "./books/overthinking-figures.mjs";
 import { FIGURE_CSS, FIGURES } from "./books/paylater-figures.mjs";
 import { SCROLL_FIGURE_CSS, SCROLL_FIGURES } from "./books/scroll-figures.mjs";
+import { TERIAK_FIGURE_CSS, TERIAK_FIGURES } from "./books/teriak-figures.mjs";
 import { TIDAK_FIGURE_CSS, TIDAK_FIGURES } from "./books/tidak-figures.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -33,6 +34,7 @@ const SETS = {
   "hitung-harga-jual-yang-untung": { figures: HARGA_FIGURES, css: HARGA_FIGURE_CSS },
   "kurangi-gula-tanpa-menderita": { figures: GULA_FIGURES, css: GULA_FIGURE_CSS },
   "berani-nego-gaji": { figures: NEGO_FIGURES, css: NEGO_FIGURE_CSS },
+  "mengasuh-tanpa-teriak": { figures: TERIAK_FIGURES, css: TERIAK_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,
