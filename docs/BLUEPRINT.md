@@ -4,7 +4,7 @@ Nov 19, 2026 · @Dhuha
 
 ## 1. Visi & cara memakai dokumen ini
 
-Platform web berlangganan Rp100.000/user/bulan untuk menikmati konten buatan platform sendiri: ebook interaktif (bukan PDF), tools, dan template. Dibangun dan dijalankan oleh satu orang (pemilik) dengan Claude dan Claude Code sebagai tim. Target: bisnis bernilai miliaran rupiah per tahun dengan biaya operasional minimal.
+Platform web berlangganan Rp129.000/user/bulan untuk menikmati konten buatan platform sendiri: ebook interaktif (bukan PDF), tools, dan template. Dibangun dan dijalankan oleh satu orang (pemilik) dengan Claude dan Claude Code sebagai tim. Target: bisnis bernilai miliaran rupiah per tahun dengan biaya operasional minimal.
 
 **Untuk pemilik:** baca bagian 1–3 untuk gambaran besar, bagian 12 untuk pemasaran, bagian 14 untuk urutan kerja.
 
@@ -29,8 +29,8 @@ Platform web berlangganan Rp100.000/user/bulan untuk menikmati konten buatan pla
 | D7  | Ebook dan tools tidak bisa diunduh. Template boleh diunduh (pembajakan diterima)                                                                                                                | Nilai inti dilindungi, template jadi nilai tambah                                                                                                                      |
 | D8  | Logika tools berjalan di server, tidak pernah dikirim ke browser                                                                                                                                | Tools tidak bisa disalin                                                                                                                                               |
 | D9  | Tim = pemilik + Claude + Claude Code, tanpa karyawan                                                                                                                                            | Semua operasional harus otomatis                                                                                                                                       |
-| D10 | Harga dasar Rp100.000/bulan, dengan opsi tahunan dan harga founding member                                                                                                                      | Arus kas di depan, retensi lebih tinggi                                                                                                                                |
-| D11 | Niche: pengembangan diri untuk konsumen umum, sebagai brand payung multi-kategori (nama kerja: selfgrow.id)                                                                                     | Katalog luas membuat Rp100rb terasa sepadan dan membuka banyak pintu SEO                                                                                               |
+| D10 | Harga dasar Rp100.000/bulan (diubah D47), dengan opsi tahunan dan founding member                                                                                                                     | Arus kas di depan, retensi lebih tinggi                                                                                                                                |
+| D11 | Niche: pengembangan diri untuk konsumen umum, sebagai brand payung multi-kategori (nama kerja: selfgrow.id)                                                                                     | Katalog luas membuat harga langganan terasa sepadan dan membuka banyak pintu SEO                                                                                               |
 | D12 | Iklan selalu masuk lewat satu pain point spesifik per kampanye, bukan pesan "platform lengkap"                                                                                                  | Hook tajam menurunkan biaya akuisisi                                                                                                                                   |
 | D13 | Retensi ditopang tools tracker (data pribadi user tersimpan) dan template jadwal/program, setiap masalah punya solusi yang dipakai rutin                                                        | Pelanggan bertahan karena kebiasaan dan datanya, bukan karena jumlah ebook                                                                                             |
 | D14 | `app` dan `api` di-deploy sebagai satu Worker (SPA + Hono di `/api/v1`). Seluruh fitur web dan isi awal siap saat launch, tanpa MVP. Hanya aplikasi mobile yang ditunda (bagian 14)             | Dua unit deploy, tanpa CORS. Pelanggan pertama harus mendapat produk yang lengkap fitur dan isinya agar bertahan lama                                                  |
@@ -66,6 +66,7 @@ Platform web berlangganan Rp100.000/user/bulan untuk menikmati konten buatan pla
 | D44 | Katalog dipisah per jenis konten: beranda site dan app menampilkan satu jenis sekaligus lewat tab Ebook / Tools / Template / Program (hanya jenis yang berisi; site memakai `?jenis=`, bawaan tab pertama), lalu kategori dan rak dihitung di dalam jenis itu. Halaman kategori mengelompokkan isinya per jenis. Taksonomi kategori tetap satu untuk semua jenis | Permintaan pemilik: ebook, tools, dan template tidak menumpuk di satu kategori campuran |
 | D45 | Setiap ebook punya identitas visual sendiri, dirancang sebelum menulis (PANDUAN-EBOOK bagian 4a): bentuk cerita, jenis dan gaya infografis (warna, huruf, bentuk kartu per buku; huruf tambahan OFL di `scripts/demo/fonts` hanya untuk render gambar), unsur interaktif yang sesuai, dan irama bab yang bervariasi. Template video mendapat adegan `chat` dan `theme` warna per buku. Tool boleh berupa penyusun teks (format `text` + `concat`/`if`), bukan hanya kalkulator angka | Kritik pemilik: elemen visual harus variatif agar setiap ebook unik, tidak terasa seperti template |
 | D46 | Video pengantar untuk ebook berikutnya dirancang khusus per buku, bukan dirakit dari kotak adegan. Setiap video punya satu konsep visual yang berjalan dari awal sampai akhir (dunia, benda, atau metafora dari buku itu), memberi minimal satu wawasan yang langsung bisa dipakai penonton walau tidak membaca bukunya, dan memperlihatkan isi asli buku (infografis, tool, contoh hitungan) bergerak. Kotak adegan D43 tetap ada sebagai bahan, bukan kerangka; adegan baru dibuat bila konsep membutuhkannya. Video ebook 1–5 dibiarkan apa adanya | Kritik pemilik: video pengantar terlalu terasa template, harus lebih kreatif dan informatif |
+| D47 | Harga langganan diubah menjadi Rp129.000/bulan dan Rp990.000/tahun (setara Rp82.500/bulan). Menggantikan angka Rp100.000 di D10; opsi tahunan dan harga founding member tetap. Harga resmi tetap disimpan di tabel `plans`, halaman site menampilkan angka yang sama | Keputusan pemilik, November 2026 |
 
 ## 3. Model bisnis & tahapan
 
@@ -73,8 +74,8 @@ Satu langganan membuka semua konten. Kolom `tier` tetap disiapkan agar kelak bis
 
 **Paket harga**
 
-- Bulanan: Rp100.000
-- Tahunan: setara 10 bulan (diskon sekitar 2 bulan)
+- Bulanan: Rp129.000
+- Tahunan: Rp990.000 (setara Rp82.500/bulan, hemat Rp558.000 atau sekitar 4 bulan)
 - Founding member: 500 pelanggan pertama mendapat harga Rp49.000–69.000 yang terkunci selama langganan aktif
 
 **Jenis konten**
@@ -92,9 +93,9 @@ Satu langganan membuka semua konten. Kolom `tier` tetap disiapkan agar kelak bis
 
 | Churn bulanan | LTV kotor   | CAC maksimal (LTV:CAC 3:1) |
 | ------------- | ----------- | -------------------------- |
-| 5%            | Rp2.000.000 | \~Rp650.000                |
-| 10%           | Rp1.000.000 | \~Rp330.000                |
-| 20%           | Rp500.000   | \~Rp165.000                |
+| 5%            | Rp2.580.000 | \~Rp860.000                |
+| 10%           | Rp1.290.000 | \~Rp430.000                |
+| 20%           | Rp645.000   | \~Rp215.000                |
 
 ## 4. Arsitektur & tech stack
 

@@ -26,7 +26,7 @@ export async function grantSubscription(
   opts: { status?: "active" | "cancelled" | "expired"; periodEndOffsetDays?: number } = {},
 ) {
   await env.DB.prepare(
-    "INSERT OR IGNORE INTO plans (id, name, interval, price_idr, tier, is_founding, is_active, created_at) VALUES ('monthly', 'Bulanan', 'month', 100000, 'all', 0, 1, ?)",
+    "INSERT OR IGNORE INTO plans (id, name, interval, price_idr, tier, is_founding, is_active, created_at) VALUES ('monthly', 'Bulanan', 'month', 129000, 'all', 0, 1, ?)",
   )
     .bind(Date.now())
     .run();
