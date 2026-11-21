@@ -4,6 +4,33 @@ Video pengantar tampil di halaman ebook sebelum orang mulai membaca. Panjangnya 
 40–70 detik. Tugasnya satu: membuat calon pembaca berpikir "ini buku untukku" dan menekan
 tombol baca.
 
+> **Mulai ebook keenam (D46): rancang dulu, rakit belakangan.** Video ebook 1–5 terasa seperti
+> slide yang berganti: judul di kiri, kartu di kanan, latar memudar, ajakan di akhir. Untuk buku
+> berikutnya, kerjakan bagian 0 sebelum menyentuh kotak adegan.
+
+## 0. Konsep dulu (wajib sebelum menulis data video)
+
+Jawab tiga pertanyaan ini di komentar atas berkas data video:
+
+1. **Satu konsep visual yang berjalan terus.** Apa "dunia" video ini? Contoh: seluruh video
+   terjadi di layar kalkulator yang angkanya terus berubah; satu buku tabungan yang halamannya
+   dibalik; satu hari di jam dinding dari pagi ke malam; peta perjalanan yang garisnya bertambah.
+   Adegan berpindah *di dalam* dunia itu (kamera bergeser, benda berubah), bukan memudar ke
+   kartu baru. Hindari pola judul-kiri-kartu-kanan berulang.
+2. **Satu hal yang penonton dapat walau tidak membaca.** Video harus mengajarkan sesuatu yang
+   nyata: satu rumus, satu tanda bahaya, satu kalimat yang bisa dicoba hari ini, satu hitungan
+   contoh sampai selesai. Penonton yang berhenti di detik ke-40 tetap pulang membawa sesuatu.
+3. **Isi asli buku yang bergerak.** Pakai infografis, tool, atau contoh dari buku itu sendiri dan
+   hidupkan (angka dihitung, bagan tumbuh, input tool diketik). Jangan hanya menyebut "ada
+   kalkulator"; perlihatkan kalkulatornya bekerja.
+
+Lalu periksa: kalau logo dan judul ditutup, apakah video ini masih bisa dibedakan dari video
+buku lain? Kalau tidak, konsepnya belum cukup kuat.
+
+Kotak adegan di bagian 2 tetap boleh dipakai sebagai bahan, tetapi bukan kerangka. Buat jenis
+adegan baru di `template.html` bila konsep membutuhkannya (seperti `receipt` dan `breath`), dan
+susunan cover → isi → features → cta tidak wajib selain aturan di bagian 1.
+
 Panduan ini bukan cetakan. Setiap buku punya cara masuk yang berbeda. Buku keuangan mungkin
 dibuka dengan angka yang mengejutkan, buku tentang duka dibuka dengan satu kalimat yang
 lembut, buku kebiasaan dibuka dengan pertanyaan. Pilih adegan yang melayani buku itu, lalu
