@@ -25,6 +25,7 @@ import { NEGO_INTRO } from "./nego.mjs";
 import { OVERTHINKING_INTRO } from "./overthinking.mjs";
 import { PAYLATER_INTRO } from "./paylater.mjs";
 import { SCROLL_INTRO } from "./scroll.mjs";
+import { STOIK_INTRO } from "./stoik.mjs";
 import { TERIAK_INTRO } from "./teriak.mjs";
 import { TIDAK_INTRO } from "./tidak.mjs";
 
@@ -46,6 +47,7 @@ const VIDEOS = [
   NEGO_INTRO,
   TERIAK_INTRO,
   MINGGU_INTRO,
+  STOIK_INTRO,
 ].filter((v) => !ONLY || v.slug === ONLY);
 const VOICE = { languageCode: "id-ID", name: "id-ID-Wavenet-A" };
 /** Jeda sebelum narasi mulai di tiap adegan, dan jeda setelahnya sebelum adegan berganti. */
