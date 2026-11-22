@@ -71,7 +71,7 @@ export const GULA_1 = [
       "Komposisi ditulis berurutan dari bahan yang paling banyak ke yang paling sedikit. Jadi kalau gula ada di urutan pertama atau kedua, gula adalah salah satu bahan utama produk itu, apa pun yang tertulis di bagian depan kemasan.",
       "Beberapa produk memecah gulanya menjadi tiga atau empat jenis: gula, sirup glukosa, dekstrosa, maltosa. Masing-masing berada di urutan tengah, sehingga tidak ada yang terlihat dominan. Kalau dijumlahkan, gula bisa menjadi bahan terbanyak.",
       ["h", '"Sehat" di depan, manis di belakang'],
-      "Kata seperti *gula aren*, *madu*, *alami*, atau *tanpa gula pasir* di bagian depan kemasan terdengar lebih baik. Bagi tubuh, gula aren dan madu tetap gula. Kandungan mineralnya sedikit lebih banyak, tapi tidak cukup untuk mengubah hitungan gramnya.",
+      'Kata seperti "gula aren", "madu", "alami", atau "tanpa gula pasir" di bagian depan kemasan terdengar lebih baik. Bagi tubuh, gula aren dan madu tetap gula. Kandungan mineralnya sedikit lebih banyak, tapi tidak cukup untuk mengubah hitungan gramnya.',
       [
         "table",
         [

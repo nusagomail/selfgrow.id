@@ -21,6 +21,7 @@ import { BURNOUT_INTRO } from "./burnout.mjs";
 import { DARURAT_INTRO } from "./darurat.mjs";
 import { GULA_INTRO } from "./gula.mjs";
 import { HARGA_INTRO } from "./harga.mjs";
+import { LARI_INTRO } from "./lari.mjs";
 import { MINGGU_INTRO } from "./minggu.mjs";
 import { writeMusic } from "./music.mjs";
 import { NEGO_INTRO } from "./nego.mjs";
@@ -52,6 +53,7 @@ const VIDEOS = [
   STOIK_INTRO,
   DARURAT_INTRO,
   BURNOUT_INTRO,
+  LARI_INTRO,
 ].filter((v) => !ONLY || v.slug === ONLY);
 const VOICE = { languageCode: "id-ID", name: "id-ID-Wavenet-A" };
 /** Jeda sebelum narasi mulai di tiap adegan, dan jeda setelahnya sebelum adegan berganti. */

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<!--
+  Video pengantar "Dari Rebahan ke Lari 5K" (D46): dirancang khusus. Satu dunia sepanjang video:
+  lintasan atletik dilihat dari atas. Satu putaran dibagi menjadi bagian lari (merah) dan jalan
+  (abu); minggu demi minggu bagian lari memanjang sampai satu putaran penuh di minggu 8, sementara
+  titik pelari terus mengelilingi lintasan. Kontrak: DURATION, TIMELINE, render(t).
+-->
+<style>
+@font-face { font-family: Jakarta; src: url(font.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: Label; src: url(label.woff2) format("woff2"); font-weight: 600; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 960px; height: 540px; overflow: hidden; }
+body { font-family: Jakarta, sans-serif; color: #fffaf5; background: #4f8a46; }
+#stage { position: absolute; inset: 0; background: radial-gradient(110% 90% at 30% 40%, #67a35b 0%, #4f8a46 60%, #3c6e35 100%); }
+#trk { position: absolute; left: 30px; top: 40px; }
+#wk { position: absolute; left: 30px; top: 40px; width: 460px; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+#wk b { font-family: Label, sans-serif; font-size: 18px; letter-spacing: .2em; text-transform: uppercase; }
+#wk span { font-family: Label, sans-serif; font-size: 84px; line-height: 1; }
+#wk em { font-style: normal; font-weight: 700; font-size: 15px; margin-top: 4px; text-align: center; max-width: 220px; }
+.panel { position: absolute; left: 530px; right: 36px; top: 60px; bottom: 112px; opacity: 0; }
+.kick { font-family: Label, sans-serif; font-size: 15px; letter-spacing: .16em; text-transform: uppercase; color: #ffe3d8; }
+.big { font-family: Label, sans-serif; font-size: 44px; line-height: 1.02; text-transform: uppercase; margin-top: 6px; }
+.sub { font-size: 17px; line-height: 1.45; margin-top: 10px; }
+.zone { margin-top: 10px; background: #fffaf5; color: #1f1d1b; border-radius: 12px; padding: 10px 14px; font-weight: 700; font-size: 16px; border-left: 8px solid; }
+.zone b { font-family: Label, sans-serif; font-size: 20px; text-transform: uppercase; margin-right: 6px; }
+.end { display: grid; grid-template-columns: 110px 1fr; gap: 16px; align-items: center; }
+.end img.cv { width: 110px; height: 165px; box-shadow: 0 10px 22px rgba(0,0,0,.3); border-radius: 3px 7px 7px 3px; }
+.end h1 { font-family: Label, sans-serif; font-size: 38px; line-height: 1.02; text-transform: uppercase; }
+.btn { display: inline-block; margin-top: 12px; background: #fffaf5; color: #c4492f; font-weight: 800; font-size: 16px; padding: 10px 16px; border-radius: 8px; }
+.brand { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-weight: 800; }
+.brand img { width: 22px; height: 22px; }
+#wm { position: absolute; right: 22px; top: 18px; display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; }
+#wm img { width: 22px; height: 22px; }
+.sub-cap { position: absolute; left: 30px; right: 30px; bottom: 12px; text-align: center; z-index: 20; }
+.sub-cap span { display: inline-block; max-width: 820px; padding: 6px 14px; border-radius: 10px; background: rgba(31,29,27,.78); color: #fff; font-size: 17px; font-weight: 600; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="trk" width="460" height="400" viewBox="0 0 460 400" aria-hidden="true"></svg>
+  <div id="wk"><b>Minggu</b><span id="wn">1</span><em id="we"></em></div>
+</div>
+<div id="wm"><img src="mark.png" alt=""><span>SelfGrow</span></div>
+<div class="sub-cap" id="cap"></div>
+<script>
+const D = window.DATA;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - (1 - x) ** 3;
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+function fade(e, p, dist = 20, axis = "Y") { const k = easeOut(p); e.style.opacity = k; e.style.transform = `translate${axis}(${(1 - k) * dist}px)`; }
+const NS = "http://www.w3.org/2000/svg";
+const sv = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); parent.append(e); return e; };
+
+const MIN = { start: 8, weeks: 12, talk: 9, end: 6 };
+const T = [];
+let cur = 0;
+for (const s of D.scenes) { const dur = Math.max(MIN[s.type] ?? 6, s.dur ?? 0); T.push({ type: s.type, start: cur, dur, say: s.say ?? null }); cur += dur; }
+window.DURATION = cur;
+window.TIMELINE = T.map(({ type, start, dur }) => ({ type, start, dur }));
+const B = Object.fromEntries(T.map((b) => [b.type, b]));
+const at = (type, f) => B[type].start + B[type].dur * f;
+
+// Lintasan: bentuk stadion (dua garis lurus + dua setengah lingkaran).
+const trk = $("trk");
+const W = 460, H = 400, R = 120, L = 150, CX = W / 2, CY = H / 2;
+const path = `M ${CX - L / 2} ${CY - R} L ${CX + L / 2} ${CY - R} A ${R} ${R} 0 0 1 ${CX + L / 2} ${CY + R} L ${CX - L / 2} ${CY + R} A ${R} ${R} 0 0 1 ${CX - L / 2} ${CY - R} Z`;
+sv("path", { d: path, fill: "none", stroke: "#9e3622", "stroke-width": 62 }, trk);
+for (const off of [-24, -8, 8, 24]) {
+  const r2 = R + off;
+  sv("path", { d: `M ${CX - L / 2} ${CY - r2} L ${CX + L / 2} ${CY - r2} A ${r2} ${r2} 0 0 1 ${CX + L / 2} ${CY + r2} L ${CX - L / 2} ${CY + r2} A ${r2} ${r2} 0 0 1 ${CX - L / 2} ${CY - r2} Z`, fill: "none", stroke: "rgba(255,255,255,.55)", "stroke-width": 2 }, trk);
+}
+const lane = sv("path", { d: path, fill: "none", stroke: "#cfc7bd", "stroke-width": 14 }, trk);
+const total = lane.getTotalLength();
+// Pola lari/jalan per minggu (sama dengan buku): [kali, lari, jalan].
+const WEEKS = [[8, 1, 2], [6, 2, 2], [5, 3, 2], [4, 5, 2], [3, 8, 2], [2, 12, 2], [1, 20, 0], [1, 30, 0]];
+const LABEL = ["8× lari 1′ + jalan 2′", "6× lari 2′ + jalan 2′", "5× lari 3′ + jalan 2′", "4× lari 5′ + jalan 2′", "3× lari 8′ + jalan 2′", "2× lari 12′ + jalan 2′", "lari 20′ tanpa henti", "lari 30′ tanpa henti"];
+const runs = sv("path", { d: path, fill: "none", stroke: "#e8573a", "stroke-width": 14, "stroke-linecap": "butt" }, trk);
+const runner = sv("circle", { r: 11, fill: "#fffaf5", stroke: "#1f1d1b", "stroke-width": 3 }, trk);
+function setWeek(w, k) {
+  // Interpolasi porsi lari dari minggu w ke w+1 (k 0..1).
+  const pat = (i) => { const [n, r, j] = WEEKS[i]; const cyc = r + j; return { n, runFrac: r / cyc }; };
+  const a = pat(w), b = pat(Math.min(7, w + 1));
+  const n = k < 0.5 ? a.n : b.n;
+  const rf = a.runFrac + (b.runFrac - a.runFrac) * k;
+  const seg = total / n;
+  runs.setAttribute("stroke-dasharray", rf >= 0.999 ? `${total} 0` : `${seg * rf} ${seg * (1 - rf)}`);
+}
+
+const panels = {};
+function panel(type, build) { if (!B[type]) return; const p = el("div", "panel"); $("stage").append(p); panels[type] = { p, anim: build(p) }; }
+panel("start", (p) => {
+  const k = el("div", "kick", "Minggu pertama"), b = el("div", "big", "Bukan lari. Jalan, ditambah satu menit lari."), s = el("div", "sub", "Delapan kali, tiga sesi seminggu.");
+  p.append(k, b, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.3, 1.0), 20); fade(s, prog(t, d * 0.55, d * 0.55 + 0.5), 12); };
+});
+panel("weeks", (p) => {
+  const k = el("div", "kick", "Delapan minggu"), b = el("div", "big", "Lari bertambah, jalan berkurang."), s = el("div", "sub", "Minggu 8: tiga puluh menit tanpa berhenti.");
+  p.append(k, b, s);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); fade(b, prog(t, 0.3, 1.0), 20); fade(s, prog(t, d * 0.7, d * 0.7 + 0.5), 12); };
+});
+panel("talk", (p) => {
+  const k = el("div", "kick", "Ilmunya: tes bicara");
+  const z = [["Terlalu ringan", "bisa bernyanyi", "#cfc7bd"], ["Pas", "bisa mengobrol kalimat lengkap", "#5d9a52"], ["Terlalu berat", "hanya satu-dua kata", "#e8573a"]].map(([a, b2, c]) => { const x = el("div", "zone"); x.style.borderLeftColor = c; x.append(el("b", "", a), el("span", "", b2)); return x; });
+  p.append(k, ...z);
+  return (t, d) => { fade(k, prog(t, 0, 0.4)); z.forEach((x, i) => { fade(x, prog(t, d * (0.2 + i * 0.15), d * (0.2 + i * 0.15) + 0.4), 20, "X"); x.style.transform += i === 1 && t > d * 0.65 ? " scale(1.05)" : ""; }); };
+});
+panel("end", (p) => {
+  const w = el("div", "end"); const cv = el("img", "cv"); cv.src = "cover.jpg"; cv.alt = "";
+  const tx = el("div"); tx.append(el("div", "kick", "Ebook SelfGrow · program 8 minggu"), el("h1", "", "Dari Rebahan ke Lari 5K"), el("div", "btn", "Baca Bab 1, gratis"));
+  const br = el("div", "brand"); const im = el("img"); im.src = "mark.png"; im.alt = ""; br.append(im, el("span", "", "SelfGrow")); tx.append(br);
+  w.append(cv, tx); p.append(w);
+  return (t) => { fade(cv, prog(t, 0.2, 0.9), 30); fade(tx, prog(t, 0.5, 1.2), 16, "X"); };
+});
+
+window.render = (t) => {
+  for (const b of T) {
+    const pn = panels[b.type]; if (!pn) continue;
+    const last = b === T[T.length - 1];
+    const inn = easeInOut(prog(t, b.start - 0.2, b.start + 0.25));
+    const out = last ? 1 : 1 - easeInOut(prog(t, b.start + b.dur - 0.25, b.start + b.dur + 0.2));
+    const o = Math.min(inn, out);
+    pn.p.style.opacity = o;
+    if (o > 0) pn.anim(t - b.start, b.dur);
+  }
+  // Minggu berjalan 1 → 8 selama adegan "weeks", lalu tetap di 8.
+  let wf = 0;
+  if (B.weeks) wf = prog(t, B.weeks.start + 0.4, B.weeks.start + B.weeks.dur - 0.6) * 7;
+  const w = Math.min(7, Math.floor(wf));
+  const k = w >= 7 ? 0 : easeInOut(clamp((wf - w) * 1.6 - 0.3));
+  setWeek(w, k);
+  const shown = k > 0.5 ? Math.min(7, w + 1) : w;
+  $("wn").textContent = String(shown + 1);
+  $("we").textContent = LABEL[shown];
+  // Pelari mengelilingi lintasan terus-menerus.
+  const pos = lane.getPointAtLength((t * 70) % total);
+  runner.setAttribute("cx", pos.x); runner.setAttribute("cy", pos.y);
+
+  const cb = T.find((b) => t >= b.start && t < b.start + b.dur);
+  const line = D.captions && cb ? cb.say : null;
+  const cap = $("cap");
+  if (cap.dataset.line !== (line ?? "")) { cap.dataset.line = line ?? ""; cap.replaceChildren(); if (line) cap.append(el("span", "", line)); }
+};
+render(0);
+</script>
+</body>
+</html>
