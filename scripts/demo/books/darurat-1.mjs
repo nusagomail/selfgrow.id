@@ -1,5 +1,5 @@
 /**
- * "Dana Darurat dari Nol", 6 bab. Bentuk: satu tokoh, Bagas (24, staf administrasi, gaji
+ * "Dana Darurat dari Nol", 9 bab (diperdalam: penghasilan tidak tetap, utang dulu atau bantalan dulu, jaring pengaman BPJS dan JKP). Bentuk: satu tokoh, Bagas (24, staf administrasi, gaji
  * Rp5,2 juta, pengeluaran wajib Rp3,5 juta), diikuti lewat buku tabungannya. Angka adalah
  * ilustrasi. Edukasi keuangan umum, bukan rekomendasi produk tertentu.
  */
@@ -49,6 +49,39 @@ export const DARURAT_1 = [
     ],
   },
   {
+    title: "Kalau Penghasilanmu Naik-Turun",
+    blocks: [
+      'Wulan, sepupu Bagas, berjualan kue lewat media sosial. Bulan Ramadan, pendapatan bersihnya bisa Rp9 juta. Bulan sepi, kadang hanya Rp2,5 juta. "Aturan tiga sampai enam bulan itu buat orang bergaji tetap," katanya. "Aku bahkan tidak tahu berapa satu bulanku."',
+      "Wulan benar bahwa caranya perlu berbeda. Pedagang, pekerja lepas, pengemudi ojek daring, dan pekerja kontrak menghadapi dua risiko sekaligus: kejadian mendadak, dan bulan yang sepi. Bantalannya perlu menahan keduanya.",
+      ["h", "Hitung dari bulan tersepi, bukan rata-rata"],
+      [
+        "ol",
+        [
+          "Lihat catatan penghasilan bersih 12 bulan terakhir. Kalau belum ada catatan, perkirakan dari riwayat transfer di rekening.",
+          "Hitung pengeluaran wajib per bulan, seperti Bagas di Bab 2.",
+          "Target dana darurat: **6 sampai 12 bulan pengeluaran wajib**, karena bulan sepi bisa datang beruntun.",
+        ],
+      ],
+      ["h", "Sisihkan per pemasukan, bukan per bulan"],
+      "Tanpa tanggal gajian, transfer otomatis tanggal 1 tidak cocok. Wulan memakai aturan yang lebih sederhana: **setiap uang masuk, 10% langsung dipindah** ke rekening dana darurat sebelum dipakai untuk bahan baku atau belanja rumah.",
+      [
+        "table",
+        [
+          ["Bulan", "Pendapatan bersih", "Disisihkan 10%"],
+          ["Maret (Ramadan)", "Rp9.000.000", "Rp900.000"],
+          ["April", "Rp4.200.000", "Rp420.000"],
+          ["Mei", "Rp2.600.000", "Rp260.000"],
+          ["Juni", "Rp3.100.000", "Rp310.000"],
+        ],
+      ],
+      "Bulan ramai otomatis menyumbang lebih banyak. Bulan sepi tetap menyumbang, walau sedikit, sehingga kebiasaannya tidak putus.",
+      [
+        "tip",
+        "Pisahkan juga uang usaha dan uang pribadi. Kalau modal bahan baku tercampur dengan dana darurat, keduanya sama-sama sulit dijaga.",
+      ],
+    ],
+  },
+  {
     title: "Rp10.000 Sehari: Mulai dari yang Sangat Kecil",
     blocks: [
       "Bagas tidak punya sisa uang besar setiap bulan. Jadi dia mulai dari angka yang hampir tidak terasa: **Rp10.000 sehari**, kira-kira harga satu gelas es teh dan gorengan. Dalam sebulan, Rp300.000.",
@@ -66,6 +99,29 @@ export const DARURAT_1 = [
       [
         "info",
         'Setiap kali gajimu naik, naikkan juga setoran dana daruratmu, walau hanya Rp50.000. Setoran yang naik pelan-pelan jauh lebih mudah dijalankan daripada menunggu sampai "ada sisa".',
+      ],
+    ],
+  },
+  {
+    title: "Utang Dulu atau Bantalan Dulu?",
+    blocks: [
+      "Setelah tangga pertama tercapai, Bagas masih punya sisa cicilan servis motor di aplikasi pinjaman daring. Dia bingung: lunasi dulu, atau terus menabung?",
+      "Pertanyaan ini sering membuat orang terjebak di tengah: menabung sambil terus membayar bunga yang lebih besar daripada bunga tabungan, atau melunasi utang tanpa sisa sama sekali, lalu berutang lagi saat ada kejadian kecil.",
+      ["img", "urutan-prioritas", "Utang dulu atau bantalan dulu?"],
+      ["h", "Kenapa bantalan mini didahulukan"],
+      "Tanpa bantalan sama sekali, setiap ban bocor atau obat mendadak berubah menjadi utang baru. Bantalan mini Rp1 juta memutus kebiasaan itu, walau belum cukup untuk kejadian besar.",
+      ["h", "Kenapa utang mahal berikutnya"],
+      [
+        "fact",
+        "OJK menetapkan batas maksimum manfaat ekonomi (bunga dan biaya) pinjaman daring konsumtif sebesar 0,3% per hari untuk tenor di bawah enam bulan, dan 0,2% per hari untuk tenor lebih panjang, berlaku sejak 2025.",
+        "Otoritas Jasa Keuangan, siaran pers SP-214/GKPB/OJK/XII/2024",
+      ],
+      'Batas 0,3% per hari kedengarannya kecil, padahal setara sekitar 9% per bulan. Bunga tabungan di bank umumnya hanya beberapa persen setahun. Selama utang semahal itu masih ada, setiap rupiah yang dipakai melunasinya "menghasilkan" jauh lebih banyak daripada rupiah yang ditabung.',
+      ["h", "Setelah lunas"],
+      'Jangan menurunkan setoran. Uang yang tadinya untuk cicilan langsung dialihkan ke tangga kedua dana darurat. Bagas tidak merasakan bedanya di dompet, karena uang itu memang sudah biasa "pergi" setiap bulan.',
+      [
+        "info",
+        'Kalau kamu sedang terlilit beberapa paylater atau pinjaman daring sekaligus, buku "Lepas dari Jerat Paylater" membahas cara memetakan dan melunasinya dengan urutan yang jelas.',
       ],
     ],
   },
@@ -102,6 +158,39 @@ export const DARURAT_1 = [
           "Kejadian mendadak apa yang paling mungkin terjadi padamu dalam setahun ke depan?",
           "Kalau itu terjadi besok, dari mana uangnya akan datang?",
         ],
+      ],
+    ],
+  },
+  {
+    title: "Jaring Pengaman Selain Tabungan",
+    blocks: [
+      "Dana darurat bukan satu-satunya pelindung. Ada beberapa jaring pengaman yang sering terlupa, padahal bisa membuat target dana darurat lebih realistis.",
+      ["h", "Jaminan kesehatan"],
+      "Biaya rumah sakit adalah salah satu kejadian mendadak yang paling cepat menghabiskan tabungan. Kepesertaan aktif di Jaminan Kesehatan Nasional (BPJS Kesehatan) melindungi dari sebagian besar biaya itu. Pastikan iuranmu tidak menunggak, karena kepesertaan yang tidak aktif bisa membuat layanan tertunda tepat saat dibutuhkan.",
+      ["h", "Kalau terkena PHK"],
+      [
+        "fact",
+        "Pekerja yang terkena PHK dan terdaftar dalam program Jaminan Kehilangan Pekerjaan (JKP) BPJS Ketenagakerjaan bisa menerima manfaat uang tunai sebesar 60% upah selama paling lama enam bulan, dengan batas upah yang dihitung Rp5 juta per bulan, selama syarat kepesertaannya terpenuhi.",
+        "PP No. 6 Tahun 2025 tentang Perubahan atas PP No. 37 Tahun 2021",
+      ],
+      "Cek di aplikasi BPJS Ketenagakerjaan apakah kamu sudah terdaftar dan iurannya dibayar. Manfaat ini tidak menggantikan dana darurat, tapi bisa memperpanjang berapa lama bantalanmu bertahan.",
+      ["h", "Asuransi: secukupnya, bukan sebanyaknya"],
+      [
+        "ul",
+        [
+          "Asuransi jiwa berjangka masuk akal kalau ada orang yang bergantung pada penghasilanmu.",
+          "Asuransi kendaraan mungkin berguna kalau kendaraan adalah alat kerja utamamu.",
+          "Hindari membeli produk gabungan asuransi dan investasi hanya karena ditawarkan; pahami dulu biaya dan manfaatnya.",
+        ],
+      ],
+      [
+        "exercise",
+        [
+          "Cek status kepesertaan BPJS Kesehatan dan BPJS Ketenagakerjaanmu minggu ini.",
+          "Tulis jaring pengaman yang sudah kamu punya, dan kejadian yang belum terlindungi.",
+          "Pakai daftar itu untuk menentukan apakah targetmu perlu 3, 6, atau 12 bulan.",
+        ],
+        "Lembar kerja: peta jaring pengaman",
       ],
     ],
   },

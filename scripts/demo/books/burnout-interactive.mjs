@@ -30,7 +30,7 @@ export const POLA_PULIH = {
       min: 0,
       max: 4,
       title: "Tangki yang terus bocor",
-      text: "Hampir tidak ada waktu yang benar-benar lepas dari kerja. Bab 4 adalah tempat mulai yang paling penting untukmu.",
+      text: "Hampir tidak ada waktu yang benar-benar lepas dari kerja. Bab 5 adalah tempat mulai yang paling penting untukmu.",
     },
     {
       min: 5,
@@ -42,7 +42,7 @@ export const POLA_PULIH = {
       min: 9,
       max: 12,
       title: "Pemulihan yang terjaga",
-      text: "Kebiasaan pemulihanmu sudah baik. Kalau tetap lelah, lihat beban dan lingkungan kerjamu di Bab 5.",
+      text: "Kebiasaan pemulihanmu sudah baik. Kalau tetap lelah, lihat beban dan lingkungan kerjamu di Bab 3 dan Bab 7.",
     },
   ],
 };

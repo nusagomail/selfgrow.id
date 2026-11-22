@@ -122,7 +122,44 @@ function week() {
   );
 }
 
+/** 7. Empat kebajikan sebagai kompas. */
+function virtues() {
+  const v = [
+    [
+      "KEBIJAKSANAAN",
+      "Melihat keadaan apa adanya dan memilih yang paling baik untuk dilakukan.",
+      "Rapat mendadak: tanyakan dulu tujuannya sebelum bereaksi.",
+    ],
+    [
+      "KEBERANIAN",
+      "Melakukan yang benar walau takut atau tidak nyaman.",
+      "Mengakui kesalahan laporan sebelum ada yang menemukannya.",
+    ],
+    [
+      "KEADILAN",
+      "Memperlakukan orang lain dengan pantas dan jujur.",
+      "Menyebut nama rekan yang ikut bekerja saat proyek dipuji.",
+    ],
+    [
+      "PENGENDALIAN DIRI",
+      "Ukuran yang pas: tidak berlebihan, tidak kekurangan.",
+      "Satu jam media sosial, bukan tiga, setelah hari yang berat.",
+    ],
+  ];
+  return card(
+    "Empat kebajikan",
+    `<div class="vt">${v
+      .map(([a, b, c]) => `<div class="vti"><h4>${a}</h4><p>${b}</p><small>${c}</small></div>`)
+      .join("")}</div>`,
+    "\u201cKebajikan saja sudah cukup untuk hidup yang baik.\u201d Ringkasan ajaran Stoa, diterjemahkan bebas.",
+  );
+}
+
 export const STOIK_FIGURES = {
+  "empat-kebajikan": {
+    html: virtues,
+    alt: "Empat kebajikan Stoik: kebijaksanaan, keberanian, keadilan, dan pengendalian diri, masing-masing dengan arti dan contoh sehari-hari.",
+  },
   "lingkaran-kendali": {
     html: circles,
     alt: "Tiga lingkaran: dalam kendali (sikap, kata, usaha), bisa dipengaruhi (hasil kerja, kesehatan), di luar kendali (cuaca, macet, pikiran orang lain).",
@@ -194,4 +231,9 @@ h2{font-family:SgSerif,serif;font-weight:400;font-size:36px;letter-spacing:.06em
 .wr{display:grid;grid-template-columns:140px 1fr;align-items:center;background:#f6f3ed;box-shadow:0 1px 0 #bdb5a6}
 .wr b{font-family:SgSerif,serif;font-weight:400;font-size:18px;letter-spacing:.06em;text-transform:uppercase;background:${C.ink};color:${C.stone};padding:12px 14px}
 .wr span{font-size:16px;padding:10px 16px}
+.vt{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.vti{border-top:2px solid ${C.bronze};padding-top:12px}
+.vti h4{font-family:SgSerif,serif;font-weight:400;font-size:20px;letter-spacing:.12em;color:${C.ink}}
+.vti p{font-size:15px;line-height:1.45;margin-top:6px}
+.vti small{display:block;font-size:13px;color:${C.moss};margin-top:6px;font-style:italic}
 `;

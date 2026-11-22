@@ -1,5 +1,5 @@
 /**
- * "Seminggu dalam Satu Jam", 6 bab. Bentuk: buku resep ritual. Tokoh Tari (31, koordinator
+ * "Seminggu dalam Satu Jam", 9 bab (diperdalam: melindungi jam fokus, bilang belum minggu ini, minggu di luar kantor). Bentuk: buku resep ritual. Tokoh Tari (31, koordinator
  * proyek) muncul sebagai contoh di setiap bagian ritual; bab 2–4 masing-masing satu bagian
  * ritual, dikerjakan pembaca langsung. Angka jam Tari adalah ilustrasi.
  */
@@ -107,6 +107,34 @@ export const MINGGU_1 = [
     ],
   },
   {
+    title: "Melindungi Jam Fokus",
+    blocks: [
+      'Senin pukul 09.00, Tari duduk di blok fokus pertamanya: laporan klien. Pukul 09.06 grup proyek berbunyi. Pukul 09.11 surel dari HR. Pukul 09.20 rekan menghampiri meja: "Sebentar saja, ya." Pukul 10.30, bloknya habis dan laporannya baru satu paragraf.',
+      "Memasang batu besar di kalender baru setengah pekerjaan. Setengahnya lagi adalah menjaga agar jam itu benar-benar dipakai untuk batu besar.",
+      [
+        "fact",
+        "Dalam sebuah eksperimen, orang yang pekerjaannya terus diinterupsi menyelesaikan tugas lebih cepat, tetapi melaporkan stres, frustrasi, tekanan waktu, dan usaha yang jauh lebih tinggi. Mereka mengejar waktu yang hilang dengan bekerja lebih keras, dan membayarnya dengan kelelahan.",
+        "Mark, Gudith & Klocke, The Cost of Interrupted Work, CHI 2008",
+      ],
+      ["h", "Empat pagar untuk satu blok fokus"],
+      [
+        "ol",
+        [
+          '**Tandai di kalender bersama** dengan nama yang jelas, misalnya "Fokus: laporan klien", bukan "Sibuk". Rekan lebih menghormati pekerjaan yang terlihat.',
+          "**Matikan notifikasi** grup dan surel selama blok berjalan. Buka lagi di jam yang sudah ditentukan, misalnya setiap pukul 11 dan 15.",
+          '**Siapkan kalimat untuk yang datang ke meja:** "Aku lagi menyelesaikan laporan sampai jam setengah sebelas. Boleh aku ke mejamu setelahnya?"',
+          "**Mulai dengan langkah pertama yang sudah ditulis** saat ritual, supaya tidak ada menit yang habis untuk memutuskan harus mulai dari mana.",
+        ],
+      ],
+      ["h", "Rapat yang memakan minggu"],
+      "Di catatan awal Tari, rapat menghabiskan 14 jam. Tidak semua bisa dihapus, tapi banyak yang bisa diperpendek atau diganti. Sebelum menerima undangan, Tari kini bertanya: apa keputusan yang diharapkan dari rapat ini? Kalau tidak ada, dia meminta ringkasan tertulis saja.",
+      [
+        "tip",
+        "Usulkan satu hari tanpa rapat setiap minggu di timmu, misalnya Rabu pagi. Satu kesepakatan tim lebih kuat daripada pagar pribadi yang harus dijaga sendirian.",
+      ],
+    ],
+  },
+  {
     title: "Saat Minggu Tidak Berjalan Sesuai Rencana",
     blocks: [
       "Rabu minggu pertama, klien terbesar Tari meminta rapat mendadak tepat di jam rencana kuartal. Tari hampir menerimanya tanpa berpikir, lalu ingat satu kalimat yang dia tulis Minggu sore.",
@@ -125,6 +153,63 @@ export const MINGGU_1 = [
         [
           "Situasi apa yang paling sering merusak rencanamu?",
           "Rencana jika–maka apa yang akan kamu tulis untuk situasi itu?",
+        ],
+      ],
+    ],
+  },
+  {
+    title: 'Bilang "Belum Minggu Ini"',
+    blocks: [
+      "Setiap minggu, permintaan baru datang setelah ritual selesai. Sebagian memang lebih penting dari batu besarmu. Sebagian besar tidak, tetapi terasa mendesak karena datang dengan nada mendesak.",
+      "Rencana mingguan memberi satu kemampuan baru: kamu tahu persis apa yang akan tergeser kalau mengiyakan. Itu membuat penolakan lebih mudah, karena alasannya nyata.",
+      ["h", 'Empat jawaban selain "iya"'],
+      [
+        "table",
+        [
+          ["Jawaban", "Contoh kalimat"],
+          [
+            "Tukar",
+            '"Bisa, tapi berarti rencana kuartal mundur ke minggu depan. Mana yang Bapak mau duluan?"',
+          ],
+          ["Tunda", '"Minggu ini kalenderku penuh. Aku bisa mulai Senin depan."'],
+          [
+            "Kecilkan",
+            '"Aku tidak bisa menyusun seluruh presentasinya, tapi aku bisa mengirim data yang dibutuhkan hari Kamis."',
+          ],
+          [
+            "Alihkan",
+            '"Dodi pernah mengerjakan hal serupa bulan lalu. Mungkin lebih cepat lewat dia."',
+          ],
+        ],
+      ],
+      'Pilihan "tukar" paling ampuh ke atasan. Kamu tidak menolak; kamu memperlihatkan harga dari permintaan itu, lalu menyerahkan keputusan prioritasnya kepada orang yang memang berwenang.',
+      [
+        "info",
+        'Kalau mengatakan tidak terasa sangat berat, buku "Berani Bilang Tidak" membahas cara menolak dengan sopan dan tegas, termasuk kepada atasan dan keluarga.',
+      ],
+    ],
+  },
+  {
+    title: "Minggu di Luar Kantor",
+    blocks: [
+      "Setelah sebulan, rencana kantor Tari membaik. Tapi rumahnya masih berjalan seperti dulu: arisan yang terlupa, belanja bulanan mendadak di Sabtu malam, dan janji mengajak ibu kontrol ke dokter yang tertunda tiga minggu.",
+      "Ritual yang sama bisa dipakai untuk hidup di luar kantor. Bedanya, rencana rumah biasanya melibatkan orang lain.",
+      ["h", "Sepuluh menit bersama pasangan atau keluarga"],
+      [
+        "ol",
+        [
+          "**Lihat kalender bersama:** siapa pulang malam, siapa mengantar anak, acara keluarga apa minggu ini.",
+          "**Pilih satu batu besar rumah:** kontrol ke dokter, membayar pajak kendaraan, atau sekadar makan malam bersama di hari Rabu.",
+          '**Bagi tugas yang jelas:** bukan "nanti diurus", tapi "Mas yang daftar online, aku yang antar".',
+        ],
+      ],
+      ["h", "Batu besar untuk diri sendiri"],
+      "Tari juga menambahkan satu batu besar kecil untuk dirinya: dua kali olahraga pagi. Bukan karena produktif, tapi karena tanpa itu energinya habis sebelum Kamis. Minggu yang terencana baik bukan minggu yang paling penuh, tapi minggu yang memberi ruang bagi hal yang paling penting, termasuk istirahat.",
+      [
+        "reflect",
+        [
+          "Satu hal di rumah apa yang sudah terlalu lama tertunda karena tidak pernah punya jam di kalender?",
+          "Kalau kamu hanya boleh menjaga satu batu besar untuk dirimu sendiri minggu ini, apa itu?",
         ],
       ],
     ],

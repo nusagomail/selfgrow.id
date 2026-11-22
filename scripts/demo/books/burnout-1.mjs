@@ -1,5 +1,5 @@
 /**
- * "Burnout Bukan Lemah", 6 bab. Bentuk: satu tokoh, Nadia (29, pemimpin tim layanan pelanggan
+ * "Burnout Bukan Lemah", 9 bab (diperdalam: tuntutan dan bekal kerja, malam dan tidur, cuti/jeda/pindah). Bentuk: satu tokoh, Nadia (29, pemimpin tim layanan pelanggan
  * di perusahaan rintisan), diikuti lewat catatan energinya. Nada lembut dan tidak menyalahkan.
  * Edukasi umum; burnout berat, depresi, atau pikiran menyakiti diri perlu bantuan profesional.
  */
@@ -58,6 +58,41 @@ export const BURNOUT_1 = [
     ],
   },
   {
+    title: "Tuntutan Naik, Bekal Menipis",
+    blocks: [
+      "Seminggu mencatat energi membuat Nadia bertanya: kenapa sekarang? Dua tahun lalu pekerjaannya sama beratnya, tapi dia tidak pernah merasa seperti ini.",
+      "Jawabannya bukan pada beratnya pekerjaan saja, tapi pada **keseimbangan** antara apa yang dituntut dan apa yang tersedia untuk menghadapinya.",
+      ["img", "tuntutan-bekal", "Tuntutan naik, bekal menipis."],
+      [
+        "fact",
+        "Model tuntutan-bekal kerja (Job Demands–Resources) menjelaskan bahwa tuntutan yang tinggi dan terus-menerus menguras energi, sementara bekal kerja seperti dukungan rekan, umpan balik, dan kendali atas pekerjaan menjaga semangat. Beberapa penelitian menemukan bekal kerja bisa meredam pengaruh tuntutan yang tinggi terhadap burnout.",
+        "Bakker & Demerouti, Journal of Managerial Psychology, 2007; Xanthopoulou dkk., 2007",
+      ],
+      "Dua tahun lalu, tuntutan Nadia sama tingginya. Bedanya, saat itu ada atasan yang rutin bertanya kabar, rekan yang bisa diajak bertukar shift, dan kebebasan mengatur jam istirahat. Ketika atasan itu pindah dan dua rekan keluar, tuntutannya tetap, tetapi bekalnya hilang.",
+      ["h", "Petakan milikmu"],
+      [
+        "table",
+        [
+          ["Tuntutan yang sering menguras", "Bekal yang sering melindungi"],
+          ["Beban terlalu banyak untuk waktunya", "Kendali atas cara dan waktu kerja"],
+          ["Tuntutan emosional (pelanggan, pasien, murid)", "Dukungan rekan dan atasan"],
+          ["Peran yang tidak jelas atau berubah-ubah", "Umpan balik yang jelas"],
+          ["Selalu bisa dihubungi", "Pengakuan atas hasil kerja"],
+          ["Konflik dengan rekan atau atasan", "Kesempatan belajar dan berkembang"],
+        ],
+      ],
+      [
+        "exercise",
+        [
+          "Tulis tiga tuntutan terberat di pekerjaanmu saat ini.",
+          "Tulis tiga bekal yang dulu ada dan sekarang berkurang, atau memang belum pernah ada.",
+          "Lingkari satu tuntutan yang bisa dikurangi dan satu bekal yang bisa diminta. Keduanya akan berguna di Bab 7.",
+        ],
+        "Lembar kerja: timbangan milikmu",
+      ],
+    ],
+  },
+  {
     title: "Kebocoran yang Tidak Terasa",
     blocks: [
       'Nadia merasa dia sudah beristirahat: pulang jam enam, tidur tujuh jam. Tapi catatannya menunjukkan hal lain. Dia membalas grup kerja saat makan malam. Dia membuka dasbor keluhan pelanggan sebelum tidur "sebentar saja". Akhir pekannya diisi mengecek pesan setiap jam.',
@@ -103,6 +138,37 @@ export const BURNOUT_1 = [
     ],
   },
   {
+    title: "Malam yang Tidak Lagi Menolong",
+    blocks: [
+      "Nadia tidur pukul sebelas, tapi baru benar-benar terlelap pukul satu. Di kepalanya, percakapan dengan pelanggan yang marah tadi siang diputar ulang. Pagi harinya dia bangun lebih lelah daripada saat berangkat tidur.",
+      "Kelelahan karena burnout sering membuat tidur kurang memulihkan, dan tidur yang kurang membuat hari berikutnya terasa lebih berat. Lingkaran ini perlu diputus dari dua sisi: **cara menutup hari kerja** dan **cara masuk ke malam**.",
+      ["h", "Jeda pindah: dari kantor ke rumah"],
+      "Dulu, perjalanan pulang memberi jeda alami. Sekarang, banyak orang membawa pulang pekerjaan di saku. Jeda perlu dibuat sendiri:",
+      [
+        "ol",
+        [
+          "**Satu daftar penutup.** Lima menit sebelum pulang, tulis tiga hal yang belum selesai dan langkah pertamanya besok. Kepala tidak perlu lagi menjaganya semalaman.",
+          '**Satu kalimat penutup.** Ucapkan dalam hati: "Hari kerja selesai." Terdengar sepele, tapi menandai batas.',
+          "**Satu kegiatan pindah.** Mandi, jalan kaki sepuluh menit, atau memasak, sebelum membuka ponsel lagi.",
+        ],
+      ],
+      ["h", "Masuk ke malam"],
+      [
+        "ul",
+        [
+          "Tidur dan bangun di jam yang hampir sama, termasuk akhir pekan. Kebanyakan orang dewasa butuh tujuh jam atau lebih.",
+          "Kalau pikiran berputar di tempat tidur lebih dari dua puluh menit, bangun sebentar, tulis isinya di kertas, lalu kembali.",
+          "Kopi terakhir sebelum pukul dua siang.",
+          "Ponsel kerja tidak ikut ke kamar.",
+        ],
+      ],
+      [
+        "info",
+        "Sulit tidur yang berlangsung berminggu-minggu meskipun kebiasaan sudah diperbaiki perlu diperiksakan ke dokter. Bisa jadi ada hal lain di baliknya, termasuk kecemasan atau depresi.",
+      ],
+    ],
+  },
+  {
     title: "Bukan Hanya Urusan Dirimu",
     blocks: [
       "Setelah sebulan memperbaiki pemulihan, energi Nadia membaik, tapi tidak sepenuhnya. Ada hal yang tidak bisa diselesaikan dengan tidur lebih awal: timnya kekurangan dua orang sejak empat bulan lalu, dan target bulanan tetap sama.",
@@ -118,6 +184,54 @@ export const BURNOUT_1 = [
       [
         "info",
         "Kalau beban kerja tetap tidak masuk akal setelah dibicarakan, dan kesehatanmu terus menurun, mencari pekerjaan lain bukan kegagalan. Itu bagian dari menjaga diri.",
+      ],
+    ],
+  },
+  {
+    title: "Cuti, Jeda, atau Pindah?",
+    blocks: [
+      "Di bulan kedua, Nadia bertanya pada dirinya sendiri: apakah aku perlu cuti panjang? Atau sudah saatnya mencari pekerjaan lain? Pertanyaan itu menakutkan, jadi dia menundanya. Padahal pertanyaannya bisa dijawab dengan lebih tenang.",
+      ["h", "Tiga pilihan, tiga keadaan"],
+      [
+        "table",
+        [
+          ["Pilihan", "Cocok kalau", "Yang perlu disiapkan"],
+          [
+            "Cuti pendek terencana",
+            "Kelelahan masih bisa pulih, beban kerja sedang dibenahi",
+            "Cuti yang benar-benar putus: serah terima, pesan otomatis, ponsel kerja mati",
+          ],
+          [
+            "Jeda lebih panjang",
+            "Dokter atau psikolog menyarankan istirahat, atau gejala sudah mengganggu kesehatan",
+            "Surat keterangan dari tenaga kesehatan dan pembicaraan dengan HR",
+          ],
+          [
+            "Pindah pekerjaan atau peran",
+            "Tuntutan tetap tidak masuk akal setelah dibicarakan, dan bekal tidak akan kembali",
+            "Tabungan beberapa bulan, rencana pencarian, dan alasan yang jelas untuk diri sendiri",
+          ],
+        ],
+      ],
+      [
+        "fact",
+        "Pekerja yang sudah bekerja 12 bulan berturut-turut berhak atas cuti tahunan paling sedikit 12 hari kerja. Pelaksanaannya diatur dalam perjanjian kerja, peraturan perusahaan, atau perjanjian kerja bersama.",
+        "UU No. 13 Tahun 2003 tentang Ketenagakerjaan Pasal 79, sebagaimana diubah UU Cipta Kerja",
+      ],
+      "Cuti yang tidak pernah diambil bukan tanda kesetiaan. Cuti adalah hak yang dibuat justru untuk mencegah kelelahan yang menumpuk.",
+      ["h", "Saat memutuskan pindah"],
+      "Pindah pekerjaan bisa menjadi keputusan yang sangat sehat. Tapi pindah dalam keadaan terkuras sering membawa pola lama ke tempat baru. Sebelum pindah, tanyakan:",
+      [
+        "ul",
+        [
+          "Tuntutan mana yang akan berbeda di tempat baru, dan bagaimana aku tahu?",
+          "Bekal apa yang kucari, dan apakah aku menanyakannya saat wawancara?",
+          "Kebiasaan pemulihan mana yang akan kubawa, apa pun tempat kerjanya?",
+        ],
+      ],
+      [
+        "warn",
+        "Kalau lelahmu disertai sedih yang dalam hampir setiap hari, kehilangan minat pada hampir semua hal, atau pikiran menyakiti diri, jangan menunggu keputusan apa pun. Hubungi psikolog, puskesmas, atau layanan kesehatan jiwa terdekat sekarang.",
       ],
     ],
   },

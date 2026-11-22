@@ -149,7 +149,42 @@ function refill() {
   );
 }
 
+/** 7. Urutan: bantalan mini, lunasi utang mahal, lalu bantalan penuh. */
+function order() {
+  const s = [
+    ["1", "Bantalan mini", "Rp1 juta", "Supaya kejadian kecil tidak jadi utang baru", C.green],
+    [
+      "2",
+      "Lunasi utang berbunga tinggi",
+      "Pinjol, paylater, kartu kredit",
+      "Bunga pinjol konsumtif bisa sampai 0,3% per hari",
+      C.red,
+    ],
+    [
+      "3",
+      "Bantalan penuh",
+      "3–6 bulan pengeluaran wajib",
+      "Setoran yang tadi untuk cicilan dialihkan ke sini",
+      C.blue,
+    ],
+  ];
+  return card(
+    "Utang dulu atau bantalan dulu?",
+    `<div class="od">${s
+      .map(
+        ([n, a, b, c, col]) =>
+          `<div class="odr" style="border-left-color:${col}"><span class="odn" style="background:${col}">${n}</span><div><b>${a}</b><small>${b}</small><p>${c}</p></div></div>`,
+      )
+      .join("")}</div>`,
+    "Urutan umum, bukan aturan mati. Utang yang sudah menunggak atau mengganggu kebutuhan pokok perlu didahulukan dan dibicarakan dengan pemberi pinjaman.",
+  );
+}
+
 export const DARURAT_FIGURES = {
+  "urutan-prioritas": {
+    html: order,
+    alt: "Tiga langkah berurutan: bantalan mini Rp1 juta, lunasi utang berbunga tinggi seperti pinjol dan paylater, lalu bantalan penuh 3 sampai 6 bulan pengeluaran wajib.",
+  },
   "tiga-tangga": {
     html: stairs,
     alt: "Tiga tangga dana darurat Bagas: mini Rp1 juta, satu bulan pengeluaran Rp3,5 juta, target penuh Rp10,5 juta.",
@@ -214,4 +249,10 @@ h2{font-size:32px;font-weight:800;color:${C.blue};line-height:1.15;margin:6px 0 
 .rfi span{font-family:SgMono,monospace;font-size:26px;color:${C.blue}}
 .rfi b{font-size:17px}
 .rfi p{font-size:14px;line-height:1.4}
+.od{display:grid;gap:10px}
+.odr{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:center;background:#fff;border:1px solid ${C.line};border-left:6px solid;border-radius:8px;padding:12px 14px}
+.odn{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;color:#fff;font-family:SgMono,monospace;font-size:18px}
+.odr b{display:block;font-size:18px}
+.odr small{font-family:SgMono,monospace;font-size:13px;color:${C.blue}}
+.odr p{font-size:15px;line-height:1.4;margin-top:4px}
 `;
