@@ -1,0 +1,121 @@
+---
+import { TOOL_KIND_LABEL, toolKind, toolTone } from "@selfgrow/shared";
+import { type Access, contentPath } from "../lib/api";
+
+/**
+ * Kartu tool (D49): tool bukan buku, jadi tanpa sampul tegak. Ikon fungsi, jenis tool, judul,
+ * ringkasan, label akses, dan ajakan mencoba.
+ */
+interface Props {
+  item: {
+    type: "tool";
+    slug: string;
+    title: string;
+    summary: string | null;
+    access: Access;
+    comingSoon?: boolean;
+  };
+}
+const { item } = Astro.props;
+const kind = toolKind(item.title);
+const label = item.comingSoon ? "Segera" : item.access === "premium" ? "Premium" : "Gratis";
+---
+
+<a href={contentPath(item)} class:list={["tool-card", `tone-${toolTone(item.slug)}`]}>
+  <span class="top">
+    <span class="icon">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          {kind === "hitung" && (<><rect x="5" y="3" width="14" height="18" rx="2.5" /><path d="M8 7h8M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" /></>)}
+          {kind === "susun" && (<><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z" /><path d="M13.5 6.5l4 4M12 20h8" /></>)}
+          {kind === "cek" && (<><circle cx="12" cy="12" r="8.5" /><path d="M8 12.5l2.7 2.7L16 9.8" /></>)}
+          {kind === "jadwal" && (<><rect x="4" y="5" width="16" height="15" rx="2.5" /><path d="M8 3v4M16 3v4M4 10h16M8.5 14h3M8.5 17h6" /></>)}
+          {kind === "catat" && (<><circle cx="12" cy="12" r="8.5" /><path d="M14.8 9.2l-1.9 4.7-3.7 1.9 1.9-4.7z" /></>)}
+        </g>
+      </svg>
+    </span>
+    <span class="kind">{TOOL_KIND_LABEL[kind]}</span>
+    <span class:list={["label", { premium: label === "Premium" }]}>{label}</span>
+  </span>
+  <span class="title">{item.title}</span>
+  {item.summary && <span class="summary">{item.summary}</span>}
+  <span class="cta">Coba →</span>
+</a>
+
+<style>
+  .tool-card {
+    --tone-bg: #e3f1e6;
+    --tone-fg: #1f7a3a;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    height: 100%;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .tool-card:hover,
+  .tool-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--tone-fg);
+    box-shadow: var(--shadow);
+  }
+  .tone-1 { --tone-bg: #fdf0d5; --tone-fg: #9a6400; }
+  .tone-2 { --tone-bg: #e2ecfb; --tone-fg: #2b5cb8; }
+  .tone-3 { --tone-bg: #fbe4e6; --tone-fg: #b23a4a; }
+  .tone-4 { --tone-bg: #dff3f1; --tone-fg: #167a6f; }
+  .tone-5 { --tone-bg: #ece6fb; --tone-fg: #5b3fb0; }
+  .top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--tone-bg);
+    color: var(--tone-fg);
+  }
+  .kind {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--tone-fg);
+  }
+  .label {
+    margin-left: auto;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .label.premium {
+    color: var(--muted);
+  }
+  .title {
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .summary {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cta {
+    margin-top: auto;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--tone-fg);
+  }
+</style>

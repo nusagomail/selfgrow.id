@@ -1,6 +1,8 @@
 import type { PublicToolDefinition, ToolRunResult } from "@selfgrow/shared";
+import { TOOL_KIND_LABEL, toolKind, toolTone } from "@selfgrow/shared";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { ToolGlyph } from "../components/tool-card";
 import { ApiError, api } from "../lib/api";
 import { ToolForm } from "./form";
 import { TrackerPanel } from "./tracker";
@@ -40,6 +42,12 @@ export function ToolPage() {
       <p>
         <Link to="/">← Beranda</Link>
       </p>
+      <div className={`tool-head tool-card tone-${toolTone(meta.tool.slug)}`}>
+        <span className="tool-icon">
+          <ToolGlyph kind={toolKind(meta.tool.title)} />
+        </span>
+        <span className="tool-kind">{TOOL_KIND_LABEL[toolKind(meta.tool.title)]}</span>
+      </div>
       <h1>{meta.tool.title}</h1>
       {meta.tool.summary && <p className="muted">{meta.tool.summary}</p>}
       {meta.tracker ? (

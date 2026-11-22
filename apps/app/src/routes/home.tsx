@@ -2,6 +2,7 @@ import type { SubscriptionStatus } from "@selfgrow/shared";
 import { activeTypeTab, availableTypeTabs } from "@selfgrow/shared";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { ToolCard } from "../components/tool-card";
 import { ApiError, api, goToStorefront } from "../lib/api";
 
 type ItemType = "ebook" | "tool" | "template" | "program";
@@ -59,6 +60,7 @@ function ItemCard({ item }: { item: Item }) {
           : item.locked
             ? { text: "Terkunci", cls: "locked" }
             : null;
+  if (item.type === "tool") return <ToolCard item={{ ...item, label }} />;
   const body = (
     <>
       <span className={`book-cover${item.coverUrl ? "" : " is-empty"}`}>
@@ -120,6 +122,7 @@ function ItemCard({ item }: { item: Item }) {
 }
 
 const SHELF_MAX = 12;
+const TOOL_MAX = 6;
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -283,19 +286,34 @@ export function HomePage() {
                 <h2>{s.name}</h2>
                 {s.hook && <p className="muted small">"{s.hook}"</p>}
               </div>
-              {active === "semua" && s.items.length > SHELF_MAX - 1 && (
-                <button
-                  type="button"
-                  className="linklike shelf-more"
-                  onClick={() => setActive(s.slug)}
-                >
-                  Lihat semua <span className="muted">{s.items.length}</span>
-                </button>
-              )}
+              {active === "semua" &&
+                s.items.length > (tab?.type === "tool" ? TOOL_MAX : SHELF_MAX - 1) && (
+                  <button
+                    type="button"
+                    className="linklike shelf-more"
+                    onClick={() => setActive(s.slug)}
+                  >
+                    Lihat semua <span className="muted">{s.items.length}</span>
+                  </button>
+                )}
             </div>
-            {/* Semua kategori: rak yang digulir ke samping. Satu kategori: grid sampul. */}
-            <div className={active === "semua" ? "book-shelf" : "book-grid"}>
-              {(active === "semua" ? s.items.slice(0, SHELF_MAX) : s.items).map((i) => (
+            {/* Semua kategori: rak yang digulir ke samping. Satu kategori: grid sampul. Tool
+                bukan buku (D49): selalu grid kartu lebar, enam per kategori di tampilan Semua. */}
+            <div
+              className={
+                tab?.type === "tool"
+                  ? active === "semua"
+                    ? "book-shelf tool-shelf"
+                    : "tool-grid"
+                  : active === "semua"
+                    ? "book-shelf"
+                    : "book-grid"
+              }
+            >
+              {(active === "semua"
+                ? s.items.slice(0, tab?.type === "tool" ? TOOL_MAX : SHELF_MAX)
+                : s.items
+              ).map((i) => (
                 <ItemCard key={`${i.type}-${i.slug}`} item={i} />
               ))}
             </div>

@@ -1238,6 +1238,146 @@ select {
   }
 }
 
+/* Kartu tool (D49): bukan sampul buku, tapi kartu alat yang lebar dengan ikon fungsi. */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+.book-shelf.tool-shelf {
+  grid-auto-columns: min(82vw, 300px);
+  gap: 14px;
+  background: none;
+}
+.tool-card {
+  --tone-bg: #e3f1e6;
+  --tone-fg: #1f7a3a;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+.tool-card:hover,
+.tool-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--tone-fg);
+  box-shadow: 0 10px 22px -14px rgb(7 62 31 / 45%);
+}
+.tool-card.tone-1 {
+  --tone-bg: #fdf0d5;
+  --tone-fg: #9a6400;
+}
+.tool-card.tone-2 {
+  --tone-bg: #e2ecfb;
+  --tone-fg: #2b5cb8;
+}
+.tool-card.tone-3 {
+  --tone-bg: #fbe4e6;
+  --tone-fg: #b23a4a;
+}
+.tool-card.tone-4 {
+  --tone-bg: #dff3f1;
+  --tone-fg: #167a6f;
+}
+.tool-card.tone-5 {
+  --tone-bg: #ece6fb;
+  --tone-fg: #5b3fb0;
+}
+@media (prefers-color-scheme: dark) {
+  .tool-card {
+    --tone-bg: #133222;
+    --tone-fg: #7fd598;
+  }
+  .tool-card.tone-1 {
+    --tone-bg: #3a2c0c;
+    --tone-fg: #f4c15d;
+  }
+  .tool-card.tone-2 {
+    --tone-bg: #14254a;
+    --tone-fg: #8db3f5;
+  }
+  .tool-card.tone-3 {
+    --tone-bg: #3c161c;
+    --tone-fg: #f29aa6;
+  }
+  .tool-card.tone-4 {
+    --tone-bg: #0f322e;
+    --tone-fg: #6fd3c5;
+  }
+  .tool-card.tone-5 {
+    --tone-bg: #241a45;
+    --tone-fg: #b7a3f5;
+  }
+}
+.tool-head.tool-card {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  margin-bottom: 6px;
+}
+.tool-head.tool-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+.tool-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tool-card-top .book-label {
+  margin-left: auto;
+}
+.tool-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 12px;
+  background: var(--tone-bg);
+  color: var(--tone-fg);
+}
+.tool-kind {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--tone-fg);
+}
+.tool-card-title {
+  font-weight: 800;
+  font-size: 1.02rem;
+  line-height: 1.3;
+}
+.tool-card-summary {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.tool-card-cta {
+  margin-top: auto;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--tone-fg);
+}
+
 /* Video pengantar ebook (D41). */
 .intro-video {
   display: grid;
