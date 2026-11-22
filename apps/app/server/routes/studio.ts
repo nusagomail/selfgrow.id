@@ -49,10 +49,10 @@ const toChapterSummary = (c: typeof schema.ebookChapters.$inferSelect): ChapterS
   wordCount: c.wordCount,
 });
 
-/** Studio: dilindungi Cloudflare Access + role admin (D17). Semua aksi tercatat di audit_log. */
 /** Body tema baca (D51). */
 const themeBodySchema = z.object({ theme: ebookThemeSchema.nullable() });
 
+/** Studio: dilindungi Cloudflare Access + role admin (D17). Semua aksi tercatat di audit_log. */
 export const studio = new Hono<AppEnv>()
   .use(requireAccess, requireAdmin)
   .use(async (c, next) => {

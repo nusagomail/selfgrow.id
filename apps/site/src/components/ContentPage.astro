@@ -1,6 +1,6 @@
 ---
 import type { EbookDoc } from "@selfgrow/shared";
-import { ebookThemeAttrs, TOOL_KIND_LABEL, toolKind } from "@selfgrow/shared";
+import { ebookThemeAttrs, ebookThemeSchema, TOOL_KIND_LABEL, toolKind } from "@selfgrow/shared";
 import Base from "../layouts/Base.astro";
 import {
   ACCESS_LABEL,
@@ -23,7 +23,9 @@ const url = new URL(contentPath(data), base).toString();
 const cover = siteCover(data.coverUrl);
 const intro = siteVideo(data.introVideo);
 // Tema baca per ebook (D51), juga untuk bab gratis di halaman publik.
-const bookTheme = ebookThemeAttrs(data.theme ?? null);
+// Divalidasi ulang di sini (pertahanan berlapis) sebelum dipakai di atribut style.
+const themeParsed = ebookThemeSchema.safeParse(data.theme);
+const bookTheme = ebookThemeAttrs(themeParsed.success ? themeParsed.data : null);
 const bookThemeStyle = Object.entries(bookTheme.vars)
   .map(([k, v]) => `${k}:${v}`)
   .join(";");
