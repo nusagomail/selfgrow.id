@@ -1684,4 +1684,129 @@ export const DEMO_TOOLS = [
       ],
     },
   },
+  {
+    slug: "tugas-jadi-pencapaian",
+    topic: "top_cv-lamaran",
+    title: "Pengubah Tugas Jadi Pencapaian",
+    summary: "Ubah baris CV yang berisi tugas menjadi kalimat pencapaian yang terukur.",
+    config: {
+      version: 1,
+      intro:
+        "Satu baris CV yang baik menjawab tiga hal: apa yang kamu lakukan, hasilnya berapa, dan bagaimana caranya.",
+      submitLabel: "Susun kalimat",
+      inputs: [
+        {
+          key: "kerja",
+          label: "Kata kerja",
+          type: "select",
+          required: true,
+          options: [
+            { value: "Meningkatkan", label: "Meningkatkan" },
+            { value: "Menurunkan", label: "Menurunkan" },
+            { value: "Mempercepat", label: "Mempercepat" },
+            { value: "Memimpin", label: "Memimpin" },
+            { value: "Membangun", label: "Membangun" },
+            { value: "Menyelesaikan", label: "Menyelesaikan" },
+          ],
+        },
+        {
+          key: "apa",
+          label: "Apa yang berubah",
+          type: "text",
+          required: true,
+          placeholder: "jumlah pengikut Instagram toko",
+        },
+        {
+          key: "angka",
+          label: "Hasilnya dalam angka",
+          type: "text",
+          required: true,
+          placeholder: "35% dalam 6 bulan",
+        },
+        {
+          key: "cara",
+          label: "Dengan cara apa",
+          type: "text",
+          required: true,
+          placeholder: "jadwal konten mingguan dan kolaborasi dengan 12 kreator lokal",
+        },
+      ],
+      computed: [
+        {
+          key: "baris",
+          label: "Baris CV-mu",
+          formula: 'concat(kerja, " ", apa, " ", angka, " melalui ", cara, ".")',
+          format: "text",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "1 == 1",
+          text: "Baca kalimatnya dengan suara keras. Kalau terdengar seperti bisa ditulis siapa saja, tambahkan angka atau konteks yang lebih spesifik.",
+          variant: "tip",
+        },
+      ],
+    },
+  },
+  {
+    slug: "cek-kata-kunci-cv",
+    topic: "top_cv-lamaran",
+    title: "Cek Kecocokan Kata Kunci",
+    summary: "Seberapa banyak kata kunci lowongan yang sudah muncul di CV-mu.",
+    config: {
+      version: 1,
+      intro:
+        "Tandai keterampilan dan istilah penting di lowongan, lalu hitung berapa yang juga ada di CV-mu.",
+      submitLabel: "Cek",
+      inputs: [
+        {
+          key: "lowongan",
+          label: "Jumlah kata kunci penting di lowongan",
+          type: "number",
+          required: true,
+          min: 1,
+          max: 50,
+          placeholder: "12",
+        },
+        {
+          key: "cv",
+          label: "Yang sudah ada di CV-mu",
+          type: "number",
+          required: true,
+          min: 0,
+          max: 50,
+          placeholder: "7",
+        },
+      ],
+      computed: [
+        {
+          key: "cocok",
+          label: "Tingkat kecocokan",
+          formula: "round(min(cv, lowongan) / lowongan * 100)",
+          format: "percent",
+          show: true,
+        },
+        {
+          key: "kurang",
+          label: "Kata kunci yang belum muncul",
+          formula: "max(0, lowongan - cv)",
+          format: "number",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "cocok < 60",
+          text: "Kecocokan {{cocok}}. Tambahkan {{kurang}} kata kunci yang memang sesuai pengalamanmu, di bagian ringkasan dan pengalaman kerja.",
+          variant: "warning",
+        },
+        {
+          when: "cocok >= 60",
+          text: "Kecocokan {{cocok}}. Pastikan kata kunci muncul di dalam kalimat pencapaian, bukan hanya di daftar keahlian.",
+          variant: "tip",
+        },
+      ],
+    },
+  },
 ];
