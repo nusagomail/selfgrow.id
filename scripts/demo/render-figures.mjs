@@ -10,6 +10,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { BURNOUT_FIGURE_CSS, BURNOUT_FIGURES } from "./books/burnout-figures.mjs";
 import { CV_FIGURE_CSS, CV_FIGURES } from "./books/cv-figures.mjs";
 import { DARURAT_FIGURE_CSS, DARURAT_FIGURES } from "./books/darurat-figures.mjs";
+import { GAJIAN_FIGURE_CSS, GAJIAN_FIGURES } from "./books/gajian-figures.mjs";
 import { GULA_FIGURE_CSS, GULA_FIGURES } from "./books/gula-figures.mjs";
 import { HARGA_FIGURE_CSS, HARGA_FIGURES } from "./books/harga-figures.mjs";
 import { LARI_FIGURE_CSS, LARI_FIGURES } from "./books/lari-figures.mjs";
@@ -21,6 +22,7 @@ import { SCROLL_FIGURE_CSS, SCROLL_FIGURES } from "./books/scroll-figures.mjs";
 import { STOIK_FIGURE_CSS, STOIK_FIGURES } from "./books/stoik-figures.mjs";
 import { TERIAK_FIGURE_CSS, TERIAK_FIGURES } from "./books/teriak-figures.mjs";
 import { TIDAK_FIGURE_CSS, TIDAK_FIGURES } from "./books/tidak-figures.mjs";
+import { TUNDA_FIGURE_CSS, TUNDA_FIGURES } from "./books/tunda-figures.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "../..");
@@ -47,6 +49,8 @@ const SETS = {
   "burnout-bukan-lemah": { figures: BURNOUT_FIGURES, css: BURNOUT_FIGURE_CSS },
   "dari-rebahan-ke-lari-5k": { figures: LARI_FIGURES, css: LARI_FIGURE_CSS },
   "cv-yang-dilirik-rekruter": { figures: CV_FIGURES, css: CV_FIGURE_CSS },
+  "berhenti-menunda-mulai-hari-ini": { figures: TUNDA_FIGURES, css: TUNDA_FIGURE_CSS },
+  "gajian-kok-cepat-habis": { figures: GAJIAN_FIGURES, css: GAJIAN_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,
