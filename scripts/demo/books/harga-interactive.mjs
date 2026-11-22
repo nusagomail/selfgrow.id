@@ -12,6 +12,8 @@ const done = (q) => ({
 
 export const CEK_HARGA = {
   id: "cek-harga",
+  mode: "score",
+  label: "Cek harga",
   title: "Cek kesehatan harga jualmu",
   intro: "Centang jujur. Skor tinggi = harga jualmu sudah dihitung, bukan ditebak.",
   questions: [
@@ -67,4 +69,67 @@ export const HARGA_BARS = {
     { label: "Gas, listrik, ongkir", value: 200, color: "#c9a27e" },
   ],
   note: "Contoh ilustrasi, satu batch 50 risol.",
+};
+
+/** Bab 4: hitung cepat markup dan margin (D50, uji pengetahuan). */
+export const HITUNG_MARGIN = {
+  id: "hitung-margin",
+  mode: "knowledge",
+  label: "Hitung cepat",
+  title: "Markup atau margin?",
+  intro: "Pegang kertas kalau perlu. Satu soal, satu jawaban.",
+  questions: [
+    {
+      q: "HPP Rp10.000, dijual Rp15.000. Markup-nya berapa?",
+      options: [
+        { label: "33%", points: 0 },
+        { label: "50%", points: 0, correct: true },
+        { label: "150%", points: 0 },
+      ],
+      explain: "Markup dibandingkan HPP: untung Rp5.000 ÷ HPP Rp10.000 = 50%.",
+    },
+    {
+      q: "Dengan angka yang sama, margin-nya berapa?",
+      options: [
+        { label: "33%", points: 0, correct: true },
+        { label: "50%", points: 0 },
+        { label: "66%", points: 0 },
+      ],
+      explain:
+        "Margin dibandingkan harga jual: Rp5.000 ÷ Rp15.000 ≈ 33%. Angka yang sama, persen berbeda.",
+    },
+    {
+      q: "HPP Rp3.000 dan kamu ingin margin 25%. Harga jual yang tepat?",
+      options: [
+        { label: "Rp3.750", points: 0 },
+        { label: "Rp4.000", points: 0, correct: true },
+        { label: "Rp4.500", points: 0 },
+      ],
+      explain:
+        "Rp3.000 ÷ (1 − 0,25) = Rp4.000. Rp3.750 adalah hasil menambah 25% dari HPP, dan marginnya hanya 20%.",
+    },
+    {
+      q: "Margin di bawah berapa yang disebut sangat rentan?",
+      options: [
+        { label: "Di bawah 20%", points: 0, correct: true },
+        { label: "Di bawah 40%", points: 0 },
+        { label: "Di bawah 60%", points: 0 },
+      ],
+      explain: "Di bawah 20%, satu batch gagal atau satu promo bisa menghapus untung sebulan.",
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 2,
+      title: "Masih tertukar",
+      text: "Tidak apa-apa, istilah ini memang sering tertukar. Pakai rumus di kotak kutipan: harga jual = HPP ÷ (1 − margin).",
+    },
+    {
+      min: 3,
+      max: 4,
+      title: "Kamu tidak akan salah hitung lagi",
+      text: "Sekarang masukkan angkamu sendiri ke kalkulator di bawah.",
+    },
+  ],
 };

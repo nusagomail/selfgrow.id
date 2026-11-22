@@ -5,16 +5,19 @@
 const mirip = (q) => ({
   q,
   options: [
-    { label: "Sama sekali tidak", points: 0 },
-    { label: "Sedikit", points: 1 },
-    { label: "Cukup mirip", points: 2 },
-    { label: "Mirip", points: 3 },
-    { label: "Sangat mirip", points: 4 },
+    { label: "0", points: 0 },
+    { label: "1", points: 1 },
+    { label: "2", points: 2 },
+    { label: "3", points: 3 },
+    { label: "4", points: 4 },
   ],
 });
 
 export const PUTARAN_PIKIRAN = {
   id: "putaran-pikiran",
+  mode: "scale",
+  label: "Seberapa mirip denganmu?",
+  ends: ["Tidak mirip", "Sangat mirip"],
   title: "Seberapa sering pikiranmu berputar?",
   intro: "Ini bukan tes diagnosis. Anggap seperti bercermin sebentar.",
   questions: [

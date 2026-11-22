@@ -621,6 +621,79 @@
   }
 }
 
+/* Bentuk kuis (D50). */
+.book-flow .quiz-knowledge {
+  --c: #167a6f;
+}
+.book-flow .quiz-scenario {
+  --c: #2b5cb8;
+}
+.book-flow .quiz-scale .quiz-opts {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.3em;
+}
+.book-flow .quiz-scale .quiz-opt {
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25em;
+  margin: 0;
+  padding: 0.5em 0.2em;
+  text-align: center;
+  font-size: 0.78em;
+}
+.book-flow .quiz-ends {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.3em 0 0;
+  font-size: 0.75em;
+  color: var(--book-muted);
+}
+.book-flow .quiz-fb,
+.book-flow .quiz-explain {
+  margin: 0.5em 0 0;
+  padding: 0.55em 0.8em;
+  border-left: 3px solid var(--c);
+  border-radius: 0 10px 10px 0;
+  background: color-mix(in srgb, var(--c) 9%, var(--book-bg));
+  font-size: 0.88em;
+  line-height: 1.45;
+  animation: quiz-pop 0.3s ease;
+}
+.book-flow .quiz-fb[hidden],
+.book-flow .quiz-explain[hidden] {
+  display: none;
+}
+.book-flow .quiz-explain::before {
+  content: "Kenapa: ";
+  font-weight: 800;
+  color: var(--c);
+}
+.book-flow .quiz-opt.is-correct {
+  border-color: #2f855a;
+  background: color-mix(in srgb, #2f855a 14%, transparent);
+}
+.book-flow .quiz-opt.is-wrong {
+  border-color: #c0392b;
+  background: color-mix(in srgb, #c0392b 10%, transparent);
+}
+.book-flow .quiz-opt.is-correct::after {
+  content: "✓";
+  margin-left: auto;
+  font-weight: 800;
+  color: #2f855a;
+}
+.book-flow .quiz-opt.is-wrong::after {
+  content: "✗";
+  margin-left: auto;
+  font-weight: 800;
+  color: #c0392b;
+}
+.book-flow .quiz-opt:has(input:disabled) {
+  cursor: default;
+}
+
 /* Tool di dalam bab. */
 .book-flow .tool-embed {
   --c: #1f5f9e;

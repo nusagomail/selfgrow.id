@@ -81,6 +81,18 @@ pakai hanya kalau topiknya memintanya. Banyak bab yang lebih kuat tanpa satu pun
 Tidak semua kategori butuh unsur interaktif yang sama. Keuangan cocok dengan tool dan grafik;
 mindset dan makna hidup mungkin cukup satu tes diri yang lembut, atau tidak sama sekali.
 
+**Empat bentuk kuis (D50).** Jangan memakai satu bentuk untuk semua buku:
+
+| Bentuk | Kapan dipakai | Contoh |
+|---|---|---|
+| Tes diri berpoin | Mengukur kondisi dengan ya/tidak atau pilihan berpoin | Cek jerat paylater |
+| Skala | Frekuensi atau "seberapa mirip denganmu", tampil mendatar | Putaran pikiran 0–4 |
+| Uji pengetahuan | Meluruskan mitos, berlatih hitungan, memilah | Markup atau margin? Yang mana gula? |
+| Skenario | Melatih reaksi di situasi nyata; tiap pilihan diberi tanggapan | HR menjawab, anak minta "satu level lagi" |
+
+Letakkan kuis di bab yang isinya ia uji, bukan selalu di Bab 1. Beri label kecil yang khas
+buku itu ("Pukul 22.40", "Detektif komposisi"), bukan selalu "Tes diri".
+
 Cara menulis kuis yang baik: pertanyaan tentang perilaku nyata ("Dalam sebulan terakhir, pernah…"),
 bukan perasaan yang kabur; 5–10 pertanyaan; tiga atau empat pita hasil yang menutup semua skor
 dari 0 sampai skor maksimal; setiap pita hasil diakhiri satu langkah yang bisa dilakukan hari ini.

@@ -12,6 +12,8 @@ const yn = (q) => ({
 
 export const TANDA_BOCOR = {
   id: "tanda-gaji-bocor",
+  mode: "score",
+  label: "Cek kebocoran",
   title: "Tanda-tanda gajimu bocor",
   intro: "Jawab untuk tiga bulan terakhir.",
   questions: [
@@ -57,4 +59,57 @@ export const CATATAN_FIKRI = {
     { label: "Lain-lain", value: 230000, color: "#7f9cb5" },
   ],
   note: "Ilustrasi. Total Rp2,5 juta dalam dua minggu: seluruh uang bebas sebulan, habis di paruh pertama.",
+};
+
+/** Bab 5: hitung cepat kebocoran kecil (D50, uji pengetahuan). */
+export const HITUNG_TETES = {
+  id: "hitung-tetes",
+  mode: "knowledge",
+  label: "Hitung cepat",
+  title: "Berapa satu tetes kalau dihitung setahun?",
+  intro: "Tebak dulu sebelum melihat penjelasannya. Kebanyakan orang menebak terlalu kecil.",
+  questions: [
+    {
+      q: "Kopi Rp30.000, setiap hari kerja (5 hari seminggu). Setahun kira-kira…",
+      options: [
+        { label: "Rp1,5 juta", points: 0 },
+        { label: "Rp3,6 juta", points: 0 },
+        { label: "Rp7,8 juta", points: 0, correct: true },
+      ],
+      explain: "Rp30.000 × 5 hari × 52 minggu = Rp7,8 juta. Lebih dari satu bulan gaji Fikri.",
+    },
+    {
+      q: "Langganan aplikasi Rp49.000 per bulan yang jarang dibuka. Setahun…",
+      options: [
+        { label: "Rp49 ribu", points: 0 },
+        { label: "Rp588 ribu", points: 0, correct: true },
+        { label: "Rp1,2 juta", points: 0 },
+      ],
+      explain: "Rp49.000 × 12 = Rp588.000. Kecil per bulan, karena itulah mudah terlupa.",
+    },
+    {
+      q: "Dalam eksperimen lelang Prelec & Simester, peserta yang membayar dengan kartu kredit…",
+      options: [
+        { label: "Menawar lebih rendah dari yang membayar tunai", points: 0 },
+        { label: "Menawar kurang lebih sama", points: 0 },
+        { label: "Menawar jauh lebih tinggi untuk barang yang sama", points: 0, correct: true },
+      ],
+      explain:
+        "Membayar tanpa melihat uangnya pergi terasa lebih ringan. Karena itu, hapus kartu yang tersimpan di aplikasi belanja.",
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 1,
+      title: "Tetesnya terasa lebih kecil dari kenyataannya",
+      text: "Itu sebabnya kebocoran kecil sulit dihentikan. Isi Pencari Kebocoran di bawah dengan angkamu sendiri.",
+    },
+    {
+      min: 2,
+      max: 3,
+      title: "Kamu bisa melihat embernya",
+      text: "Pilih satu kebocoran terbesar dan kurangi separuhnya bulan ini.",
+    },
+  ],
 };

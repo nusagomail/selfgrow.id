@@ -3,7 +3,7 @@
  * satu adegan sehari-hari di kota Indonesia (macet, grup kantor, harga naik), lalu satu gagasan
  * Stoik dan satu latihan. Kutipan Epiktetos, Seneca, dan Marcus Aurelius diterjemahkan bebas.
  */
-import { ENERGI_STOIK } from "./stoik-interactive.mjs";
+import { ENERGI_STOIK, PILAH_KENDALI } from "./stoik-interactive.mjs";
 
 export const STOIK_1 = [
   {
@@ -36,6 +36,7 @@ export const STOIK_1 = [
         "tip",
         'Untuk hal yang "bisa dipengaruhi", tetapkan target pada usahamu, bukan pada hasilnya. "Aku akan menyiapkan tiga slide yang jelas" ada dalam kendalimu. "Atasan harus puas" tidak.',
       ],
+      ["quiz", PILAH_KENDALI],
       [
         "exercise",
         [

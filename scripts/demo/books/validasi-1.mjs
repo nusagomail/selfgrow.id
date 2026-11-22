@@ -17,7 +17,7 @@
  * - Interaktif: kuis kesiapan uji, grafik "mau" sampai bayar, tool penilai uji pra-pesan, batas
  *   modal aman, dan kalkulator titik impas dari buku "Hitung Harga Jual yang Untung".
  */
-import { BUKTI_NADIA, SIAP_UJI } from "./validasi-interactive.mjs";
+import { BUKTI_NADIA, PUJIAN_ATAU_BUKTI, SIAP_UJI } from "./validasi-interactive.mjs";
 
 export const VALIDASI_1 = [
   {
@@ -59,6 +59,7 @@ export const VALIDASI_1 = [
           "Bicara dengan orang yang bukan keluarga atau teman dekat.",
         ],
       ],
+      ["quiz", PUJIAN_ATAU_BUKTI],
       [
         "exercise",
         [

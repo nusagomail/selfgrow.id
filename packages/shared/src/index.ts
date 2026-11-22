@@ -5,6 +5,7 @@ export * from "./ebook";
 export * from "./formula";
 export * from "./interactive-form";
 export * from "./program";
+export * from "./quiz";
 export * from "./schemas";
 export * from "./template";
 export * from "./tool";

@@ -37,7 +37,24 @@ function animateNumbers(fig: HTMLElement) {
   }
 }
 
+function revealAnswer(fs: HTMLFieldSetElement, chosen: HTMLInputElement | null, mode: string) {
+  for (const fb of fs.querySelectorAll<HTMLElement>(".quiz-fb")) {
+    fb.hidden = !chosen || fb.dataset.for !== chosen.value;
+  }
+  const explain = fs.querySelector<HTMLElement>(".quiz-explain");
+  if (explain) explain.hidden = !chosen;
+  if (mode !== "knowledge" || !chosen) return;
+  // Uji pengetahuan: kunci jawaban pertama, tandai benar/salah.
+  for (const input of fs.querySelectorAll<HTMLInputElement>("input[type=radio]")) {
+    const opt = input.closest(".quiz-opt");
+    opt?.classList.toggle("is-correct", input.dataset.correct === "1");
+    opt?.classList.toggle("is-wrong", input === chosen && input.dataset.correct !== "1");
+    input.disabled = true;
+  }
+}
+
 function setupQuiz(form: HTMLFormElement, opts: InteractiveOptions) {
+  const mode = form.dataset.mode ?? "score";
   const fieldsets = [...form.querySelectorAll("fieldset")];
   const resultEl = form.querySelector<HTMLElement>(".quiz-result");
   const hint = form.querySelector<HTMLElement>(".quiz-hint");
@@ -60,18 +77,24 @@ function setupQuiz(form: HTMLFormElement, opts: InteractiveOptions) {
     const chosen = fieldsets.map((fs) =>
       fs.querySelector<HTMLInputElement>("input[type=radio]:checked"),
     );
-    for (const [i, fs] of fieldsets.entries()) fs.classList.toggle("answered", Boolean(chosen[i]));
+    for (const [i, fs] of fieldsets.entries()) {
+      fs.classList.toggle("answered", Boolean(chosen[i]));
+      revealAnswer(fs, chosen[i] ?? null, mode);
+    }
     if (!resultEl || chosen.some((c) => !c)) return;
     const points = chosen.map((c) => Number(c?.dataset.points ?? "0"));
     const { score, max, band } = scoreQuiz(points, maxPerQ, results);
 
     resultEl.replaceChildren();
-    const head = document.createElement("p");
-    head.className = "quiz-score";
-    const strong = document.createElement("strong");
-    strong.textContent = String(score);
-    head.append("Skormu ", strong, ` dari ${max}`);
-    resultEl.append(head);
+    // Skenario tidak menampilkan angka: yang penting tanggapannya, bukan skornya.
+    if (mode !== "scenario") {
+      const head = document.createElement("p");
+      head.className = "quiz-score";
+      const strong = document.createElement("strong");
+      strong.textContent = String(score);
+      head.append(mode === "knowledge" ? "Benar " : "Skormu ", strong, ` dari ${max}`);
+      resultEl.append(head);
+    }
     const src = band >= 0 ? bands[band] : undefined;
     if (src) {
       const copy = src.cloneNode(true) as HTMLElement;
@@ -82,7 +105,7 @@ function setupQuiz(form: HTMLFormElement, opts: InteractiveOptions) {
     }
     // Skor sebelumnya (diisi reader dari riwayat pengguna).
     const last = form.dataset.lastScore;
-    if (last !== undefined && last !== "") {
+    if (mode !== "scenario" && last !== undefined && last !== "") {
       const prev = document.createElement("p");
       prev.className = "quiz-prev";
       const diff = score - Number(last);

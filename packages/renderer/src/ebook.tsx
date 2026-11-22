@@ -5,6 +5,10 @@ import {
   type EbookMark,
   type EbookNode,
   type QuizAttrs,
+  quizHint,
+  quizLabel,
+  quizMode,
+  quizOptionPoints,
   type ToolEmbedAttrs,
 } from "@selfgrow/shared";
 import type React from "react";
@@ -209,13 +213,20 @@ function renderNode(node: EbookNode, opts: RenderOptions, key: string): ReactNod
 }
 
 /**
- * Kuis / tes diri (D42). Markup statis yang dihidupkan oleh `enhanceInteractive`: pilihan
- * berupa radio asli, skor dihitung dari `data-points`, pita hasil disalin dari daftar tersembunyi.
+ * Kuis (D42, bentuk D50). Markup statis yang dihidupkan oleh `enhanceInteractive`: pilihan
+ * berupa radio asli, poin di `data-points`, tanggapan dan penjelasan tersembunyi sampai dijawab,
+ * pita hasil disalin dari daftar tersembunyi.
  */
 function Quiz({ attrs, t }: { attrs: QuizAttrs; t: (x: string) => string }) {
+  const mode = quizMode(attrs);
   return (
-    <form className="quiz" data-quiz-id={attrs.id} aria-label={attrs.title}>
-      <span className="callout-label">Tes diri</span>
+    <form
+      className={`quiz quiz-${mode}`}
+      data-quiz-id={attrs.id}
+      data-mode={mode}
+      aria-label={attrs.title}
+    >
+      <span className="callout-label">{t(quizLabel(attrs))}</span>
       <p className="quiz-title">{t(attrs.title)}</p>
       {attrs.intro ? <p className="quiz-intro">{t(attrs.intro)}</p> : null}
       <ol className="quiz-qs">
@@ -224,13 +235,40 @@ function Quiz({ attrs, t }: { attrs: QuizAttrs; t: (x: string) => string }) {
           <li key={qi}>
             <fieldset>
               <legend>{t(q.q)}</legend>
-              {q.options.map((o, oi) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: urutan pilihan tetap
-                <label key={oi} className="quiz-opt">
-                  <input type="radio" name={`q${qi}`} value={oi} data-points={o.points} />
-                  <span>{t(o.label)}</span>
-                </label>
-              ))}
+              <div className="quiz-opts">
+                {q.options.map((o, oi) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: urutan pilihan tetap
+                  <label key={oi} className="quiz-opt">
+                    <input
+                      type="radio"
+                      name={`q${qi}`}
+                      value={oi}
+                      data-points={quizOptionPoints(attrs, o)}
+                      data-correct={o.correct ? "1" : undefined}
+                    />
+                    <span>{t(o.label)}</span>
+                  </label>
+                ))}
+              </div>
+              {mode === "scale" && attrs.ends ? (
+                <p className="quiz-ends" aria-hidden="true">
+                  <span>{t(attrs.ends[0])}</span>
+                  <span>{t(attrs.ends[1])}</span>
+                </p>
+              ) : null}
+              {q.options.map((o, oi) =>
+                o.feedback ? (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: urutan pilihan tetap
+                  <p key={oi} className="quiz-fb" data-for={oi} hidden>
+                    {t(o.feedback)}
+                  </p>
+                ) : null,
+              )}
+              {q.explain ? (
+                <p className="quiz-explain" hidden>
+                  {t(q.explain)}
+                </p>
+              ) : null}
             </fieldset>
           </li>
         ))}
@@ -245,7 +283,7 @@ function Quiz({ attrs, t }: { attrs: QuizAttrs; t: (x: string) => string }) {
         ))}
       </ul>
       <div className="quiz-result" aria-live="polite" hidden />
-      <p className="quiz-hint">Jawab semua pertanyaan untuk melihat skormu.</p>
+      <p className="quiz-hint">{quizHint(attrs)}</p>
     </form>
   );
 }

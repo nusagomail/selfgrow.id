@@ -5,7 +5,14 @@
  */
 import { barWidths, formatChartValue } from "@selfgrow/renderer/interactive-format";
 import { tableLayout } from "@selfgrow/renderer/table";
-import { CALLOUT_LABELS, type EbookNode } from "@selfgrow/shared";
+import {
+  CALLOUT_LABELS,
+  type EbookNode,
+  quizHint,
+  quizLabel,
+  quizMode,
+  quizOptionPoints,
+} from "@selfgrow/shared";
 import { appUrl } from "../../lib/api";
 import Marked from "./Marked.astro";
 
@@ -89,16 +96,21 @@ const imgSrc = (src: string) =>
       <td colspan={n.attrs?.colspan} rowspan={n.attrs?.rowspan}><Self nodes={n.content} /></td>
     ) : n.type === "quiz" ? (
       // Kuis (D42): markup sama dengan renderer app, dihidupkan enhanceInteractive.
-      <form class="quiz" data-quiz-id={n.attrs.id} aria-label={n.attrs.title}>
-        <span class="callout-label">Tes diri</span>
+      <form class={`quiz quiz-${quizMode(n.attrs)}`} data-quiz-id={n.attrs.id} data-mode={quizMode(n.attrs)} aria-label={n.attrs.title}>
+        <span class="callout-label">{quizLabel(n.attrs)}</span>
         <p class="quiz-title">{n.attrs.title}</p>
         {n.attrs.intro && <p class="quiz-intro">{n.attrs.intro}</p>}
         <ol class="quiz-qs">
           {n.attrs.questions.map((q, qi) => (
             <li><fieldset><legend>{q.q}</legend>
-              {q.options.map((o, oi) => (
-                <label class="quiz-opt"><input type="radio" name={`q${qi}`} value={oi} data-points={o.points} /><span>{o.label}</span></label>
-              ))}
+              <div class="quiz-opts">
+                {q.options.map((o, oi) => (
+                  <label class="quiz-opt"><input type="radio" name={`q${qi}`} value={oi} data-points={quizOptionPoints(n.attrs, o)} data-correct={o.correct ? "1" : undefined} /><span>{o.label}</span></label>
+                ))}
+              </div>
+              {quizMode(n.attrs) === "scale" && n.attrs.ends && (<p class="quiz-ends" aria-hidden="true"><span>{n.attrs.ends[0]}</span><span>{n.attrs.ends[1]}</span></p>)}
+              {q.options.map((o, oi) => o.feedback && <p class="quiz-fb" data-for={oi} hidden>{o.feedback}</p>)}
+              {q.explain && <p class="quiz-explain" hidden>{q.explain}</p>}
             </fieldset></li>
           ))}
         </ol>
@@ -106,7 +118,7 @@ const imgSrc = (src: string) =>
           {n.attrs.results.map((r) => (<li data-min={r.min} data-max={r.max}><b>{r.title}</b>{r.text && <span>{r.text}</span>}</li>))}
         </ul>
         <div class="quiz-result" aria-live="polite" hidden></div>
-        <p class="quiz-hint">Jawab semua pertanyaan untuk melihat skormu.</p>
+        <p class="quiz-hint">{quizHint(n.attrs)}</p>
       </form>
     ) : n.type === "toolEmbed" ? (
       <aside class="tool-embed tool-embed-static">

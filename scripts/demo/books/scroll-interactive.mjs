@@ -9,6 +9,8 @@ const yesNo = (q) => ({
 
 export const SKOR_LAYAR = {
   id: "skor-layar",
+  mode: "score",
+  label: "Cek layar",
   title: "Seberapa dalam layar menyedotmu?",
   intro: "Pikirkan seminggu terakhir. Jawab apa adanya, bukan yang seharusnya.",
   questions: [
@@ -79,4 +81,72 @@ export const DIMAS_SETELAH = {
     { label: "Minggu 4", value: 164, color: "#1d7a34" },
   ],
   note: "Tidak nol, dan memang tidak perlu nol. Yang berubah: Dimas yang memilih.",
+};
+
+/** Bab 2: cek pemahaman tentang mesin di balik gulir tanpa ujung (D50, uji pengetahuan). */
+export const MESIN_SCROLL = {
+  id: "mesin-scroll",
+  mode: "knowledge",
+  label: "Cek pemahaman",
+  title: "Sudah kenal mesinnya?",
+  intro: "Empat pertanyaan singkat dari bab ini. Jawaban terkunci setelah dipilih.",
+  questions: [
+    {
+      q: 'Kenapa tombol "halaman berikutnya" dulu membantu kita berhenti?',
+      options: [
+        {
+          label: "Karena ada momen untuk memutuskan: lanjut atau sudah cukup",
+          points: 0,
+          correct: true,
+        },
+        { label: "Karena halamannya lebih lambat dimuat", points: 0 },
+        { label: "Karena isinya lebih membosankan", points: 0 },
+      ],
+      explain:
+        "Tombol itu memaksa satu keputusan kecil. Gulir tanpa ujung menghapus momen berhenti itu.",
+    },
+    {
+      q: "Menarik layar ke bawah untuk memuat ulang beranda paling mirip dengan…",
+      options: [
+        { label: "Membalik halaman buku", points: 0 },
+        { label: "Menarik tuas mesin judi", points: 0, correct: true },
+        { label: "Menonton acara TV yang terjadwal", points: 0 },
+      ],
+      explain:
+        "Isinya tidak bisa ditebak, kadang menarik, kadang tidak. Hadiah acak seperti ini justru membuat kita terus mencoba.",
+    },
+    {
+      q: "Menurut pengamatan Gloria Mark (2016–2020), rata-rata orang bertahan di satu layar sebelum berpindah sekitar…",
+      options: [
+        { label: "10 menit", points: 0 },
+        { label: "2,5 menit", points: 0 },
+        { label: "47 detik", points: 0, correct: true },
+      ],
+      explain:
+        "Pada 2003 sekitar dua setengah menit. Belakangan tinggal sekitar 47 detik, dan separuh perpindahan dimulai sendiri tanpa ada yang mengganggu.",
+    },
+    {
+      q: "Dua titik lemah lingkaran scroll yang akan kita serang mulai Bab 5 adalah…",
+      options: [
+        { label: "Isi video dan jumlah teman", points: 0 },
+        { label: "Pemicu dan tidak adanya ujung", points: 0, correct: true },
+        { label: "Ukuran layar dan baterai", points: 0 },
+      ],
+      explain: "Ubah pemicunya dan pasang ujung buatanmu sendiri, lingkarannya melemah.",
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 2,
+      title: "Baca ulang bagian hadiah acak",
+      text: "Mesin ini lebih mudah dilawan kalau kamu tahu cara kerjanya. Lihat lagi gambar lingkaran scroll sebelum lanjut.",
+    },
+    {
+      min: 3,
+      max: 4,
+      title: "Kamu sudah kenal mesinnya",
+      text: "Sekarang tinggal mengubah pemicu dan memasang ujung. Itu pekerjaan Bab 5 dan 6.",
+    },
+  ],
 };

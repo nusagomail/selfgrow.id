@@ -14,6 +14,8 @@ const freq = (q) => ({
 
 export const CEK_TERTINGGAL = {
   id: "cek-tertinggal",
+  mode: "scale",
+  label: "Cek perasaan",
   title: "Seberapa sering kamu merasa tertinggal?",
   intro: "Pikirkan sebulan terakhir.",
   questions: [
@@ -63,4 +65,57 @@ export const PUNCAK_KEMAMPUAN = {
     { label: "Kosakata dan pengetahuan", value: 67, color: "#5c7a5a" },
   ],
   note: "Usia dalam tahun, dibulatkan dari Hartshorne & Germine (2015). Tidak ada satu usia ketika semua kemampuan memuncak.",
+};
+
+/** Bab 3: menguji "jadwal" di kepala (D50, uji pengetahuan). */
+export const JADWAL_SIAPA = {
+  id: "jadwal-siapa",
+  mode: "knowledge",
+  label: "Tebak dulu",
+  title: "Seberapa akurat jadwal di kepalamu?",
+  questions: [
+    {
+      q: "Rata-rata usia pendiri perusahaan yang tumbuh paling cepat (data 2,7 juta pendiri di AS)?",
+      options: [
+        { label: "25 tahun", points: 0 },
+        { label: "32 tahun", points: 0 },
+        { label: "45 tahun", points: 0, correct: true },
+      ],
+      explain:
+        "Azoulay dkk. (2020). Bahkan di bidang teknologi, rata-ratanya akhir 30-an sampai sekitar 40.",
+    },
+    {
+      q: "Kemampuan kosakata dan pengetahuan umum memuncak sekitar usia…",
+      options: [
+        { label: "Awal 20-an", points: 0 },
+        { label: "Akhir 30-an", points: 0 },
+        { label: "Akhir 60-an", points: 0, correct: true },
+      ],
+      explain: "Hartshorne & Germine (2015): tidak ada satu usia ketika semua kemampuan memuncak.",
+    },
+    {
+      q: "Dalam penelitian Vogel dkk. (2014), harga diri yang lebih rendah pada pengguna Facebook paling sering dijelaskan oleh…",
+      options: [
+        { label: "Lamanya waktu di depan layar", points: 0 },
+        { label: "Lebih sering melihat orang yang tampak lebih baik", points: 0, correct: true },
+        { label: "Jumlah teman yang sedikit", points: 0 },
+      ],
+      explain:
+        "Perbandingan ke atas. Yang menyakitkan bukan layarnya, tapi penggaris yang kita pakai di depannya.",
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 1,
+      title: "Jadwalmu terlalu sempit",
+      text: "Kebanyakan orang menebak jauh lebih muda. Jadwal di kepala jarang cocok dengan data.",
+    },
+    {
+      min: 2,
+      max: 3,
+      title: "Jadwal yang lebih lapang",
+      text: "Kamu tahu usia 25 belum garis tengah. Sekarang ganti penggarisnya (Bab 4).",
+    },
+  ],
 };

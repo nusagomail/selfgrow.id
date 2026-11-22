@@ -3,7 +3,7 @@
  * Rp5,2 juta, pengeluaran wajib Rp3,5 juta), diikuti lewat buku tabungannya. Angka adalah
  * ilustrasi. Edukasi keuangan umum, bukan rekomendasi produk tertentu.
  */
-import { LITERASI_COUNTER, SIAP_DARURAT } from "./darurat-interactive.mjs";
+import { LITERASI_COUNTER, SIAP_DARURAT, TEMPAT_BANTALAN } from "./darurat-interactive.mjs";
 
 export const DARURAT_1 = [
   {
@@ -85,6 +85,7 @@ export const DARURAT_1 = [
         "warn",
         "Saham, kripto, atau emas untuk diperdagangkan tidak cocok untuk dana darurat. Nilainya bisa sedang turun tepat di saat kamu harus mencairkannya. Simpan investasi untuk tujuan jangka panjang, setelah bantalanmu cukup.",
       ],
+      ["quiz", TEMPAT_BANTALAN],
     ],
   },
   {

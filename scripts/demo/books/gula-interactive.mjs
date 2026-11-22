@@ -7,6 +7,8 @@ const pick = (q, options) => ({ q, options });
 
 export const JEJAK_GULA = {
   id: "jejak-gula-kemarin",
+  mode: "score",
+  label: "Ingat-ingat kemarin",
   title: "Jejak gula kemarin",
   intro:
     "Ingat-ingat hari kemarin saja, bukan hari terbaikmu. Skor tinggi = banyak gula yang bersembunyi.",
@@ -91,4 +93,75 @@ export const HARI_GULA_BARS = {
     { label: "Kue sore", value: 8, color: "#5fb3a5" },
   ],
   note: "Gram gula, ilustrasi. Batas harian Kemenkes 50 g; anjuran ketat WHO sekitar 25 g.",
+};
+
+const isGula = (yes) => [
+  { label: "Gula", points: 0, correct: yes },
+  { label: "Bukan gula", points: 0, correct: !yes },
+];
+
+/** Bab 3: kenali gula dari namanya di komposisi (D50, uji pengetahuan). */
+export const NAMA_GULA = {
+  id: "nama-gula",
+  mode: "knowledge",
+  label: "Detektif komposisi",
+  title: "Yang mana gula?",
+  intro: "Nama-nama ini diambil dari daftar komposisi kemasan sungguhan.",
+  questions: [
+    {
+      q: "Dekstrosa",
+      options: isGula(true),
+      explain:
+        "Dekstrosa adalah nama lain glukosa. Biasanya ditulis di tengah daftar supaya tidak terlihat dominan.",
+    },
+    {
+      q: "Lesitin kedelai",
+      options: isGula(false),
+      explain: "Lesitin adalah pengemulsi, supaya minyak dan air menyatu. Bukan pemanis.",
+    },
+    {
+      q: "Sari buah pekat",
+      options: isGula(true),
+      explain:
+        'Sari buah yang dipekatkan pada dasarnya gula dari buah. Produk "tanpa gula tambahan" bisa tetap manis karena bahan ini.',
+    },
+    {
+      q: "Madu",
+      options: isGula(true),
+      explain:
+        "Madu dan gula aren tetap gula bagi tubuh. Mineralnya sedikit lebih banyak, tapi tidak mengubah hitungan gramnya.",
+    },
+    {
+      q: "Garam",
+      options: isGula(false),
+      explain:
+        "Garam bukan gula, walaupun produk manis juga sering memakainya untuk menguatkan rasa.",
+    },
+    {
+      q: "Maltosa",
+      options: isGula(true),
+      explain:
+        'Akhiran "-osa" hampir selalu menandakan gula: sukrosa, glukosa, fruktosa, maltosa, laktosa.',
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 3,
+      title: "Gula masih bisa bersembunyi",
+      text: "Simpan gambar nama-nama gula di atas, dan cocokkan saat membaca kemasan berikutnya.",
+    },
+    {
+      min: 4,
+      max: 5,
+      title: "Hampir tidak bisa dikelabui",
+      text: 'Ingat satu petunjuk: akhiran "-osa" dan kata "sirup" hampir selalu berarti gula.',
+    },
+    {
+      min: 6,
+      max: 6,
+      title: "Detektif komposisi",
+      text: "Kamu sudah bisa membaca bagian belakang kemasan. Coba pada camilan yang kamu anggap paling sehat.",
+    },
+  ],
 };

@@ -4,7 +4,7 @@
  *
  * ["img", nama, keterangan] merujuk infografis di scripts/demo/figures/{slug}/{nama}.png.
  */
-import { CICILAN_COUNTER, SKOR_JERAT } from "./paylater-interactive.mjs";
+import { CICILAN_COUNTER, DI_KASIR, SKOR_JERAT } from "./paylater-interactive.mjs";
 
 export const PAYLATER_1 = [
   {
@@ -262,6 +262,7 @@ export const PAYLATER_1 = [
         ],
       ],
       'Begitu kamu bisa melihat trik ini, kekuatannya berkurang. Lain kali muncul notifikasi "limit kamu naik!", kamu akan membacanya dengan cara berbeda: "mereka ingin aku berutang lebih banyak".',
+      ["quiz", DI_KASIR],
       ["h", "Latihan: catat pemicumu selama tujuh hari"],
       'Selama seminggu ke depan, setiap kali kamu ingin membuka aplikasi belanja atau tergoda menekan "bayar nanti", catat tiga hal: jam berapa, apa yang sedang kamu rasakan, dan apa yang ingin kamu beli. Kamu tidak harus menahan diri dulu. Cukup catat.',
       [

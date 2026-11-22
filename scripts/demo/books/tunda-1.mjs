@@ -14,7 +14,7 @@
  *   digeser, bukan sifat tetap".
  * - Interaktif: kuis tanda menghindar, tool empat tuas (diagnosis), tool langkah dua menit (aksi).
  */
-import { HARI_DINDA, TANDA_MENGHINDAR } from "./tunda-interactive.mjs";
+import { HARI_DINDA, PAGI_SETELAHNYA, TANDA_MENGHINDAR } from "./tunda-interactive.mjs";
 
 export const TUNDA_1 = [
   {
@@ -150,6 +150,7 @@ export const TUNDA_1 = [
       "**Minggu ketiga, Rabu.** Dinda menunda seharian. Tidak ada satu kalimat pun yang ditulis. Dulu, hari seperti ini akan menjadi awal dari minggu-minggu tanpa skripsi.",
       '**Pukul 21.00.** Kali ini dia menulis di catatannya: "Hari ini aku menghindar karena takut dicoret dosen besok. Wajar. Besok jam 07.30, dua menit saja."',
       ["img", "memaafkan-diri", "Dua jalan setelah menunda."],
+      ["quiz", PAGI_SETELAHNYA],
       [
         "fact",
         "Mahasiswa yang memaafkan dirinya karena menunda belajar untuk ujian pertama, cenderung lebih sedikit menunda saat belajar untuk ujian berikutnya. Memaafkan diri membantu mengurangi perasaan negatif yang memicu penundaan.",

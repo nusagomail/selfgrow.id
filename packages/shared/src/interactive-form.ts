@@ -26,7 +26,7 @@ export const INTERACTIVE_SCHEMAS: Record<InteractiveKind, z.ZodType> = {
 };
 
 export const INTERACTIVE_KEYS: Record<InteractiveKind, string[]> = {
-  quiz: ["id", "title", "intro", "questions", "results"],
+  quiz: ["id", "mode", "label", "title", "intro", "ends", "questions", "results"],
   toolEmbed: ["slug", "title", "intro"],
   animChart: ["title", "kind", "format", "items", "note"],
 };
@@ -34,6 +34,7 @@ export const INTERACTIVE_KEYS: Record<InteractiveKind, string[]> = {
 export const DEFAULT_INTERACTIVE_ATTRS: InteractiveAttrsOf = {
   quiz: {
     id: "",
+    mode: "score",
     title: "",
     intro: "",
     questions: [
@@ -81,7 +82,12 @@ export function finalizeInteractive<K extends InteractiveKind>(
 ): { ok: true; attrs: InteractiveAttrsOf[K] } | { ok: false; errors: string[] } {
   const value: Record<string, unknown> = { ...draft };
   // Isian opsional yang kosong disimpan sebagai null (judul kuis/grafik tetap wajib).
-  const optional = kind === "toolEmbed" ? ["title", "intro"] : ["intro", "note"];
+  const optional =
+    kind === "toolEmbed"
+      ? ["title", "intro"]
+      : kind === "quiz"
+        ? ["intro", "label"]
+        : ["intro", "note"];
   for (const k of optional) {
     if (typeof value[k] === "string" && (value[k] as string).trim() === "") value[k] = null;
   }

@@ -12,6 +12,8 @@ const yes = (q) => ({
 
 export const KENDALI_MINGGU = {
   id: "kendali-minggu",
+  mode: "score",
+  label: "Cek kemudi",
   title: "Minggumu dikendalikan siapa?",
   intro: "Jawab untuk minggu lalu. Skor tinggi berarti minggumu lebih banyak diatur orang lain.",
   questions: [
@@ -55,4 +57,52 @@ export const MINGGU_BARS = {
     { label: "Pekerjaan penting (proyek utama)", value: 7, color: "#2f3e5c" },
   ],
   note: "Jam per minggu, ilustrasi dari catatan waktu Tari selama satu minggu.",
+};
+
+/** Bab 5: rencana jika-maka saat rapat mendadak (D50, skenario). */
+export const RAPAT_MENDADAK = {
+  id: "rapat-mendadak",
+  mode: "scenario",
+  label: "Rabu, 09.05",
+  title: "Klien terbesar minta rapat mendadak, tepat di jam batu besarmu.",
+  questions: [
+    {
+      q: "Apa yang kamu lakukan?",
+      options: [
+        {
+          label: "Terima saja. Batu besarnya dikerjakan nanti kalau sempat.",
+          points: 0,
+          feedback:
+            '"Nanti kalau sempat" jarang datang. Batu besar paling sering kalah oleh hal mendesak yang datang tiba-tiba.',
+        },
+        {
+          label:
+            "Jalankan rencana jika–maka: tawarkan slot lain, atau pindahkan batu besar ke slot cadangan Kamis pagi.",
+          points: 2,
+          feedback:
+            "Keputusannya sudah diambil di hari yang tenang. Kamu tinggal menjalankannya, tanpa menimbang ulang di tengah kesibukan.",
+        },
+        {
+          label: "Tolak rapatnya. Rencana adalah rencana.",
+          points: 1,
+          feedback:
+            "Melindungi waktu itu bagus, tapi klien terbesar mungkin memang penting. Rencana yang baik punya jalan keluar, bukan hanya pagar.",
+        },
+      ],
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 1,
+      title: "Minggu yang dikendalikan kotak masuk",
+      text: "Tulis satu rencana jika–maka untuk gangguan yang paling sering datang.",
+    },
+    {
+      min: 2,
+      max: 2,
+      title: "Rencana yang lentur",
+      text: "Batu besar tetap aman karena sudah ada slot cadangan.",
+    },
+  ],
 };
