@@ -31,7 +31,7 @@ export const CEK_GEMETAR = {
       min: 0,
       max: 4,
       title: "Gugup yang wajar",
-      text: "Gugupmu masih terkendali. Bab 4 dan 5 (kerangka dan latihan) akan membuatmu lebih tajam.",
+      text: "Gugupmu masih terkendali. Bab 4 dan 6 (kerangka dan latihan) akan membuatmu lebih tajam.",
     },
     {
       min: 5,
@@ -43,7 +43,7 @@ export const CEK_GEMETAR = {
       min: 9,
       max: 12,
       title: "Gugup yang membuatmu menghindar",
-      text: "Kamu mungkin sudah mulai menghindari kesempatan bicara. Baca berurutan dari Bab 1, dan mulai latihan dari anak tangga paling bawah di Bab 5.",
+      text: "Kamu mungkin sudah mulai menghindari kesempatan bicara. Baca berurutan dari Bab 1, dan mulai latihan dari anak tangga paling bawah di Bab 6.",
     },
   ],
 };

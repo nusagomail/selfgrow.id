@@ -36,13 +36,13 @@ export const PEMICU_TERIAK = {
       min: 5,
       max: 8,
       title: "Ada jam-jam rawan",
-      text: "Pemicunya bisa ditebak. Lingkari dua yang paling sering, lalu pakai Bab 2 dan Bab 5 untuk mencegahnya.",
+      text: "Pemicunya bisa ditebak. Lingkari dua yang paling sering, lalu pakai Bab 2 dan Bab 6 untuk mencegahnya.",
     },
     {
       min: 9,
       max: 12,
       title: "Termometer sering di zona merah",
-      text: "Ini tanda kamu sedang menanggung banyak hal, bukan tanda kamu orang tua yang buruk. Mulai dari merawat dirimu (Bab 2) dan latihan jeda (Bab 3).",
+      text: "Ini tanda kamu sedang menanggung banyak hal, bukan tanda kamu orang tua yang buruk. Mulai dari merawat dirimu (Bab 8) dan latihan jeda (Bab 3).",
     },
   ],
 };

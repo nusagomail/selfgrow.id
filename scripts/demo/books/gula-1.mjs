@@ -1,5 +1,5 @@
 /**
- * "Kurangi Gula Tanpa Menderita", 6 bab. Bentuk: tanpa tokoh tetap; pembaca diajak menjadi
+ * "Kurangi Gula Tanpa Menderita", 8 bab. Bentuk: tanpa tokoh tetap; pembaca diajak menjadi
  * "pemeriksa" yang membuka berkas: label, daftar komposisi, satu hari penuh, dan lidahnya sendiri.
  * Hari contoh (68 g → 26 g) dipakai juga di infografis dan video. Edukasi umum, bukan nasihat
  * medis; penyandang diabetes mengikuti arahan tenaga kesehatan.
@@ -176,6 +176,69 @@ export const GULA_1 = [
       [
         "info",
         "Pemanis buatan dan pemanis tanpa kalori boleh dipakai sebagai jembatan, tapi tidak melatih lidah untuk menyukai rasa yang kurang manis. Untuk jangka panjang, tujuan kita adalah lidah yang tidak menuntut manis, bukan sekadar mengganti sumber manisnya.",
+      ],
+    ],
+  },
+  {
+    title: "Berkas 4: Minuman Kekinian",
+    blocks: [
+      "Kopi susu gula aren, teh susu dengan mutiara, minuman cokelat dengan krim. Minuman seperti ini sering menjadi sumber gula terbesar dalam sehari, dan yang paling jarang terasa, karena kita tidak menganggapnya makanan.",
+      "Kabar baiknya, minuman yang diracik di gerai bisa dipesan sesuai keinginan. Kamu tidak harus berhenti; kamu bisa memesan dengan cara berbeda.",
+      ["h", "Cara memesan"],
+      [
+        "ol",
+        [
+          "**Minta tingkat gula lebih rendah.** Banyak gerai menyediakan pilihan kurang manis, setengah, atau tanpa gula.",
+          "**Pilih ukuran kecil.** Ukuran besar sering berisi hampir dua kali gula ukuran kecil.",
+          "**Kurangi tambahan:** sirup rasa, mutiara gula, krim, dan saus karamel menambah gula di luar pemanis utama.",
+          "**Turunkan bertahap:** dari normal ke kurang manis selama dua minggu, lalu ke setengah. Lidah menyesuaikan, seperti di Bab 8.",
+        ],
+      ],
+      [
+        "tip",
+        "Kalau minuman kemasan, cari tabel gizinya dan kalikan dengan jumlah sajian per kemasan. Satu botol sering berisi lebih dari satu sajian.",
+      ],
+      [
+        "exercise",
+        [
+          "Catat semua minuman manis yang kamu minum selama tiga hari.",
+          "Pilih satu yang paling sering dan ubah cara memesannya minggu ini.",
+          "Setelah dua minggu, coba versi aslinya lagi. Banyak orang terkejut karena terasa terlalu manis.",
+        ],
+        "Latihan: satu minuman, satu perubahan",
+      ],
+    ],
+  },
+  {
+    title: "Berkas 5: Gula di Piring Anak",
+    blocks: [
+      "Pemeriksaan label sering berhenti di diri sendiri. Padahal anak-anak justru paling banyak terpapar gula tersembunyi: susu kotak rasa, sereal berwarna, biskuit, jeli, dan teh manis di kantin sekolah.",
+      [
+        "fact",
+        "American Heart Association menganjurkan anak dan remaja usia 2–18 tahun mengonsumsi gula tambahan kurang dari 25 gram (sekitar enam sendok teh) per hari, dan tidak memberi gula tambahan sama sekali pada anak di bawah dua tahun.",
+        "Vos dkk., Circulation, 2016",
+      ],
+      ["h", "Pertukaran yang mudah diterima anak"],
+      [
+        "table",
+        [
+          ["Biasanya", "Coba ganti dengan"],
+          [
+            "Susu kotak rasa cokelat atau stroberi",
+            "Susu tawar dengan sedikit potongan pisang atau stroberi asli",
+          ],
+          [
+            "Sereal manis berwarna",
+            "Campuran sereal biasa dengan sereal manis, perbandingannya digeser pelan-pelan",
+          ],
+          ["Jus kemasan", "Buah utuh yang dipotong-potong"],
+          ["Teh manis di rumah", "Teh dengan setengah gula, lalu seperempat"],
+        ],
+      ],
+      'Anak lebih mudah menerima perubahan yang bertahap dan tidak diumumkan sebagai larangan. Libatkan mereka: ajak membaca label bersama di supermarket, dan biarkan mereka menemukan gula di urutan komposisi. Anak yang merasa jadi "detektif" lebih bangga daripada anak yang merasa dilarang.',
+      [
+        "info",
+        "Untuk anak dengan kondisi kesehatan tertentu, termasuk berat badan berlebih atau diabetes, ikuti arahan dokter anak.",
       ],
     ],
   },

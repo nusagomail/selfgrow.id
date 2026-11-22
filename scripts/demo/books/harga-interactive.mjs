@@ -35,13 +35,13 @@ export const CEK_HARGA = {
       min: 3,
       max: 4,
       title: "Setengah jalan",
-      text: "Dasarnya sudah ada. Lengkapi biaya yang terlewat di Bab 3, lalu pasang target di Bab 5.",
+      text: "Dasarnya sudah ada. Lengkapi biaya yang terlewat di Bab 3, lalu pasang target di Bab 6.",
     },
     {
       min: 5,
       max: 6,
       title: "Harga yang sehat",
-      text: "Kamu sudah menghitung dengan rapi. Bab 6 membantumu berani menaikkan harga saat perlu.",
+      text: "Kamu sudah menghitung dengan rapi. Bab 8 membantumu berani menaikkan harga saat perlu.",
     },
   ],
 };

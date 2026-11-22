@@ -1,5 +1,5 @@
 /**
- * "Umur 25 dan Merasa Tertinggal", 6 bab.
+ * "Umur 25 dan Merasa Tertinggal", 9 bab (diperdalam: uang dan rasa tertinggal, pertemanan yang berubah, keputusan besar).
  *
  * Rancangan (dipikirkan sebelum menulis):
  * - Pembaca: 23–30 tahun yang melihat teman seangkatan menikah, naik jabatan, membeli rumah, lalu
@@ -96,6 +96,32 @@ export const TERTINGGAL_1 = [
     ],
   },
   {
+    title: "Uang, Rumah, dan Rasa Tertinggal",
+    blocks: [
+      '**Grup alumni:** "Ada yang tahu KPR yang bunganya bagus? Mau ambil rumah tahun depan."',
+      "Rasa tertinggal paling sering menyamar menjadi urusan uang: rumah, kendaraan, tabungan, investasi. Dan perbandingan uang paling menyesatkan, karena kita hanya melihat yang dibeli, bukan bagaimana membayarnya.",
+      "Rumah Dimas dibayar dengan cicilan dua puluh tahun dan bantuan uang muka dari orang tuanya. Itu bukan hal buruk; hanya saja itu bukan informasi yang tertulis di unggahannya. Tara membandingkan tabungannya dengan rumah orang lain, padahal yang dia lihat adalah utang orang lain.",
+      ["h", "Penggaris keuangan yang lebih adil"],
+      [
+        "table",
+        [
+          ["Penggaris orang lain", "Penggaris dirimu sendiri"],
+          ['"Dia sudah punya rumah"', "Apakah aku punya dana darurat untuk tiga bulan?"],
+          ['"Dia liburan ke luar negeri"', "Apakah aku sudah bebas dari utang berbunga tinggi?"],
+          ['"Gajinya dua kali gajiku"', "Apakah penghasilanku naik dibanding tahun lalu?"],
+          [
+            '"Dia sudah investasi saham"',
+            "Apakah aku menyisihkan sebagian setiap bulan, sekecil apa pun?",
+          ],
+        ],
+      ],
+      [
+        "info",
+        'Untuk langkah praktisnya, lihat buku "Dana Darurat dari Nol" dan "Gajian Kok Cepat Habis?".',
+      ],
+    ],
+  },
+  {
     title: "Gunungmu Sendiri",
     blocks: [
       '**Akun kursus desain** yang baru Tara ikuti: "Kelas Desain Grafis Dasar, angkatan Januari. Daftar sekarang."',
@@ -112,6 +138,61 @@ export const TERTINGGAL_1 = [
           "Pencapaian mana yang sebenarnya kamu inginkan, dan mana yang kamu kejar karena orang lain sudah mendapatkannya?",
         ],
       ],
+    ],
+  },
+  {
+    title: "Pertemanan yang Ikut Berubah",
+    blocks: [
+      '**Rani Putri** mengirim pesan: "Maaf ya Tar, nggak bisa datang ulang tahunmu. Bayiku lagi demam."',
+      "Di usia dua puluhan, teman-teman berpencar ke jalan hidup yang berbeda: ada yang menikah, ada yang merantau, ada yang lembur setiap malam. Rasa tertinggal kadang sebenarnya rasa kehilangan: kehilangan masa ketika semua orang ada di tahap yang sama.",
+      "Persahabatan tidak harus berakhir hanya karena tahap hidupnya berbeda. Tapi bentuknya perlu berubah.",
+      [
+        "ul",
+        [
+          '**Ganti "nongkrong" dengan cara yang cocok dengan hidup mereka sekarang:** mampir membawa makanan untuk teman yang baru punya bayi, atau panggilan video 20 menit dengan teman yang merantau.',
+          '**Tanyakan hidup mereka, bukan pencapaian mereka.** "Apa yang paling berat bulan ini?" membuka percakapan yang jauh lebih jujur daripada "Gimana kerjaan?"',
+          "**Cari juga teman di tahap yang sama,** misalnya di kelas, komunitas, atau tempat kerja baru. Bukan pengganti teman lama, tapi tambahan.",
+        ],
+      ],
+      [
+        "reflect",
+        [
+          "Teman mana yang paling kamu rindukan, dan bentuk pertemuan apa yang cocok dengan hidupnya sekarang?",
+          "Siapa orang di sekitarmu yang sedang di tahap hidup yang sama denganmu?",
+        ],
+      ],
+    ],
+  },
+  {
+    title: "Keputusan Besar Tanpa Garis Finis",
+    blocks: [
+      '**Tara** menulis di catatannya: "Kalau aku keluar dan kuliah desain, umurku 28 saat lulus. Kalau ternyata salah pilih?"',
+      "Keputusan besar di usia dua puluhan terasa berat karena terasa permanen: jurusan, pekerjaan, pasangan, kota. Padahal sebagian besar bisa diuji kecil-kecilan dulu, atau diubah kemudian.",
+      ["h", "Pintu satu arah atau dua arah?"],
+      [
+        "table",
+        [
+          ["Keputusan", "Bisa dibalik?", "Cara menguji dulu"],
+          [
+            "Pindah ke bidang desain",
+            "Sebagian besar ya",
+            "Kursus malam, proyek lepas kecil, magang singkat",
+          ],
+          [
+            "Keluar dari pekerjaan tetap",
+            "Sulit dalam waktu dekat",
+            "Menabung enam bulan dulu, cuti tanpa gaji kalau memungkinkan",
+          ],
+          ["Pindah kota", "Ya, dengan biaya", "Tinggal sebulan di sana sambil bekerja jarak jauh"],
+          [
+            "Menikah",
+            "Tidak untuk diuji",
+            "Bicara terbuka tentang nilai, uang, dan rencana keluarga jauh sebelumnya",
+          ],
+        ],
+      ],
+      "Keputusan yang bisa dibalik layak diambil lebih cepat dan diuji kecil. Keputusan yang sulit dibalik layak diambil lebih pelan, dengan lebih banyak percakapan. Dalam keduanya, pertanyaan pentingnya sama dengan Bab 6: apakah ini sesuai dengan nilai yang kupilih?",
+      "Tara tidak langsung keluar. Dia mengambil kelas desain malam selama enam bulan dan mengerjakan tiga proyek lepas. Ketika akhirnya mendaftar program desain penuh waktu, keputusannya tidak lagi terasa seperti lompatan ke gelap.",
     ],
   },
   {

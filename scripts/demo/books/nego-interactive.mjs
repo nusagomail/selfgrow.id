@@ -61,7 +61,7 @@ export const SELISIH_BARS = {
   note: "Ilustrasi: 13 kali gaji setahun (termasuk THR), kenaikan 8% per tahun. Total sekitar Rp76 juta.",
 };
 
-/** Bab 5: membalas jawaban HR (D50, skenario). */
+/** Bab 6: membalas jawaban HR (D50, skenario). */
 export const BALAS_HR = {
   id: "balas-hr",
   mode: "scenario",

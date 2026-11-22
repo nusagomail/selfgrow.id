@@ -1,13 +1,13 @@
 /**
- * "Berhenti Menunda Mulai Hari Ini", 6 bab.
+ * "Berhenti Menunda Mulai Hari Ini", 9 bab (diperdalam: perfeksionisme, teman belajar dan janji bersama, kalau bukan hanya soal kebiasaan).
  *
  * Rancangan (dipikirkan sebelum menulis):
  * - Pembaca: 20–35 tahun, mahasiswa tingkat akhir dan pekerja muda yang menunda tugas penting
  *   lalu menyimpulkan dirinya malas.
  * - Gagasan inti: menunda adalah cara menghindari perasaan tidak enak, bukan masalah malas atau
  *   manajemen waktu (Sirois & Pychyl, 2013). Kerangka buku: rumus Teori Motivasi Temporal
- *   (Steel, 2007) dengan empat tuas: keyakinan, nilai, gangguan, jarak tenggat. Bab 3–5 masing-
- *   masing menggeser tuasnya; Bab 6 menutup dengan memaafkan diri (Wohl dkk., 2010).
+ *   (Steel, 2007) dengan empat tuas: keyakinan, nilai, gangguan, jarak tenggat. Bab 3, 5, dan 6 masing-
+ *   masing menggeser tuasnya; Bab 9 menutup dengan memaafkan diri (Wohl dkk., 2010).
  * - Bentuk: satu tokoh, Dinda (22, skripsi bab 3 tertunda empat bulan). Setiap bab dibuka dengan
  *   catatan jam dari harinya, jadi pembaca melihat polanya sendiri, bukan diceramahi.
  * - Gambar: panel mixer dengan empat fader, karena pesan bukunya "menunda itu pengaturan yang bisa
@@ -95,6 +95,32 @@ export const TUNDA_1 = [
     ],
   },
   {
+    title: "Kalau yang Ditakuti adalah Hasilnya Jelek",
+    blocks: [
+      '**Pukul 21.15.** Dinda sudah menulis satu halaman. Lalu dia membacanya ulang, menghapus semuanya, dan menutup laptop. "Kalau jelek begini, mending nggak usah dikumpulkan dulu."',
+      "Bagi banyak orang, yang dihindari bukan pekerjaannya, tapi **penilaian atas hasilnya**. Selama belum dikerjakan, hasilnya masih bisa dibayangkan sempurna. Begitu dikerjakan, hasilnya bisa dinilai, termasuk oleh diri sendiri.",
+      [
+        "fact",
+        "Tinjauan gabungan atas puluhan penelitian menemukan bahwa kekhawatiran perfeksionis, yaitu takut berbuat salah dan takut dinilai buruk, berkaitan dengan kebiasaan menunda yang lebih tinggi.",
+        "Sirois, Molnar & Hirsch, European Journal of Personality, 2017",
+      ],
+      ["h", "Turunkan standar untuk versi pertama, bukan untuk hasil akhir"],
+      [
+        "ul",
+        [
+          '**Beri nama "draf jelek"** pada versi pertama. Tugasnya hanya ada, bukan bagus.',
+          "**Pisahkan menulis dan menyunting** ke hari yang berbeda. Menyunting sambil menulis adalah cara paling cepat untuk berhenti menulis.",
+          '**Tetapkan standar "cukup" sebelum mulai,** misalnya "bab 3 cukup kalau semua subbab terisi, walau kasar".',
+          "**Tunjukkan lebih awal.** Dinda mengirim draf kasar ke dosen pembimbing lebih cepat dari biasanya. Komentarnya ternyata lebih ringan daripada yang dia bayangkan selama empat bulan.",
+        ],
+      ],
+      [
+        "tip",
+        'Tanyakan: "Apa yang akan kukatakan pada adik tingkat yang menunjukkan draf pertamanya padaku?" Biasanya jauh lebih ramah daripada yang kita katakan pada diri sendiri.',
+      ],
+    ],
+  },
+  {
     title: "Tuas Nilai: Buat Tugasnya Berarti",
     blocks: [
       '**Pukul 16.00.** Dinda menempel satu kertas di atas layar laptop: foto ibunya di depan rumah, dengan tulisan tangan, "Wisuda Agustus".',
@@ -142,6 +168,60 @@ export const TUNDA_1 = [
       ],
       "Dinda membuat kesepakatan dengan teman satu bimbingannya: setiap Jumat, masing-masing mengirim apa pun yang sudah ditulis minggu itu, sependek apa pun.",
       ["img", "empat-tuas", "Cara menggeser setiap tuas."],
+    ],
+  },
+  {
+    title: "Teman Belajar dan Janji Bersama",
+    blocks: [
+      "**Pukul 13.00, Sabtu.** Dinda dan dua teman satu angkatan duduk di satu meja perpustakaan. Aturannya sederhana: 50 menit menulis tanpa bicara, 10 menit istirahat bersama. Dalam tiga sesi, Dinda menulis lebih banyak daripada selama seminggu sendirian.",
+      "Bekerja di dekat orang lain yang juga sedang bekerja memberi dua hal yang sulit didapat sendirian: tenggat yang dekat, dan rasa malu yang sehat untuk membuka ponsel di depan teman yang serius menulis.",
+      ["h", "Tiga bentuk janji bersama"],
+      [
+        "table",
+        [
+          ["Bentuk", "Cara", "Cocok untuk"],
+          [
+            "Duduk bareng",
+            "Satu meja atau satu panggilan video, kamera menyala, mikrofon mati",
+            "Tugas yang butuh fokus panjang",
+          ],
+          [
+            "Setoran mingguan",
+            "Setiap Jumat kirim hasil ke teman atau grup kecil",
+            "Proyek panjang seperti skripsi atau laporan",
+          ],
+          [
+            "Janji ke orang yang dihormati",
+            "Sampaikan tanggal draf ke dosen atau atasan",
+            "Saat tenggat resmi masih jauh",
+          ],
+        ],
+      ],
+      "Janji bersama bekerja karena menggeser tuas jarak: tenggat yang tadinya berbulan-bulan berubah menjadi hari Jumat ini.",
+      [
+        "warn",
+        "Pilih teman yang benar-benar ingin bekerja. Kelompok yang berakhir mengobrol justru menjadi gangguan baru, walaupun terasa seperti belajar.",
+      ],
+    ],
+  },
+  {
+    title: "Kalau Menunda Bukan Hanya Soal Kebiasaan",
+    blocks: [
+      "Sebagian besar penundaan bisa dikurangi dengan alat di buku ini. Tapi pada sebagian orang, kesulitan memulai adalah bagian dari sesuatu yang lebih besar.",
+      ["h", "Tanda yang perlu diperhatikan"],
+      [
+        "ul",
+        [
+          "Sulit memulai dan menyelesaikan hampir semua hal sejak kecil, bukan hanya tugas tertentu, disertai mudah terdistraksi dan sering kehilangan barang.",
+          "Kehilangan minat dan tenaga untuk hampir semua kegiatan, sedih berkepanjangan, atau merasa tidak berharga selama lebih dari dua minggu.",
+          "Cemas yang sangat besar setiap kali membuka tugas, sampai berdebar, sesak, atau tidak bisa tidur.",
+        ],
+      ],
+      "Tanda-tanda seperti ini bisa berkaitan dengan kondisi seperti gangguan pemusatan perhatian, depresi, atau gangguan kecemasan. Hanya tenaga profesional yang bisa memastikannya. Kabar baiknya, semuanya bisa ditangani, dan penanganannya sering membuat alat-alat di buku ini jauh lebih mudah dipakai.",
+      [
+        "info",
+        "Mahasiswa bisa mulai dari layanan konseling kampus. Pekerja bisa bertanya ke dokter umum di puskesmas atau klinik, lalu dirujuk ke psikolog atau psikiater bila perlu.",
+      ],
     ],
   },
   {

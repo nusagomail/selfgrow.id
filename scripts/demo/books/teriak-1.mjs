@@ -1,5 +1,5 @@
 /**
- * "Mengasuh Tanpa Teriak", 6 bab. Bentuk: satu keluarga, Bu Laras dengan Dimas (6) dan
+ * "Mengasuh Tanpa Teriak", 9 bab (diperdalam: kalimat per usia anak, satu rumah satu arah, merawat diri orang tua). Bentuk: satu keluarga, Bu Laras dengan Dimas (6) dan
  * Kirana (3), dan satu pagi yang diulang dari sudut berbeda di setiap bab. Nada hangat, tidak
  * menghakimi orang tua. Edukasi umum; kekerasan dalam rumah tangga dan masalah perilaku yang
  * berat perlu bantuan profesional.
@@ -107,6 +107,44 @@ export const TERIAK_1 = [
     ],
   },
   {
+    title: "Tiga Tahun dan Enam Tahun Butuh Kalimat yang Berbeda",
+    blocks: [
+      'Pukul 06.50, pagi yang sama. Kalimat batas yang berhasil untuk Dimas ternyata tidak berhasil untuk Kirana. "Kirana kesal karena susunya tumpah. Menangis boleh, memukul gelas tidak. Mau lap sendiri atau Ibu bantu?" Kirana hanya menatap, lalu menangis lebih keras.',
+      "Kalimatnya tidak salah. Kalimatnya terlalu panjang untuk anak tiga tahun yang sedang kewalahan. Bagian otak yang mengatur emosi dan menimbang pilihan masih berkembang sepanjang masa kanak-kanak dan remaja. Anak yang lebih kecil butuh kalimat yang lebih pendek dan bantuan yang lebih banyak.",
+      [
+        "table",
+        [
+          ["Usia", "Yang paling membantu", "Contoh"],
+          [
+            "2–4 tahun",
+            "Kalimat sangat pendek, nada tenang, peluk atau dekap kalau mau, alihkan ke kegiatan lain",
+            '"Kesal ya. Gelasnya Ibu pegang. Ayo lap sama-sama."',
+          ],
+          [
+            "5–8 tahun",
+            "Namai perasaan, batas yang jelas, dua pilihan, alasan singkat",
+            '"Kamu kesal. Lempar tidak boleh, bisa sakit. Mau cerita atau mau pukul bantal?"',
+          ],
+          [
+            "9–12 tahun",
+            "Ajak memecahkan masalah bersama setelah tenang",
+            '"Pagi ini kacau. Menurutmu apa yang bisa kita ubah supaya besok lebih lancar?"',
+          ],
+          [
+            "Remaja",
+            "Dengarkan lebih banyak, bicara lebih sedikit, hargai privasi",
+            '"Aku lihat kamu lagi berat. Aku di sini kalau mau ngobrol."',
+          ],
+        ],
+      ],
+      'Untuk Kirana, Bu Laras mengganti kalimatnya menjadi dua kata, "Kesal, ya," lalu memeluknya sampai tangisnya mereda. Dua menit kemudian, Kirana mau mengelap meja sendiri.',
+      [
+        "tip",
+        "Semakin besar emosinya, semakin sedikit kata yang dibutuhkan. Penjelasan panjang lebih baik disimpan untuk saat anak sudah tenang, misalnya sebelum tidur.",
+      ],
+    ],
+  },
+  {
     title: "Mencegah Lebih Mudah daripada Meredakan",
     blocks: [
       "Pagi Bu Laras sebulan kemudian tidak sempurna, tapi berbeda. Seragam disiapkan malam sebelumnya. Di pintu kamar Dimas tertempel jadwal pagi bergambar. Bu Laras sarapan roti lebih dulu, sebelum membangunkan anak-anak.",
@@ -136,6 +174,66 @@ export const TERIAK_1 = [
           "Pilih satu pencegah dari tabel di atas dan jalankan selama satu minggu.",
         ],
         "Lembar kerja: rancang ulang satu situasi",
+      ],
+    ],
+  },
+  {
+    title: "Satu Rumah, Satu Arah",
+    blocks: [
+      'Pak Hendra pulang malam itu dan mendengar cerita pagi tadi. "Anak-anak itu memang harus dikerasin sedikit," katanya. Akhir pekan, Nenek datang dan membelikan Dimas mainan setiap kali dia menangis di toko.',
+      "Kalimat batas yang tenang sulit bertahan kalau orang dewasa lain di rumah memakai cara yang berlawanan. Anak cepat belajar siapa yang bisa ditawar dan kapan.",
+      ["h", "Sepakati tiga hal saja"],
+      "Tidak perlu menyamakan semua hal. Bu Laras dan Pak Hendra duduk sepuluh menit di hari Minggu dan menyepakati tiga hal:",
+      [
+        "ol",
+        [
+          '**Tidak ada yang membentak atau memukul**, termasuk saat sedang sangat kesal. Kalau salah satu mulai naik, yang lain boleh berkata, "Aku ambil alih, ya."',
+          "**Aturan yang sudah dibuat satu orang tua tidak dibatalkan di depan anak.** Kalau tidak setuju, dibicarakan berdua setelahnya.",
+          "**Tiga aturan rumah** yang sama untuk semua: tidak melempar, merapikan mainan sebelum makan malam, layar selesai pukul tujuh.",
+        ],
+      ],
+      ["h", "Dengan kakek dan nenek"],
+      "Kakek dan nenek biasanya punya cara sendiri, dan sering datang dengan cinta yang besar. Yang membantu adalah meminta dengan spesifik dan hormat, bukan mengkritik cara mereka membesarkan kita dulu.",
+      [
+        "quote",
+        "Bu, kami lagi belajar supaya Dimas tidak minta barang dengan menangis. Kalau Dimas nangis di toko, boleh Ibu tunggu sampai dia tenang dulu, baru tawari? Terima kasih sudah bantu kami.",
+      ],
+      [
+        "info",
+        "Kalau perbedaan cara mengasuh berubah menjadi pertengkaran rutin atau ada kekerasan di rumah, bicarakan dengan konselor keluarga atau psikolog. Untuk kekerasan dalam rumah tangga, hubungi layanan pengaduan resmi di daerahmu.",
+      ],
+    ],
+  },
+  {
+    title: "Sumbu Panjang Butuh Orang Tua yang Terisi",
+    blocks: [
+      "Bu Laras memperhatikan catatan termometernya selama dua minggu. Hari-hari dia paling sering berteriak punya kesamaan: tidur kurang dari enam jam, melewatkan makan siang, atau rapat sampai malam. Masalahnya bukan hanya pagi yang kacau, tapi dirinya yang sudah kosong sebelum pagi dimulai.",
+      "Panjang pendeknya sumbu kesabaran sangat dipengaruhi keadaan tubuh. Orang tua yang lapar, lelah, kesepian, atau sedang marah pada hal lain akan lebih cepat meledak, sesayang apa pun pada anaknya.",
+      [
+        "fact",
+        "Penelitian tentang kelelahan orang tua (parental burnout) menemukan bahwa orang tua yang terkuras secara emosional lebih mungkin mengabaikan kebutuhan anak dan bersikap kasar, termasuk secara verbal. Yang dibutuhkan bukan rasa bersalah, tapi mengurangi beban dan menambah dukungan.",
+        "Mikolajczak dkk., Child Abuse & Neglect, 2018",
+      ],
+      ["h", "Isi ulang yang realistis"],
+      [
+        "ul",
+        [
+          "**Gantian pagi:** Pak Hendra mengurus anak di Senin dan Rabu, Bu Laras di hari lain. Yang tidak bertugas boleh bangun setengah jam lebih siang.",
+          "**Siapkan malam sebelumnya:** baju, tas, dan sarapan sederhana. Pagi yang kacau sering dimulai dari malam yang tidak disiapkan.",
+          "**Satu jam untuk diri sendiri setiap minggu,** tanpa merasa bersalah.",
+          "**Teman bicara:** satu teman sesama orang tua yang bisa diajak berkeluh kesah tanpa menghakimi.",
+        ],
+      ],
+      [
+        "reflect",
+        [
+          "Di hari seperti apa kamu paling sering kehilangan kesabaran?",
+          "Satu dukungan apa yang bisa kamu minta minggu ini, dan kepada siapa?",
+        ],
+      ],
+      [
+        "warn",
+        "Kalau kamu merasa sangat lelah hampir setiap hari, merasa jauh dari anak, atau takut kehilangan kendali, bicarakan dengan dokter, psikolog, atau layanan kesehatan jiwa terdekat. Meminta bantuan adalah bagian dari menjaga anak.",
       ],
     ],
   },

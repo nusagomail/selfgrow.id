@@ -58,7 +58,7 @@ export const JEJAK_GULA = {
       min: 8,
       max: 12,
       title: "Lidah yang sudah terbiasa manis",
-      text: "Ini bukan soal kurang disiplin; lidahmu hanya terbiasa. Mulailah dari minuman (Bab 5) dan turunkan bertahap (Bab 6).",
+      text: "Ini bukan soal kurang disiplin; lidahmu hanya terbiasa. Mulailah dari minuman (Bab 6) dan turunkan bertahap (Bab 6).",
     },
   ],
 };

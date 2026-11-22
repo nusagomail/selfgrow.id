@@ -37,7 +37,7 @@ export const CEK_TERTINGGAL = {
       min: 0,
       max: 4,
       title: "Sesekali, dan wajar",
-      text: "Rasa tertinggalmu datang dan pergi. Bab 5 (gunungmu sendiri) membantu memperjelas arah, supaya rasa itu makin jarang mampir.",
+      text: "Rasa tertinggalmu datang dan pergi. Bab 6 (gunungmu sendiri) membantu memperjelas arah, supaya rasa itu makin jarang mampir.",
     },
     {
       min: 5,
