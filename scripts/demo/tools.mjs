@@ -2451,4 +2451,130 @@ export const DEMO_TOOLS = [
       ],
     },
   },
+  {
+    slug: "catatan-setahun",
+    topic: "top_quarter-life",
+    title: "Catatan Setahun Terakhir",
+    summary: "Ukur dirimu dengan penggaris yang adil: dirimu sendiri setahun lalu.",
+    config: {
+      version: 1,
+      intro:
+        "Bandingkan dengan dirimu setahun lalu, bukan dengan orang lain. Hal kecil juga dihitung.",
+      submitLabel: "Lihat catatanku",
+      inputs: [
+        {
+          key: "bisa",
+          label: "Satu hal yang sekarang bisa kamu lakukan, dan setahun lalu belum",
+          type: "text",
+          required: true,
+          placeholder: "menyetir mobil sendiri",
+        },
+        {
+          key: "lewati",
+          label: "Satu hal sulit yang berhasil kamu lewati",
+          type: "text",
+          required: true,
+          placeholder: "pindah kos dan hidup sendiri",
+        },
+        {
+          key: "relasi",
+          label: "Satu hubungan yang menjadi lebih baik",
+          type: "text",
+          required: true,
+          placeholder: "lebih sering menelepon ibu",
+        },
+        {
+          key: "pelajaran",
+          label: "Satu hal yang kamu pahami tentang dirimu",
+          type: "text",
+          required: true,
+          placeholder: "aku lebih senang membuat sesuatu daripada mengurus berkas",
+        },
+      ],
+      computed: [
+        {
+          key: "catatan",
+          label: "Catatan setahunmu",
+          formula:
+            'concat("Setahun lalu aku belum bisa ", bisa, "; sekarang bisa. Aku berhasil melewati ", lewati, ". Aku ", relasi, ". Dan aku jadi tahu bahwa ", pelajaran, ".")',
+          format: "text",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "1 == 1",
+          text: "Baca catatan ini dengan suara. Ini kemajuan yang nyata, walaupun tidak pernah diunggah ke media sosial. Ulangi setiap ulang tahunmu, atau setiap akhir tahun.",
+          variant: "tip",
+        },
+      ],
+    },
+  },
+  {
+    slug: "kompas-nilai",
+    topic: "top_quarter-life",
+    title: "Kompas Nilai",
+    summary: "Pilih nilai yang paling penting bagimu, lalu ubah menjadi satu langkah minggu ini.",
+    config: {
+      version: 1,
+      intro: "Nilai bukan tujuan yang harus dicapai, tapi arah yang bisa diikuti hari ini juga.",
+      submitLabel: "Tentukan arah",
+      inputs: [
+        {
+          key: "nilai",
+          label: "Nilai yang paling penting bagimu saat ini",
+          type: "select",
+          required: true,
+          options: [
+            { value: "keluarga", label: "Keluarga" },
+            { value: "belajar", label: "Terus belajar" },
+            { value: "berkarya", label: "Berkarya dan mencipta" },
+            { value: "menolong", label: "Menolong orang lain" },
+            { value: "kebebasan", label: "Kebebasan" },
+            { value: "keamanan", label: "Rasa aman" },
+            { value: "kesehatan", label: "Kesehatan" },
+            { value: "iman", label: "Iman dan spiritualitas" },
+            { value: "petualangan", label: "Petualangan" },
+            { value: "persahabatan", label: "Persahabatan" },
+          ],
+        },
+        {
+          key: "bidang",
+          label: "Di bidang hidup mana kamu paling ingin menjalankannya",
+          type: "select",
+          required: true,
+          options: [
+            { value: "pekerjaan", label: "Pekerjaan" },
+            { value: "hubungan", label: "Keluarga dan teman" },
+            { value: "diri sendiri", label: "Diri sendiri" },
+            { value: "lingkungan sekitar", label: "Lingkungan sekitar" },
+          ],
+        },
+        {
+          key: "langkah",
+          label: "Satu langkah kecil minggu ini yang sesuai dengan nilai itu",
+          type: "text",
+          required: true,
+          placeholder: "mendaftar kelas desain daring hari Sabtu",
+        },
+      ],
+      computed: [
+        {
+          key: "arah",
+          label: "Arahmu minggu ini",
+          formula:
+            'concat("Karena ", nilai, " penting bagiku, di bidang ", bidang, " minggu ini aku akan ", langkah, ". Langkah ini tetap berarti, berapa pun umurku dan apa pun yang sedang dicapai orang lain.")',
+          format: "text",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "1 == 1",
+          text: "Tulis kalimat ini di tempat yang kamu lihat setiap pagi. Minggu depan, tanyakan: apakah aku melangkah ke arah ini? Kalau ya, itu sudah cukup.",
+          variant: "tip",
+        },
+      ],
+    },
+  },
 ];

@@ -35,6 +35,8 @@ import { STOIK_1 } from "./stoik-1.mjs";
 import { STOIK_FIGURES } from "./stoik-figures.mjs";
 import { TERIAK_1 } from "./teriak-1.mjs";
 import { TERIAK_FIGURES } from "./teriak-figures.mjs";
+import { TERTINGGAL_1 } from "./tertinggal-1.mjs";
+import { TERTINGGAL_FIGURES } from "./tertinggal-figures.mjs";
 import { TIDAK_1 } from "./tidak-1.mjs";
 import { TIDAK_2 } from "./tidak-2.mjs";
 import { TIDAK_FIGURES } from "./tidak-figures.mjs";
@@ -113,5 +115,9 @@ export const FULL_BOOKS = {
   "anak-dan-gawai": {
     chapters: GAWAI_1,
     figures: GAWAI_FIGURES,
+  },
+  "umur-25-dan-merasa-tertinggal": {
+    chapters: TERTINGGAL_1,
+    figures: TERTINGGAL_FIGURES,
   },
 };
