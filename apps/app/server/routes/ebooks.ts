@@ -1,6 +1,7 @@
 import { and, asc, desc, eq, schema, sql } from "@selfgrow/db";
 import {
   bookmarkBodySchema,
+  parseEbookTheme,
   progressBodySchema,
   quizIdSchema,
   quizResultBodySchema,
@@ -87,6 +88,7 @@ export const ebooks = new Hono<AppEnv>()
         summary: ebook.summary,
         coverUrl: coverPath(ebook.coverAssetId),
         introVideo: introMedia(ebook),
+        theme: parseEbookTheme(ebook.readerTheme),
       },
       chapters: chapters.map((ch) => ({
         ...ch,

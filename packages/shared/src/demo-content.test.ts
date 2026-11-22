@@ -12,6 +12,7 @@ import { catalogBooks as catalogJs } from "../../../scripts/demo/catalog.mjs";
 // @ts-expect-error -- modul JS di luar paket, tanpa deklarasi tipe
 import { DEMO_TOOLS as TOOLS_JS } from "../../../scripts/demo/tools.mjs";
 import { ebookDocSchema } from "./ebook";
+import { ebookThemeSchema } from "./ebook-theme";
 import { toolConfigSchema } from "./tool";
 
 type Book = { slug: string; title: string; category: string; topic: string };
@@ -56,6 +57,21 @@ describe("katalog demo", () => {
       expect(used.size).toBe(Object.keys(full.figures).length);
     });
   }
+
+  it("setiap ebook punya tema baca sendiri yang valid (D51)", () => {
+    const combos = new Set<string>();
+    for (const [slug, full] of Object.entries(FULL as Record<string, { theme?: unknown }>)) {
+      const r = ebookThemeSchema.safeParse(full.theme);
+      expect(r.success, `tema ${slug}`).toBe(true);
+      if (r.success) {
+        const { heading, callout, ornament, paper, accent } = r.data;
+        const key = `${heading}/${callout}/${ornament}/${paper}`;
+        expect(combos.has(key), `kombinasi tema ${slug} sama dengan buku lain`).toBe(false);
+        combos.add(key);
+        expect(accent).toMatch(/^#[0-9a-f]{6}$/i);
+      }
+    }
+  });
 
   it("tool demo valid dan setiap tool yang ditanam di ebook tersedia", () => {
     const tools = TOOLS_JS as { slug: string; config: unknown }[];

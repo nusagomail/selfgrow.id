@@ -1,0 +1,2 @@
+Huruf tema baca ebook (D51). Semua berlisensi SIL Open Font License 1.1 (https://openfontlicense.org):
+Caveat, DM Serif Display, JetBrains Mono, Oswald. Sumber: paket @fontsource.

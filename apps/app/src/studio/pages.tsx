@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api } from "../lib/api";
 import { ChapterEditor } from "./editor";
+import { ThemePicker } from "./theme-picker";
 import { TopicPicker } from "./topic-picker";
 
 type ContentRow = {
@@ -317,6 +318,7 @@ export function StudioEbook() {
       <MetaForm item={item} onSave={saveMeta} />
       <div className="card">
         <TopicPicker contentId={rawId} />
+        <ThemePicker contentId={rawId} />
       </div>
       {notice && <p className="notice">{notice}</p>}
       {err ? <p className="error">{errorText(err)}</p> : null}

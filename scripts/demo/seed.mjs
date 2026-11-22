@@ -90,6 +90,10 @@ catalogBooks().forEach((b, i) => {
 
   const full = FULL_BOOKS[b.slug];
   if (!full) return;
+  // Tema baca per buku (D51); divalidasi dengan skema yang sama di test demo-content.
+  sql.push(
+    `UPDATE content_items SET reader_theme = ${full.theme ? q(JSON.stringify(full.theme)) : "NULL"} WHERE id = ${q(contentId)};`,
+  );
   const image = (name) => {
     const assetId = uid(`img:${b.slug}:${name}`);
     const file = join(here, "figures", b.slug, `${name}.png`);

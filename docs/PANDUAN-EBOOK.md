@@ -159,7 +159,10 @@ dulu identitasnya, baru menulis:
    menyusun kalimat. Pilih yang melayani tujuan bab, bukan karena "setiap buku harus punya kuis".
 5. **Irama bab.** Variasikan pembuka (cerita, percakapan, pertanyaan, data) dan penutup (renungan,
    intisari, latihan, satu kalimat kuat). Tidak setiap bab perlu ditutup dengan kotak yang sama.
-6. **Video ikut identitasnya.** Susunan adegan dan tema warna video mengikuti buku (PANDUAN-VIDEO).
+6. **Tema baca (D51).** Di Studio, atur tema baca buku: warna utama dari infografis, huruf judul,
+   gaya kotak, ornamen, dan kertas. Tema membuat isi buku di reader ikut identitasnya, bukan hanya
+   gambarnya. Jangan memakai kombinasi yang sama dengan buku lain.
+7. **Video ikut identitasnya.** Susunan adegan dan tema warna video mengikuti buku (PANDUAN-VIDEO).
 
 Pertanyaan pemeriksa: *"Kalau sampulnya ditutup, apakah orang bisa menebak ini buku yang mana dari
 gambar dan iramanya saja?"*

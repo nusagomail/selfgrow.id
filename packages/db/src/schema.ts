@@ -188,6 +188,8 @@ export const contentItems = sqliteTable(
     /** Video pengantar ebook (D41) dan gambar sampul videonya (poster). */
     introVideoAssetId: text("intro_video_asset_id"),
     introPosterAssetId: text("intro_poster_asset_id"),
+    /** Tema baca per ebook (D51), JSON yang lolos `ebookThemeSchema`. */
+    readerTheme: text("reader_theme"),
     publishedAt: integer("published_at", { mode: "timestamp_ms" }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),

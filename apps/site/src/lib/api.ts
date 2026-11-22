@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import type { EbookDoc } from "@selfgrow/shared";
+import type { EbookDoc, EbookTheme } from "@selfgrow/shared";
 
 export type ContentType = "ebook" | "tool" | "template" | "program";
 
@@ -55,6 +55,8 @@ export interface ContentDetail {
   comingSoon?: boolean;
   /** Video pengantar (D41): alamat app, diubah ke /video & /gambar lewat siteVideo(). */
   introVideo?: { url: string; posterUrl: string | null } | null;
+  /** Tema baca ebook (D51). */
+  theme?: EbookTheme | null;
   coverUrl: string | null;
   category: { slug: string; name: string } | null;
   topic: { slug: string; name: string } | null;

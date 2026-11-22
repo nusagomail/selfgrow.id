@@ -2,6 +2,7 @@ export { z } from "zod";
 export * from "./catalog-tabs";
 export * from "./constants";
 export * from "./ebook";
+export * from "./ebook-theme";
 export * from "./formula";
 export * from "./interactive-form";
 export * from "./program";

@@ -2,7 +2,7 @@ import "@selfgrow/renderer/book.css";
 import { EbookContent } from "@selfgrow/renderer";
 import { enhanceInteractive } from "@selfgrow/renderer/interactive";
 import { createPager, type Pager, type PagerState } from "@selfgrow/renderer/pager";
-import type { EbookDoc } from "@selfgrow/shared";
+import { type EbookDoc, type EbookTheme, ebookThemeAttrs } from "@selfgrow/shared";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ApiError, api } from "../lib/api";
@@ -25,6 +25,8 @@ type EbookMeta = {
     coverUrl: string | null;
     /** Video pengantar (D41). */
     introVideo?: { url: string; posterUrl: string | null } | null;
+    /** Tema baca per ebook (D51). */
+    theme?: EbookTheme | null;
   };
   chapters: Chapter[];
   progress: { chapterId: string; position: number } | null;
@@ -480,11 +482,13 @@ export function ChapterReader() {
       : `Hal. ${page.first}–${page.last} dari ${page.pages}`
     : "";
 
+  const bookTheme = ebookThemeAttrs(meta?.ebook.theme ?? null);
   return (
     <div
       className={`book reader-book${chrome ? "" : " chrome-off"}`}
       data-theme={prefs.theme}
-      style={{ "--book-size": `${SIZES[prefs.size]}px` } as CSSProperties}
+      {...bookTheme.data}
+      style={{ "--book-size": `${SIZES[prefs.size]}px`, ...bookTheme.vars } as CSSProperties}
     >
       <header className="book-bar">
         <Link to="/baca/$slug" params={{ slug }} className="book-icon" aria-label="Daftar isi">
