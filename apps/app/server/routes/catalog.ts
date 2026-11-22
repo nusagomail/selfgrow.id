@@ -1,5 +1,12 @@
 import { and, asc, desc, eq, inArray, schema, sql } from "@selfgrow/db";
-import { type ContentType, contentTypeSchema, parseEbookTheme } from "@selfgrow/shared";
+import {
+  type ContentType,
+  catalogSearchQuerySchema,
+  contentTypeSchema,
+  parseEbookTheme,
+  rankSearch,
+  searchTokens,
+} from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { FREE_TIER } from "../middleware/guards";
@@ -125,6 +132,59 @@ async function publicChapters(db: AppEnv["Variables"]["db"], contentId: string) 
 
 /** Gambar sampul tidak pernah berubah (id baru setiap unggah) dan id-nya acak. */
 const isImagePath = (path: string) => /\/covers\/[^/]+$/.test(path);
+
+const FEED_COLUMNS = {
+  id: schema.contentItems.id,
+  type: schema.contentItems.type,
+  slug: schema.contentItems.slug,
+  title: schema.contentItems.title,
+  summary: schema.contentItems.summary,
+  tier: schema.contentItems.tier,
+  categoryId: schema.contentItems.categoryId,
+  coverAssetId: schema.contentItems.coverAssetId,
+  publishedAt: schema.contentItems.publishedAt,
+};
+type FeedRow = {
+  id: string;
+  type: ContentType;
+  slug: string;
+  title: string;
+  summary: string | null;
+  tier: string;
+  categoryId: string | null;
+  coverAssetId: string | null;
+  publishedAt: Date | null;
+};
+
+/** Bentuk satu item etalase: label akses, status segera terbit, kategori induk, dan topik. */
+async function toFeedItems(db: AppEnv["Variables"]["db"], rows: FeedRow[], cats: CategoryRow[]) {
+  const byId = new Map(cats.map((r) => [r.id, r]));
+  const [access, filled] = await Promise.all([
+    accessLabels(db, rows),
+    ebooksWithChapters(db, rows),
+  ]);
+  return rows.map((i) => {
+    const cat = i.categoryId ? byId.get(i.categoryId) : undefined;
+    const topic = cat?.parentId ? cat : undefined;
+    const root = cat?.parentId ? byId.get(cat.parentId) : cat;
+    return {
+      type: i.type,
+      slug: i.slug,
+      title: i.title,
+      summary: i.summary,
+      access: access.get(i.id) ?? "premium",
+      comingSoon: isComingSoon(i, filled),
+      coverUrl: coverPath(i.coverAssetId),
+      category: root ? { slug: root.slug, name: root.name } : null,
+      topic: topic ? { slug: topic.slug, name: topic.name } : null,
+      publishedAt: i.publishedAt?.toISOString() ?? null,
+    };
+  });
+}
+
+/** Kandidat maksimal yang dibaca dari D1 untuk satu pencarian, sebelum diurutkan. */
+const SEARCH_CANDIDATES = 200;
+const SEARCH_RESULTS = 60;
 
 export const catalog = new Hono<AppEnv>()
   // Cache edge DULU, baru rate limit: halaman rak memuat 100+ sampul sekaligus (D38), dan
@@ -259,48 +319,57 @@ export const catalog = new Hono<AppEnv>()
   .get("/items", async (c) => {
     const [rows, cats] = await Promise.all([
       c.var.db
-        .select({
-          id: schema.contentItems.id,
-          type: schema.contentItems.type,
-          slug: schema.contentItems.slug,
-          title: schema.contentItems.title,
-          summary: schema.contentItems.summary,
-          tier: schema.contentItems.tier,
-          categoryId: schema.contentItems.categoryId,
-          coverAssetId: schema.contentItems.coverAssetId,
-          publishedAt: schema.contentItems.publishedAt,
-        })
+        .select(FEED_COLUMNS)
         .from(schema.contentItems)
         .where(eq(schema.contentItems.status, "published"))
         .orderBy(desc(schema.contentItems.publishedAt))
         .limit(MAX_ITEMS),
       allCategories(c.var.db),
     ]);
-    const byId = new Map(cats.map((r) => [r.id, r]));
-    const rootOf = (id: string | null) => {
-      const cat = id ? byId.get(id) : undefined;
-      return cat?.parentId ? byId.get(cat.parentId) : cat;
-    };
-    const [access, filled] = await Promise.all([
-      accessLabels(c.var.db, rows),
-      ebooksWithChapters(c.var.db, rows),
-    ]);
-    return c.json({
-      items: rows.map((i) => {
-        const root = rootOf(i.categoryId);
-        return {
-          type: i.type,
-          slug: i.slug,
-          title: i.title,
-          summary: i.summary,
-          access: access.get(i.id) ?? "premium",
-          comingSoon: isComingSoon(i, filled),
-          coverUrl: coverPath(i.coverAssetId),
-          category: root ? { slug: root.slug, name: root.name } : null,
-          publishedAt: i.publishedAt?.toISOString() ?? null,
-        };
-      }),
+    return c.json({ items: await toFeedItems(c.var.db, rows as FeedRow[], cats) });
+  })
+
+  /**
+   * Pencarian katalog (D52). Setiap token harus cocok dengan judul, ringkasan, atau nama
+   * kategori/topik. Token hanya huruf dan angka, jadi aman dipakai di pola LIKE.
+   */
+  .get("/search", async (c) => {
+    const parsed = catalogSearchQuerySchema.safeParse({
+      q: c.req.query("q") ?? "",
+      type: c.req.query("type") || undefined,
     });
+    if (!parsed.success) return c.json({ error: "invalid_query" }, 400);
+    const tokens = searchTokens(parsed.data.q);
+    if (tokens.length === 0) return c.json({ items: [] });
+    const cats = await allCategories(c.var.db);
+    const conds = tokens.map((t) => {
+      const pattern = `%${t}%`;
+      // Kategori induk yang cocok ikut menyertakan semua topiknya.
+      const hitIds = cats.filter((x) => x.name.toLowerCase().includes(t)).map((x) => x.id);
+      const catIds = [
+        ...new Set([
+          ...hitIds,
+          ...cats.filter((x) => x.parentId && hitIds.includes(x.parentId)).map((x) => x.id),
+        ]),
+      ];
+      return sql`(lower(${schema.contentItems.title}) like ${pattern} or lower(coalesce(${schema.contentItems.summary}, '')) like ${pattern}${
+        catIds.length ? sql` or ${inArray(schema.contentItems.categoryId, catIds)}` : sql``
+      })`;
+    });
+    const rows = await c.var.db
+      .select(FEED_COLUMNS)
+      .from(schema.contentItems)
+      .where(
+        and(
+          eq(schema.contentItems.status, "published"),
+          parsed.data.type ? eq(schema.contentItems.type, parsed.data.type) : undefined,
+          ...conds,
+        ),
+      )
+      .orderBy(desc(schema.contentItems.publishedAt))
+      .limit(SEARCH_CANDIDATES);
+    const items = await toFeedItems(c.var.db, rows as FeedRow[], cats);
+    return c.json({ items: rankSearch(items, parsed.data.q).slice(0, SEARCH_RESULTS) });
   })
 
   /** Detail publik satu konten: ringkasan, kategori, daftar isi/hari. Tanpa isi berbayar. */

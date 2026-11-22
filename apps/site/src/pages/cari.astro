@@ -1,0 +1,127 @@
+---
+import { availableTypeTabs, searchTokens } from "@selfgrow/shared";
+import ItemCard from "../components/ItemCard.astro";
+import Base from "../layouts/Base.astro";
+import { getCategories, searchItems } from "../lib/api";
+
+// Pencarian katalog (D52). Halaman tanpa JavaScript: formulir GET ke /cari?q=…
+const q = (Astro.url.searchParams.get("q") ?? "").trim().slice(0, 60);
+const valid = searchTokens(q).length > 0 && q.length >= 2;
+const [categories, items] = await Promise.all([getCategories(), valid ? searchItems(q) : []]);
+const groups = availableTypeTabs(items).map((t) => ({
+  ...t,
+  items: items.filter((i) => i.type === t.type),
+}));
+const popular = categories
+  .flatMap((c) => c.topics.filter((t) => t.count > 0).map((t) => ({ ...t, cat: c.slug })))
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 8);
+---
+
+<Base title={q ? `Cari "${q}" | SelfGrow` : "Cari | SelfGrow"} description="Cari ebook, tools, template, dan program SelfGrow." categories={categories} noindex>
+  <section class="head">
+    <div class="container">
+      <h1>Cari</h1>
+      <form action="/cari" method="get" role="search" class="search">
+        <input type="search" name="q" value={q} placeholder="Coba: gaji, tidur, presentasi, anak" aria-label="Kata kunci" maxlength="60" autofocus />
+        <button type="submit" class="btn btn-primary">Cari</button>
+      </form>
+      {q && valid && <p class="muted">{items.length} hasil untuk "{q}"</p>}
+      {q && !valid && <p class="muted">Ketik minimal dua huruf.</p>}
+    </div>
+  </section>
+
+  <section class="container body">
+    {valid && items.length === 0 && (
+      <p class="muted">Belum ada yang cocok. Coba kata lain, atau jelajahi topik di bawah.</p>
+    )}
+    {groups.map((g) => (
+      <section class="group">
+        <h2>{g.label} <span class="count">{g.count}</span></h2>
+        <div class:list={[g.type === "tool" ? "tool-grid" : "book-grid"]}>
+          {g.items.map((i) => <ItemCard item={i} />)}
+        </div>
+      </section>
+    ))}
+    {(!valid || items.length === 0) && popular.length > 0 && (
+      <section class="group">
+        <h2>Topik yang sering dibuka</h2>
+        <div class="chips">
+          {popular.map((t) => (
+            <a href={`/kategori/${t.cat}/${t.slug}`} class="chip">{t.name} <span class="count">{t.count}</span></a>
+          ))}
+        </div>
+      </section>
+    )}
+  </section>
+</Base>
+
+<style>
+  .head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(24px, 5vw, 48px);
+  }
+  .head .container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .search {
+    display: flex;
+    gap: 8px;
+    max-width: 640px;
+  }
+  .search input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    font: inherit;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .search input:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding-block: 28px clamp(48px, 8vw, 96px);
+  }
+  .group h2 {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+  }
+  .count {
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(clamp(104px, 28vw, 150px), 1fr));
+    gap: 22px clamp(12px, 2.4vw, 22px);
+  }
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: 14px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+</style>

@@ -9,8 +9,10 @@ interface Props {
   href: string;
   count: number;
   items: FeedItem[];
+  /** Sembunyikan tautan "Lihat semua". */
+  hideMore?: boolean;
 }
-const { title, hook, href, count, items } = Astro.props;
+const { title, hook, href, count, items, hideMore = false } = Astro.props;
 // Tool bukan buku (D49): kartu lebar dalam grid, bukan rak sampul.
 const tools = items.length > 0 && items.every((i) => i.type === "tool");
 ---
@@ -21,7 +23,7 @@ const tools = items.length > 0 && items.every((i) => i.type === "tool");
       <h2>{title}</h2>
       {hook && <p class="hook">{hook}</p>}
     </div>
-    <a href={href} class="more">Lihat semua <span class="n">{count}</span></a>
+    {!hideMore && <a href={href} class="more">Lihat semua <span class="n">{count}</span></a>}
   </div>
   <div class:list={["row", { "tool-row": tools }]} role="list">
     {items.map((i) => (

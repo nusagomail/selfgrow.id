@@ -1,5 +1,5 @@
 ---
-import { activeTypeTab, availableTypeTabs } from "@selfgrow/shared";
+import { activeTypeTab, availableTypeTabs, readyFirst } from "@selfgrow/shared";
 import ItemCard from "../components/ItemCard.astro";
 import Shelf from "../components/Shelf.astro";
 import Base from "../layouts/Base.astro";
@@ -19,6 +19,11 @@ const shown = active === "semua" ? items : items.filter((i) => i.category?.slug 
 const activeCat = categories.find((c) => c.slug === active);
 const freeCount = allItems.filter((i) => i.access !== "premium" && !i.comingSoon).length;
 const SHELF_MAX = 12;
+// Rak "Baru terbit" (D52): konten yang sudah bisa dipakai, terbaru dulu, lintas kategori.
+const fresh = items
+  .filter((i) => !i.comingSoon)
+  .sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""))
+  .slice(0, SHELF_MAX);
 
 const faqs = [
   {
@@ -115,8 +120,11 @@ const siteLd = {
     ) : active === "semua" ? (
       // Etalase toko buku: satu rak per kategori, sampul digulir ke samping (D38).
       <div class="shelves">
+        {fresh.length > 0 && (
+          <Shelf title="Baru terbit" hook="Siap dibaca dan dipakai sekarang" href={`/cari?q=${encodeURIComponent(tab?.label ?? "ebook")}`} count={fresh.length} items={fresh} hideMore />
+        )}
         {withContent.map((c) => {
-          const inCat = items.filter((i) => i.category?.slug === c.slug);
+          const inCat = readyFirst(items.filter((i) => i.category?.slug === c.slug));
           return (
             <Shelf
               title={c.name}
@@ -130,7 +138,7 @@ const siteLd = {
       </div>
     ) : (
       <div class:list={[tab?.type === "tool" ? "tool-grid" : "book-grid"]}>
-        {shown.map((i) => <ItemCard item={i} />)}
+        {readyFirst(shown).map((i) => <ItemCard item={i} />)}
       </div>
     )}
   </section>

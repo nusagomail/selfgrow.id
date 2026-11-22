@@ -1,5 +1,5 @@
 import type { SubscriptionStatus } from "@selfgrow/shared";
-import { activeTypeTab, availableTypeTabs } from "@selfgrow/shared";
+import { activeTypeTab, availableTypeTabs, rankSearch, readyFirst } from "@selfgrow/shared";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ToolCard } from "../components/tool-card";
@@ -124,6 +124,7 @@ export function HomePage() {
   const [error, setError] = useState(false);
   const [active, setActive] = useState<string>("semua");
   const [jenis, setJenis] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     api<HomeData>("/home")
@@ -166,6 +167,14 @@ export function HomePage() {
     .map((s) => ({ ...s, items: tab ? s.items.filter((i) => i.type === tab.type) : s.items }))
     .filter((s) => s.items.length > 0);
   const shown = active === "semua" ? filled : filled.filter((s) => s.slug === active);
+  // Pencarian di perangkat (D52): semua konten beranda sudah termuat, jadi hasilnya instan.
+  const searching = query.trim().length >= 2;
+  const hits = searching
+    ? rankSearch(
+        sections.flatMap((s) => s.items.map((i) => ({ ...i, category: { name: s.name } }))),
+        query,
+      )
+    : [];
   const totalItems = filled.reduce((n, s) => n + s.items.length, 0);
 
   return (
@@ -222,7 +231,50 @@ export function HomePage() {
         </section>
       )}
 
-      {tabs.length > 1 && (
+      <search className="home-search">
+        <input
+          type="search"
+          value={query}
+          maxLength={60}
+          placeholder="Cari ebook, tools, template…"
+          aria-label="Cari konten"
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </search>
+
+      {searching ? (
+        <section className="shelf-section">
+          <h2>
+            {hits.length} hasil untuk "{query.trim()}"
+          </h2>
+          {hits.length === 0 ? (
+            <p className="muted">Belum ada yang cocok. Coba kata lain.</p>
+          ) : (
+            <>
+              {hits.some((i) => i.type !== "tool") && (
+                <div className="book-grid">
+                  {hits
+                    .filter((i) => i.type !== "tool")
+                    .map((i) => (
+                      <ItemCard key={`${i.type}-${i.slug}`} item={i} />
+                    ))}
+                </div>
+              )}
+              {hits.some((i) => i.type === "tool") && (
+                <div className="tool-grid">
+                  {hits
+                    .filter((i) => i.type === "tool")
+                    .map((i) => (
+                      <ItemCard key={`${i.type}-${i.slug}`} item={i} />
+                    ))}
+                </div>
+              )}
+            </>
+          )}
+        </section>
+      ) : null}
+
+      {!searching && tabs.length > 1 && (
         <nav className="type-tabs" aria-label="Jenis konten">
           {tabs.map((t) => (
             <button
@@ -241,29 +293,31 @@ export function HomePage() {
         </nav>
       )}
 
-      <nav className="cat-chips" aria-label="Kategori">
-        <button
-          type="button"
-          className="chip"
-          aria-pressed={active === "semua"}
-          onClick={() => setActive("semua")}
-        >
-          Semua <span className="count">{totalItems}</span>
-        </button>
-        {filled.map((s) => (
+      {!searching && (
+        <nav className="cat-chips" aria-label="Kategori">
           <button
-            key={s.slug}
             type="button"
             className="chip"
-            aria-pressed={active === s.slug}
-            onClick={() => setActive(s.slug)}
+            aria-pressed={active === "semua"}
+            onClick={() => setActive("semua")}
           >
-            {s.name} <span className="count">{s.items.length}</span>
+            Semua <span className="count">{totalItems}</span>
           </button>
-        ))}
-      </nav>
+          {filled.map((s) => (
+            <button
+              key={s.slug}
+              type="button"
+              className="chip"
+              aria-pressed={active === s.slug}
+              onClick={() => setActive(s.slug)}
+            >
+              {s.name} <span className="count">{s.items.length}</span>
+            </button>
+          ))}
+        </nav>
+      )}
 
-      {shown.length === 0 ? (
+      {searching ? null : shown.length === 0 ? (
         <div className="empty-state">
           <h2>Konten sedang disiapkan</h2>
           <p className="muted">
@@ -305,8 +359,8 @@ export function HomePage() {
               }
             >
               {(active === "semua"
-                ? s.items.slice(0, tab?.type === "tool" ? TOOL_MAX : SHELF_MAX)
-                : s.items
+                ? readyFirst(s.items).slice(0, tab?.type === "tool" ? TOOL_MAX : SHELF_MAX)
+                : readyFirst(s.items)
               ).map((i) => (
                 <ItemCard key={`${i.type}-${i.slug}`} item={i} />
               ))}
