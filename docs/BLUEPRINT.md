@@ -29,7 +29,7 @@ Platform web berlangganan Rp129.000/user/bulan untuk menikmati konten buatan pla
 | D7  | Ebook dan tools tidak bisa diunduh. Template boleh diunduh (pembajakan diterima)                                                                                                                | Nilai inti dilindungi, template jadi nilai tambah                                                                                                                      |
 | D8  | Logika tools berjalan di server, tidak pernah dikirim ke browser                                                                                                                                | Tools tidak bisa disalin                                                                                                                                               |
 | D9  | Tim = pemilik + Claude + Claude Code, tanpa karyawan                                                                                                                                            | Semua operasional harus otomatis                                                                                                                                       |
-| D10 | Harga dasar Rp100.000/bulan (diubah D47), dengan opsi tahunan dan founding member                                                                                                                     | Arus kas di depan, retensi lebih tinggi                                                                                                                                |
+| D10 | Harga dasar Rp100.000/bulan (diubah D47), dengan opsi tahunan dan founding member (dihapus D48)                                                                                                                     | Arus kas di depan, retensi lebih tinggi                                                                                                                                |
 | D11 | Niche: pengembangan diri untuk konsumen umum, sebagai brand payung multi-kategori (nama kerja: selfgrow.id)                                                                                     | Katalog luas membuat harga langganan terasa sepadan dan membuka banyak pintu SEO                                                                                               |
 | D12 | Iklan selalu masuk lewat satu pain point spesifik per kampanye, bukan pesan "platform lengkap"                                                                                                  | Hook tajam menurunkan biaya akuisisi                                                                                                                                   |
 | D13 | Retensi ditopang tools tracker (data pribadi user tersimpan) dan template jadwal/program, setiap masalah punya solusi yang dipakai rutin                                                        | Pelanggan bertahan karena kebiasaan dan datanya, bukan karena jumlah ebook                                                                                             |
@@ -67,6 +67,7 @@ Platform web berlangganan Rp129.000/user/bulan untuk menikmati konten buatan pla
 | D45 | Setiap ebook punya identitas visual sendiri, dirancang sebelum menulis (PANDUAN-EBOOK bagian 4a): bentuk cerita, jenis dan gaya infografis (warna, huruf, bentuk kartu per buku; huruf tambahan OFL di `scripts/demo/fonts` hanya untuk render gambar), unsur interaktif yang sesuai, dan irama bab yang bervariasi. Template video mendapat adegan `chat` dan `theme` warna per buku. Tool boleh berupa penyusun teks (format `text` + `concat`/`if`), bukan hanya kalkulator angka | Kritik pemilik: elemen visual harus variatif agar setiap ebook unik, tidak terasa seperti template |
 | D46 | Video pengantar untuk ebook berikutnya dirancang khusus per buku, bukan dirakit dari kotak adegan. Setiap video punya satu konsep visual yang berjalan dari awal sampai akhir (dunia, benda, atau metafora dari buku itu), memberi minimal satu wawasan yang langsung bisa dipakai penonton walau tidak membaca bukunya, dan memperlihatkan isi asli buku (infografis, tool, contoh hitungan) bergerak. Kotak adegan D43 tetap ada sebagai bahan, bukan kerangka; adegan baru dibuat bila konsep membutuhkannya. Video ebook 1–5 dibiarkan apa adanya | Kritik pemilik: video pengantar terlalu terasa template, harus lebih kreatif dan informatif |
 | D47 | Harga langganan diubah menjadi Rp129.000/bulan dan Rp990.000/tahun (setara Rp82.500/bulan). Menggantikan angka Rp100.000 di D10; opsi tahunan dan harga founding member tetap. Harga resmi tetap disimpan di tabel `plans`, halaman site menampilkan angka yang sama | Keputusan pemilik, November 2026 |
+| D48 | Harga founding member dihapus. Harga ditampilkan dengan harga coret: bulanan Rp199.000 dicoret menjadi Rp129.000 (harga perkenalan, hemat 35%), tahunan Rp1.548.000 (12 × Rp129.000) dicoret menjadi Rp990.000. Angka coret hanya tampilan di site; harga yang ditagih tetap dari tabel `plans`. Jika harga perkenalan berakhir, ubah harga di `plans` dan site bersamaan. |
 
 ## 3. Model bisnis & tahapan
 
@@ -76,7 +77,8 @@ Satu langganan membuka semua konten. Kolom `tier` tetap disiapkan agar kelak bis
 
 - Bulanan: Rp129.000
 - Tahunan: Rp990.000 (setara Rp82.500/bulan, hemat Rp558.000 atau sekitar 4 bulan)
-- Founding member: 500 pelanggan pertama mendapat harga Rp49.000–69.000 yang terkunci selama langganan aktif
+- Tampilan harga coret (D48): bulanan ~~Rp199.000~~ Rp129.000 (harga perkenalan), tahunan ~~Rp1.548.000~~ Rp990.000
+- Tidak ada harga founding member (dihapus, D48)
 
 **Jenis konten**
 
@@ -425,7 +427,7 @@ Target pasar konsumen umum (D11), jadi kreatif iklan memakai bahasa sehari-hari 
 
 ### Peluncuran
 
-Waitlist lewat konten gratis → buka pendaftaran serentak dengan harga founding member (500 kursi, harga terkunci) → kumpulkan testimoni asli → lookalike audience dari pelanggan pertama.
+Waitlist lewat konten gratis → buka pendaftaran serentak dengan harga perkenalan Rp129.000 (normal Rp199.000, D48) → kumpulkan testimoni asli → lookalike audience dari pelanggan pertama.
 
 ## 13. Aturan kerja untuk Claude Code (isi `CLAUDE.md`)
 
@@ -546,7 +548,7 @@ Selesai bila: Lighthouse CI lulus budget, event `purchase` dari sandbox tercatat
 - [ ] PSE Lingkup Privat, KBLI, Syarat & Ketentuan, kebijakan privasi
 - [ ] Runbook darurat, uji restore backup, 2FA security key di semua akun inti
 - [ ] Program afiliasi + referral
-- [ ] Waitlist + harga founding member
+- [ ] Waitlist + harga perkenalan (D48)
 
 Selesai bila: launch ke publik dan iklan tahap uji mulai berjalan.
 

@@ -5,8 +5,10 @@ import { appUrl } from "../lib/api";
 const plans = [
   {
     name: "Bulanan",
+    was: "199.000",
     price: "129.000",
     per: "/bulan",
+    save: "Harga perkenalan, hemat 35%",
     note: "Bebas berhenti kapan saja.",
     features: [
       "Semua ebook, tools, template, dan program",
@@ -16,8 +18,10 @@ const plans = [
   },
   {
     name: "Tahunan",
+    was: "1.548.000",
     price: "990.000",
     per: "/tahun",
+    save: "Dibanding 12 × Rp129.000",
     note: "Setara Rp82.500 per bulan, hemat lebih dari 4 bulan.",
     features: [
       "Semua yang ada di paket bulanan",
@@ -34,7 +38,7 @@ const plans = [
     <div class="container">
       <p class="eyebrow">Harga</p>
       <h1>Satu langganan untuk semua kategori</h1>
-      <p class="lead">Pendaftaran berbayar segera dibuka. Daftar sekarang secara gratis untuk mencoba bab pertama setiap ebook dan mendapat harga founding member.</p>
+      <p class="lead">Pendaftaran berbayar segera dibuka. Daftar sekarang secara gratis untuk mencoba bab pertama setiap ebook.</p>
     </div>
   </section>
   <section class="container plans">
@@ -42,19 +46,13 @@ const plans = [
       <article class:list={["plan", { best: p.best }]}>
         {p.best && <span class="badge">Paling hemat</span>}
         <h2>{p.name}</h2>
+        <p class="was"><s aria-label={`Harga normal Rp${p.was}`}>Rp{p.was}</s> <span class="save">{p.save}</span></p>
         <p class="amount"><span class="rp">Rp</span>{p.price}<span class="per">{p.per}</span></p>
         <p class="muted">{p.note}</p>
         <ul>{p.features.map((f) => <li>{f}</li>)}</ul>
         <a href={appUrl("/masuk?auto=1")} class:list={["btn", p.best ? "btn-primary" : "btn-ghost"]}>Daftar gratis dulu</a>
       </article>
     ))}
-    <article class="plan founding">
-      <span class="badge gold">500 kursi</span>
-      <h2>Founding member</h2>
-      <p class="amount small">Rp49.000–69.000<span class="per">/bulan</span></p>
-      <p>Harga khusus untuk 500 pelanggan pertama, terkunci selama langganan aktif. Pendaftar awal dikabari lebih dulu saat pendaftaran dibuka.</p>
-      <a href={appUrl("/masuk?auto=1")} class="btn btn-gold">Amankan tempatmu</a>
-    </article>
   </section>
 </Base>
 
@@ -71,7 +69,8 @@ const plans = [
   }
   .plans {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 820px;
     gap: 20px;
     padding-block: 40px clamp(48px, 8vw, 96px);
     align-items: stretch;
@@ -91,14 +90,6 @@ const plans = [
     border: 2px solid var(--primary);
     box-shadow: var(--shadow);
   }
-  .plan.founding {
-    background: var(--hero-bg);
-    color: var(--hero-ink);
-    border-color: transparent;
-  }
-  .plan.founding h2 {
-    color: #fff;
-  }
   .badge {
     position: absolute;
     top: -12px;
@@ -110,10 +101,6 @@ const plans = [
     background: var(--primary);
     color: var(--primary-ink);
   }
-  .badge.gold {
-    background: var(--gold);
-    color: var(--green-950);
-  }
   .plan h2 {
     font-size: 1.2rem;
   }
@@ -123,8 +110,25 @@ const plans = [
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
-  .amount.small {
-    font-size: 1.6rem;
+  .was {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: -6px;
+  }
+  .was s {
+    color: var(--muted);
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .save {
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 99px;
+    background: var(--gold);
+    color: var(--green-950);
   }
   .rp {
     font-size: 0.45em;
