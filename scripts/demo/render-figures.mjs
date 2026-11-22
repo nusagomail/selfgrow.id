@@ -17,6 +17,7 @@ import { LARI_FIGURE_CSS, LARI_FIGURES } from "./books/lari-figures.mjs";
 import { MINGGU_FIGURE_CSS, MINGGU_FIGURES } from "./books/minggu-figures.mjs";
 import { NEGO_FIGURE_CSS, NEGO_FIGURES } from "./books/nego-figures.mjs";
 import { OVERTHINKING_FIGURE_CSS, OVERTHINKING_FIGURES } from "./books/overthinking-figures.mjs";
+import { PANGGUNG_FIGURE_CSS, PANGGUNG_FIGURES } from "./books/panggung-figures.mjs";
 import { FIGURE_CSS, FIGURES } from "./books/paylater-figures.mjs";
 import { SCROLL_FIGURE_CSS, SCROLL_FIGURES } from "./books/scroll-figures.mjs";
 import { STOIK_FIGURE_CSS, STOIK_FIGURES } from "./books/stoik-figures.mjs";
@@ -51,6 +52,7 @@ const SETS = {
   "cv-yang-dilirik-rekruter": { figures: CV_FIGURES, css: CV_FIGURE_CSS },
   "berhenti-menunda-mulai-hari-ini": { figures: TUNDA_FIGURES, css: TUNDA_FIGURE_CSS },
   "gajian-kok-cepat-habis": { figures: GAJIAN_FIGURES, css: GAJIAN_FIGURE_CSS },
+  "bicara-di-depan-umum-tanpa-gemetar": { figures: PANGGUNG_FIGURES, css: PANGGUNG_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,
