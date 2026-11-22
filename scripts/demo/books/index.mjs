@@ -42,6 +42,8 @@ import { TIDAK_2 } from "./tidak-2.mjs";
 import { TIDAK_FIGURES } from "./tidak-figures.mjs";
 import { TUNDA_1 } from "./tunda-1.mjs";
 import { TUNDA_FIGURES } from "./tunda-figures.mjs";
+import { VALIDASI_1 } from "./validasi-1.mjs";
+import { VALIDASI_FIGURES } from "./validasi-figures.mjs";
 
 export const FULL_BOOKS = {
   "lepas-dari-jerat-paylater": {
@@ -119,5 +121,9 @@ export const FULL_BOOKS = {
   "umur-25-dan-merasa-tertinggal": {
     chapters: TERTINGGAL_1,
     figures: TERTINGGAL_FIGURES,
+  },
+  "validasi-ide-sebelum-modal-habis": {
+    chapters: VALIDASI_1,
+    figures: VALIDASI_FIGURES,
   },
 };

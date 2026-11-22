@@ -26,6 +26,7 @@ import { TERIAK_FIGURE_CSS, TERIAK_FIGURES } from "./books/teriak-figures.mjs";
 import { TERTINGGAL_FIGURE_CSS, TERTINGGAL_FIGURES } from "./books/tertinggal-figures.mjs";
 import { TIDAK_FIGURE_CSS, TIDAK_FIGURES } from "./books/tidak-figures.mjs";
 import { TUNDA_FIGURE_CSS, TUNDA_FIGURES } from "./books/tunda-figures.mjs";
+import { VALIDASI_FIGURE_CSS, VALIDASI_FIGURES } from "./books/validasi-figures.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "../..");
@@ -57,6 +58,7 @@ const SETS = {
   "bicara-di-depan-umum-tanpa-gemetar": { figures: PANGGUNG_FIGURES, css: PANGGUNG_FIGURE_CSS },
   "anak-dan-gawai": { figures: GAWAI_FIGURES, css: GAWAI_FIGURE_CSS },
   "umur-25-dan-merasa-tertinggal": { figures: TERTINGGAL_FIGURES, css: TERTINGGAL_FIGURE_CSS },
+  "validasi-ide-sebelum-modal-habis": { figures: VALIDASI_FIGURES, css: VALIDASI_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,
