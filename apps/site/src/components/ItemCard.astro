@@ -1,5 +1,6 @@
 ---
 import { type Access, type ContentType, contentPath, siteCover } from "../lib/api";
+import ToolCard from "./ToolCard.astro";
 
 /**
  * Kartu buku di etalase (D38): sampul tegak seperti di rak toko buku, judul di bawahnya, dan satu
@@ -34,6 +35,9 @@ const label = item.comingSoon
       : { text: "Premium", cls: "premium" };
 ---
 
+{item.type === "tool" ? (
+  <ToolCard item={{ ...item, type: "tool" }} />
+) : (
 <a href={contentPath(item)} class="book" title={item.summary ?? item.title}>
   <span class:list={["cover", { empty: !cover }]}>
     {cover ? (
@@ -53,6 +57,7 @@ const label = item.comingSoon
     {label.text}
   </span>
 </a>
+)}
 
 <style>
   .book {

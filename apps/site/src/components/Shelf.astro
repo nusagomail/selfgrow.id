@@ -11,6 +11,8 @@ interface Props {
   items: FeedItem[];
 }
 const { title, hook, href, count, items } = Astro.props;
+// Tool bukan buku (D49): kartu lebar dalam grid, bukan rak sampul.
+const tools = items.length > 0 && items.every((i) => i.type === "tool");
 ---
 
 <section class="shelf">
@@ -21,7 +23,7 @@ const { title, hook, href, count, items } = Astro.props;
     </div>
     <a href={href} class="more">Lihat semua <span class="n">{count}</span></a>
   </div>
-  <div class="row" role="list">
+  <div class:list={["row", { "tool-row": tools }]} role="list">
     {items.map((i) => (
       <div class="slot" role="listitem"><ItemCard item={i} /></div>
     ))}
@@ -75,6 +77,11 @@ const { title, hook, href, count, items } = Astro.props;
     padding: 6px 2px 14px;
     margin-inline: -2px;
     scrollbar-width: thin;
+  }
+  .row.tool-row {
+    grid-auto-columns: min(82vw, 300px);
+    gap: 14px;
+    background: none;
   }
   .slot {
     scroll-snap-align: start;

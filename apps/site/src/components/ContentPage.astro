@@ -1,5 +1,6 @@
 ---
 import type { EbookDoc } from "@selfgrow/shared";
+import { TOOL_KIND_LABEL, toolKind } from "@selfgrow/shared";
 import Base from "../layouts/Base.astro";
 import {
   ACCESS_LABEL,
@@ -102,7 +103,7 @@ const crumbs = {
         {data.topic && data.category && (<><span aria-hidden="true">/</span><a href={`/kategori/${data.category.slug}/${data.topic.slug}`}>{data.topic.name}</a></>)}
       </nav>
       <div class="tags">
-        <span class="type-tag">{TYPE_LABEL[data.type]}</span>
+        <span class="type-tag">{data.type === "tool" ? `Tool · ${TOOL_KIND_LABEL[toolKind(data.title)]}` : TYPE_LABEL[data.type]}</span>
         {data.comingSoon ? (
           <span class="access soon">Segera terbit</span>
         ) : (

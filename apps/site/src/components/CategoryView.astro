@@ -50,7 +50,7 @@ const groups = availableTypeTabs(items).map((t) => ({
           <h2 id={`jenis-${g.param}`}>
             {g.label} <span class="count">{g.count}</span>
           </h2>
-          <div class="book-grid">
+          <div class:list={[g.type === "tool" ? "tool-grid" : "book-grid"]}>
             {g.items.map((i) => (
               <ItemCard item={{ ...i, category: null }} />
             ))}
@@ -92,6 +92,11 @@ const groups = availableTypeTabs(items).map((t) => ({
     color: var(--muted);
     font-weight: 600;
     font-size: 0.85em;
+  }
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: 14px;
   }
   .book-grid {
     display: grid;
