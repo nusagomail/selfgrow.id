@@ -37,13 +37,13 @@ export const SIAP_UJI = {
       min: 3,
       max: 4,
       title: "Mulai ada bukti",
-      text: "Kamu sudah punya sebagian bukti. Bab 3 dan 4 membantumu menaikkan bukti itu dari ucapan menjadi pembayaran.",
+      text: "Kamu sudah punya sebagian bukti. Bab 4 dan 5 membantumu menaikkan bukti itu dari ucapan menjadi pembayaran.",
     },
     {
       min: 5,
       max: 6,
       title: "Siap diuji lebih besar",
-      text: "Buktimu sudah cukup kuat. Pakai Bab 5 untuk menghitung titik impas dan mengeluarkan modal secara bertahap.",
+      text: "Buktimu sudah cukup kuat. Pakai Bab 6 untuk menghitung titik impas dan mengeluarkan modal secara bertahap.",
     },
   ],
 };
@@ -118,6 +118,6 @@ export const PUJIAN_ATAU_BUKTI = {
       title: "Hampir jeli",
       text: "Bedakan cerita masa lalu dan komitmen: yang pertama memberi pemahaman, yang kedua memberi bukti.",
     },
-    { min: 5, max: 5, title: "Penyaring yang jeli", text: "Sekarang naiki tangga bukti di Bab 3." },
+    { min: 5, max: 5, title: "Penyaring yang jeli", text: "Sekarang naiki tangga bukti di Bab 4." },
   ],
 };

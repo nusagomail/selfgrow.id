@@ -1,5 +1,5 @@
 /**
- * "Validasi Ide Sebelum Modal Habis", 6 bab.
+ * "Validasi Ide Sebelum Modal Habis", 9 bab (diperdalam: mencari sepuluh orang yang tepat, izin kecil, harga dan pelanggan pertama).
  *
  * Rancangan (dipikirkan sebelum menulis):
  * - Pembaca: karyawan atau anak muda yang ingin membuka usaha sampingan dengan tabungan
@@ -72,6 +72,43 @@ export const VALIDASI_1 = [
     ],
   },
   {
+    title: "Mencari Sepuluh Orang yang Tepat",
+    blocks: [
+      '**Tabungan Nadia: Rp40.000.000.** Hari pertama, Nadia hanya berani menghubungi teman dekat dan grup alumni. Semua menjawab ramah, dan semua menjawab "mau". Dia sadar itu bukan calon pembelinya.',
+      'Bicara dengan calon pembeli terasa canggung karena kita merasa sedang "berjualan". Padahal di tahap ini kamu tidak menjual apa-apa. Kamu sedang **belajar** tentang hidup mereka.',
+      ["h", "Di mana menemukan mereka"],
+      [
+        "table",
+        [
+          ["Cara", "Contoh Nadia"],
+          [
+            "Tempat mereka berkumpul",
+            "Kantin dan lobi gedung kantor di sekitar Jalan Pettarani pada jam makan siang",
+          ],
+          ["Kenalan dari kenalan", '"Siapa temanmu yang sering makan siang di meja kantor?"'],
+          ["Komunitas daring", "Grup karyawan atau komunitas lari yang membicarakan makanan sehat"],
+          ["Pembeli pesaing", "Orang yang sudah pernah berlangganan katering lain, lalu berhenti"],
+        ],
+      ],
+      ["h", "Kalimat pembuka"],
+      [
+        "quote",
+        "Saya sedang meneliti kebiasaan makan siang karyawan kantor. Boleh minta sepuluh menit untuk tanya-tanya? Saya tidak menjual apa-apa.",
+      ],
+      "Kalimat terakhir penting. Orang lebih jujur saat tahu tidak akan ditawari sesuatu di akhir percakapan.",
+      ["h", "Catat polanya, bukan pujiannya"],
+      [
+        "ul",
+        [
+          "Tulis kalimat persis yang mereka ucapkan, terutama tentang uang, waktu, dan hal yang sudah dicoba.",
+          "Setelah sepuluh percakapan, cari kalimat yang muncul tiga kali atau lebih. Itu masalah yang nyata.",
+          "Kalau tidak ada pola sama sekali, mungkin masalahnya tidak sepenting yang kamu kira, atau kamu bicara dengan orang yang salah.",
+        ],
+      ],
+      'Pola Nadia muncul di percakapan ketujuh: "Bosan menunya" dan "sering telat datang" disebut enam kali. Keduanya menjadi janji utama tawarannya.',
+    ],
+  },
+  {
     title: "Tangga Bukti",
     blocks: [
       "**Tabungan Nadia: Rp40.000.000.** Dari sepuluh percakapan, enam orang pernah berlangganan katering dan berhenti. Alasannya sama: menunya membosankan dan sering terlambat datang.",
@@ -120,6 +157,75 @@ export const VALIDASI_1 = [
       [
         "info",
         'Untuk menghitung harga jual dan HPP lebih rinci, lihat buku "Hitung Harga Jual yang Untung".',
+      ],
+    ],
+  },
+  {
+    title: "Izin Kecil yang Sering Terlupa",
+    blocks: [
+      '**Tabungan Nadia: Rp39.500.000.** Salah satu kantor yang memesan bertanya: "Usahanya sudah ada izinnya, Bu? Untuk administrasi pembayaran kami." Nadia belum punya apa-apa.',
+      "Banyak usaha kecil menunda urusan izin karena membayangkan prosesnya mahal dan rumit. Untuk usaha mikro, sebagian besar langkah pertamanya kini bisa dilakukan secara daring, dan dasarnya gratis.",
+      [
+        "table",
+        [
+          ["Izin", "Untuk apa", "Di mana"],
+          [
+            "Nomor Induk Berusaha (NIB)",
+            "Identitas usaha; sering diminta kantor, marketplace, atau bank",
+            "oss.go.id, gratis",
+          ],
+          [
+            "Sertifikat Produksi Pangan Industri Rumah Tangga (SPP-IRT)",
+            "Pangan olahan dalam kemasan buatan rumah, misalnya kue kering dan sambal botol",
+            "Diajukan lewat OSS; biaya dan prosesnya bisa berbeda per daerah",
+          ],
+          [
+            "Sertifikat halal",
+            "Kepercayaan pembeli, dan kewajiban bertahap untuk produk makanan",
+            "ptsp.halal.go.id; skema pernyataan mandiri untuk usaha mikro dan kecil",
+          ],
+        ],
+      ],
+      [
+        "fact",
+        "BPJPH membuka kuota 1,35 juta sertifikasi halal gratis tahun 2026 bagi usaha mikro dan kecil lewat skema pernyataan mandiri (self declare), untuk produk yang tidak berisiko dan bahannya sudah dipastikan halal.",
+        "Badan Penyelenggara Jaminan Produk Halal (bpjph.halal.go.id), 2026",
+      ],
+      [
+        "info",
+        "Usaha katering atau jasa boga biasanya juga diminta sertifikat laik higiene sanitasi dari dinas kesehatan. Tanyakan ke dinas kesehatan kota atau kabupatenmu, karena persyaratannya bisa berbeda per daerah.",
+      ],
+      'Nadia mengurus NIB malam itu juga dan selesai kurang dari satu jam. Sertifikat halal dan pemeriksaan higiene dia jadwalkan di tahap "coba kecil", setelah idenya terbukti, bukan sebelumnya. Urutan itu penting: izin adalah biaya yang layak dibayar untuk usaha yang sudah terbukti, bukan untuk ide yang belum diuji.',
+    ],
+  },
+  {
+    title: "Harga Pertama dan Pelanggan Pertama",
+    blocks: [
+      '**Tabungan Nadia: Rp38.400.000.** Di tahap coba kecil, godaan terbesar Nadia adalah memberi gratis supaya "orang coba dulu".',
+      "Contoh gratis berguna sekali, untuk membuka percakapan. Tapi pelanggan yang hanya datang karena gratis tidak membuktikan apa-apa. Yang perlu dibuktikan adalah apakah orang mau membayar **harga yang membuat usahamu bertahan**.",
+      ["h", "Harga perkenalan, bukan harga murah"],
+      [
+        "ul",
+        [
+          "Tetapkan harga normal sejak awal, misalnya Rp35.000 per kotak, dan tulis dengan jelas.",
+          "Beri potongan perkenalan untuk pelanggan pertama, misalnya 20% untuk dua minggu pertama, dengan tanggal berakhir yang jelas.",
+          "Saat potongan berakhir, lihat berapa yang tetap memesan. Itu angka yang sebenarnya.",
+        ],
+      ],
+      ["h", "Pelanggan pertama adalah guru terbaik"],
+      "Sepuluh pelanggan pertama Nadia ia telepon satu per satu setelah minggu pertama. Pertanyaannya hanya dua: apa yang paling kamu suka, dan apa yang hampir membuatmu berhenti memesan? Dari situ dia tahu bahwa sambal dipisah lebih disukai, dan bahwa pengantaran pukul 11.30 terlalu mepet untuk kantor yang istirahat pukul 12.",
+      [
+        "tip",
+        "Minta izin memakai ucapan pelanggan sebagai testimoni, lengkap dengan nama dan kantornya. Satu testimoni dari kantor yang dikenal lebih meyakinkan daripada sepuluh foto makanan yang cantik.",
+      ],
+      [
+        "exercise",
+        [
+          "Tulis harga normalmu dan alasan angkanya (lihat Bab 6).",
+          "Tentukan potongan perkenalan dan tanggal berakhirnya.",
+          "Siapkan dua pertanyaan untuk sepuluh pelanggan pertamamu.",
+        ],
+        "Lembar kerja: harga perkenalan",
       ],
     ],
   },
