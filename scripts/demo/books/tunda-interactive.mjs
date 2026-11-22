@@ -31,7 +31,7 @@ export const TANDA_MENGHINDAR = {
       min: 0,
       max: 4,
       title: "Penundaan sesekali",
-      text: "Kamu jarang menunda karena perasaan. Alat di Bab 5 (tenggat kecil, jauhkan gangguan) mungkin sudah cukup.",
+      text: "Kamu jarang menunda karena perasaan. Alat di Bab 6 (tenggat kecil, jauhkan gangguan) mungkin sudah cukup.",
     },
     {
       min: 5,
@@ -43,7 +43,7 @@ export const TANDA_MENGHINDAR = {
       min: 9,
       max: 12,
       title: "Perasaan yang memegang kemudi",
-      text: "Tugasnya mungkin tidak sulit; perasaan di sekitarnya yang berat. Mulai dari Bab 1 dan Bab 6, lalu langkah dua menit di Bab 3.",
+      text: "Tugasnya mungkin tidak sulit; perasaan di sekitarnya yang berat. Mulai dari Bab 1 dan Bab 9, lalu langkah dua menit di Bab 3.",
     },
   ],
 };
@@ -62,7 +62,7 @@ export const HARI_DINDA = {
   note: "Menit, ilustrasi. Total 240 menit.",
 };
 
-/** Bab 6: pagi setelah menunda seharian (D50, skenario). */
+/** Bab 9: pagi setelah menunda seharian (D50, skenario). */
 export const PAGI_SETELAHNYA = {
   id: "pagi-setelahnya",
   mode: "scenario",

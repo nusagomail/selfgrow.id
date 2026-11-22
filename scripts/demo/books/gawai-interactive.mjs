@@ -33,19 +33,19 @@ export const SUASANA_LAYAR = {
       min: 0,
       max: 4,
       title: "Cukup tenang",
-      text: "Urusan layar di rumahmu relatif terkendali. Bab 3 dan 4 membantu menuliskannya menjadi kesepakatan, supaya tetap stabil saat anak bertambah besar.",
+      text: "Urusan layar di rumahmu relatif terkendali. Bab 4 dan 5 membantu menuliskannya menjadi kesepakatan, supaya tetap stabil saat anak bertambah besar.",
     },
     {
       min: 5,
       max: 8,
       title: "Sering tarik-menarik",
-      text: "Layar sudah menjadi sumber gesekan. Mulailah dari Bab 3 (lampu lalu lintas layar) dan Bab 4 (aba-aba sebelum selesai).",
+      text: "Layar sudah menjadi sumber gesekan. Mulailah dari Bab 4 (lampu lalu lintas layar) dan Bab 5 (aba-aba sebelum selesai).",
     },
     {
       min: 9,
       max: 12,
       title: "Perang setiap hari",
-      text: "Kamu tidak sendirian, dan ini bisa berubah. Baca berurutan dari Bab 1; Bab 6 menjelaskan kenapa minggu pertama biasanya terasa lebih berat sebelum membaik.",
+      text: "Kamu tidak sendirian, dan ini bisa berubah. Baca berurutan dari Bab 1; Bab 8 menjelaskan kenapa minggu pertama biasanya terasa lebih berat sebelum membaik.",
     },
   ],
 };
@@ -66,7 +66,7 @@ export const MINGGU_PERTAMA = {
   note: "Ilustrasi. Hari kedua biasanya paling berat: anak menguji apakah aturan barunya sungguhan.",
 };
 
-/** Bab 4: saat waktu layar habis (D50, skenario). */
+/** Bab 5: saat waktu layar habis (D50, skenario). */
 export const SATU_LEVEL_LAGI = {
   id: "satu-level-lagi",
   mode: "scenario",

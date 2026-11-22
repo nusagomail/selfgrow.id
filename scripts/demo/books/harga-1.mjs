@@ -1,5 +1,5 @@
 /**
- * "Hitung Harga Jual yang Untung", 6 bab bergaya buku kerja: setiap bab berisi satu langkah, satu
+ * "Hitung Harga Jual yang Untung", 8 bab bergaya buku kerja: setiap bab berisi satu langkah, satu
  * contoh hitungan (risol mayo Dina, ilustrasi), dan satu lembar kerja untuk pembaca.
  * Edukasi umum, bukan nasihat pajak atau akuntansi.
  */
@@ -136,6 +136,43 @@ export const HARGA_1 = [
     ],
   },
   {
+    title: "Diskon yang Diam-Diam Memakan Untung",
+    blocks: [
+      'Bulan puasa, tetangga Dina memasang promo "diskon 10% semua menu". Dina tergoda ikut. Kelihatannya kecil: Rp4.500 jadi Rp4.050, hanya Rp450 lebih murah.',
+      "Masalahnya, diskon tidak dipotong dari harga. Diskon dipotong dari **untung**.",
+      [
+        "table",
+        [
+          ["", "Harga normal", "Diskon 10%"],
+          ["Harga jual", "Rp4.500", "Rp4.050"],
+          ["HPP", "Rp3.250", "Rp3.250"],
+          ["Untung per risol", "Rp1.250", "Rp800"],
+          ["Untung 40 risol", "Rp50.000", "Rp32.000"],
+        ],
+      ],
+      "Diskon 10% memangkas untung per risol sebesar 36%. Supaya untung hariannya tetap Rp50.000, Dina harus menjual sekitar 63 risol, bukan 40. Itu berarti satu adonan tambahan, lebih banyak tenaga, dan lebih banyak minyak.",
+      ["quote", "Penjualan yang dibutuhkan setelah diskon = untung lama ÷ untung baru per produk"],
+      ["h", "Promo yang lebih aman"],
+      [
+        "ul",
+        [
+          "**Paket, bukan potongan harga:** 10 risol Rp42.000 untuk pesanan arisan. Potongannya hanya Rp300 per risol, dan Dina menjual 10 sekaligus tanpa repot.",
+          "**Bonus kecil dengan HPP rendah:** gratis satu sachet sambal untuk pembelian 5 risol.",
+          "**Diskon berbatas:** hanya untuk 20 pembeli pertama atau satu hari tertentu, supaya pelanggan tidak terbiasa menunggu promo.",
+        ],
+      ],
+      [
+        "exercise",
+        [
+          "Hitung untung per produkmu sekarang.",
+          "Hitung untung per produk kalau diberi diskon 10% dan 20%.",
+          "Bagi untung lama dengan untung baru. Apakah kamu sanggup menjual sebanyak itu?",
+        ],
+        "Lembar kerja: sebelum memberi diskon",
+      ],
+    ],
+  },
+  {
     title: "Langkah 4: Berapa yang Harus Terjual?",
     blocks: [
       "Harga sudah benar. Pertanyaan berikutnya: **berapa banyak yang harus terjual setiap bulan supaya usaha ini tidak rugi?** Angka ini disebut titik impas.",
@@ -178,6 +215,32 @@ export const HARGA_1 = [
           "Tulis target harian di kertas dan tempel di dapur atau tempat kerjamu.",
         ],
         "Lembar kerja 3: target harian",
+      ],
+    ],
+  },
+  {
+    title: "Harga Kalau Dijual Lewat Aplikasi",
+    blocks: [
+      'Seorang pelanggan menyarankan Dina berjualan lewat aplikasi pesan antar. "Biar orang kantor bisa pesan langsung." Dina mendaftar, memasang harga yang sama, Rp4.500. Bulan pertama, pesanan bertambah, tapi uang yang masuk tidak sebanyak yang dia hitung.',
+      "Aplikasi pesan antar dan marketplace memotong komisi atau biaya layanan dari setiap penjualan. Besarnya berbeda antar-platform dan bisa berubah, jadi selalu cek di halaman mitra platform yang kamu pakai.",
+      ["h", "Hitung harga daring dari yang ingin diterima"],
+      [
+        "quote",
+        "Harga di aplikasi = harga yang ingin diterima ÷ (1 − persentase potongan platform)",
+      ],
+      [
+        "table",
+        [
+          ["Contoh potongan platform 20%", "Angka"],
+          ["Yang ingin diterima Dina per risol", "Rp4.500"],
+          ["Harga di aplikasi (4.500 ÷ 0,8)", "Rp5.625, dibulatkan Rp6.000"],
+          ["Yang diterima setelah potongan 20% dari Rp6.000", "Rp4.800"],
+        ],
+      ],
+      "Menaikkan harga di aplikasi bukan curang. Pembeli di aplikasi membayar kemudahan: tidak perlu datang, bisa pesan dari meja kantor. Harga untuk pembeli langsung boleh tetap lebih murah, dan itu justru menjadi alasan pelanggan setia memesan langsung.",
+      [
+        "warn",
+        "Jangan lupa biaya kemasan yang lebih kuat untuk pengiriman, dan risiko pesanan yang dibatalkan. Masukkan keduanya ke HPP versi daring.",
       ],
     ],
   },

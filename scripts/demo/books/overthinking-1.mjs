@@ -1,5 +1,5 @@
 /**
- * "Keluar dari Lingkaran Overthinking", 6 bab. Ditulis seperti surat yang menemani pembaca di satu
+ * "Keluar dari Lingkaran Overthinking", 8 bab. Ditulis seperti surat yang menemani pembaca di satu
  * malam yang panjang: setiap bab dibuka dengan jam berbeda. Tanpa tokoh utama; sesekali suara
  * pembaca (komposit, ilustrasi). Bukan pengganti bantuan profesional.
  */
@@ -199,6 +199,56 @@ export const OVERTHINKING_1 = [
       ],
       ["h", "Kalau tetap tidak bisa tidur"],
       "Kalau sudah lebih dari sekitar 20 menit berbaring dan pikiranmu masih ramai, tidak apa-apa untuk bangun sebentar. Pindah ke kursi, nyalakan lampu redup, lakukan sesuatu yang tenang dan membosankan, seperti melipat baju atau membaca buku kertas. Kembali ke tempat tidur saat mulai mengantuk. Ini membantu tubuhmu tidak mengaitkan kasur dengan pikiran yang berputar.",
+    ],
+  },
+  {
+    title: "Pukul 04.10: Percakapan yang Diputar Ulang",
+    blocks: [
+      'Pukul 04.10. Pikiran kembali ke rapat kemarin sore. Kenapa tadi aku bilang begitu? Apakah dia tersinggung? Kenapa dia hanya membalas "oke" di grup? Percakapan tiga menit diputar ulang tiga puluh kali.',
+      "Jenis overthinking ini menyangkut orang lain, dan karena itu terasa paling sulit dilepas: jawabannya ada di kepala orang lain, dan kita tidak bisa memeriksanya di tengah malam.",
+      ["h", "Tiga pertanyaan untuk percakapan yang diputar ulang"],
+      [
+        "ol",
+        [
+          "**Apa yang benar-benar terjadi,** kalau direkam kamera? Bukan tafsiran, hanya kata dan tindakan.",
+          '**Apa saja penjelasan lain** untuk balasan "oke" itu? Sedang sibuk, sedang menyetir, memang gaya menulisnya singkat.',
+          "**Apakah ada yang bisa dilakukan,** dan kapan? Kalau ya, tulis satu langkah untuk besok siang. Kalau tidak, letakkan.",
+        ],
+      ],
+      'Sering kali, langkah paling sederhana adalah bertanya langsung keesokan harinya, dengan nada ringan: "Soal rapat kemarin, aku khawatir kalimatku kurang enak. Kamu oke?" Jawabannya hampir selalu jauh lebih ringan daripada yang diputar semalaman.',
+      [
+        "tip",
+        'Tulis kekhawatiran tentang orang lain di daftar "tanya langsung", bukan di daftar "pikirkan lagi". Tanya langsung butuh dua menit; memikirkannya bisa butuh dua jam.',
+      ],
+    ],
+  },
+  {
+    title: "Pukul 04.40: Pilihan yang Tidak Kunjung Diambil",
+    blocks: [
+      'Pukul 04.40. Sudah tiga minggu pikiran yang sama kembali: ambil tawaran kerja di kota lain atau tidak. Daftar kelebihan dan kekurangan sudah ditulis dua kali. Setiap kali hampir memutuskan, muncul satu "tapi" yang baru.',
+      "Sebagian overthinking adalah keputusan yang terus ditunda dengan harapan menemukan pilihan yang sempurna. Masalahnya, pilihan sempurna jarang ada, dan menunggunya juga sebuah keputusan.",
+      [
+        "fact",
+        "Penelitian membedakan dua gaya memutuskan: pemaksimal yang selalu mencari pilihan terbaik, dan pencari-cukup yang memilih begitu menemukan yang memenuhi kriterianya. Pemaksimal cenderung lebih sering menyesal dan kurang puas dengan pilihannya, walaupun pilihannya tidak lebih buruk.",
+        "Schwartz dkk., Journal of Personality and Social Psychology, 2002",
+      ],
+      ["h", "Memutuskan dengan cukup"],
+      [
+        "ol",
+        [
+          "**Tulis tiga kriteria yang paling penting** sebelum membandingkan pilihan lagi. Bukan sepuluh.",
+          "**Pilih yang memenuhi ketiganya,** walaupun ada pilihan lain yang mungkin sedikit lebih baik di hal lain.",
+          '**Pasang tenggat:** "Aku memutuskan hari Jumat pukul lima sore." Sampai saat itu, kumpulkan informasi di siang hari, bukan di tempat tidur.',
+          "**Tanyakan: bisakah dibalik?** Keputusan yang bisa diubah kemudian layak diambil lebih cepat.",
+        ],
+      ],
+      [
+        "reflect",
+        [
+          "Keputusan apa yang sudah terlalu lama kamu putar di kepala?",
+          "Tiga kriteria apa yang sebenarnya paling penting untuk keputusan itu?",
+        ],
+      ],
     ],
   },
   {

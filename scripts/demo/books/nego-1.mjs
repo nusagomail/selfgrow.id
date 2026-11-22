@@ -1,5 +1,5 @@
 /**
- * "Berani Nego Gaji", 6 bab. Bentuk: satu tokoh, Raka (27, analis pemasaran), diikuti dari
+ * "Berani Nego Gaji", 9 bab (diperdalam: membaca slip gaji, lulusan baru dan pindah bidang, kalau jawabannya tetap tidak). Bentuk: satu tokoh, Raka (27, analis pemasaran), diikuti dari
  * tawaran Rp8 juta sampai kesepakatan; setiap bab dibuka dengan percakapan atau momen di
  * prosesnya. Pembaca menyiapkan negosiasinya sendiri di setiap bab. Angka gaji adalah ilustrasi.
  */
@@ -68,6 +68,55 @@ export const NEGO_1 = [
           "Tulis tiga angkamu: target, batas bawah rentang, dan batas terendah.",
         ],
         "Lembar kerja: riset angka",
+      ],
+    ],
+  },
+  {
+    title: "Membaca Slip Gaji: Yang Ditawar Bukan Hanya Satu Angka",
+    blocks: [
+      'Saat HR menyebut "Rp9 juta", Raka langsung membayangkan Rp9 juta masuk ke rekeningnya. Di bulan pertama di kantor lamanya dulu, angka yang masuk ternyata jauh lebih kecil. Dia tidak tahu harus bertanya apa.',
+      "Sebelum bernegosiasi, pastikan kamu dan HR membicarakan angka yang sama.",
+      ["h", "Kotor, bersih, dan paket"],
+      [
+        "table",
+        [
+          ["Istilah", "Artinya", "Pertanyaan yang perlu diajukan"],
+          [
+            "Gaji kotor (bruto)",
+            "Gaji pokok ditambah tunjangan tetap, sebelum potongan",
+            '"Angka ini kotor atau bersih?"',
+          ],
+          [
+            "Potongan pekerja",
+            "Iuran BPJS dan pajak penghasilan yang dipotong dari gajimu",
+            '"PPh 21 ditanggung perusahaan atau dipotong dari gaji?"',
+          ],
+          [
+            "Gaji bersih (take home pay)",
+            "Yang benar-benar masuk ke rekening",
+            "Hitung sendiri sebelum menyetujui",
+          ],
+          [
+            "Tunjangan tidak tetap",
+            "Uang makan atau transport per hari hadir, lembur, insentif",
+            '"Apakah dibayar per kehadiran, dan berapa rata-ratanya?"',
+          ],
+          [
+            "Fasilitas",
+            "Asuransi tambahan, laptop, pelatihan, bonus tahunan",
+            '"Bonus dihitung dari apa, dan berapa yang biasa diterima?"',
+          ],
+        ],
+      ],
+      [
+        "fact",
+        "Dari gaji pekerja dipotong iuran BPJS Kesehatan 1%, Jaminan Hari Tua 2%, dan Jaminan Pensiun 1% (masing-masing dengan batas atas upah), sementara perusahaan membayar bagian yang lebih besar. Sejak 2024, pemotongan PPh 21 bulanan memakai tarif efektif rata-rata.",
+        "Peraturan BPJS Kesehatan dan BPJS Ketenagakerjaan; PP No. 58 Tahun 2023",
+      ],
+      "Raka kini selalu meminta rincian tawaran secara tertulis: gaji pokok, tunjangan tetap, tunjangan tidak tetap, dan siapa yang menanggung pajak. Dua tawaran dengan angka kotor yang sama bisa berbeda ratusan ribu di rekening.",
+      [
+        "tip",
+        "Bandingkan tawaran dalam satu angka setahun: gaji bersih × 12, ditambah THR, ditambah rata-rata bonus. Lalu tambahkan nilai fasilitas yang benar-benar kamu pakai.",
       ],
     ],
   },
@@ -154,6 +203,30 @@ export const NEGO_1 = [
     ],
   },
   {
+    title: "Lulusan Baru dan Pindah Bidang",
+    blocks: [
+      'Adik Raka, Sinta, baru lulus akuntansi dan mendapat tawaran pertamanya. "Aku kan belum punya pengalaman. Masa berani nawar?" Pertanyaan yang sama dirasakan orang yang pindah bidang, misalnya dari guru ke desain instruksional.',
+      "Ruang tawarnya memang lebih sempit, tapi jarang nol. Yang berubah adalah apa yang ditawar dan bagaimana caranya.",
+      ["h", "Yang biasanya masih bisa dibicarakan"],
+      [
+        "ul",
+        [
+          "**Angka dalam rentang yang sudah diumumkan.** Kalau lowongan menyebut Rp5–6 juta, wajar bertanya apakah bisa di tengah rentang dengan alasan magang atau sertifikasi yang relevan.",
+          '**Tinjauan gaji lebih cepat.** "Bisakah gaji saya ditinjau setelah masa percobaan tiga bulan, kalau target terpenuhi?"',
+          "**Pelatihan dan sertifikasi** yang dibiayai perusahaan, karena nilainya besar untuk karier awal.",
+          "**Tanggal mulai** yang memberi waktu menyelesaikan urusan pindah kota.",
+        ],
+      ],
+      ["h", "Bukti pengganti pengalaman"],
+      "Bagi lulusan baru, bukti datang dari proyek kuliah, magang, organisasi, dan nilai tes. Bagi yang pindah bidang, bukti datang dari keterampilan yang bisa dibawa: guru yang pindah ke pelatihan karyawan membawa pengalaman menyusun materi untuk ratusan orang dan membaca kebutuhan kelas.",
+      [
+        "quote",
+        "Terima kasih atas tawarannya. Selama magang, saya menangani rekonsiliasi untuk 40 cabang dan menyelesaikan sertifikasi brevet A dan B. Apakah ada ruang untuk Rp5,6 juta, atau tinjauan setelah masa percobaan?",
+      ],
+      "Sinta mendapat Rp5,4 juta, lebih tinggi Rp400 ribu dari tawaran awal, dan tinjauan setelah enam bulan. Untuk pekerjaan pertama, itu bukan hal kecil: selisihnya ikut terbawa ke setiap kenaikan berikutnya.",
+    ],
+  },
+  {
     title: "Minta Kenaikan di Kantor Sendiri",
     blocks: [
       "Negosiasi tidak hanya terjadi saat pindah kerja. Kesempatan yang lebih sering datang adalah meminta kenaikan di kantor sendiri, dan prinsipnya sama: angka, bukti, kalimat, lalu diam.",
@@ -190,8 +263,37 @@ export const NEGO_1 = [
           "Kalau gaji pokok mentok, tawar bagian lain paket, dan minta semuanya tertulis.",
         ],
       ],
-      ["h", "Ulangi tesnya"],
-      "Sebelum negosiasi berikutnya, kerjakan lagi tes kesiapan di Bab 1. Targetnya: enam dari enam.",
+      ["h", "Sebelum negosiasi berikutnya"],
+      "Ulangi riset angka di Bab 2 dan perbarui daftar buktimu di Bab 4. Angka pasar dan pencapaianmu berubah setiap tahun, jadi persiapannya juga.",
+    ],
+  },
+  {
+    title: "Kalau Jawabannya Tetap Tidak",
+    blocks: [
+      'Tidak semua negosiasi berakhir dengan angka yang lebih tinggi. Kadang anggaran memang tidak ada, kadang perusahaan memang tidak mau. Cara menanggapi "tidak" menentukan apa yang terjadi berikutnya.',
+      ["h", "Tanyakan syaratnya, bukan alasannya"],
+      'Pertanyaan "kenapa tidak?" membuat orang membela diri. Pertanyaan yang lebih berguna adalah: **apa yang perlu terjadi supaya jawabannya ya?**',
+      [
+        "ol",
+        [
+          '"Pencapaian apa yang perlu saya tunjukkan supaya kenaikan ini bisa dipertimbangkan?"',
+          '"Kapan kita bisa membicarakannya lagi?"',
+          '"Boleh kesepakatan ini kita tulis di surel supaya sama-sama ingat?"',
+        ],
+      ],
+      ["h", "Ketahui batasmu sebelum masuk ruangan"],
+      'Sebelum bernegosiasi, tulis satu angka: di bawah angka ini, kamu akan menolak tawaran dengan sopan atau mulai mencari tempat lain. Angka ini datang dari riset di Bab 2 dan kebutuhan hidupmu, bukan dari perasaan saat itu. Tanpa angka ini, "tidak" dari HR mudah berubah menjadi "ya sudah, terima saja" yang kamu sesali setahun kemudian.',
+      [
+        "warn",
+        "Jangan mengancam keluar kalau kamu tidak benar-benar siap melakukannya. Ancaman kosong merusak kepercayaan, dan sulit ditarik kembali.",
+      ],
+      [
+        "reflect",
+        [
+          "Berapa angka batasmu, dan dari mana angka itu berasal?",
+          "Kalau jawabannya tidak, langkah apa yang akan kamu ambil dalam tiga bulan berikutnya?",
+        ],
+      ],
     ],
   },
 ];

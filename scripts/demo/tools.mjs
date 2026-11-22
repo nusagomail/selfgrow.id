@@ -548,7 +548,7 @@ export const DEMO_TOOLS = [
         },
         {
           when: "harga > pesaing * 1.2",
-          text: "Hargamu lebih dari 20% di atas pesaing. Tidak apa-apa, asal ada alasan yang terlihat pembeli: porsi, rasa, kemasan, atau layanan (Bab 6).",
+          text: "Hargamu lebih dari 20% di atas pesaing. Tidak apa-apa, asal ada alasan yang terlihat pembeli: porsi, rasa, kemasan, atau layanan (Bab 8).",
           variant: "info",
         },
         {
@@ -1571,7 +1571,7 @@ export const DEMO_TOOLS = [
         },
         {
           when: "and(total >= 7, total < 11)",
-          text: "Skormu {{total}}, paling menonjol: {{utama}}. Mulai pemulihan dari Bab 4 dan lihat pola beban kerjamu di Bab 5.",
+          text: "Skormu {{total}}, paling menonjol: {{utama}}. Mulai pemulihan dari Bab 5 dan lihat beban kerjamu di Bab 3 dan 7.",
           variant: "tip",
         },
         {
@@ -1877,7 +1877,7 @@ export const DEMO_TOOLS = [
           key: "tuas",
           label: "Tuas yang paling perlu digeser",
           formula:
-            'if(and(10 - yakin >= 10 - nilai, 10 - yakin >= ganggu, 10 - yakin >= jarak), "keyakinan: pecah tugasnya sampai langkah pertama terasa mudah (Bab 3)", if(and(10 - nilai >= ganggu, 10 - nilai >= jarak), "nilai: sambungkan tugas dengan alasan atau hadiah (Bab 4)", if(ganggu >= jarak, "gangguan: jauhkan godaan sebelum mulai (Bab 5)", "jarak: buat tenggat kecil yang lebih dekat (Bab 5)")))',
+            'if(and(10 - yakin >= 10 - nilai, 10 - yakin >= ganggu, 10 - yakin >= jarak), "keyakinan: pecah tugasnya sampai langkah pertama terasa mudah (Bab 3)", if(and(10 - nilai >= ganggu, 10 - nilai >= jarak), "nilai: sambungkan tugas dengan alasan atau hadiah (Bab 5)", if(ganggu >= jarak, "gangguan: jauhkan godaan sebelum mulai (Bab 6)", "jarak: buat tenggat kecil yang lebih dekat (Bab 6)")))',
           format: "text",
           show: true,
         },
@@ -2358,7 +2358,7 @@ export const DEMO_TOOLS = [
       recommendations: [
         {
           when: "tidur < if(usia < 6, 10, if(usia < 13, 9, 8))",
-          text: "Tidurnya di bawah anjuran minimal {{anjuran}} jam untuk usianya. Ini yang paling dulu perlu dikembalikan: mulai dari zona merah satu jam sebelum tidur (Bab 3).",
+          text: "Tidurnya di bawah anjuran minimal {{anjuran}} jam untuk usianya. Ini yang paling dulu perlu dikembalikan: mulai dari zona merah satu jam sebelum tidur (Bab 4).",
           variant: "warning",
         },
         {

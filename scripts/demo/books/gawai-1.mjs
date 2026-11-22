@@ -1,5 +1,5 @@
 /**
- * "Anak dan Gawai", 6 bab.
+ * "Anak dan Gawai", 9 bab (diperdalam: memilih tontonan, pagar digital, ponsel pertama).
  *
  * Rancangan (dipikirkan sebelum menulis):
  * - Pembaca: orang tua anak 2–12 tahun yang bertengkar soal gawai hampir setiap hari, capek,
@@ -16,7 +16,7 @@
  *   adalah hasil akhir buku ini.
  * - Interaktif: kuis suasana layar, grafik minggu pertama, tool neraca 24 jam (melihat apa yang
  *   tergeser) dan penyusun kesepakatan (aksi).
- * - Batas: bukan buku untuk kecanduan berat; Bab 6 merujuk ke dokter anak atau psikolog anak.
+ * - Batas: bukan buku untuk kecanduan berat; Bab 8 merujuk ke dokter anak atau psikolog anak.
  */
 import { MINGGU_PERTAMA, SATU_LEVEL_LAGI, SUASANA_LAYAR } from "./gawai-interactive.mjs";
 
@@ -34,7 +34,7 @@ export const GAWAI_1 = [
       ["quiz", SUASANA_LAYAR],
       [
         "info",
-        "Buku ini untuk urusan layar sehari-hari. Kalau kamu khawatir anakmu mengalami masalah yang lebih berat, lihat daftar tanda di Bab 6.",
+        "Buku ini untuk urusan layar sehari-hari. Kalau kamu khawatir anakmu mengalami masalah yang lebih berat, lihat daftar tanda di Bab 8.",
       ],
     ],
   },
@@ -58,6 +58,43 @@ export const GAWAI_1 = [
       ],
       "Tidur adalah yang paling sering tergeser. Karena itu, kalau hanya ada satu aturan yang kamu jalankan dari buku ini, jadikan **satu jam sebelum tidur tanpa layar, dan tidak ada gawai di kamar tidur**.",
       ["tool", "neraca-24-jam-anak"],
+    ],
+  },
+  {
+    title: '"Kenapa Video Ini Nggak Boleh?"',
+    blocks: [
+      '**Naya, 4 tahun:** "Kenapa video ini nggak boleh? Lucu, Bun!"',
+      'Satu jam menonton bisa berarti hal yang sangat berbeda. Satu jam menonton dokumenter hewan bersama ibu yang sesekali bertanya "itu namanya apa?" tidak sama dengan satu jam video pendek yang berganti setiap 15 detik sendirian di kamar.',
+      ["h", "Tiga pertanyaan sebelum memilih"],
+      [
+        "table",
+        [
+          ["Pertanyaan", "Lebih baik", "Kurang baik"],
+          [
+            "Seberapa cepat temponya?",
+            "Cerita yang mengalir pelan, satu adegan bertahan lama",
+            "Potongan cepat, suara keras, berganti tiap beberapa detik",
+          ],
+          [
+            "Apakah ada akhirnya?",
+            "Satu episode atau satu film yang selesai",
+            "Putar otomatis tanpa ujung",
+          ],
+          [
+            "Apakah bisa ditonton bersama?",
+            "Kamu bisa ikut menonton dan membicarakannya",
+            "Hanya seru kalau ditonton sendirian",
+          ],
+        ],
+      ],
+      ["h", "Menonton bersama mengubah layar menjadi percakapan"],
+      "Untuk anak kecil, menonton bersama dan membicarakan isinya membantu mereka memahami apa yang dilihat. Pedoman WHO juga menyebut waktu duduk yang paling bermanfaat adalah membaca, bercerita, dan bermain bersama pengasuh. Layar yang ditonton bersama lebih dekat ke situ daripada layar yang ditonton sendirian.",
+      ["h", "Gim juga punya batas usia"],
+      "Gim di toko aplikasi biasanya mencantumkan batas usia. Indonesia juga punya sistem klasifikasi gim sendiri. Sebelum mengunduh, cek label usia, baca ulasan orang tua, dan kalau perlu mainkan sendiri sepuluh menit.",
+      [
+        "tip",
+        'Buat daftar "tontonan hijau" bersama anak: lima sampai sepuluh acara atau gim yang sudah kamu periksa. Saat waktu layar tiba, anak memilih dari daftar itu, bukan dari beranda yang terus menawarkan hal baru.',
+      ],
     ],
   },
   {
@@ -103,6 +140,30 @@ export const GAWAI_1 = [
       ],
       ["tool", "kesepakatan-layar"],
       "Untuk Naya yang berusia 4 tahun, kesepakatannya lebih sederhana: gambar jam dan gambar keranjang. Ketika jarum jam sampai di gambar, tablet masuk keranjang.",
+    ],
+  },
+  {
+    title: '"Aku Cuma Beli Permata Sedikit"',
+    blocks: [
+      '**Alif:** "Aku cuma beli permata sedikit, Bun. Pakai kartu yang di HP Bunda."',
+      "Tagihan bulan itu naik Rp1,2 juta. Alif tidak bermaksud mencuri; tombol beli di gimnya hanya satu ketukan dari kartu yang tersimpan di ponsel ibunya.",
+      "Kesepakatan dan zona merah mengatur kapan dan berapa lama. Bab ini tentang pagar yang dipasang di perangkatnya sendiri, supaya kesalahan kecil tidak berubah menjadi masalah besar.",
+      ["h", "Empat pagar yang sebaiknya dipasang hari ini"],
+      [
+        "ol",
+        [
+          "**Akun anak dan kontrol orang tua.** Android dan iPhone sama-sama punya fitur bawaan untuk mengatur waktu layar, menyetujui unduhan, dan membatasi konten sesuai usia.",
+          "**Kata sandi atau persetujuan untuk setiap pembelian,** termasuk pembelian di dalam aplikasi. Hapus kartu yang tersimpan di perangkat yang dipakai anak.",
+          "**Obrolan dengan orang asing dimatikan** di gim dan aplikasi, terutama untuk anak di bawah 13 tahun.",
+          "**Perangkat dipakai di ruang bersama,** bukan di kamar tertutup.",
+        ],
+      ],
+      ["h", "Yang lebih penting dari pagar"],
+      'Pagar bisa dibobol, apalagi oleh anak yang makin besar. Pelindung yang paling tahan lama adalah anak yang mau bercerita. Katakan dengan jelas: "Kalau ada yang membuatmu takut, malu, atau bingung di HP, cerita ke Bunda. Kamu tidak akan dimarahi karena bercerita." Lalu tepati janji itu.',
+      [
+        "warn",
+        "Kalau anak menerima pesan berisi ancaman, permintaan foto, atau ajakan bertemu dari orang yang tidak dikenal, simpan buktinya, jangan dibalas, blokir akunnya, dan laporkan ke platform serta pihak berwenang.",
+      ],
     ],
   },
   {
@@ -164,6 +225,43 @@ export const GAWAI_1 = [
           "Aturan berlaku juga untuk orang tua. Minggu pertama biasanya paling berat; tetap tenang dan konsisten.",
         ],
       ],
+    ],
+  },
+  {
+    title: '"Teman-temanku Sudah Punya HP Sendiri"',
+    blocks: [
+      '**Alif, setahun kemudian:** "Teman-temanku sudah punya HP sendiri. Aku kapan?"',
+      "Pertanyaan ini hampir pasti datang, biasanya menjelang anak masuk sekolah menengah. Tidak ada usia yang benar untuk semua anak. Yang lebih penting adalah kesiapannya dan cara memulainya.",
+      ["h", "Tanda anak mulai siap"],
+      [
+        "ul",
+        [
+          "Sudah menjalankan kesepakatan layar di rumah dengan cukup konsisten.",
+          "Bisa berhenti saat waktunya habis tanpa ledakan besar setiap kali.",
+          "Mau bercerita saat menemui hal yang aneh atau tidak nyaman di internet.",
+          "Punya alasan yang nyata, misalnya pulang sekolah sendiri dan perlu menghubungi rumah.",
+        ],
+      ],
+      ["h", "Mulai bertahap"],
+      [
+        "table",
+        [
+          ["Tahap", "Isinya"],
+          [
+            "Pertama",
+            "Telepon, pesan ke keluarga, kamera. Belum ada media sosial dan toko aplikasi bebas.",
+          ],
+          [
+            "Setelah beberapa bulan berjalan baik",
+            "Beberapa aplikasi tambahan yang disetujui bersama.",
+          ],
+          [
+            "Lebih besar lagi",
+            "Media sosial sesuai batas usia platform, dengan kesepakatan tentang apa yang boleh dibagikan.",
+          ],
+        ],
+      ],
+      "Bu Rina dan Alif menulis kesepakatan ponsel pertama di satu halaman: ponsel diisi daya di ruang keluarga, tidak dibawa ke kamar setelah pukul delapan, dan Bu Rina boleh melihat isinya kapan saja di tahun pertama. Setiap kesepakatan dijalankan dengan baik, satu kebebasan baru dibuka.",
     ],
   },
 ];

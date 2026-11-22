@@ -1,5 +1,5 @@
 /**
- * "Bicara di Depan Umum Tanpa Gemetar", 6 bab.
+ * "Bicara di Depan Umum Tanpa Gemetar", 9 bab (diperdalam: presentasi lewat layar, menyiapkan tanya jawab, ditunjuk mendadak).
  *
  * Rancangan (dipikirkan sebelum menulis):
  * - Pembaca: karyawan dan mahasiswa 20–35 tahun yang harus presentasi (rapat, sidang, acara kantor),
@@ -9,7 +9,7 @@
  *   transparansi, Savitsky & Gilovich 2003), bisa dibaca ulang sebagai semangat (Brooks 2014,
  *   dengan catatan replikasi), dan menjadi jinak kalau pikiran punya pegangan (kerangka) dan tubuh
  *   sudah pernah mengalaminya (latihan bersuara).
- * - Kerangka: tiga lapis gemetar. Badan (Bab 3), pikiran (Bab 2), materi (Bab 4–5); Bab 6 untuk
+ * - Kerangka: tiga lapis gemetar. Badan (Bab 3), pikiran (Bab 2), materi (Bab 4–7); Bab 8 untuk
  *   hari H dan saat ada yang salah.
  * - Bentuk: hitung mundur. Raka (27, analis keuangan di Surabaya) harus mempresentasikan laporan
  *   kuartal ke direksi, 12 menit, sepuluh hari lagi. Setiap bab dibuka dengan "H-…".
@@ -35,7 +35,7 @@ export const PANGGUNG_1 = [
         [
           "**Pikiran**: apa yang kamu kira dilihat orang (Bab 2).",
           "**Badan**: jantung berdebar, napas pendek, suara bergetar (Bab 3).",
-          "**Materi**: kerangka dan latihan, supaya pikiranmu punya pegangan (Bab 4 dan 5).",
+          "**Materi**: kerangka dan latihan, supaya pikiranmu punya pegangan (Bab 4 sampai 7).",
         ],
       ],
       ["h", "Cek dulu"],
@@ -126,6 +126,28 @@ export const PANGGUNG_1 = [
     ],
   },
   {
+    title: "H-3: Kalau Rapatnya Lewat Layar",
+    blocks: [
+      "Surel dari sekretaris direksi: dua direktur akan bergabung lewat video dari Jakarta. Raka lega sesaat, karena tidak semua mata ada di ruangan. Lalu sadar, berbicara ke kamera punya kesulitannya sendiri.",
+      "Lewat layar, tanda-tanda dari penonton hilang: tidak ada anggukan, tidak ada tawa kecil, kadang hanya kotak hitam bertuliskan nama. Banyak pembicara jadi bicara lebih cepat dan lebih datar karena merasa bicara ke ruangan kosong.",
+      ["h", "Lima hal yang membuat bedanya"],
+      [
+        "ol",
+        [
+          "**Kamera sejajar mata.** Tumpuk laptop di atas beberapa buku. Kamera dari bawah membuat wajah terlihat menunduk ke penonton.",
+          "**Cahaya dari depan,** bukan dari belakang. Jendela di belakang membuat wajah gelap.",
+          "**Lihat ke kamera di kalimat penting,** bukan ke wajah sendiri di layar. Tempel catatan kecil di dekat kamera sebagai pengingat.",
+          "**Bicara sedikit lebih lambat dan beri jeda lebih panjang.** Suara lewat internet sering terlambat sepersekian detik.",
+          "**Uji 30 menit sebelumnya:** berbagi layar, suara, dan berkas presentasi yang sudah dibuka.",
+        ],
+      ],
+      [
+        "tip",
+        'Sebut nama orang saat bertanya atau menjawab: "Pak Andi, apakah angka ini menjawab pertanyaan Bapak?" Di rapat daring, menyebut nama menggantikan kontak mata.',
+      ],
+    ],
+  },
+  {
     title: "H-2: Latihan yang Benar-Benar Latihan",
     blocks: [
       "Selama ini, latihan Raka adalah membuka slide di laptop dan membacanya dalam hati. Rasanya sudah siap. Lalu di depan orang, kalimat yang lancar di kepala ternyata macet di mulut.",
@@ -143,6 +165,50 @@ export const PANGGUNG_1 = [
           "Lihat apakah kamu menatap layar atau penonton.",
           "Ingat efek lampu sorot: kamu akan menilai dirimu lebih keras daripada penonton.",
         ],
+      ],
+    ],
+  },
+  {
+    title: "H-1: Menyiapkan Pertanyaan yang Paling Ditakuti",
+    blocks: [
+      "Malam sebelum hari H, Raka menulis daftar yang selama ini dia hindari: lima pertanyaan yang paling dia takutkan dari direksi. Ternyata menuliskannya membuat pertanyaan-pertanyaan itu terasa lebih kecil.",
+      "Bagi banyak orang, bagian paling menegangkan bukan presentasinya, tapi tanya jawabnya, karena tidak bisa dihafal. Kabar baiknya, sebagian besar pertanyaan bisa ditebak.",
+      ["h", "Tiga langkah menjawab"],
+      [
+        "ol",
+        [
+          '**Ulangi atau rangkum pertanyaannya.** "Jadi pertanyaannya, apakah penghematan ini mengganggu layanan?" Ini memberi waktu berpikir dan memastikan kamu menjawab hal yang benar.',
+          "**Jawab intinya dulu dalam satu kalimat,** baru penjelasannya.",
+          "**Kembali ke pesan utama** kalau memungkinkan.",
+        ],
+      ],
+      [
+        "table",
+        [
+          ["Jenis pertanyaan", "Cara menjawab"],
+          ["Yang jawabannya kamu tahu", "Singkat, satu angka atau contoh, lalu berhenti"],
+          [
+            "Yang jawabannya tidak kamu tahu",
+            '"Saya belum punya datanya. Saya kirim hari ini setelah rapat."',
+          ],
+          [
+            "Yang sebenarnya pendapat, bukan pertanyaan",
+            '"Terima kasih masukannya. Boleh saya catat untuk dibahas di tindak lanjut?"',
+          ],
+          [
+            "Yang keluar dari topik",
+            '"Itu penting. Supaya waktunya cukup, boleh kita bahas setelah rapat?"',
+          ],
+        ],
+      ],
+      [
+        "exercise",
+        [
+          "Tulis lima pertanyaan yang paling kamu takutkan.",
+          "Untuk masing-masing, tulis jawaban satu kalimat.",
+          "Minta teman membacakan pertanyaannya secara acak, dan jawab dengan suara.",
+        ],
+        "Lembar kerja: lima pertanyaan",
       ],
     ],
   },
@@ -182,6 +248,48 @@ export const PANGGUNG_1 = [
           "Pegang satu pesan utama dan tiga poin di satu kartu, bukan naskah.",
           "Latihan berarti bicara dengan suara: naiki tangganya dari sendirian sampai simulasi.",
           "Siapkan kalimat penyelamat untuk lupa, pertanyaan sulit, dan alat yang mati.",
+        ],
+      ],
+    ],
+  },
+  {
+    title: "Sebulan Kemudian: Ditunjuk Mendadak",
+    blocks: [
+      'Rapat bulanan, tanpa persiapan apa pun. Direktur keuangan menoleh: "Raka, menurutmu bagaimana kalau rencana ini diterapkan di cabang Manado juga?" Semua menoleh. Kali ini tidak ada kartu kerangka.',
+      "Presentasi yang direncanakan hanya sebagian kecil dari kesempatan bicara. Sebagian besar justru datang mendadak: ditanya di rapat, diminta memperkenalkan diri, diminta memberi sambutan singkat di acara kantor.",
+      ["h", "Kerangka empat langkah yang bisa dibawa ke mana-mana"],
+      [
+        "table",
+        [
+          ["Langkah", "Isi", "Contoh Raka"],
+          [
+            "Poin",
+            "Jawaban atau pendapatmu dalam satu kalimat",
+            '"Menurut saya bisa, tapi bertahap."',
+          ],
+          ["Alasan", "Kenapa", '"Pola biaya di Manado mirip, tapi volume pesanannya lebih kecil."'],
+          [
+            "Contoh",
+            "Satu angka, kejadian, atau perbandingan",
+            '"Di Makassar, penghematan baru terasa setelah bulan ketiga."',
+          ],
+          [
+            "Poin lagi",
+            "Ulangi intinya, kadang dengan langkah berikutnya",
+            '"Jadi saya usul uji coba tiga bulan dulu."',
+          ],
+        ],
+      ],
+      'Empat langkah ini membuat jawaban dadakan terdengar tertata, dan memberi pikiran jalur saat gugup datang. Latih dengan pertanyaan sehari-hari: "Film apa yang kamu sarankan dan kenapa?" Tiga puluh detik, empat langkah.',
+      [
+        "tip",
+        "Boleh berhenti dua detik sebelum menjawab. Jeda singkat terlihat seperti orang yang berpikir, bukan orang yang gugup.",
+      ],
+      [
+        "reflect",
+        [
+          "Dalam situasi apa kamu paling sering ditunjuk bicara tanpa persiapan?",
+          "Pertanyaan apa yang akan kamu pakai untuk melatih empat langkah ini minggu ini?",
         ],
       ],
     ],
