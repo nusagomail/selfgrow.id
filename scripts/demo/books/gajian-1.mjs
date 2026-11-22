@@ -1,5 +1,5 @@
 /**
- * "Gajian Kok Cepat Habis?", 6 bab.
+ * "Gajian Kok Cepat Habis?", 9 bab (diperdalam: uang dan keluarga, bulan-bulan besar, kalau gaji memang tidak cukup).
  *
  * Rancangan (dipikirkan sebelum menulis):
  * - Pembaca: karyawan 22–35 tahun bergaji tetap, saldo menipis jauh sebelum gajian, merasa
@@ -141,6 +141,96 @@ export const GAJIAN_1 = [
           "Batalkan langganan yang tidak dibuka sebulan terakhir. Langganan ulang selalu bisa.",
           "Gabungkan pesanan antar supaya ongkir dan biaya layanan tidak berkali-kali.",
           "Pakai rekening dengan biaya transfer yang rendah untuk kebutuhan sehari-hari.",
+        ],
+      ],
+    ],
+  },
+  {
+    title: "Bicara Uang dengan Keluarga",
+    blocks: [
+      '**Tanggal 2. Saldo kantong bebas: Rp2.150.000.** Ibu Fikri menelepon. Adiknya butuh laptop untuk kuliah, harganya Rp7 juta. "Kamu kan sudah kerja, Nak."',
+      "Bagi banyak orang Indonesia, uang tidak pernah benar-benar urusan pribadi. Ada kiriman untuk orang tua, biaya sekolah adik, sumbangan hajatan saudara. Semua itu bagian dari kasih sayang, dan sering juga sumber kebocoran yang paling sulit dibicarakan.",
+      ["h", "Jadikan bantuan sebagai rencana, bukan kejutan"],
+      [
+        "ul",
+        [
+          "**Kiriman rutin masuk kantong wajib,** seperti yang dilakukan Fikri dengan Rp600 ribu untuk ibunya. Jumlahnya jelas, tanggalnya jelas.",
+          '**Buat pos "bantuan keluarga" di kantong tujuan,** misalnya Rp200 ribu sebulan. Saat ada permintaan mendadak, kamu tahu berapa yang sebenarnya tersedia.',
+          "**Bantuan besar dibicarakan, bukan langsung diiyakan.** Tawarkan sebagian, cicilan dari kantong tujuan, atau jalan lain.",
+        ],
+      ],
+      ["h", "Kalimat yang Fikri ucapkan"],
+      [
+        "quote",
+        "Bu, Fikri pengin bantu Dika. Bulan ini Fikri bisa kasih Rp1,5 juta dari tabungan, lalu Rp500 ribu tiap bulan selama empat bulan. Kalau Dika bisa cari laptop bekas yang bagus, mungkin cukup lebih cepat.",
+      ],
+      "Ibunya tidak kecewa. Yang membuat orang tua cemas biasanya bukan jumlahnya, tapi ketidakpastian. Rencana yang jelas justru menenangkan kedua pihak.",
+      [
+        "info",
+        'Kalau menolak permintaan keluarga terasa sangat berat, buku "Berani Bilang Tidak" punya satu bab khusus tentang keluarga dan rasa sungkan.',
+      ],
+    ],
+  },
+  {
+    title: "Bulan-Bulan Besar yang Selalu Datang",
+    blocks: [
+      "**Tanggal 25 Maret. THR masuk: Rp6.800.000.** Tahun lalu, THR Fikri habis dalam sepuluh hari: tiket mudik, baju Lebaran, angpau untuk keponakan, oleh-oleh. Akhir April, dia kembali ke tanggal 18 dengan saldo Rp87.000.",
+      "Ada pengeluaran yang terasa mendadak, padahal datang setiap tahun di bulan yang sama: Lebaran, tahun ajaran baru, perpanjangan pajak kendaraan, ulang tahun pernikahan, akhir tahun. Karena tidak dihitung, setiap kali datang ia merusak anggaran bulan itu.",
+      ["h", "Pecah menjadi tabungan kecil bulanan"],
+      [
+        "table",
+        [
+          ["Pengeluaran tahunan Fikri", "Perkiraan", "Disisihkan per bulan"],
+          ["Mudik dan Lebaran", "Rp4.800.000", "Rp400.000"],
+          ["Pajak dan servis motor", "Rp1.200.000", "Rp100.000"],
+          ["Hadiah dan sumbangan hajatan", "Rp1.200.000", "Rp100.000"],
+          ["Total", "Rp7.200.000", "Rp600.000"],
+        ],
+      ],
+      'Rp600 ribu ini masuk ke kantong tujuan sebagai sub-kantong "tahunan". Saat Lebaran datang, biayanya sudah tersedia, dan THR bisa dipakai untuk hal lain: sebagian dinikmati, sebagian memperkuat dana darurat atau melunasi utang.',
+      [
+        "tip",
+        'Banyak aplikasi bank menyediakan fitur kantong atau tabungan berjangka dengan nama sendiri. Beri nama yang jelas, misalnya "Mudik 2027", supaya tidak tergoda memakainya untuk hal lain.',
+      ],
+    ],
+  },
+  {
+    title: "Kalau Gajinya Memang Tidak Cukup",
+    blocks: [
+      "Buku ini banyak membahas kebocoran. Tapi jujur saja: kadang masalahnya bukan bocor. Kadang gajinya memang tidak cukup untuk kebutuhan wajib.",
+      "Tanda paling jelas: setelah kebocoran kecil ditambal, kantong wajib dan kantong tujuan minimal 5% tetap tidak muat, berbulan-bulan. Di titik ini, memangkas kopi tidak akan menyelesaikan apa-apa. Yang perlu diubah adalah angka-angka besar.",
+      ["h", "Tiga angka besar"],
+      [
+        "table",
+        [
+          ["Angka besar", "Pertanyaan", "Contoh langkah"],
+          [
+            "Tempat tinggal",
+            "Apakah biaya kos lebih dari sepertiga penghasilan?",
+            "Pindah ke kos yang sedikit lebih jauh tapi Rp500 ribu lebih murah",
+          ],
+          [
+            "Cicilan",
+            "Apakah ada cicilan yang bisa dilunasi lebih cepat atau dinegosiasikan?",
+            "Melunasi cicilan laptop dengan THR",
+          ],
+          [
+            "Penghasilan",
+            "Apakah gajiku sudah sesuai pasar, dan adakah tambahan yang realistis?",
+            "Mengajukan kenaikan atau mencari pekerjaan sampingan yang sesuai keahlian",
+          ],
+        ],
+      ],
+      "Fikri memilih dua langkah dalam enam bulan: pindah kos yang Rp400 ribu lebih murah, dan menerima dua proyek desain lepas setiap bulan. Penghasilannya naik Rp1,2 juta. Separuhnya, sesuai aturan di Bab 9, langsung masuk kantong tujuan.",
+      [
+        "info",
+        'Untuk menaikkan gaji di kantor sendiri atau saat pindah kerja, buku "Berani Nego Gaji" membahas cara meriset angka dan menyampaikannya.',
+      ],
+      [
+        "reflect",
+        [
+          "Dari tiga angka besar, mana yang paling memberatkan keuanganmu saat ini?",
+          "Satu langkah kecil apa yang bisa kamu mulai bulan ini untuk mengubahnya?",
         ],
       ],
     ],

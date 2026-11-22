@@ -29,7 +29,7 @@ export const TANDA_BOCOR = {
       min: 0,
       max: 1,
       title: "Arus yang terkendali",
-      text: "Kamu sudah cukup rapi. Bab 6 membantumu menjaga ritmenya saat gaji naik.",
+      text: "Kamu sudah cukup rapi. Bab 7 dan 9 membantumu menjaga ritmenya, termasuk saat gaji naik.",
     },
     {
       min: 2,
