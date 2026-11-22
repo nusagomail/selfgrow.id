@@ -3,7 +3,7 @@
  * yang mengirim 40 lamaran tanpa panggilan, dan CV-nya diperbaiki bab demi bab seperti lembar
  * yang dikoreksi. Contoh perusahaan dan angka adalah ilustrasi.
  */
-import { CEK_CV } from "./cv-interactive.mjs";
+import { CEK_CV, LOLOS_MESIN } from "./cv-interactive.mjs";
 
 export const CV_1 = [
   {
@@ -82,6 +82,7 @@ export const CV_1 = [
     blocks: [
       "Banyak perusahaan memakai sistem pelacak lamaran (Applicant Tracking System, ATS) untuk menyimpan dan menyaring CV. Sistem ini membaca teks dari berkasmu. Kalau teksnya tidak terbaca, atau kata kuncinya tidak cocok, CV-mu bisa berada di urutan bawah sebelum dilihat manusia.",
       ["img", "ramah-ats", "Format yang aman untuk ATS."],
+      ["quiz", LOLOS_MESIN],
       ["h", "Kata kunci"],
       "Kata kunci adalah keterampilan, alat, dan istilah yang tertulis di lowongan. Sekar menyalin lowongan yang dia incar, menandai istilah penting, lalu mencocokkannya dengan CV-nya.",
       ["img", "kata-kunci", "Lowongan dan CV berdampingan."],

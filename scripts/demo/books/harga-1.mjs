@@ -3,7 +3,7 @@
  * contoh hitungan (risol mayo Dina, ilustrasi), dan satu lembar kerja untuk pembaca.
  * Edukasi umum, bukan nasihat pajak atau akuntansi.
  */
-import { CEK_HARGA, HARGA_BARS, UMKM_COUNTER } from "./harga-interactive.mjs";
+import { CEK_HARGA, HARGA_BARS, HITUNG_MARGIN, UMKM_COUNTER } from "./harga-interactive.mjs";
 
 export const HARGA_1 = [
   {
@@ -117,6 +117,7 @@ export const HARGA_1 = [
       ["quote", "Harga jual = HPP ÷ (1 − margin yang diinginkan)"],
       ["h", "Berapa margin yang wajar?"],
       "Tidak ada angka yang berlaku untuk semua usaha. Makanan rumahan sering memakai margin sekitar 25–40%, sementara produk yang butuh keahlian khusus atau waktu lama bisa lebih tinggi. Yang pasti: margin di bawah 20% sangat rentan, karena satu batch gagal atau satu promo bisa menghapus untung sebulan.",
+      ["quiz", HITUNG_MARGIN],
       ["h", "Hitung hargamu sekarang"],
       "Masukkan angka dari lembar kerja sebelumnya ke kalkulator di bawah. Angka contoh di dalamnya adalah angka risol Dina.",
       [

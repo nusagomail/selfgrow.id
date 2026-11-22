@@ -18,7 +18,7 @@
  *   tergeser) dan penyusun kesepakatan (aksi).
  * - Batas: bukan buku untuk kecanduan berat; Bab 6 merujuk ke dokter anak atau psikolog anak.
  */
-import { MINGGU_PERTAMA, SUASANA_LAYAR } from "./gawai-interactive.mjs";
+import { MINGGU_PERTAMA, SATU_LEVEL_LAGI, SUASANA_LAYAR } from "./gawai-interactive.mjs";
 
 export const GAWAI_1 = [
   {
@@ -89,6 +89,7 @@ export const GAWAI_1 = [
       '**Alif:** "Aku kan belum selesai! Satu level lagi!"',
       "Bayangkan kamu sedang menonton film, dan di tengah adegan penting seseorang mematikan televisi tanpa peringatan. Begitulah rasanya bagi anak ketika gawai diambil tiba-tiba. Ledakan emosinya bukan hanya soal layar, tapi soal **perpindahan yang mendadak**.",
       ["img", "aba-aba-selesai", "Aba-aba sebelum layar selesai."],
+      ["quiz", SATU_LEVEL_LAGI],
       ["h", "Kesepakatan, bukan larangan"],
       "Untuk anak usia 6 tahun ke atas, libatkan mereka saat membuat aturan. Anak lebih menjaga aturan yang ikut dia susun. Duduk bersama di akhir pekan, saat suasana tenang, bukan tepat setelah pertengkaran.",
       [

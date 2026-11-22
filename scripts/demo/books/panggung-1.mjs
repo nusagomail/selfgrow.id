@@ -18,7 +18,7 @@
  * - Interaktif: kuis cek gemetar, grafik gugup Raka per latihan, tool pembagi waktu (angka) dan
  *   penyusun kartu presentasi (kata-kata).
  */
-import { CEK_GEMETAR, LATIHAN_RAKA } from "./panggung-interactive.mjs";
+import { CEK_GEMETAR, LATIHAN_RAKA, MENIT_KEENAM } from "./panggung-interactive.mjs";
 
 export const PANGGUNG_1 = [
   {
@@ -152,6 +152,7 @@ export const PANGGUNG_1 = [
       'Pukul 10.40, nama Raka dipanggil. Jantungnya berdebar. Dia sudah menarik lima napas panjang di kursinya. "Aku bersemangat," katanya dalam hati, lalu berjalan ke depan.',
       "Di menit keenam, seorang direktur memotong dengan pertanyaan yang tidak ada di persiapannya. Sesaat pikirannya kosong. Raka melihat kartunya, lalu mengucapkan kalimat yang sudah dia siapkan.",
       ["img", "kalimat-penyelamat", "Kalimat penyelamat."],
+      ["quiz", MENIT_KEENAM],
       "Hal yang salah hampir pasti terjadi, sekecil apa pun: proyektor lambat, pertanyaan mendadak, satu kalimat yang tersangkut. Yang membedakan pembicara yang percaya diri bukanlah tidak ada yang salah, tapi mereka sudah punya kalimat untuk melanjutkan.",
       ["h", "Lima menit sebelum mulai"],
       [

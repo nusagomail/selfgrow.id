@@ -3,7 +3,7 @@
  * proyek) muncul sebagai contoh di setiap bagian ritual; bab 2–4 masing-masing satu bagian
  * ritual, dikerjakan pembaca langsung. Angka jam Tari adalah ilustrasi.
  */
-import { KENDALI_MINGGU, MINGGU_BARS } from "./minggu-interactive.mjs";
+import { KENDALI_MINGGU, MINGGU_BARS, RAPAT_MENDADAK } from "./minggu-interactive.mjs";
 
 export const MINGGU_1 = [
   {
@@ -117,6 +117,7 @@ export const MINGGU_1 = [
         "Analisis gabungan terhadap 94 penelitian menemukan bahwa merumuskan rencana dalam bentuk jika–maka (implementation intentions) memberi pengaruh sedang sampai besar terhadap tercapainya tujuan.",
         "Gollwitzer & Sheeran, Advances in Experimental Social Psychology, 2006",
       ],
+      ["quiz", RAPAT_MENDADAK],
       ["h", "Minggu yang berantakan tetap butuh ritual"],
       "Ada minggu yang hancur sejak Senin: anak sakit, atasan cuti, proyek mendadak. Di minggu seperti itu, godaannya adalah melewatkan ritual. Justru di minggu itulah ritual paling dibutuhkan, walau versinya dipendekkan: 15 menit, satu batu besar, satu slot cadangan.",
       [

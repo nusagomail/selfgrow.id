@@ -12,6 +12,8 @@ const yn = (q) => ({
 
 export const SIAP_DARURAT = {
   id: "siap-darurat",
+  mode: "score",
+  label: "Cek bantalan",
   title: "Kalau besok ada kejadian mendadak…",
   intro: "Bayangkan besok motor rusak, kamu sakit seminggu, atau kontrak kerja tidak diperpanjang.",
   questions: [
@@ -59,4 +61,64 @@ export const LITERASI_COUNTER = {
     },
   ],
   note: "Survei Nasional Literasi dan Inklusi Keuangan (SNLIK) 2025, OJK dan BPS.",
+};
+
+/** Bab 4: tempat menyimpan bantalan (D50, uji pengetahuan). */
+export const TEMPAT_BANTALAN = {
+  id: "tempat-bantalan",
+  mode: "knowledge",
+  label: "Cocok atau tidak?",
+  title: "Di mana dana darurat sebaiknya disimpan?",
+  intro: "Ingat tiga syaratnya: aman, mudah diambil, tidak tercampur uang belanja.",
+  questions: [
+    {
+      q: "Rekening tabungan di bank berbeda, tanpa kartu di dompet",
+      options: [
+        { label: "Cocok", points: 0, correct: true },
+        { label: "Kurang cocok", points: 0 },
+      ],
+      explain:
+        "Aman (dijamin LPS selama memenuhi syarat), bisa diambil kapan saja, dan ada satu langkah jeda sebelum terpakai.",
+    },
+    {
+      q: "Rekening yang sama dengan kartu debit harian",
+      options: [
+        { label: "Cocok", points: 0 },
+        { label: "Kurang cocok", points: 0, correct: true },
+      ],
+      explain: "Terlalu mudah terpakai sedikit-sedikit untuk ongkir dan jajan tanpa terasa.",
+    },
+    {
+      q: "Saham atau kripto",
+      options: [
+        { label: "Cocok", points: 0 },
+        { label: "Kurang cocok", points: 0, correct: true },
+      ],
+      explain:
+        "Nilainya bisa sedang turun tepat saat kamu harus mencairkannya. Simpan untuk tujuan jangka panjang, setelah bantalan cukup.",
+    },
+    {
+      q: "Uang tunai di dalam lemari",
+      options: [
+        { label: "Cocok", points: 0 },
+        { label: "Kurang cocok", points: 0, correct: true },
+      ],
+      explain:
+        "Mudah diambil, tapi tidak aman dari hilang atau terpakai, dan tidak dijamin siapa pun. Sedikit tunai untuk keadaan mendesak boleh, bukan seluruh bantalan.",
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 2,
+      title: "Bantalan di tempat yang rawan",
+      text: "Pindahkan sebagian dulu ke rekening terpisah minggu ini. Sisanya menyusul.",
+    },
+    {
+      min: 3,
+      max: 4,
+      title: "Tempatnya sudah tepat",
+      text: "Sekarang tinggal mengisinya rutin. Transfer otomatis di hari gajian adalah teman terbaikmu.",
+    },
+  ],
 };

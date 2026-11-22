@@ -5,7 +5,7 @@
 const often = (q) => ({
   q,
   options: [
-    { label: "Hampir tidak pernah", points: 2 },
+    { label: "Hampir tak pernah", points: 2 },
     { label: "Kadang", points: 1 },
     { label: "Sering", points: 0 },
   ],
@@ -13,6 +13,8 @@ const often = (q) => ({
 
 export const POLA_PULIH = {
   id: "pola-pulih",
+  mode: "scale",
+  label: "Cek pemulihan",
   title: "Seberapa sering kamu benar-benar pulih?",
   intro: "Pikirkan dua minggu terakhir. Skor tinggi berarti pemulihanmu sudah berjalan.",
   questions: [

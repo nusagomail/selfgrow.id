@@ -103,12 +103,28 @@ export type EbookNode =
  * Unsur interaktif di dalam bab (D42): kuis/tes diri dengan skor langsung, tool yang ditanam,
  * dan grafik bergerak. Semua berupa data (tanpa kode); skor kuis dihitung dari poin pilihan.
  */
+/**
+ * Bentuk kuis (D50), supaya kuis tiap ebook tidak seragam:
+ * - score: tes diri berpoin, hasil berupa pita skor (bawaan, perilaku lama).
+ * - scale: sama dengan score, tapi pilihan tampil sebagai skala mendatar dengan label ujung.
+ * - knowledge: uji pengetahuan; tiap pilihan benar/salah, penjelasan muncul setelah menjawab,
+ *   skor = jumlah jawaban benar.
+ * - scenario: "apa yang kamu lakukan?"; tiap pilihan punya tanggapan yang langsung muncul.
+ */
+export const QUIZ_MODES = ["score", "scale", "knowledge", "scenario"] as const;
+export type QuizMode = (typeof QUIZ_MODES)[number];
+
 export const quizAttrsSchema = z
   .object({
     /** Id kuis dalam satu ebook; kuis yang sama di bab lain memakai id yang sama (tes ulang). */
     id: z.string().regex(/^[a-z0-9][a-z0-9-]{0,59}$/, "Id kuis: huruf kecil, angka, tanda hubung"),
+    mode: z.enum(QUIZ_MODES).default("score"),
+    /** Label kecil di atas judul; bawaan sesuai bentuk kuis. */
+    label: z.string().trim().max(40).nullish(),
     title: z.string().trim().min(1).max(200),
     intro: z.string().max(1000).nullish(),
+    /** Label ujung kiri dan kanan untuk bentuk skala. */
+    ends: z.tuple([z.string().trim().min(1).max(40), z.string().trim().min(1).max(40)]).nullish(),
     questions: z
       .array(
         z.object({
@@ -118,10 +134,16 @@ export const quizAttrsSchema = z
               z.object({
                 label: z.string().trim().min(1).max(200),
                 points: z.number().int().min(0).max(100),
+                /** Bentuk knowledge: pilihan yang benar. */
+                correct: z.boolean().optional(),
+                /** Tanggapan yang muncul saat pilihan ini dipilih. */
+                feedback: z.string().trim().max(500).optional(),
               }),
             )
             .min(2)
             .max(6),
+          /** Penjelasan yang muncul setelah pertanyaan dijawab. */
+          explain: z.string().trim().max(800).optional(),
         }),
       )
       .min(1)
@@ -141,7 +163,16 @@ export const quizAttrsSchema = z
   .refine((a) => a.results.every((r) => r.min <= r.max), {
     message: "Rentang skor hasil tidak valid",
     path: ["results"],
-  });
+  })
+  .refine(
+    (a) =>
+      a.mode !== "knowledge" ||
+      a.questions.every((q) => q.options.filter((o) => o.correct).length === 1),
+    {
+      message: "Uji pengetahuan: setiap pertanyaan butuh tepat satu jawaban benar",
+      path: ["questions"],
+    },
+  );
 export type QuizAttrs = z.infer<typeof quizAttrsSchema>;
 
 export const toolEmbedAttrsSchema = z.object({

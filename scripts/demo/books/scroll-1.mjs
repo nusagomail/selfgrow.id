@@ -2,7 +2,7 @@
  * "Lepas dari Scroll Tanpa Ujung" bab 1–4. Contoh ebook lengkap kedua untuk staging.
  * Tokoh Dimas dan angkanya adalah ilustrasi; data nasional dan riset diberi sumber.
  */
-import { APLIKASI_BARS, LAYAR_COUNTER, SKOR_LAYAR } from "./scroll-interactive.mjs";
+import { APLIKASI_BARS, LAYAR_COUNTER, MESIN_SCROLL, SKOR_LAYAR } from "./scroll-interactive.mjs";
 
 export const SCROLL_1 = [
   {
@@ -107,6 +107,7 @@ export const SCROLL_1 = [
         ],
         "Latihan sederhana untuk hari ini:",
       ],
+      ["quiz", MESIN_SCROLL],
       [
         "summary",
         [

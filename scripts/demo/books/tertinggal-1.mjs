@@ -16,7 +16,7 @@
  * - Interaktif: kuis rasa tertinggal, grafik usia puncak kemampuan, tool catatan setahun
  *   (penggaris diri) dan kompas nilai (arah dan langkah minggu ini).
  */
-import { CEK_TERTINGGAL, PUNCAK_KEMAMPUAN } from "./tertinggal-interactive.mjs";
+import { CEK_TERTINGGAL, JADWAL_SIAPA, PUNCAK_KEMAMPUAN } from "./tertinggal-interactive.mjs";
 
 export const TERTINGGAL_1 = [
   {
@@ -74,6 +74,7 @@ export const TERTINGGAL_1 = [
       ],
       "Bahkan otak kita tidak punya satu usia puncak. Beberapa kemampuan memuncak di usia belasan, beberapa di usia 40-an, dan beberapa terus tumbuh sampai usia 60-an.",
       ["chart", PUNCAK_KEMAMPUAN],
+      ["quiz", JADWAL_SIAPA],
       "Usia 25 bukan garis finis. Untuk banyak hal yang penting, usia 25 bahkan belum garis tengah.",
       [
         "tip",

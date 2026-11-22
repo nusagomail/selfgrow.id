@@ -234,15 +234,52 @@ const num = (s: string) => (s === "" ? 0 : Number(s));
 
 function QuizForm({ value, onChange }: { value: QuizAttrs; onChange: (v: QuizAttrs) => void }) {
   const set = (patch: Partial<QuizAttrs>) => onChange({ ...value, ...patch });
-  const maxScore = value.questions.reduce(
-    (s, q) => s + Math.max(0, ...q.options.map((o) => o.points)),
-    0,
-  );
+  const mode = value.mode ?? "score";
+  const knowledge = mode === "knowledge";
+  const maxScore = knowledge
+    ? value.questions.length
+    : value.questions.reduce((s, q) => s + Math.max(0, ...q.options.map((o) => o.points)), 0);
+  const setQ = (qi: number, q: QuizAttrs["questions"][number]) =>
+    set({ questions: replaceAt(value.questions, qi, q) });
   return (
     <>
+      <Field
+        label="Bentuk kuis"
+        hint="Pilih bentuk yang paling cocok dengan isi bab, supaya kuis tiap ebook tidak seragam."
+      >
+        <select value={mode} onChange={(e) => set({ mode: e.target.value as QuizAttrs["mode"] })}>
+          <option value="score">Tes diri berpoin</option>
+          <option value="scale">Skala (pilihan mendatar)</option>
+          <option value="knowledge">Uji pengetahuan (ada jawaban benar)</option>
+          <option value="scenario">Skenario (tanggapan per pilihan)</option>
+        </select>
+      </Field>
+      <Field label="Label kecil (opsional)" hint="Contoh: Cek dompetmu, Kalau kamu Raka.">
+        <input
+          value={value.label ?? ""}
+          maxLength={40}
+          onChange={(e) => set({ label: e.target.value })}
+        />
+      </Field>
       <Field label="Judul kuis">
         <input value={value.title} onChange={(e) => set({ title: e.target.value })} />
       </Field>
+      {mode === "scale" && (
+        <div className="sg-row">
+          <input
+            aria-label="Label ujung kiri"
+            placeholder="Ujung kiri, mis. Jarang"
+            value={value.ends?.[0] ?? ""}
+            onChange={(e) => set({ ends: [e.target.value, value.ends?.[1] ?? ""] })}
+          />
+          <input
+            aria-label="Label ujung kanan"
+            placeholder="Ujung kanan, mis. Selalu"
+            value={value.ends?.[1] ?? ""}
+            onChange={(e) => set({ ends: [value.ends?.[0] ?? "", e.target.value] })}
+          />
+        </div>
+      )}
       <Field
         label="Id kuis"
         hint="Kosongkan agar dibuat dari judul. Pakai id yang sama di bab lain untuk tes ulang."
@@ -288,23 +325,40 @@ function QuizForm({ value, onChange }: { value: QuizAttrs; onChange: (v: QuizAtt
                   })
                 }
               />
-              <input
-                aria-label="Poin"
-                type="number"
-                min={0}
-                max={100}
-                className="sg-num"
-                value={o.points}
-                onChange={(e) =>
-                  set({
-                    questions: replaceAt(value.questions, qi, {
-                      ...q,
-                      options: replaceAt(q.options, oi, { ...o, points: num(e.target.value) }),
-                    }),
-                  })
-                }
-              />
-              <span className="sg-unit">poin</span>
+              {knowledge ? (
+                <label className="sg-unit">
+                  <input
+                    type="radio"
+                    name={`benar-${qi}`}
+                    checked={Boolean(o.correct)}
+                    onChange={() =>
+                      setQ(qi, {
+                        ...q,
+                        options: q.options.map((x, j) => ({ ...x, correct: j === oi })),
+                      })
+                    }
+                  />{" "}
+                  benar
+                </label>
+              ) : (
+                <>
+                  <input
+                    aria-label="Poin"
+                    type="number"
+                    min={0}
+                    max={100}
+                    className="sg-num"
+                    value={o.points}
+                    onChange={(e) =>
+                      setQ(qi, {
+                        ...q,
+                        options: replaceAt(q.options, oi, { ...o, points: num(e.target.value) }),
+                      })
+                    }
+                  />
+                  <span className="sg-unit">poin</span>
+                </>
+              )}
               {q.options.length > 2 && (
                 <button
                   type="button"
@@ -324,6 +378,29 @@ function QuizForm({ value, onChange }: { value: QuizAttrs; onChange: (v: QuizAtt
               )}
             </div>
           ))}
+          {(mode === "scenario" || knowledge) &&
+            q.options.map((o, oi) => (
+              <input
+                // biome-ignore lint/suspicious/noArrayIndexKey: baris isian tanpa id; nilainya terkendali state
+                key={`fb${oi}`}
+                aria-label={`Tanggapan untuk pilihan ${oi + 1}`}
+                placeholder={`Tanggapan saat memilih "${o.label || `pilihan ${oi + 1}`}" (opsional)`}
+                value={o.feedback ?? ""}
+                onChange={(e) =>
+                  setQ(qi, {
+                    ...q,
+                    options: replaceAt(q.options, oi, { ...o, feedback: e.target.value }),
+                  })
+                }
+              />
+            ))}
+          <textarea
+            aria-label="Penjelasan setelah menjawab"
+            rows={2}
+            placeholder="Penjelasan yang muncul setelah menjawab (opsional)"
+            value={q.explain ?? ""}
+            onChange={(e) => setQ(qi, { ...q, explain: e.target.value })}
+          />
           <div className="sg-row">
             {q.options.length < 6 && (
               <button

@@ -6,14 +6,16 @@
 const freq = (q) => ({
   q,
   options: [
-    { label: "Hampir setiap hari", points: 2 },
-    { label: "Kadang-kadang", points: 1 },
+    { label: "Hampir tiap hari", points: 2 },
+    { label: "Kadang", points: 1 },
     { label: "Jarang", points: 0 },
   ],
 });
 
 export const SUASANA_LAYAR = {
   id: "suasana-layar",
+  mode: "scale",
+  label: "Potret rumahmu",
   title: "Seberapa tegang urusan layar di rumahmu?",
   intro: "Pikirkan dua minggu terakhir. Jawab jujur; tidak ada yang menilai.",
   questions: [
@@ -62,4 +64,59 @@ export const MINGGU_PERTAMA = {
     { label: "Minggu", value: 1, color: "#5bb37f" },
   ],
   note: "Ilustrasi. Hari kedua biasanya paling berat: anak menguji apakah aturan barunya sungguhan.",
+};
+
+/** Bab 4: saat waktu layar habis (D50, skenario). */
+export const SATU_LEVEL_LAGI = {
+  id: "satu-level-lagi",
+  mode: "scenario",
+  label: "Pukul 19.30",
+  title: '"Satu level lagi, Bun! Tanggung!"',
+  intro: "Waktu layar Alif habis sesuai kesepakatan. Dia sedang di tengah permainan.",
+  questions: [
+    {
+      q: "Apa yang kamu lakukan?",
+      options: [
+        {
+          label: "Langsung mengambil tabletnya dari tangan Alif.",
+          points: 0,
+          feedback:
+            "Perpindahan yang mendadak memicu ledakan. Masalahnya bukan aturannya, tapi tidak ada aba-aba sebelumnya.",
+        },
+        {
+          label: '"Ya sudah, sepuluh menit lagi." (ketiga kalinya malam ini)',
+          points: 0,
+          feedback:
+            "Setiap tambahan mengajarkan bahwa tawar-menawar berhasil. Besok, tawar-menawarnya akan lebih panjang.",
+        },
+        {
+          label:
+            '"Selesaikan level ini, lalu tabletnya kamu sendiri yang taruh di keranjang. Habis itu kita mandi."',
+          points: 2,
+          feedback:
+            "Akhir yang jelas, anak tetap punya peran, dan ada kegiatan berikutnya yang langsung menunggu.",
+        },
+        {
+          label: "Mulai besok pakai aba-aba 10 menit dan 2 menit sebelum waktu habis.",
+          points: 2,
+          feedback:
+            "Mencegah lebih mudah daripada meredakan. Aba-aba membuat akhirnya bisa ditebak.",
+        },
+      ],
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 1,
+      title: "Adu kuat malam ini",
+      text: "Bukan salahmu; malam hari semua orang lelah. Tempel gambar aba-aba di dekat keranjang gawai.",
+    },
+    {
+      min: 2,
+      max: 2,
+      title: "Sistem yang bekerja",
+      text: "Kamu tidak perlu menang adu kuat, karena akhirnya sudah disepakati dan bisa ditebak.",
+    },
+  ],
 };

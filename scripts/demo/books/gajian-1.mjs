@@ -17,7 +17,7 @@
  *   tetesan. Beda dari buku keuangan lain (krem berangka, buku tabungan).
  * - Interaktif: kuis tanda bocor, grafik 14 hari, kalkulator jatah harian, pencari kebocoran.
  */
-import { CATATAN_FIKRI, TANDA_BOCOR } from "./gajian-interactive.mjs";
+import { CATATAN_FIKRI, HITUNG_TETES, TANDA_BOCOR } from "./gajian-interactive.mjs";
 
 export const GAJIAN_1 = [
   {
@@ -123,6 +123,7 @@ export const GAJIAN_1 = [
       "**Tanggal 5. Saldo kantong bebas: Rp1.650.000.** Fikri membuka daftar langganannya dan menemukan tiga aplikasi yang tidak dia buka sejak dua bulan lalu.",
       "Kebocoran kecil sulit terasa karena setiap tetesnya tidak menyakitkan. Rp25 ribu ongkir, Rp35 ribu kopi, Rp49 ribu langganan. Yang menyakitkan adalah jumlahnya setahun.",
       ["img", "tetes-kecil", "Kebocoran kecil, dihitung setahun."],
+      ["quiz", HITUNG_TETES],
       ["tool", "pencari-bocor"],
       ["h", "Kenapa belanja tanpa uang tunai terasa ringan"],
       [

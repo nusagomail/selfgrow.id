@@ -4,7 +4,7 @@
  * Hari contoh (68 g → 26 g) dipakai juga di infografis dan video. Edukasi umum, bukan nasihat
  * medis; penyandang diabetes mengikuti arahan tenaga kesehatan.
  */
-import { GULA_COUNTER, HARI_GULA_BARS, JEJAK_GULA } from "./gula-interactive.mjs";
+import { GULA_COUNTER, HARI_GULA_BARS, JEJAK_GULA, NAMA_GULA } from "./gula-interactive.mjs";
 
 export const GULA_1 = [
   {
@@ -91,6 +91,7 @@ export const GULA_1 = [
           "Catat di urutan ke berapa gula pertama muncul, dan ada berapa jenis gula.",
         ],
       ],
+      ["quiz", NAMA_GULA],
       [
         "summary",
         [

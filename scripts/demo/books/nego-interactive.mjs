@@ -13,6 +13,8 @@ const yes = (q) => ({
 
 export const SIAP_NEGO = {
   id: "siap-nego",
+  mode: "score",
+  label: "Cek kesiapan",
   title: "Seberapa siap kamu bernegosiasi?",
   intro: "Jawab untuk tawaran kerja atau kenaikan gaji yang sedang kamu hadapi.",
   questions: [
@@ -57,4 +59,76 @@ export const SELISIH_BARS = {
     { label: "Tahun 5", value: 17686356, color: "#856014" },
   ],
   note: "Ilustrasi: 13 kali gaji setahun (termasuk THR), kenaikan 8% per tahun. Total sekitar Rp76 juta.",
+};
+
+/** Bab 5: membalas jawaban HR (D50, skenario). */
+export const BALAS_HR = {
+  id: "balas-hr",
+  mode: "scenario",
+  label: "Kalau kamu Raka",
+  title: "HR menjawab. Apa balasanmu?",
+  intro: "Dua situasi yang hampir pasti terjadi. Pilih balasan yang paling mendekati gayamu.",
+  questions: [
+    {
+      q: "Tawaran tertulis datang: Rp9 juta, di bawah rentang yang kamu sebut (Rp10–11 juta).",
+      options: [
+        {
+          label: '"Baik, saya terima."',
+          points: 0,
+          feedback:
+            "Tawaran balik berarti perusahaan sudah memilihmu. Menerima langsung meninggalkan ruang yang sebenarnya masih terbuka.",
+        },
+        {
+          label:
+            '"Terima kasih, saya senang dengan tawarannya. Berdasarkan riset dan cakupan peran ini, saya berharap di Rp10,5 juta. Apakah ada ruang?"',
+          points: 2,
+          feedback:
+            "Hangat, beralasan, dan menyebut satu angka. Setelah itu, diam dan biarkan HR menjawab.",
+        },
+        {
+          label: '"Kalau begitu saya pertimbangkan tawaran lain saja."',
+          points: 0,
+          feedback:
+            "Ancaman yang belum tentu ada bisa membuat pembicaraan berhenti. Kalau memang ada tawaran lain, sebutkan dengan jujur dan tenang.",
+        },
+      ],
+    },
+    {
+      q: 'HR bilang: "Anggaran posisi ini memang maksimal Rp9,5 juta."',
+      options: [
+        {
+          label:
+            '"Kalau gaji pokok sudah mentok, bisakah kita bahas bagian lain paketnya, misalnya anggaran sertifikasi dan tinjauan gaji di bulan keenam?"',
+          points: 2,
+          feedback: "Ini yang dilakukan Raka. Gaji pokok bukan satu-satunya yang bisa ditawar.",
+        },
+        {
+          label: '"Ya sudah, tidak apa-apa."',
+          points: 1,
+          feedback:
+            "Boleh, kalau angkanya memang masih di atas batas bawahmu. Tapi kamu melewatkan bagian paket lain yang sering lebih mudah diberikan.",
+        },
+        {
+          label: '"Masa perusahaan sebesar ini cuma segitu?"',
+          points: 0,
+          feedback:
+            "Nada menyalahkan membuat HR membela diri, bukan mencari jalan. Bertanyalah tentang pilihan, bukan tentang kesalahan.",
+        },
+      ],
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 2,
+      title: "Masih menerima di detik pertama",
+      text: "Latih satu kalimat balasan untuk tawaran pertama sampai lancar. Kalimat itu yang paling mahal di seluruh proses.",
+    },
+    {
+      min: 3,
+      max: 4,
+      title: "Siap menawar dengan hangat",
+      text: "Kamu tahu kapan bertahan dan kapan beralih ke bagian paket lain. Ingat: minta semua kesepakatan secara tertulis.",
+    },
+  ],
 };

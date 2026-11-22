@@ -3,7 +3,7 @@
  * tawaran Rp8 juta sampai kesepakatan; setiap bab dibuka dengan percakapan atau momen di
  * prosesnya. Pembaca menyiapkan negosiasinya sendiri di setiap bab. Angka gaji adalah ilustrasi.
  */
-import { SELISIH_BARS, SIAP_NEGO } from "./nego-interactive.mjs";
+import { BALAS_HR, SELISIH_BARS } from "./nego-interactive.mjs";
 
 export const NEGO_1 = [
   {
@@ -27,7 +27,6 @@ export const NEGO_1 = [
       "Yang membuat negosiasi terasa tidak sopan biasanya bukan permintaannya, tapi caranya: tiba-tiba, tanpa alasan, atau dengan nada mengancam. Buku ini mengajarkan cara yang sebaliknya.",
       ["img", "lima-langkah", "Lima langkah yang akan kita jalani."],
       ["h", "Cek kesiapanmu"],
-      ["quiz", SIAP_NEGO],
     ],
   },
   {
@@ -144,6 +143,7 @@ export const NEGO_1 = [
         "warn",
         "Minta semua kesepakatan dalam bentuk tertulis, termasuk tunjangan dan tanggal tinjauan gaji. Janji lisan mudah terlupa saat orang yang menjanjikan sudah pindah bagian.",
       ],
+      ["quiz", BALAS_HR],
       [
         "reflect",
         [

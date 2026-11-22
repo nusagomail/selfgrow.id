@@ -14,6 +14,8 @@ const freq = (q) => ({
 
 export const CEK_GEMETAR = {
   id: "cek-gemetar",
+  mode: "scale",
+  label: "Cek gemetar",
   title: "Seberapa gemetar kamu saat harus bicara di depan orang?",
   intro: "Ingat presentasi, rapat, atau acara terakhir saat kamu harus bicara di depan orang.",
   questions: [
@@ -58,4 +60,76 @@ export const LATIHAN_RAKA = {
     { label: "Latihan 5: simulasi di ruang rapat", value: 4, color: "#ffd27a" },
   ],
   note: "Ilustrasi. Gugupnya tidak hilang, tapi turun setiap kali dihadapi.",
+};
+
+/** Hari H: kalimat penyelamat (D50, skenario). */
+export const MENIT_KEENAM = {
+  id: "menit-keenam",
+  mode: "scenario",
+  label: "Menit keenam",
+  title: "Direktur memotong dengan pertanyaan yang tidak ada di persiapanmu.",
+  intro: '"Berapa penghematan kalau kita hanya potong satu pos, bukan dua?" Semua mata menatapmu.',
+  questions: [
+    {
+      q: "Apa yang kamu ucapkan?",
+      options: [
+        {
+          label: "Menebak angkanya supaya terlihat menguasai.",
+          points: 0,
+          feedback:
+            "Angka tebakan di depan direksi bisa dikutip di rapat berikutnya. Lebih aman jujur bahwa kamu perlu menghitungnya.",
+        },
+        {
+          label:
+            '"Pertanyaan bagus. Saya belum punya angka pastinya. Saya hitung dan kirim setelah rapat hari ini."',
+          points: 2,
+          feedback:
+            "Ini kalimat penyelamat yang sudah disiapkan. Singkat, jujur, dan ada janji tindak lanjut yang jelas.",
+        },
+        {
+          label: "Minta maaf panjang, lalu buru-buru pindah ke slide berikutnya.",
+          points: 0,
+          feedback:
+            "Permintaan maaf yang panjang membuat gangguan kecil terasa besar, untukmu dan untuk penonton.",
+        },
+      ],
+    },
+    {
+      q: "Setelah menjawab, pikiranmu kosong. Kamu lupa sedang di poin mana.",
+      options: [
+        {
+          label: '"Sebentar, saya cek catatan." Lihat kartu, ulangi poin terakhir, lanjut.',
+          points: 2,
+          feedback:
+            "Jeda tiga detik terasa lama bagimu, tapi wajar bagi penonton. Kartu kerangka dibuat untuk detik seperti ini.",
+        },
+        {
+          label: "Membaca slide kata demi kata sampai ingat lagi.",
+          points: 1,
+          feedback:
+            "Bisa menyelamatkan, tapi kamu kehilangan kontak dengan ruangan. Lebih baik kembali ke kartu dan nomornya.",
+        },
+        {
+          label: '"Maaf, saya grogi sekali hari ini."',
+          points: 0,
+          feedback:
+            "Ingat ilusi transparansi: mereka tidak melihat gugupmu sebanyak yang kamu kira. Tidak perlu diumumkan.",
+        },
+      ],
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 2,
+      title: "Kalimat penyelamat belum siap",
+      text: "Tulis dua kalimat penyelamatmu sendiri di bagian bawah kartu kerangka, lalu ucapkan dengan suara tiga kali.",
+    },
+    {
+      min: 3,
+      max: 4,
+      title: "Siap untuk menit keenam",
+      text: "Hal kecil yang salah hampir pasti terjadi. Kamu sudah tahu cara melanjutkan.",
+    },
+  ],
 };

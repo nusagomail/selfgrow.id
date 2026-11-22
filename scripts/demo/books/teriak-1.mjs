@@ -4,7 +4,7 @@
  * menghakimi orang tua. Edukasi umum; kekerasan dalam rumah tangga dan masalah perilaku yang
  * berat perlu bantuan profesional.
  */
-import { PEMICU_TERIAK } from "./teriak-interactive.mjs";
+import { LEGO_DILEMPAR, PEMICU_TERIAK } from "./teriak-interactive.mjs";
 
 export const TERIAK_1 = [
   {
@@ -97,6 +97,7 @@ export const TERIAK_1 = [
         ],
       ],
       ["tool", "penyusun-kalimat-batas"],
+      ["quiz", LEGO_DILEMPAR],
       ["h", "Kalau anak masih menangis"],
       "Kalimat batas bukan tombol untuk menghentikan tangis. Tangis adalah cara anak melepaskan perasaannya. Tugasmu adalah menjaga batasnya tetap berdiri dan tetap tenang di dekatnya, bukan membuat tangisnya berhenti secepat mungkin.",
       [

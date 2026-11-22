@@ -14,6 +14,8 @@ const scale = (q) => ({
 
 export const POLA_IYA = {
   id: "pola-iya",
+  mode: "score",
+  label: "Cek kebiasaan",
   title: 'Seberapa sering "iya" keluar duluan?',
   intro: "Pikirkan sebulan terakhir. Pilih yang paling mendekati, bukan yang paling ideal.",
   questions: [
@@ -69,4 +71,68 @@ export const MINGGU_SARI = {
     { label: "Antar-jemput titipan", value: 2, color: "#5b2a4e" },
   ],
   note: "15 jam seminggu. Hampir dua hari kerja yang bukan pekerjaannya.",
+};
+
+const gaya = (correct) =>
+  ["Pasif", "Agresif", "Asertif"].map((label) => ({
+    label,
+    points: 0,
+    correct: label === correct,
+  }));
+
+/** Bab 2: tebak gaya kalimat (D50, uji pengetahuan). */
+export const TEBAK_GAYA = {
+  id: "tebak-gaya",
+  mode: "knowledge",
+  label: "Latihan telinga",
+  title: "Pasif, agresif, atau asertif?",
+  intro: "Baca setiap kalimat dengan suara pelan, lalu tebak gayanya.",
+  questions: [
+    {
+      q: '"Ya ampun, iya deh, nanti aku kerjain." (padahal sudah lembur tiga hari)',
+      options: gaya("Pasif"),
+      explain: "Mengiyakan sambil menelan keberatan. Rekanmu tidak tahu kamu sudah kewalahan.",
+    },
+    {
+      q: '"Minggu ini aku nggak bisa ambil tambahan. Kalau mendesak, aku bisa bantu cek drafnya hari Senin."',
+      options: gaya("Asertif"),
+      explain: "Batasnya jelas, tanpa menyalahkan, dan ada tawaran yang memang sanggup dijalankan.",
+    },
+    {
+      q: '"Kamu kira aku nggak punya kerjaan sendiri?"',
+      options: gaya("Agresif"),
+      explain: "Penolakannya tersampaikan, tapi lewat serangan. Hubungan yang menanggung biayanya.",
+    },
+    {
+      q: '"Terserah kamu aja deh." (lalu diam seharian)',
+      options: gaya("Pasif"),
+      explain:
+        "Kelihatannya mengalah, tapi kesalnya bocor lewat diam. Ini sering disebut pasif-agresif.",
+    },
+    {
+      q: '"Bulan ini aku belum bisa pinjamkan uang, karena lagi nabung untuk DP. Semoga cepat ketemu jalan keluarnya, ya."',
+      options: gaya("Asertif"),
+      explain: "Jujur tentang batas dan alasannya, tetap hangat pada orangnya.",
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 2,
+      title: "Telinga yang masih belajar",
+      text: "Wajar. Kita jarang mendengar kalimat asertif di sekitar kita. Baca lagi tabel tiga gaya di atas.",
+    },
+    {
+      min: 3,
+      max: 4,
+      title: "Hampir peka",
+      text: "Kamu sudah bisa membedakan sebagian besar. Perhatikan pasif-agresif: sering menyamar jadi mengalah.",
+    },
+    {
+      min: 5,
+      max: 5,
+      title: "Telinga yang tajam",
+      text: "Kamu bisa mengenali gaya kalimat. Langkah berikutnya: mengucapkannya sendiri (Bab 4).",
+    },
+  ],
 };

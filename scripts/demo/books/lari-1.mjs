@@ -4,7 +4,7 @@
  * lari–jalan berselang adalah rancangan buku ini. Edukasi umum; kondisi kesehatan tertentu perlu
  * konsultasi dokter sebelum mulai.
  */
-import { CEK_AMAN } from "./lari-interactive.mjs";
+import { CEK_AMAN, ZONA_BICARA } from "./lari-interactive.mjs";
 
 export const LARI_1 = [
   {
@@ -31,6 +31,7 @@ export const LARI_1 = [
       "Jam pintar dan aplikasi lari punya banyak angka. Untuk pemula, satu alat ukur sudah cukup, dan gratis: **apakah kamu masih bisa bicara?**",
       ["img", "tes-bicara", "Tiga zona tes bicara."],
       'Di zona yang pas, kamu masih bisa mengucapkan kalimat lengkap walau napas terasa berat. Kalau hanya bisa mengucapkan satu-dua kata, pelankan. Di awal program, lari yang benar sering terasa "terlalu lambat". Itu justru tanda kamu melakukannya dengan benar.',
+      ["quiz", ZONA_BICARA],
       ["img", "anatomi-sesi", "Satu sesi dari awal sampai akhir."],
       ["tool", "jadwal-lari-8-minggu"],
       [

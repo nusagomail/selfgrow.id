@@ -9,6 +9,8 @@ const yesNo = (q) => ({
 
 export const SKOR_JERAT = {
   id: "skor-jerat",
+  mode: "score",
+  label: "Cek jerat",
   title: "Seberapa dalam kamu terjerat?",
   intro: "Jawab jujur. Tidak ada yang melihat jawabanmu selain kamu sendiri.",
   questions: [
@@ -65,4 +67,59 @@ export const HEMAT_BARS = {
     { label: "Langganan", value: 80000, color: "#a8d49a" },
   ],
   note: "Total Rp700.000 per bulan, tanpa gaji tambahan.",
+};
+
+/** Bab 3: momen di halaman pembayaran (D50, skenario). */
+export const DI_KASIR = {
+  id: "di-kasir",
+  mode: "scenario",
+  label: "Pukul 22.40",
+  title: "Kamu baru pulang lembur. Di keranjang ada sepatu Rp1,2 juta.",
+  intro:
+    'Saldo tinggal Rp300 ribu, gajian masih sembilan hari lagi. Tombol paling atas berbunyi: "Bayar nanti 3× Rp400 ribu, 0%".',
+  questions: [
+    {
+      q: "Apa yang kamu lakukan?",
+      options: [
+        {
+          label: 'Tekan "bayar nanti". Toh cuma Rp400 ribu sebulan.',
+          points: 0,
+          feedback:
+            'Ini persis momen yang dirancang aplikasinya: kamu lelah, sudah malam, dan angka cicilan ditulis lebih besar daripada totalnya. Rp400 ribu ini akan ikut "mengambang" di luar rekening mana pun di kepalamu.',
+        },
+        {
+          label: "Biarkan di keranjang dan tutup aplikasinya. Lihat lagi besok siang.",
+          points: 2,
+          feedback:
+            "Jeda adalah rem yang hilang di paylater. Besok siang, saat tidak lelah, kamu bisa memutuskan dengan kepala yang lebih jernih. Sering kali keinginannya sudah lewat.",
+        },
+        {
+          label: "Cari kode promo dulu. Kalau dapat diskon, langsung beli.",
+          points: 0,
+          feedback:
+            'Mencari promo terasa seperti berhemat, tapi pertanyaannya bergeser dari "perlu atau tidak" ke "berapa diskonnya". Hitung mundur promo juga sering sengaja memotong waktu berpikirmu.',
+        },
+        {
+          label: "Catat jam dan perasaanmu sekarang, lalu tidur.",
+          points: 2,
+          feedback:
+            "Kamu sedang mengerjakan latihan bab ini: mengenali pemicu. Lelah pukul 22.40 adalah pemicu, bukan alasan untuk berutang.",
+        },
+      ],
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 1,
+      title: "Pemicunya menang kali ini",
+      text: "Tidak apa-apa, ini latihan. Pindahkan aplikasi belanja ke folder terakhir supaya ada satu langkah jeda berikutnya.",
+    },
+    {
+      min: 2,
+      max: 2,
+      title: "Kamu memberi jeda pada otakmu",
+      text: "Jeda kecil itulah yang memutus lingkaran. Lakukan lagi saat godaan berikutnya datang.",
+    },
+  ],
 };

@@ -14,6 +14,8 @@ const yn = (q) => ({
 
 export const TANDA_MENGHINDAR = {
   id: "tanda-menghindar",
+  mode: "scale",
+  label: "Cek pola",
   title: "Apa yang kamu lakukan tepat sebelum menunda?",
   intro: "Ingat saat terakhir kamu membuka tugas lalu menutupnya lagi.",
   questions: [
@@ -58,4 +60,74 @@ export const HARI_DINDA = {
     { label: "Menulis skripsi", value: 5, color: "#b5e853" },
   ],
   note: "Menit, ilustrasi. Total 240 menit.",
+};
+
+/** Bab 6: pagi setelah menunda seharian (D50, skenario). */
+export const PAGI_SETELAHNYA = {
+  id: "pagi-setelahnya",
+  mode: "scenario",
+  label: "Rabu pagi",
+  title: "Kemarin kamu menunda seharian. Tidak satu kalimat pun ditulis.",
+  questions: [
+    {
+      q: "Kalimat pertama yang muncul di kepalamu pagi ini…",
+      options: [
+        {
+          label: '"Aku memang pemalas. Percuma."',
+          points: 0,
+          feedback:
+            "Menghukum diri membuat perasaan makin berat, dan perasaan berat itulah yang membuat tugas dihindari lagi.",
+        },
+        {
+          label:
+            '"Kemarin aku menghindar karena takut hasilnya jelek. Wajar. Hari ini mulai dua menit."',
+          points: 2,
+          feedback:
+            "Ini memaafkan diri yang dipelajari Wohl dkk. (2010): mahasiswa yang memaafkan diri lebih sedikit menunda di ujian berikutnya.",
+        },
+        {
+          label: '"Hari ini aku harus mengejar semuanya sekaligus, delapan jam penuh."',
+          points: 0,
+          feedback:
+            "Target raksasa sebagai hukuman membuat tugasnya terasa makin menakutkan. Kecilkan langkah pertamanya.",
+        },
+      ],
+    },
+    {
+      q: "Laptop terbuka. Apa langkah pertamamu?",
+      options: [
+        {
+          label: "Menulis tiga judul subbab, lalu boleh berhenti.",
+          points: 2,
+          feedback: "Terlalu kecil untuk ditolak. Kalau setelahnya ingin lanjut, lanjutkan.",
+        },
+        {
+          label: "Merapikan folder dulu supaya lebih semangat.",
+          points: 0,
+          feedback:
+            "Ini lingkaran menghindar yang menyamar sebagai persiapan. Rapikan setelah dua menit menulis.",
+        },
+        {
+          label: "Membaca satu jurnal lagi sebelum mulai menulis.",
+          points: 1,
+          feedback:
+            "Bisa berguna, tapi sering jadi cara aman untuk tidak menulis. Tulis dulu, baca kemudian.",
+        },
+      ],
+    },
+  ],
+  results: [
+    {
+      min: 0,
+      max: 2,
+      title: "Hari yang dimulai dengan menghukum diri",
+      text: "Coba ucapkan kalimat memaafkan diri dengan suara, lalu kerjakan langkah dua menit.",
+    },
+    {
+      min: 3,
+      max: 4,
+      title: "Hari yang dimulai lagi",
+      text: "Gagal sehari tidak menghapus kemajuanmu. Yang menentukan adalah apa yang kamu lakukan pagi ini.",
+    },
+  ],
 };

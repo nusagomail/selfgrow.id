@@ -2,7 +2,7 @@
  * "Berani Bilang Tidak" bab 1–4. Tiga tokoh ilustrasi: Sari (admin keuangan, Medan), Bayu (anak
  * sulung, Makassar), Rina (karyawan swasta, Yogyakarta). Struktur bab sengaja tidak seragam.
  */
-import { MINGGU_SARI, POLA_IYA, UNDANGAN_COUNTER } from "./tidak-interactive.mjs";
+import { MINGGU_SARI, POLA_IYA, TEBAK_GAYA, UNDANGAN_COUNTER } from "./tidak-interactive.mjs";
 
 export const TIDAK_1 = [
   {
@@ -91,6 +91,7 @@ export const TIDAK_1 = [
       "**Bayu (pasif):** Eh... iya, nanti Kakak usahakan.",
       "**Bayu (asertif):** Bulan ini Kakak cuma bisa bantu lima ratus ribu, karena Kakak juga lagi nabung buat DP rumah. Sisanya kita cari bareng, ya. Mungkin bisa tanya ke kampus soal cicilan.",
       "Jawaban kedua tidak dingin. Bayu tetap peduli, tetap membantu. Bedanya, dia menyebut batasnya dengan jelas dan tidak menjanjikan sesuatu yang akan membuatnya sesak.",
+      ["quiz", TEBAK_GAYA],
       [
         "exercise",
         [
