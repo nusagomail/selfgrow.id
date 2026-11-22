@@ -67,6 +67,10 @@ diisi kembali oleh empat jenis pemulihan yang dicolokkan satu per satu.
 atletik dari atas. Satu putaran dibagi bagian lari dan jalan yang berubah minggu demi minggu sampai
 satu putaran penuh lari di minggu 8, lalu tes bicara.
 
+**Contoh kesembilan: "CV yang Dilirik Rekruter"** (`cv.mjs` + `cv.html`). Konsep: selembar CV di
+meja rekruter, stopwatch 7,4 detik dan jejak pandangan berpola F yang distabilo, lalu satu baris
+tugas dicoret dan diganti kalimat pencapaian.
+
 Panduan ini bukan cetakan. Setiap buku punya cara masuk yang berbeda. Buku keuangan mungkin
 dibuka dengan angka yang mengejutkan, buku tentang duka dibuka dengan satu kalimat yang
 lembut, buku kebiasaan dibuka dengan pertanyaan. Pilih adegan yang melayani buku itu, lalu

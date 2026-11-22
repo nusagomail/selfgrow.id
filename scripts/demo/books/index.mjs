@@ -2,6 +2,8 @@
 
 import { BURNOUT_1 } from "./burnout-1.mjs";
 import { BURNOUT_FIGURES } from "./burnout-figures.mjs";
+import { CV_1 } from "./cv-1.mjs";
+import { CV_FIGURES } from "./cv-figures.mjs";
 import { DARURAT_1 } from "./darurat-1.mjs";
 import { DARURAT_FIGURES } from "./darurat-figures.mjs";
 import { GULA_1 } from "./gula-1.mjs";
@@ -83,5 +85,9 @@ export const FULL_BOOKS = {
   "dari-rebahan-ke-lari-5k": {
     chapters: LARI_1,
     figures: LARI_FIGURES,
+  },
+  "cv-yang-dilirik-rekruter": {
+    chapters: CV_1,
+    figures: CV_FIGURES,
   },
 };

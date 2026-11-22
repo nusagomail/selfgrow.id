@@ -8,6 +8,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { BURNOUT_FIGURE_CSS, BURNOUT_FIGURES } from "./books/burnout-figures.mjs";
+import { CV_FIGURE_CSS, CV_FIGURES } from "./books/cv-figures.mjs";
 import { DARURAT_FIGURE_CSS, DARURAT_FIGURES } from "./books/darurat-figures.mjs";
 import { GULA_FIGURE_CSS, GULA_FIGURES } from "./books/gula-figures.mjs";
 import { HARGA_FIGURE_CSS, HARGA_FIGURES } from "./books/harga-figures.mjs";
@@ -45,6 +46,7 @@ const SETS = {
   "dana-darurat-dari-nol": { figures: DARURAT_FIGURES, css: DARURAT_FIGURE_CSS },
   "burnout-bukan-lemah": { figures: BURNOUT_FIGURES, css: BURNOUT_FIGURE_CSS },
   "dari-rebahan-ke-lari-5k": { figures: LARI_FIGURES, css: LARI_FIGURE_CSS },
+  "cv-yang-dilirik-rekruter": { figures: CV_FIGURES, css: CV_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,
