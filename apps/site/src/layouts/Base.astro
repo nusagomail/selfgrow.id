@@ -13,8 +13,10 @@ interface Props {
   /** Data terstruktur (JSON-LD) tambahan untuk halaman ini. */
   jsonLd?: Record<string, unknown>[];
   categories?: Category[];
+  /** Halaman yang tidak perlu diindeks mesin pencari (mis. hasil pencarian). */
+  noindex?: boolean;
 }
-const { title, description, current, jsonLd = [] } = Astro.props;
+const { title, description, current, jsonLd = [], noindex = false } = Astro.props;
 const categories = Astro.props.categories ?? (await getCategories());
 const base = Astro.site ?? new URL(Astro.url.origin);
 const canonical = new URL(Astro.url.pathname, base);
@@ -38,6 +40,7 @@ const ld = (o: unknown) => JSON.stringify(o).replace(/</g, "\\u003c");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#073e1f" />

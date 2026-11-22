@@ -43,6 +43,7 @@ export interface FeedItem {
   comingSoon?: boolean;
   coverUrl: string | null;
   category: { slug: string; name: string } | null;
+  topic?: { slug: string; name: string } | null;
   publishedAt: string | null;
 }
 
@@ -147,4 +148,15 @@ export function siteVideo(v: { url: string; posterUrl: string | null } | null | 
   if (!v || !id) return null;
   const posterId = v.posterUrl?.split("/").pop();
   return { src: `/video/${id}`, poster: posterId ? `/gambar/${posterId}` : null };
+}
+
+/** Cari konten terbit (D52). Kueri yang tidak valid menghasilkan daftar kosong. */
+export async function searchItems(q: string, type?: ContentType): Promise<FeedItem[]> {
+  const qs = new URLSearchParams({ q });
+  if (type) qs.set("type", type);
+  try {
+    return (await getJson<{ items: FeedItem[] }>(`/search?${qs}`))?.items ?? [];
+  } catch {
+    return [];
+  }
 }
