@@ -1,5 +1,5 @@
 /**
- * "Dari Rebahan ke Lari 5K", 6 bab. Bentuk: buku program; tokoh Rio (34, pekerja kantoran yang
+ * "Dari Rebahan ke Lari 5K", 9 bab (diperdalam: persiapan, adaptasi tubuh dan cedera, makan-minum-tidur). Bentuk: buku program; tokoh Rio (34, pekerja kantoran yang
  * hampir tidak pernah berolahraga) menulis catatan singkat di awal setiap bab. Program 8 minggu
  * lari–jalan berselang adalah rancangan buku ini. Edukasi umum; kondisi kesehatan tertentu perlu
  * konsultasi dokter sebelum mulai.
@@ -41,6 +41,39 @@ export const LARI_1 = [
     ],
   },
   {
+    title: "Sebelum Sesi Pertama: Sepatu, Jam, dan Udara",
+    blocks: [
+      '**Catatan Rio, hari 1:** "Hampir beli sepatu Rp1,8 juta karena katanya bagus untuk pemula. Untung istri bilang: coba dulu sebulan pakai sepatu yang ada."',
+      "Sebelum sesi pertama, ada tiga keputusan kecil yang sering membuat pemula ragu: sepatu apa, jam berapa, dan di mana. Kabar baiknya, ketiganya tidak perlu mahal atau rumit.",
+      ["h", "Sepatu: nyaman dulu, mahal belakangan"],
+      "Tidak ada satu jenis sepatu yang terbukti mencegah cedera untuk semua orang. Para peneliti biomekanika lari kini lebih banyak menyarankan satu patokan sederhana: **pilih sepatu yang terasa nyaman di kakimu sendiri**.",
+      [
+        "ul",
+        [
+          "Sepatu olahraga yang sudah kamu punya biasanya cukup untuk empat minggu pertama.",
+          "Coba jalan dan lari kecil di toko. Tumit tidak boleh terangkat, jari kaki tidak boleh tertekan ke ujung.",
+          "Sisakan kira-kira satu ruas jari antara jari terpanjang dan ujung sepatu, karena kaki sedikit membengkak saat berlari.",
+          "Jangan langsung lomba dengan sepatu baru. Pakai dulu di beberapa sesi latihan.",
+        ],
+      ],
+      ["h", "Jam dan tempat"],
+      "Di sebagian besar kota di Indonesia, udara siang hari panas dan lembap. Tubuh harus bekerja lebih keras untuk mendinginkan diri, sehingga lari terasa jauh lebih berat daripada seharusnya, dan pemula cepat menyimpulkan dirinya tidak kuat.",
+      ["img", "cuaca-lari", "Kapan dan di mana berlari."],
+      [
+        "ul",
+        [
+          "**Rute datar dan teduh** lebih ramah daripada tanjakan dan jalan raya.",
+          "**Putaran pendek** (lapangan, taman, jalan kompleks) memudahkan berhenti kapan saja dan dekat dengan air minum.",
+          "**Kualitas udara** bisa dicek di aplikasi cuaca atau situs pemantau udara sebelum keluar. Kalau sedang buruk, ganti dengan jalan cepat di dalam ruangan.",
+        ],
+      ],
+      [
+        "tip",
+        "Tidak punya waktu pagi? Sesi sore tetap jauh lebih baik daripada tidak sama sekali. Yang penting rutin, bukan sempurna.",
+      ],
+    ],
+  },
+  {
     title: "Minggu 1–4: Membangun Kebiasaan",
     blocks: [
       '**Catatan Rio, minggu 3:** "Bangun pagi tetap berat. Tapi setelah sepuluh menit, aku selalu senang sudah keluar rumah."',
@@ -55,11 +88,56 @@ export const LARI_1 = [
           "**Catatan sederhana:** tanggal, sesi, dan satu kata tentang rasanya.",
         ],
       ],
-      ["h", "Sepatu dan perlengkapan"],
-      "Kamu tidak perlu sepatu mahal. Yang penting sepatu olahraga yang nyaman, sudah dipakai jalan beberapa kali, dan tidak membuat lecet. Baju yang menyerap keringat dan botol minum sudah cukup.",
       [
         "info",
         "Pegal di betis dan paha selama satu-dua hari setelah latihan itu wajar untuk pemula. Nyeri tajam di satu titik, atau nyeri yang makin parah saat berlari, bukan hal wajar: istirahat dan periksakan.",
+      ],
+    ],
+  },
+  {
+    title: "Tubuh yang Sedang Beradaptasi",
+    blocks: [
+      '**Catatan Rio, minggu 4:** "Napas sudah jauh lebih enak. Tapi lutut kanan terasa aneh setelah aku lari tambahan hari Minggu, di luar jadwal."',
+      "Di minggu keempat, banyak pemula mengalami hal yang sama dengan Rio: napas membaik dengan cepat, lalu muncul godaan untuk menambah. Di sinilah cedera paling sering dimulai.",
+      ["h", "Jantung lebih cepat siap daripada lutut"],
+      "Jantung dan paru-paru beradaptasi dalam hitungan minggu. Otot menyusul. Tetapi tendon, ligamen, dan tulang butuh waktu lebih lama untuk menjadi kuat menahan benturan ribuan langkah. Akibatnya, ada masa ketika napasmu sudah bisa lebih jauh, tapi kakimu belum.",
+      [
+        "fact",
+        "Tinjauan atas belasan penelitian menemukan pelari pemula mengalami rata-rata sekitar 17,8 cedera per 1.000 jam lari, lebih dari dua kali lipat pelari rekreasi yang sudah terbiasa (7,7).",
+        "Videbæk dkk., Sports Medicine, 2015",
+      ],
+      "Angka itu tidak dimaksudkan untuk menakut-nakuti. Pelari pemula lebih rentan justru karena tubuhnya sedang berubah. Karena itu program buku ini sengaja naik pelan.",
+      ["img", "naik-pelan", "Naik pelan, cederanya lebih jarang."],
+      [
+        "fact",
+        "Dalam penelitian satu tahun terhadap pelari pemula, mereka yang menaikkan jarak mingguan lebih dari 30% dalam dua minggu lebih sering mengalami cedera yang berkaitan dengan jarak, seperti nyeri di sekitar tempurung lutut dan tulang kering.",
+        "Nielsen dkk., Journal of Orthopaedic & Sports Physical Therapy, 2014",
+      ],
+      ["h", "Pegal yang wajar dan nyeri yang perlu didengar"],
+      [
+        "table",
+        [
+          ["Wajar", "Perlu istirahat dan diperhatikan"],
+          ["Pegal merata di betis atau paha", "Nyeri tajam di satu titik"],
+          [
+            "Paling terasa sehari atau dua hari setelah latihan",
+            "Makin parah saat berlari, atau muncul sejak langkah pertama",
+          ],
+          ["Membaik setelah pemanasan", "Membuatmu mengubah cara melangkah atau pincang"],
+          ["Hilang dalam 2–3 hari", "Bertahan lebih dari seminggu"],
+        ],
+      ],
+      "Rio mengikuti tabel itu. Nyeri lututnya tajam di satu titik, jadi dia istirahat tiga hari, lalu kembali ke jadwal tanpa sesi tambahan. Lututnya pulih, dan dia tidak lagi menambah sesi di luar program.",
+      ["h", "Hari istirahat adalah bagian dari latihan"],
+      "Di hari tanpa lari, tubuh memperbaiki dan memperkuat bagian yang tadi bekerja keras. Jalan santai, peregangan ringan, atau bersepeda pelan boleh. Lari tambahan sebaiknya tidak.",
+      [
+        "exercise",
+        [
+          "Setelah setiap sesi, beri nilai 0–10 untuk rasa tidak nyaman di kaki, dan tulis di catatan ponselmu.",
+          "Kalau nilainya naik dua sesi berturut-turut, atau ada nyeri tajam di satu titik, ulangi minggu itu atau istirahat.",
+          "Kalau dalam seminggu tidak membaik, periksakan ke dokter atau fisioterapis.",
+        ],
+        "Latihan: catatan rasa kaki",
       ],
     ],
   },
@@ -82,6 +160,36 @@ export const LARI_1 = [
         [
           "Kapan terakhir kali kamu melakukan sesuatu yang dulu kamu pikir tidak mungkin?",
           "Kalimat apa yang akan kamu ucapkan pada dirimu sendiri saat ingin berhenti di menit ketujuh?",
+        ],
+      ],
+    ],
+  },
+  {
+    title: "Bahan Bakar: Makan, Minum, dan Tidur",
+    blocks: [
+      '**Catatan Rio, minggu 7:** "Berat badan turun dua kilo. Lebih sedikit dari yang aku bayangkan. Tapi celana lebih longgar dan tidur lebih nyenyak."',
+      "Pemula sering bertanya: perlu suplemen apa? Minum apa? Harus diet? Untuk program delapan minggu seperti ini, jawabannya jauh lebih sederhana daripada yang dijual di iklan.",
+      ["h", "Makan sebelum dan sesudah"],
+      [
+        "ul",
+        [
+          "**Sesi pagi 30–40 menit:** banyak orang nyaman berlari sebelum sarapan, atau setelah camilan kecil seperti pisang. Coba keduanya, pilih yang perutmu suka.",
+          "**Sesi sore:** beri jarak sekitar dua jam dari makan besar.",
+          "**Setelahnya:** makan seperti biasa. Lari 30 menit tidak membutuhkan minuman atau makanan khusus.",
+        ],
+      ],
+      ["h", "Minum secukupnya"],
+      "Untuk lari di bawah satu jam, cukup minum air saat haus, sebelum dan sesudah lari. Di cuaca panas, bawa botol kecil atau pilih rute yang melewati tempat minum. Minuman olahraga dan minuman energi tidak dibutuhkan untuk sesi sependek ini, dan sering mengandung banyak gula.",
+      ["h", "Berat badan: harapan yang wajar"],
+      "Kebutuhan energi berlari kira-kira 1 kilokalori per kilogram berat badan per kilometer. Untuk Rio yang beratnya 78 kilogram, lima kilometer menghabiskan sekitar 390 kilokalori, kira-kira setara satu porsi nasi goreng.",
+      'Artinya, lari sangat baik untuk jantung, suasana hati, dan tidur, tetapi berat badan hanya akan turun berarti kalau pola makan ikut dijaga. Kalau penurunan berat adalah tujuanmu, lihat buku "Kurangi Gula Tanpa Menderita".',
+      ["h", "Tidur adalah latihan yang tidak terlihat"],
+      "Tubuh memperbaiki otot dan tendon terutama saat tidur. Jadwal lari pukul 05.30 hanya masuk akal kalau tidurnya juga dimajukan. Rio memindahkan kebiasaan menonton video sebelum tidur ke akhir pekan, dan tidur pukul 22.00 di malam sebelum hari lari.",
+      [
+        "reflect",
+        [
+          "Apa yang paling sering membuatmu tidur larut di malam sebelum hari lari?",
+          "Satu kebiasaan malam apa yang bisa kamu geser supaya pagi terasa lebih ringan?",
         ],
       ],
     ],

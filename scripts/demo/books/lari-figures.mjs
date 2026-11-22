@@ -128,6 +128,48 @@ function stop() {
   );
 }
 
+/** 6. Naik pelan: jarak mingguan dan batas 30% dalam dua minggu. */
+function progress() {
+  const rows = [
+    ["Minggu ini", 6, "6 km", C.white],
+    ["Naik ±10%", 6.6, "6,6 km", C.grass],
+    ["Naik 30%", 7.8, "7,8 km", "#e0913a"],
+    ["Naik 60%", 9.6, "9,6 km", "#ffd7c9"],
+  ];
+  return card(
+    "Naik pelan, cederanya lebih jarang",
+    `<div class="np">${rows
+      .map(
+        ([a, v, t, c]) =>
+          `<div class="npr"><span class="npl">${a}</span><span class="npt"><i style="width:${(v / 10) * 100}%;background:${c}"></i></span><b>${t}</b></div>`,
+      )
+      .join(
+        "",
+      )}<p class="npn">Batas aman yang sering dipakai: jangan lebih dari <b>30% dalam dua minggu</b>.</p></div>`,
+    "Pelari pemula yang menaikkan jarak mingguan lebih dari 30% lebih sering mengalami cedera khas jarak (Nielsen dkk., 2014).",
+  );
+}
+
+/** 7. Lari di cuaca Indonesia. */
+function weather() {
+  const r = [
+    ["05.00–07.00", "Paling ramah", "Udara lebih sejuk, jalan masih sepi.", C.grass],
+    ["16.30–18.00", "Boleh", "Panas mulai turun. Pilih rute teduh.", "#e0913a"],
+    ["10.00–15.00", "Hindari", "Panas dan lembap membuat jantung bekerja lebih keras.", "#ffd7c9"],
+  ];
+  return card(
+    "Kapan dan di mana berlari",
+    `<div class="wx">${r
+      .map(
+        ([a, b, c2, col]) =>
+          `<div class="wxi" style="border-left-color:${col}"><b>${a}</b><span>${b}</span><p>${c2}</p></div>`,
+      )
+      .join(
+        "",
+      )}</div><p class="wxn">Cek kualitas udara sebelum keluar. Kalau sedang buruk, ganti dengan jalan cepat di dalam ruangan atau naik-turun tangga.</p>`,
+  );
+}
+
 export const LARI_FIGURES = {
   "rencana-8-minggu": {
     html: plan,
@@ -144,6 +186,14 @@ export const LARI_FIGURES = {
   "anjuran-who": {
     html: who,
     alt: "Anjuran WHO untuk orang dewasa: 150–300 menit aktivitas sedang atau 75–150 menit aktivitas berat per minggu.",
+  },
+  "naik-pelan": {
+    html: progress,
+    alt: "Jarak mingguan 6 km dibandingkan kenaikan 10%, 30%, dan 60%; batas yang sering dipakai adalah tidak lebih dari 30% dalam dua minggu.",
+  },
+  "cuaca-lari": {
+    html: weather,
+    alt: "Waktu lari di cuaca Indonesia: pukul 5 sampai 7 pagi paling ramah, sore 16.30 sampai 18.00 boleh, pukul 10 sampai 15 dihindari.",
   },
   "sinyal-berhenti": {
     html: stop,
@@ -194,4 +244,17 @@ h2{font-family:SgLabel,sans-serif;font-size:44px;line-height:1.02;text-transform
 .spc{background:${C.white};color:${C.ink};border-radius:12px;padding:14px;border-top:8px solid}
 .spc h4{font-family:SgLabel,sans-serif;font-size:20px;text-transform:uppercase;line-height:1.1;margin-bottom:8px}
 .spc p{font-size:14px;line-height:1.35;padding:6px 0;border-bottom:1px dashed #ddd}
+.np{display:grid;gap:10px}
+.npr{display:grid;grid-template-columns:130px 1fr 80px;gap:12px;align-items:center}
+.npl{font-family:SgLabel,sans-serif;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+.npt{height:26px;border-radius:6px;background:rgba(0,0,0,.18);overflow:hidden}
+.npt i{display:block;height:100%;border-radius:6px}
+.npr b{font-family:SgLabel,sans-serif;font-size:20px;text-align:right}
+.npn{margin-top:8px;background:${C.white};color:${C.ink};border-radius:10px;padding:12px 14px;font-size:16px}
+.wx{display:grid;gap:10px}
+.wxi{background:rgba(0,0,0,.18);border-left:6px solid;border-radius:10px;padding:12px 16px;display:grid;grid-template-columns:130px 110px 1fr;gap:12px;align-items:center}
+.wxi b{font-family:SgLabel,sans-serif;font-size:20px}
+.wxi span{font-weight:800;font-size:15px;color:${C.white};text-transform:uppercase;letter-spacing:.04em}
+.wxi p{font-size:15px;line-height:1.4}
+.wxn{margin-top:12px;background:${C.white};color:${C.ink};border-radius:10px;padding:12px 14px;font-size:15px;line-height:1.45}
 `;

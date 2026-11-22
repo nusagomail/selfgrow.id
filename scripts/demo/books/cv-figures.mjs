@@ -115,7 +115,33 @@ function checklist() {
   );
 }
 
+/** 6. Surat lamaran tiga paragraf (badan surel). */
+function letter() {
+  const p = [
+    [
+      "Paragraf 1 · Untuk apa",
+      "Posisi yang dilamar, dari mana tahu lowongannya, satu kalimat siapa kamu.",
+    ],
+    [
+      "Paragraf 2 · Kenapa kamu",
+      "Dua pencapaian paling relevan dengan lowongan, lengkap dengan angka.",
+    ],
+    ["Paragraf 3 · Langkah berikutnya", "Lampiran apa saja, kesediaan wawancara, dan kontak."],
+  ];
+  return card(
+    "Surat lamaran tiga paragraf",
+    `<div class="lt"><div class="lth"><b>Subjek:</b> Lamaran Digital Marketing Specialist – Sekar Ayu</div>${p
+      .map(([a, b]) => `<div class="ltp"><span>${a}</span><p>${b}</p></div>`)
+      .join("")}<div class="ltf">Lampiran: CV_SekarAyu_DigitalMarketing.pdf</div></div>`,
+    "pendek, spesifik, sopan",
+  );
+}
+
 export const CV_FIGURES = {
+  "surat-tiga-paragraf": {
+    html: letter,
+    alt: "Badan surel lamaran tiga paragraf: untuk apa, kenapa kamu, dan langkah berikutnya, dengan subjek dan nama lampiran yang jelas.",
+  },
   "tujuh-detik": {
     html: scan,
     alt: "Lembar CV dengan area yang paling dilihat rekruter: nama dan posisi, jabatan terakhir, dan dua baris pertama setiap pengalaman. Rata-rata 7,4 detik.",
@@ -179,4 +205,10 @@ mark.g{background:${C.green}}
 .ck{background:#fff;padding:16px 20px;display:grid;gap:4px;box-shadow:0 4px 10px rgba(0,0,0,.08)}
 .ck p{font-size:17px;padding:8px 0;border-bottom:1px solid ${C.line};display:flex;gap:10px;align-items:center}
 .ck span{font-size:22px;color:${C.red}}
+.lt{background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.12);padding:20px 24px;display:grid;gap:12px}
+.lth{font-size:15px;border-bottom:1px solid ${C.line};padding-bottom:10px}
+.ltp{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:start}
+.ltp span{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:${C.yellow};padding:4px 8px;border-radius:4px}
+.ltp p{font-size:16px;line-height:1.45}
+.ltf{font-size:14px;color:${C.muted};border-top:1px dashed ${C.line};padding-top:10px}
 `;
