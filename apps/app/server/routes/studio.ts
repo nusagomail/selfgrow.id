@@ -1,15 +1,17 @@
 import { and, asc, desc, eq, schema, sql } from "@selfgrow/db";
-import type { z } from "@selfgrow/shared";
 import {
   type ChapterSummary,
   countWords,
   createChapterBodySchema,
   createEbookBodySchema,
   EMPTY_EBOOK_DOC,
+  ebookThemeSchema,
+  parseEbookTheme,
   reorderChaptersBodySchema,
   saveChapterBodySchema,
   toolConfigSchema,
   updateContentBodySchema,
+  z,
 } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
@@ -48,6 +50,9 @@ const toChapterSummary = (c: typeof schema.ebookChapters.$inferSelect): ChapterS
 });
 
 /** Studio: dilindungi Cloudflare Access + role admin (D17). Semua aksi tercatat di audit_log. */
+/** Body tema baca (D51). */
+const themeBodySchema = z.object({ theme: ebookThemeSchema.nullable() });
+
 export const studio = new Hono<AppEnv>()
   .use(requireAccess, requireAdmin)
   .use(async (c, next) => {
@@ -117,13 +122,14 @@ export const studio = new Hono<AppEnv>()
   .get("/content/:id/category", async (c) => {
     const item = await c.var.db.query.contentItems.findFirst({
       where: eq(schema.contentItems.id, c.req.param("id")),
-      columns: { categoryId: true, tier: true, coverAssetId: true },
+      columns: { categoryId: true, tier: true, coverAssetId: true, readerTheme: true },
     });
     if (!item) return c.json({ error: "not_found" }, 404);
     return c.json({
       categoryId: item.categoryId,
       tier: item.tier === "free" ? "free" : "all",
       coverUrl: coverPath(item.coverAssetId),
+      theme: parseEbookTheme(item.readerTheme),
     });
   })
 
@@ -165,6 +171,31 @@ export const studio = new Hono<AppEnv>()
       after: { coverAssetId: assetId },
     });
     return c.json({ coverUrl: coverPath(assetId) });
+  })
+
+  /** Tema baca ebook (D51). Body `{ theme: EbookTheme | null }`; null mengembalikan tampilan bawaan. */
+  .put("/content/:id/theme", async (c) => {
+    const id = c.req.param("id");
+    const body = await parseBody(c.req.raw, themeBodySchema);
+    if (!body) return c.json({ error: "invalid_body" }, 400);
+    const item = await c.var.db.query.contentItems.findFirst({
+      where: eq(schema.contentItems.id, id),
+      columns: { type: true, readerTheme: true },
+    });
+    if (!item) return c.json({ error: "not_found" }, 404);
+    if (item.type !== "ebook") return c.json({ error: "not_ebook" }, 400);
+    const next = body.theme ? JSON.stringify(body.theme) : null;
+    await c.var.db
+      .update(schema.contentItems)
+      .set({ readerTheme: next, updatedAt: new Date() })
+      .where(eq(schema.contentItems.id, id));
+    await writeAudit(c, {
+      action: "content.theme",
+      target: `content:${id}`,
+      before: { theme: parseEbookTheme(item.readerTheme) },
+      after: { theme: body.theme },
+    });
+    return c.json({ theme: body.theme });
   })
 
   .delete("/content/:id/cover", async (c) => {

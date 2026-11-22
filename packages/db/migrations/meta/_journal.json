@@ -71,6 +71,13 @@
       "when": 1795254711443,
       "tag": "0009_quiz_results",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1795340635260,
+      "tag": "0010_reader_theme",
+      "breakpoints": true
     }
   ]
 }

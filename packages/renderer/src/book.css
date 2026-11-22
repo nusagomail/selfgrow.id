@@ -804,3 +804,202 @@
     transition: none;
   }
 }
+
+/* ===== Tema baca per ebook (D51) =====
+ * Tema hanya mengatur aksen, huruf judul, gaya kotak, ornamen, dan tekstur kertas. Latar dan
+ * warna teks tetap milik pilihan pembaca (terang, sepia, malam). Huruf hanya diunduh browser
+ * bila dipakai oleh buku yang sedang dibuka.
+ */
+@font-face {
+  font-family: SgSerif;
+  src: url("/fonts/dm-serif-display-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: SgHand;
+  src: url("/fonts/caveat-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: SgMono;
+  src: url("/fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: SgLabel;
+  src: url("/fonts/oswald-latin-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+.book[data-heading] {
+  --book-accent: var(--theme-accent);
+  --theme-c2: var(--theme-second);
+}
+.book[data-theme="night"][data-heading] {
+  --book-accent: color-mix(in srgb, var(--theme-accent) 55%, #fff);
+  --theme-c2: color-mix(in srgb, var(--theme-second) 55%, #fff);
+}
+/* Kotak dan unsur interaktif mengikuti warna buku. */
+.book[data-heading] .book-flow .callout,
+.book[data-heading] .book-flow .quiz,
+.book[data-heading] .book-flow .quiz-scale {
+  --c: var(--book-accent);
+}
+.book[data-heading] .book-flow .callout-fact,
+.book[data-heading] .book-flow .callout-info,
+.book[data-heading] .book-flow .callout-exercise,
+.book[data-heading] .book-flow .quiz-knowledge,
+.book[data-heading] .book-flow .quiz-scenario,
+.book[data-heading] .book-flow .tool-embed {
+  --c: var(--theme-c2);
+}
+.book[data-heading] .book-flow .tool-embed {
+  border-top-color: var(--theme-c2);
+}
+
+/* Huruf judul. */
+.book[data-heading="serif"] .book-chapter-title,
+.book[data-heading="serif"] .book-flow h2,
+.book[data-heading="serif"] .book-flow h3,
+.book[data-heading="serif"] .book-flow .quiz-title {
+  font-family: SgSerif, Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.book[data-heading="serif"] .book-chapter-title {
+  font-size: 1.75em;
+}
+.book[data-heading="hand"] .book-chapter-title,
+.book[data-heading="hand"] .book-flow h2,
+.book[data-heading="hand"] .book-flow h3 {
+  font-family: SgHand, "Comic Sans MS", cursive;
+  font-weight: 700;
+  font-size: 1.35em;
+  line-height: 1.1;
+}
+.book[data-heading="hand"] .book-chapter-title {
+  font-size: 2.1em;
+  color: var(--book-accent);
+}
+.book[data-heading="mono"] .book-chapter-title,
+.book[data-heading="mono"] .book-flow h2,
+.book[data-heading="mono"] .book-flow h3 {
+  font-family: SgMono, ui-monospace, monospace;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.book[data-heading="mono"] .book-chapter-title {
+  font-size: 1.35em;
+}
+.book[data-heading="condensed"] .book-chapter-title,
+.book[data-heading="condensed"] .book-flow h2,
+.book[data-heading="condensed"] .book-flow h3 {
+  font-family: SgLabel, "Arial Narrow", sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.book[data-heading="condensed"] .book-chapter-title {
+  font-size: 1.8em;
+  line-height: 1.05;
+}
+
+/* Gaya kotak catatan. */
+.book[data-callout="outline"] .book-flow .callout {
+  background: transparent;
+  border: 1.5px solid var(--c);
+  border-radius: 14px;
+}
+.book[data-callout="card"] .book-flow .callout {
+  background: var(--book-bg);
+  border: 1.5px solid var(--c);
+  border-radius: 16px;
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--c) 30%, transparent);
+}
+.book[data-callout="tape"] .book-flow .callout {
+  position: relative;
+  border: 0;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--c) 11%, var(--book-bg));
+  padding-top: 1.1em;
+}
+.book[data-callout="tape"] .book-flow .callout::before {
+  content: "";
+  position: absolute;
+  top: -0.55em;
+  left: 1.2em;
+  width: 4.5em;
+  height: 1.1em;
+  background: color-mix(in srgb, var(--c) 35%, transparent);
+  transform: rotate(-3deg);
+}
+.book[data-callout="bar"] .book-flow .callout {
+  border: 0;
+  border-top: 3px solid var(--c);
+  border-radius: 0;
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Ornamen di bawah judul bab. */
+.book[data-ornament="dots"] .book-ornament {
+  width: 44px;
+  height: 6px;
+  opacity: 0.8;
+  background:
+    radial-gradient(circle, var(--book-accent) 2.5px, transparent 3px) 0 50% / 14px 6px repeat-x;
+}
+.book[data-ornament="wave"] .book-ornament {
+  width: 64px;
+  height: 8px;
+  opacity: 0.8;
+  background: var(--book-accent);
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 8'%3E%3Cpath d='M0 4 Q4 0 8 4 T16 4' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E")
+    0 0 / 16px 8px repeat-x;
+}
+.book[data-ornament="star"] .book-ornament {
+  width: auto;
+  height: auto;
+  background: none;
+  opacity: 1;
+  color: var(--book-accent);
+}
+.book[data-ornament="star"] .book-ornament::before {
+  content: "✦ ✦ ✦";
+  font-size: 0.8em;
+  letter-spacing: 0.4em;
+}
+.book[data-ornament="none"] .book-ornament {
+  display: none;
+}
+
+/* Tekstur kertas (tidak dipakai di mode malam). */
+.book[data-paper="grid"]:not([data-theme="night"]) .book-viewport {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--theme-accent) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--theme-accent) 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 22px 22px;
+}
+.book[data-paper="lined"]:not([data-theme="night"]) .book-viewport {
+  background-image: linear-gradient(
+    transparent 27px,
+    color-mix(in srgb, var(--theme-accent) 9%, transparent) 28px
+  );
+  background-size: 100% 28px;
+}
+.book[data-paper="dots"]:not([data-theme="night"]) .book-viewport {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--theme-accent) 14%, transparent) 1.2px,
+    transparent 1.4px
+  );
+  background-size: 18px 18px;
+}

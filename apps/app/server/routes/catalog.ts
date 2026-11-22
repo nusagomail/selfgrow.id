@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, inArray, schema, sql } from "@selfgrow/db";
-import { type ContentType, contentTypeSchema } from "@selfgrow/shared";
+import { type ContentType, contentTypeSchema, parseEbookTheme } from "@selfgrow/shared";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
 import { FREE_TIER } from "../middleware/guards";
@@ -338,6 +338,7 @@ export const catalog = new Hono<AppEnv>()
       access,
       comingSoon: item.type === "ebook" && (ebook?.chapters.length ?? 0) === 0,
       introVideo: introMedia(item),
+      theme: item.type === "ebook" ? parseEbookTheme(item.readerTheme) : null,
       coverUrl: coverPath(item.coverAssetId),
       category: category ? { slug: category.slug, name: category.name } : null,
       topic: topic ? { slug: topic.slug, name: topic.name } : null,
