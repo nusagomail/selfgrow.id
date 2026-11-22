@@ -29,7 +29,7 @@ export const KENDALI_MINGGU = {
       min: 0,
       max: 1,
       title: "Kamu yang memegang kemudi",
-      text: "Pertahankan. Bab 5 membantumu menjaga ritme saat minggu sedang berantakan.",
+      text: "Pertahankan. Bab 5 dan 6 membantumu menjaga ritme saat minggu sedang berantakan.",
     },
     {
       min: 2,
@@ -59,7 +59,7 @@ export const MINGGU_BARS = {
   note: "Jam per minggu, ilustrasi dari catatan waktu Tari selama satu minggu.",
 };
 
-/** Bab 5: rencana jika-maka saat rapat mendadak (D50, skenario). */
+/** Bab 6: rencana jika-maka saat rapat mendadak (D50, skenario). */
 export const RAPAT_MENDADAK = {
   id: "rapat-mendadak",
   mode: "scenario",

@@ -31,19 +31,19 @@ export const SIAP_DARURAT = {
       min: 0,
       max: 2,
       title: "Belum ada bantalan",
-      text: "Kejadian kecil pun bisa memaksamu berutang. Bab 3 membantumu mengumpulkan Rp1 juta pertama.",
+      text: "Kejadian kecil pun bisa memaksamu berutang. Bab 4 membantumu mengumpulkan Rp1 juta pertama.",
     },
     {
       min: 3,
       max: 4,
       title: "Bantalan tipis",
-      text: "Fondasinya ada. Pisahkan rekeningnya (Bab 4) dan naik ke tangga berikutnya.",
+      text: "Fondasinya ada. Pisahkan rekeningnya (Bab 6) dan naik ke tangga berikutnya.",
     },
     {
       min: 5,
       max: 6,
       title: "Bantalan yang kokoh",
-      text: "Kamu sudah siap untuk banyak kejadian. Bab 5 membahas cara menjaga dan mengisi ulangnya.",
+      text: "Kamu sudah siap untuk banyak kejadian. Bab 7 membahas cara menjaga dan mengisi ulangnya.",
     },
   ],
 };
@@ -63,7 +63,7 @@ export const LITERASI_COUNTER = {
   note: "Survei Nasional Literasi dan Inklusi Keuangan (SNLIK) 2025, OJK dan BPS.",
 };
 
-/** Bab 4: tempat menyimpan bantalan (D50, uji pengetahuan). */
+/** Bab 6: tempat menyimpan bantalan (D50, uji pengetahuan). */
 export const TEMPAT_BANTALAN = {
   id: "tempat-bantalan",
   mode: "knowledge",

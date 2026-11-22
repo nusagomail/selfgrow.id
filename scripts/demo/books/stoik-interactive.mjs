@@ -31,7 +31,7 @@ export const ENERGI_STOIK = {
       min: 0,
       max: 3,
       title: "Energi yang terjaga",
-      text: "Kamu sudah cukup pandai memilih medan. Bab 4 dan 5 membantu menjaganya di hari-hari sulit.",
+      text: "Kamu sudah cukup pandai memilih medan. Bab 4 sampai 6 membantu menjaganya di hari-hari sulit.",
     },
     {
       min: 4,

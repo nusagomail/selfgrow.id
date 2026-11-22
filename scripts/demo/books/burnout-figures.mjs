@@ -125,7 +125,36 @@ function plan() {
   );
 }
 
+/** 7. Timbangan tuntutan dan bekal (model JD-R). */
+function balance() {
+  const dem = [
+    "Tiket per orang naik 40%",
+    "Dua posisi kosong 4 bulan",
+    "Target waktu respons dipercepat",
+    "Grup kerja aktif sampai malam",
+  ];
+  const res = [
+    "Atasan yang mau mendengar",
+    "Rekan yang saling bantu",
+    "Kendali atas jadwal",
+    "Pengakuan atas hasil kerja",
+  ];
+  return card(
+    "Tuntutan naik, bekal menipis",
+    `<div class="bl">
+      <div class="bp dem"><h4>Tuntutan</h4>${dem.map((x) => `<p>${x}</p>`).join("")}</div>
+      <div class="bbeam"><span></span></div>
+      <div class="bp res"><h4>Bekal</h4>${res.map((x, i) => `<p class="${i < 2 ? "" : "gone"}">${x}</p>`).join("")}</div>
+    </div>`,
+    "Burnout tumbuh ketika tuntutan terus tinggi sementara bekal untuk menghadapinya menipis (model Job Demands–Resources, Bakker & Demerouti, 2007). Coretan menandai bekal yang hilang di tim Nadia.",
+  );
+}
+
 export const BURNOUT_FIGURES = {
+  "tuntutan-bekal": {
+    html: balance,
+    alt: "Timbangan miring: empat tuntutan kerja yang naik di satu sisi, empat bekal kerja di sisi lain dengan dua yang dicoret karena hilang.",
+  },
   "tiga-tanda": {
     html: signs,
     alt: "Tiga tanda burnout menurut WHO: terkuras, menjauh dari pekerjaan, dan merasa tidak berdaya.",
@@ -183,4 +212,13 @@ h2{font-family:SgSerif,serif;font-weight:400;font-style:italic;font-size:36px;li
 .dot{width:18px;height:18px;border-radius:50%}
 .pli b{font-family:SgSerif,serif;font-weight:400;font-size:20px}
 .pli p{font-size:15px;line-height:1.4}
+.bl{display:grid;grid-template-columns:1fr 60px 1fr;gap:10px;align-items:end;padding:30px 0 40px}
+.bp{background:rgba(255,255,255,.75);border-radius:20px;padding:16px;display:grid;gap:8px}
+.bp.dem{transform:translateY(26px);border-top:6px solid ${C.ember}}
+.bp.res{transform:translateY(-26px);border-top:6px solid ${C.sage}}
+.bp h4{font-family:SgSerif,serif;font-weight:400;font-size:24px}
+.bp p{font-size:15px;line-height:1.35}
+.bp p.gone{text-decoration:line-through;text-decoration-color:${C.ember};color:${C.ash}}
+.bbeam{height:100%;display:flex;align-items:center;justify-content:center}
+.bbeam span{display:block;width:8px;height:120px;border-radius:4px;background:${C.ink};opacity:.6}
 `;
