@@ -6,6 +6,8 @@ import { CV_1 } from "./cv-1.mjs";
 import { CV_FIGURES } from "./cv-figures.mjs";
 import { DARURAT_1 } from "./darurat-1.mjs";
 import { DARURAT_FIGURES } from "./darurat-figures.mjs";
+import { GAJIAN_1 } from "./gajian-1.mjs";
+import { GAJIAN_FIGURES } from "./gajian-figures.mjs";
 import { GULA_1 } from "./gula-1.mjs";
 import { GULA_FIGURES } from "./gula-figures.mjs";
 import { HARGA_1 } from "./harga-1.mjs";
@@ -32,6 +34,8 @@ import { TERIAK_FIGURES } from "./teriak-figures.mjs";
 import { TIDAK_1 } from "./tidak-1.mjs";
 import { TIDAK_2 } from "./tidak-2.mjs";
 import { TIDAK_FIGURES } from "./tidak-figures.mjs";
+import { TUNDA_1 } from "./tunda-1.mjs";
+import { TUNDA_FIGURES } from "./tunda-figures.mjs";
 
 export const FULL_BOOKS = {
   "lepas-dari-jerat-paylater": {
@@ -89,5 +93,13 @@ export const FULL_BOOKS = {
   "cv-yang-dilirik-rekruter": {
     chapters: CV_1,
     figures: CV_FIGURES,
+  },
+  "berhenti-menunda-mulai-hari-ini": {
+    chapters: TUNDA_1,
+    figures: TUNDA_FIGURES,
+  },
+  "gajian-kok-cepat-habis": {
+    chapters: GAJIAN_1,
+    figures: GAJIAN_FIGURES,
   },
 };
