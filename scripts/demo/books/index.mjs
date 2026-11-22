@@ -8,6 +8,8 @@ import { DARURAT_1 } from "./darurat-1.mjs";
 import { DARURAT_FIGURES } from "./darurat-figures.mjs";
 import { GAJIAN_1 } from "./gajian-1.mjs";
 import { GAJIAN_FIGURES } from "./gajian-figures.mjs";
+import { GAWAI_1 } from "./gawai-1.mjs";
+import { GAWAI_FIGURES } from "./gawai-figures.mjs";
 import { GULA_1 } from "./gula-1.mjs";
 import { GULA_FIGURES } from "./gula-figures.mjs";
 import { HARGA_1 } from "./harga-1.mjs";
@@ -20,6 +22,8 @@ import { NEGO_1 } from "./nego-1.mjs";
 import { NEGO_FIGURES } from "./nego-figures.mjs";
 import { OVERTHINKING_1 } from "./overthinking-1.mjs";
 import { OVERTHINKING_FIGURES } from "./overthinking-figures.mjs";
+import { PANGGUNG_1 } from "./panggung-1.mjs";
+import { PANGGUNG_FIGURES } from "./panggung-figures.mjs";
 import { PAYLATER_1 } from "./paylater-1.mjs";
 import { PAYLATER_2 } from "./paylater-2.mjs";
 import { PAYLATER_3 } from "./paylater-3.mjs";
@@ -101,5 +105,13 @@ export const FULL_BOOKS = {
   "gajian-kok-cepat-habis": {
     chapters: GAJIAN_1,
     figures: GAJIAN_FIGURES,
+  },
+  "bicara-di-depan-umum-tanpa-gemetar": {
+    chapters: PANGGUNG_1,
+    figures: PANGGUNG_FIGURES,
+  },
+  "anak-dan-gawai": {
+    chapters: GAWAI_1,
+    figures: GAWAI_FIGURES,
   },
 };
