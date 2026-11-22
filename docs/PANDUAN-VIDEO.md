@@ -63,6 +63,10 @@ setoran tercetak bulan demi bulan, dan penarikan darurat dicap "tanpa utang".
 dan satu baterai besar yang terkuras hari demi hari, retak untuk tiga tanda burnout WHO, lalu
 diisi kembali oleh empat jenis pemulihan yang dicolokkan satu per satu.
 
+**Contoh kedelapan: "Dari Rebahan ke Lari 5K"** (`lari.mjs` + `lari.html`). Konsep: lintasan
+atletik dari atas. Satu putaran dibagi bagian lari dan jalan yang berubah minggu demi minggu sampai
+satu putaran penuh lari di minggu 8, lalu tes bicara.
+
 Panduan ini bukan cetakan. Setiap buku punya cara masuk yang berbeda. Buku keuangan mungkin
 dibuka dengan angka yang mengejutkan, buku tentang duka dibuka dengan satu kalimat yang
 lembut, buku kebiasaan dibuka dengan pertanyaan. Pilih adegan yang melayani buku itu, lalu

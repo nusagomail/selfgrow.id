@@ -11,6 +11,7 @@ import { BURNOUT_FIGURE_CSS, BURNOUT_FIGURES } from "./books/burnout-figures.mjs
 import { DARURAT_FIGURE_CSS, DARURAT_FIGURES } from "./books/darurat-figures.mjs";
 import { GULA_FIGURE_CSS, GULA_FIGURES } from "./books/gula-figures.mjs";
 import { HARGA_FIGURE_CSS, HARGA_FIGURES } from "./books/harga-figures.mjs";
+import { LARI_FIGURE_CSS, LARI_FIGURES } from "./books/lari-figures.mjs";
 import { MINGGU_FIGURE_CSS, MINGGU_FIGURES } from "./books/minggu-figures.mjs";
 import { NEGO_FIGURE_CSS, NEGO_FIGURES } from "./books/nego-figures.mjs";
 import { OVERTHINKING_FIGURE_CSS, OVERTHINKING_FIGURES } from "./books/overthinking-figures.mjs";
@@ -43,6 +44,7 @@ const SETS = {
   "stoik-untuk-hidup-sehari-hari": { figures: STOIK_FIGURES, css: STOIK_FIGURE_CSS },
   "dana-darurat-dari-nol": { figures: DARURAT_FIGURES, css: DARURAT_FIGURE_CSS },
   "burnout-bukan-lemah": { figures: BURNOUT_FIGURES, css: BURNOUT_FIGURE_CSS },
+  "dari-rebahan-ke-lari-5k": { figures: LARI_FIGURES, css: LARI_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,

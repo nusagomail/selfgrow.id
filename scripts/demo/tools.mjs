@@ -1582,4 +1582,106 @@ export const DEMO_TOOLS = [
       ],
     },
   },
+  {
+    slug: "jadwal-lari-8-minggu",
+    topic: "top_mulai-olahraga",
+    title: "Jadwal Lari 8 Minggu",
+    summary:
+      "Lihat sesi latihan minggu ini: lari dan jalan berselang, dari pemula sampai 30 menit tanpa henti.",
+    config: {
+      version: 1,
+      intro:
+        "Latihan tiga kali seminggu, dengan satu hari istirahat di antaranya. Selalu mulai dengan 5 menit jalan cepat untuk pemanasan.",
+      submitLabel: "Lihat sesi",
+      inputs: [
+        {
+          key: "minggu",
+          label: "Kamu di minggu ke berapa?",
+          type: "number",
+          required: true,
+          min: 1,
+          max: 8,
+          unit: "minggu",
+          placeholder: "1",
+        },
+      ],
+      computed: [
+        {
+          key: "sesi",
+          label: "Sesi inti (setelah pemanasan)",
+          formula:
+            'if(minggu <= 1, "8 kali: lari 1 menit, jalan 2 menit", if(minggu <= 2, "6 kali: lari 2 menit, jalan 2 menit", if(minggu <= 3, "5 kali: lari 3 menit, jalan 2 menit", if(minggu <= 4, "4 kali: lari 5 menit, jalan 2 menit", if(minggu <= 5, "3 kali: lari 8 menit, jalan 2 menit", if(minggu <= 6, "2 kali: lari 12 menit, jalan 2 menit", if(minggu <= 7, "Lari 20 menit tanpa berhenti", "Lari 30 menit, atau 5 kilometer")))))))',
+          format: "text",
+          show: true,
+        },
+        {
+          key: "lari",
+          label: "Total menit berlari dalam satu sesi",
+          formula:
+            "if(minggu <= 1, 8, if(minggu <= 2, 12, if(minggu <= 3, 15, if(minggu <= 4, 20, if(minggu <= 5, 24, if(minggu <= 6, 24, if(minggu <= 7, 20, 30)))))))",
+          format: "number",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "1 == 1",
+          text: "Kalau sesi minggu ini terasa terlalu berat, ulangi minggu sebelumnya. Mengulang bukan gagal; itu bagian dari program.",
+          variant: "tip",
+        },
+      ],
+    },
+  },
+  {
+    slug: "kalkulator-pace-5k",
+    topic: "top_mulai-olahraga",
+    title: "Kalkulator Pace 5K",
+    summary: "Ubah target waktu 5 km menjadi kecepatan per kilometer.",
+    config: {
+      version: 1,
+      intro:
+        "Untuk 5K pertama, targetkan selesai, bukan cepat. Kalkulator ini membantu mengatur kecepatan supaya tidak habis di awal.",
+      submitLabel: "Hitung pace",
+      inputs: [
+        {
+          key: "target",
+          label: "Target waktu 5 km",
+          type: "number",
+          required: true,
+          min: 15,
+          max: 90,
+          unit: "menit",
+          placeholder: "40",
+        },
+      ],
+      computed: [
+        {
+          key: "pace",
+          label: "Menit per kilometer",
+          formula: "round(target / 5 * 10) / 10",
+          format: "number",
+          show: true,
+        },
+        {
+          key: "kmj",
+          label: "Kecepatan rata-rata (km/jam)",
+          formula: "round(5 / (target / 60) * 10) / 10",
+          format: "number",
+          show: true,
+        },
+      ],
+      recommendations: [
+        {
+          when: "target >= 35",
+          text: "Pace {{pace}} menit per km cocok untuk 5K pertama. Kilometer pertama sedikit lebih lambat dari itu, supaya tenaga cukup sampai akhir.",
+          variant: "tip",
+        },
+        {
+          when: "target < 35",
+          text: "Target yang cukup cepat. Pastikan kamu sudah nyaman lari 30 menit tanpa berhenti sebelum mengejar waktu.",
+          variant: "info",
+        },
+      ],
+    },
+  },
 ];

@@ -8,6 +8,8 @@ import { GULA_1 } from "./gula-1.mjs";
 import { GULA_FIGURES } from "./gula-figures.mjs";
 import { HARGA_1 } from "./harga-1.mjs";
 import { HARGA_FIGURES } from "./harga-figures.mjs";
+import { LARI_1 } from "./lari-1.mjs";
+import { LARI_FIGURES } from "./lari-figures.mjs";
 import { MINGGU_1 } from "./minggu-1.mjs";
 import { MINGGU_FIGURES } from "./minggu-figures.mjs";
 import { NEGO_1 } from "./nego-1.mjs";
@@ -77,5 +79,9 @@ export const FULL_BOOKS = {
   "burnout-bukan-lemah": {
     chapters: BURNOUT_1,
     figures: BURNOUT_FIGURES,
+  },
+  "dari-rebahan-ke-lari-5k": {
+    chapters: LARI_1,
+    figures: LARI_FIGURES,
   },
 };
