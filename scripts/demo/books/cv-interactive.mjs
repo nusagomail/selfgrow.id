@@ -35,13 +35,13 @@ export const CEK_CV = {
       min: 3,
       max: 4,
       title: "Hampir",
-      text: "Fondasinya ada. Perkuat kalimat pencapaian (Bab 3) dan kata kunci (Bab 4).",
+      text: "Fondasinya ada. Perkuat kalimat pencapaian (Bab 3) dan kata kunci (Bab 5).",
     },
     {
       min: 5,
       max: 6,
       title: "Siap dikirim",
-      text: "CV-mu sudah rapi. Bab 5 membantumu menyesuaikannya untuk setiap lowongan.",
+      text: "CV-mu sudah rapi. Bab 6 membantumu menyesuaikannya untuk setiap lowongan.",
     },
   ],
 };
@@ -51,7 +51,7 @@ const ats = (aman) => [
   { label: "Berisiko", points: 0, correct: !aman },
 ];
 
-/** Bab 4: format yang terbaca mesin (D50, uji pengetahuan). */
+/** Bab 5: format yang terbaca mesin (D50, uji pengetahuan). */
 export const LOLOS_MESIN = {
   id: "lolos-mesin",
   mode: "knowledge",
