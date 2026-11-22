@@ -100,12 +100,6 @@ function ItemCard({ item }: { item: Item }) {
           {body}
         </Link>
       );
-    case "tool":
-      return (
-        <Link to="/tools/$slug" params={{ slug: item.slug }} {...common}>
-          {body}
-        </Link>
-      );
     case "template":
       return (
         <Link to="/template/$slug" params={{ slug: item.slug }} {...common}>
