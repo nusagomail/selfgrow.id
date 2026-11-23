@@ -1,7 +1,13 @@
 import { env } from "cloudflare:workers";
 import type { EbookDoc, EbookTheme } from "@selfgrow/shared";
 
-export type ContentType = "ebook" | "tool" | "template" | "program";
+export type ContentType = "ebook" | "tool" | "template" | "program" | "video";
+
+/** Video Edukasi (D54) di kartu katalog: durasi & poster (alamat app). */
+export interface VideoInfo {
+  durationSeconds: number | null;
+  posterUrl: string | null;
+}
 
 export interface Topic {
   slug: string;
@@ -31,6 +37,7 @@ export interface CatalogItem {
   /** Ebook terbit yang isinya belum ada (D38). */
   comingSoon?: boolean;
   coverUrl: string | null;
+  video?: VideoInfo | null;
   publishedAt: string | null;
 }
 
@@ -44,6 +51,7 @@ export interface FeedItem {
   coverUrl: string | null;
   category: { slug: string; name: string } | null;
   topic?: { slug: string; name: string } | null;
+  video?: VideoInfo | null;
   publishedAt: string | null;
 }
 
@@ -65,6 +73,8 @@ export interface ContentDetail {
   updatedAt: string;
   ebook: { chapters: { id: string; title: string; free: boolean }[] } | null;
   program: { durationDays: number; days: { day: number; title: string }[] } | null;
+  /** Video Edukasi (D54). `streamUrl` hanya ada bila videonya gratis. */
+  video?: (VideoInfo & { streamUrl: string | null }) | null;
 }
 
 export interface CategoryDetail {
@@ -122,6 +132,7 @@ export const SITE_PATH: Record<ContentType, string> = {
   tool: "/tools",
   template: "/template",
   program: "/program",
+  video: "/tonton",
 };
 export const contentPath = (i: { type: ContentType; slug: string }) =>
   `${SITE_PATH[i.type]}/${encodeURIComponent(i.slug)}`;
@@ -148,6 +159,12 @@ export function siteVideo(v: { url: string; posterUrl: string | null } | null | 
   if (!v || !id) return null;
   const posterId = v.posterUrl?.split("/").pop();
   return { src: `/video/${id}`, poster: posterId ? `/gambar/${posterId}` : null };
+}
+
+/** Poster Video Edukasi di domain etalase (proxy /gambar, D38). */
+export function sitePoster(posterUrl: string | null | undefined): string | null {
+  const id = posterUrl?.split("/").pop();
+  return id ? `/gambar/${id}` : null;
 }
 
 /** Cari konten terbit (D52). Kueri yang tidak valid menghasilkan daftar kosong. */

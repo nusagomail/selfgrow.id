@@ -174,7 +174,7 @@ export const contentItems = sqliteTable(
   "content_items",
   {
     id: id(),
-    type: text("type", { enum: ["ebook", "tool", "template", "program"] }).notNull(),
+    type: text("type", { enum: ["ebook", "tool", "template", "program", "video"] }).notNull(),
     slug: text("slug").notNull(),
     title: text("title").notNull(),
     summary: text("summary"),
@@ -260,6 +260,19 @@ export const templateDefinitions = sqliteTable("template_definitions", {
   bodyR2Key: text("body_r2_key").notNull(),
   variablesJson: text("variables_json").notNull().default("[]"),
   outputFormats: text("output_formats").notNull().default('["docx"]'),
+});
+
+/**
+ * Video Edukasi (D54): satu berkas video utama + poster per konten bertipe `video`.
+ * Berkas di R2 `content-videos/{contentId}/{assetId}.{mp4|webm}`, poster `content-images/...`.
+ */
+export const videoDefinitions = sqliteTable("video_definitions", {
+  contentId: text("content_id")
+    .primaryKey()
+    .references(() => contentItems.id, { onDelete: "cascade" }),
+  videoAssetId: text("video_asset_id"),
+  posterAssetId: text("poster_asset_id"),
+  durationSeconds: integer("duration_seconds"),
 });
 
 export const tags = sqliteTable("tags", {

@@ -20,7 +20,7 @@ Setiap sesi kerja cukup membaca dokumen ini dan melanjutkan dari baris ✗ perta
 | Fase | Isi | Perkiraan sesi | Status |
 |---|---|---|---|
 | 1 | Template unduhan: 10 template, satu per kategori, masing-masing ditautkan ke ebook terkait | 1–2 | ✓ (D53) |
-| 2 | Kanal Video Edukasi: tipe konten `video`, rak di beranda dan situs, halaman tonton, unggah di Studio, aturan gratis/berbayar sama dengan ebook | 2 | ✗ |
+| 2 | Kanal Video Edukasi: tipe konten `video`, rak di beranda dan situs, halaman tonton, unggah di Studio, aturan gratis/berbayar sama dengan ebook | 2 | ✓ (D54) |
 | 3 | 80 ebook: 8 putaran × 10 kategori (satu judul per kategori per putaran) | ±40 | ✗ |
 | 4 | Isi video edukasi, dibuat setelah langganan ElevenLabs aktif | per video | tertunda |
 
@@ -89,5 +89,5 @@ Urutan di setiap kategori mendahulukan judul yang paling dicari dan paling mudah
 ## Video Edukasi (Fase 2 dan 4)
 
 - **Bentuk.** Video 3–8 menit per topik. Kanalnya terpisah dari video pengantar ebook.
-- **Infrastruktur.** Dibuat sekarang. Rak kanal baru tampil setelah ada minimal 3 video siap.
+- **Infrastruktur.** ✓ Selesai (D54). Studio → Konten baru → "Video edukasi": unggah MP4 (maks 95 MB, 16:9, H.264 + AAC), poster 16:9, pilih topik, tandai gratis bila perlu, lalu Terbitkan. Halaman tonton: app `/tonton/{slug}`, etalase `/tonton/{slug}`. Tab Video baru tampil di beranda setelah ada minimal 3 video terbit.
 - **Produksi.** Isi video dibuat dengan scene toolkit yang sudah ada dan narasi ElevenLabs, jadi menunggu langganan aktif.

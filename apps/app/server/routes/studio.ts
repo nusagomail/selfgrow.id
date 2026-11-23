@@ -33,6 +33,7 @@ import {
 } from "../services/ebook-storage";
 import { publishProgram } from "./studio-programs";
 import { publishTemplate } from "./studio-templates";
+import { canPublishVideo } from "./studio-videos";
 
 /** Baca & validasi body JSON dengan skema Zod dari packages/shared. */
 async function parseBody<S extends z.ZodTypeAny>(req: Request, s: S) {
@@ -287,6 +288,11 @@ export const studio = new Hono<AppEnv>()
         return c.json({ error: "invalid_template", problems: published.problems }, 400);
       }
       templatePublish = { snapshot: published.snapshot };
+    }
+    if (body.status === "published" && before.type === "video") {
+      if (!(await canPublishVideo(c.var.db, id))) {
+        return c.json({ error: "invalid_video", problems: ["Berkas video belum diunggah"] }, 400);
+      }
     }
     let toolPublish: { config: unknown } | null = null;
     if (body.status === "published" && before.type === "tool") {

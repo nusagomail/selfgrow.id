@@ -18,6 +18,7 @@ import { inChunks, type PublishedProgram, programKeys } from "../services/progra
 import { rateLimit } from "../services/protection";
 import { readJson } from "../services/template-storage";
 import { introMedia } from "./videos";
+import { videoInfo, videoMedia } from "./watch";
 
 /**
  * Katalog publik untuk etalase `site` (BLUEPRINT bagian 5 & 10): kategori, topik, dan konten
@@ -159,9 +160,10 @@ type FeedRow = {
 /** Bentuk satu item etalase: label akses, status segera terbit, kategori induk, dan topik. */
 async function toFeedItems(db: AppEnv["Variables"]["db"], rows: FeedRow[], cats: CategoryRow[]) {
   const byId = new Map(cats.map((r) => [r.id, r]));
-  const [access, filled] = await Promise.all([
+  const [access, filled, video] = await Promise.all([
     accessLabels(db, rows),
     ebooksWithChapters(db, rows),
+    videoInfo(db, rows),
   ]);
   return rows.map((i) => {
     const cat = i.categoryId ? byId.get(i.categoryId) : undefined;
@@ -177,6 +179,7 @@ async function toFeedItems(db: AppEnv["Variables"]["db"], rows: FeedRow[], cats:
       coverUrl: coverPath(i.coverAssetId),
       category: root ? { slug: root.slug, name: root.name } : null,
       topic: topic ? { slug: topic.slug, name: topic.name } : null,
+      video: video.get(i.id) ?? null,
       publishedAt: i.publishedAt?.toISOString() ?? null,
     };
   });
@@ -259,9 +262,10 @@ export const catalog = new Hono<AppEnv>()
       .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0))
       .slice(0, MAX_ITEMS);
     const topicById = new Map(topics.map((t) => [t.id, t.slug]));
-    const [access, filled] = await Promise.all([
+    const [access, filled, video] = await Promise.all([
       accessLabels(c.var.db, items),
       ebooksWithChapters(c.var.db, items),
+      videoInfo(c.var.db, items),
     ]);
     return c.json({
       category: toCategory(root),
@@ -280,6 +284,7 @@ export const catalog = new Hono<AppEnv>()
         access: access.get(i.id) ?? "premium",
         comingSoon: isComingSoon(i, filled),
         coverUrl: coverPath(i.coverAssetId),
+        video: video.get(i.id) ?? null,
         publishedAt: i.publishedAt?.toISOString() ?? null,
       })),
     });
@@ -399,6 +404,25 @@ export const catalog = new Hono<AppEnv>()
         };
       }
     }
+    let video: {
+      durationSeconds: number | null;
+      posterUrl: string | null;
+      streamUrl: string | null;
+    } | null = null;
+    if (item.type === "video") {
+      const def = await c.var.db.query.videoDefinitions.findFirst({
+        where: eq(schema.videoDefinitions.contentId, item.id),
+      });
+      if (def) {
+        const media = videoMedia(def);
+        video = {
+          durationSeconds: def.durationSeconds,
+          posterUrl: media.posterUrl,
+          // Berkas hanya dibuka publik bila gratis; video berbayar ditonton di app (D54).
+          streamUrl: access === "free" ? media.streamUrl : null,
+        };
+      }
+    }
     return c.json({
       type: item.type,
       slug: item.slug,
@@ -415,6 +439,7 @@ export const catalog = new Hono<AppEnv>()
       updatedAt: item.updatedAt.toISOString(),
       ebook,
       program,
+      video,
     });
   })
 

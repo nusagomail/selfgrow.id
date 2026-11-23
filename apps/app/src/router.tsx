@@ -59,6 +59,8 @@ const templatePage = () => import("./templates/page");
 const programBuilder = () => import("./studio/program-builder");
 const studioSecurity = () => import("./studio/security");
 const programPage = () => import("./programs/page");
+const watchPage = () => import("./videos/page");
+const videoBuilder = () => import("./studio/video-builder");
 
 const routeTree = rootRoute.addChildren([
   createRoute({ getParentRoute: () => rootRoute, path: "/", component: HomePage }),
@@ -108,6 +110,16 @@ const routeTree = rootRoute.addChildren([
     getParentRoute: () => rootRoute,
     path: "/program/$slug",
     component: lazyRouteComponent(programPage, "ProgramPage"),
+  }),
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/tonton/$slug",
+    component: lazyRouteComponent(watchPage, "WatchPage"),
+  }),
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/studio/video/$id",
+    component: lazyRouteComponent(videoBuilder, "StudioVideo"),
   }),
   createRoute({
     getParentRoute: () => rootRoute,

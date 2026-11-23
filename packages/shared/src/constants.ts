@@ -2,7 +2,7 @@
 export const API_VERSION = "v1";
 export const API_BASE_PATH = `/api/${API_VERSION}`;
 
-export const CONTENT_TYPES = ["ebook", "tool", "template", "program"] as const;
+export const CONTENT_TYPES = ["ebook", "tool", "template", "program", "video"] as const;
 export type ContentType = (typeof CONTENT_TYPES)[number];
 
 export const CONTENT_STATUSES = ["draft", "review", "published"] as const;

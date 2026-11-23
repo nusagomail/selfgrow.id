@@ -1,4 +1,4 @@
-import { API_BASE_PATH } from "@selfgrow/shared";
+import { API_BASE_PATH, VIDEO_MAX_BYTES } from "@selfgrow/shared";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { csrf } from "hono/csrf";
@@ -20,9 +20,11 @@ import { studio } from "./routes/studio";
 import { studioPrograms } from "./routes/studio-programs";
 import { studioTemplates } from "./routes/studio-templates";
 import { studioTools } from "./routes/studio-tools";
+import { studioVideos, VIDEO_UPLOAD_PATH } from "./routes/studio-videos";
 import { templates } from "./routes/templates";
 import { tools } from "./routes/tools";
 import { videos } from "./routes/videos";
+import { watch } from "./routes/watch";
 import { rateLimit } from "./services/protection";
 
 /**
@@ -34,13 +36,20 @@ export const api = new Hono<AppEnv>().basePath(API_BASE_PATH);
 api.use("*", secureHeaders());
 api.route("/health", health);
 
-// Batas ukuran body request (dokumen bab terbesar jauh di bawah ini).
-api.use(
-  "*",
-  bodyLimit({
-    maxSize: 2 * 1024 * 1024,
-    onError: (c) => c.json({ error: "payload_too_large" }, 413),
-  }),
+// Batas ukuran body request (dokumen bab terbesar jauh di bawah ini). Satu pengecualian: unggah
+// berkas Video Edukasi di Studio (D54), yang dialirkan ke R2 dan punya batas sendiri.
+const defaultBodyLimit = bodyLimit({
+  maxSize: 2 * 1024 * 1024,
+  onError: (c) => c.json({ error: "payload_too_large" }, 413),
+});
+const videoBodyLimit = bodyLimit({
+  maxSize: VIDEO_MAX_BYTES,
+  onError: (c) => c.json({ error: "file_too_large" }, 413),
+});
+api.use("*", (c, next) =>
+  c.req.method === "PUT" && VIDEO_UPLOAD_PATH.test(c.req.path)
+    ? videoBodyLimit(c, next)
+    : defaultBodyLimit(c, next),
 );
 api.use("*", contextMiddleware);
 // Lapisan tambahan anti-CSRF untuk mutasi berbasis cookie (Better Auth punya cek origin sendiri).
@@ -65,10 +74,12 @@ api.route("/ebooks", ebooks);
 api.route("/studio/tools", studioTools);
 api.route("/studio/templates", studioTemplates);
 api.route("/studio/programs", studioPrograms);
+api.route("/studio/videos", studioVideos);
 api.route("/studio", studio);
 api.route("/tools", tools);
 api.route("/templates", templates);
 api.route("/programs", programs);
+api.route("/watch", watch);
 api.route("/admin", admin);
 
 api.notFound((c) => c.json({ error: "not_found" }, 404));

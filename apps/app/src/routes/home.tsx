@@ -9,9 +9,10 @@ import {
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ToolCard } from "../components/tool-card";
+import { VideoCard } from "../components/video-card";
 import { ApiError, api, goToStorefront } from "../lib/api";
 
-type ItemType = "ebook" | "tool" | "template" | "program";
+type ItemType = "ebook" | "tool" | "template" | "program" | "video";
 type Item = {
   type: ItemType;
   slug: string;
@@ -24,6 +25,8 @@ type Item = {
   /** Ebook terbit yang isinya belum ada (D38). */
   comingSoon?: boolean;
   coverUrl: string | null;
+  /** Video Edukasi (D54): durasi & poster. */
+  video?: { durationSeconds: number | null; posterUrl: string | null } | null;
 };
 type Section = { slug: string; name: string; hook: string | null; items: Item[] };
 type Reading = {
@@ -48,6 +51,7 @@ const TYPE_LABEL: Record<ItemType, string> = {
   tool: "Tool",
   template: "Template",
   program: "Program",
+  video: "Video",
 };
 
 /**
@@ -68,6 +72,8 @@ function ItemCard({ item }: { item: Item }) {
             : null;
   if (item.type === "tool" || item.type === "template")
     return <ToolCard item={{ ...item, type: item.type, label }} />;
+  if (item.type === "video")
+    return <VideoCard item={{ ...item, video: item.video ?? null, label }} />;
   const body = (
     <>
       <span className={`book-cover${item.coverUrl ? "" : " is-empty"}`}>

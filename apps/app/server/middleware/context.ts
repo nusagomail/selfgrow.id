@@ -1,5 +1,6 @@
 import { createDb } from "@selfgrow/db";
 import { API_BASE_PATH } from "@selfgrow/shared";
+import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
 import { AUTH_BASE_PATH, createAuth } from "../auth/auth";
 import type { AppEnv } from "../env";
@@ -28,11 +29,20 @@ export const contextMiddleware = createMiddleware<AppEnv>(async (c, next) => {
     return next();
   }
 
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  await loadSession(c);
+  await next();
+});
+
+/**
+ * Baca sesi (cookie atau bearer) ke `c.var.user`/`c.var.session`. Dipanggil otomatis untuk
+ * semua route kecuali yang publik di atas; route video memanggilnya sendiri hanya untuk
+ * Video Edukasi berbayar (D54), supaya video publik tetap tanpa pencarian sesi.
+ */
+export async function loadSession(c: Context<AppEnv>) {
+  const session = await c.var.auth.api.getSession({ headers: c.req.raw.headers });
   const user = session?.user ?? null;
   // Akun yang dihapus diperlakukan seperti tidak login.
   const usable = user && !user.deletedAt ? session : null;
   c.set("user", usable?.user ?? null);
   c.set("session", usable?.session ?? null);
-  await next();
-});
+}
