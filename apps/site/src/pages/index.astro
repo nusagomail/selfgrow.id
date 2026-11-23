@@ -1,5 +1,5 @@
 ---
-import { activeTypeTab, availableTypeTabs, readyFirst } from "@selfgrow/shared";
+import { activeTypeTab, availableTypeTabs, isWideCard, readyFirst } from "@selfgrow/shared";
 import ItemCard from "../components/ItemCard.astro";
 import Shelf from "../components/Shelf.astro";
 import Base from "../layouts/Base.astro";
@@ -137,7 +137,7 @@ const siteLd = {
         })}
       </div>
     ) : (
-      <div class:list={[tab?.type === "tool" ? "tool-grid" : "book-grid"]}>
+      <div class:list={[tab && isWideCard(tab.type) ? "tool-grid" : "book-grid"]}>
         {readyFirst(shown).map((i) => <ItemCard item={i} />)}
       </div>
     )}

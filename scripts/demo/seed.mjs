@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import { toDoc, words } from "./blocks.mjs";
 import { FULL_BOOKS } from "./books/index.mjs";
 import { catalogBooks } from "./catalog.mjs";
+import { DEMO_TEMPLATES } from "./templates.mjs";
 import { DEMO_TOOLS } from "./tools.mjs";
 
 const mode = process.argv.includes("--staging")
@@ -130,6 +131,24 @@ DEMO_TOOLS.forEach((t, i) => {
     `INSERT INTO content_items (id, type, slug, title, summary, tier, status, category_id, published_at, created_at, updated_at) VALUES (${q(contentId)}, 'tool', ${q(t.slug)}, ${q(t.title)}, ${q(t.summary)}, 'free', 'published', ${q(t.topic)}, ${now - 200 * 60_000 - i * 60_000}, ${now}, ${now}) ON CONFLICT(id) DO UPDATE SET title = excluded.title, summary = excluded.summary, tier = 'free', status = 'published', updated_at = excluded.updated_at ON CONFLICT DO NOTHING;`,
     `INSERT INTO tool_definitions (content_id, kind, config_json, published_config_json) SELECT ${q(contentId)}, 'nocode', ${q(cfg)}, ${q(cfg)} WHERE EXISTS (SELECT 1 FROM content_items WHERE id = ${q(contentId)}) ON CONFLICT(content_id) DO UPDATE SET config_json = excluded.config_json, published_config_json = excluded.published_config_json;`,
   );
+});
+
+// Template demo siap unduh (D53): terbit, gratis atau premium sesuai `tier`. Isi di R2: draft (Studio)
+// dan versi terbit (dipakai pelanggan), sama dengan alur publishTemplate.
+DEMO_TEMPLATES.forEach((t, i) => {
+  const contentId = uid(`template:${t.slug}`);
+  const draftKey = `templates/${contentId}/body.json`;
+  const publishedKey = `templates/${contentId}/published.json`;
+  sql.push(
+    `INSERT INTO content_items (id, type, slug, title, summary, tier, status, category_id, published_at, created_at, updated_at) VALUES (${q(contentId)}, 'template', ${q(t.slug)}, ${q(t.title)}, ${q(t.summary)}, ${q(t.tier)}, 'published', ${q(t.topic)}, ${now - 300 * 60_000 - i * 60_000}, ${now}, ${now}) ON CONFLICT(id) DO UPDATE SET title = excluded.title, summary = excluded.summary, tier = excluded.tier, status = 'published', category_id = excluded.category_id, updated_at = excluded.updated_at ON CONFLICT DO NOTHING;`,
+    `INSERT INTO template_definitions (content_id, body_r2_key, variables_json, output_formats) SELECT ${q(contentId)}, ${q(draftKey)}, ${q(JSON.stringify(t.config))}, ${q(JSON.stringify(t.config.outputFormats))} WHERE EXISTS (SELECT 1 FROM content_items WHERE id = ${q(contentId)}) ON CONFLICT(content_id) DO UPDATE SET body_r2_key = excluded.body_r2_key, variables_json = excluded.variables_json, output_formats = excluded.output_formats;`,
+  );
+  const bodyFile = join(work, `template-${t.slug}-body.json`);
+  const publishedFile = join(work, `template-${t.slug}-published.json`);
+  writeFileSync(bodyFile, JSON.stringify(t.body));
+  writeFileSync(publishedFile, JSON.stringify({ config: t.config, body: t.body }));
+  uploads.push({ key: draftKey, file: bodyFile, type: "application/json" });
+  uploads.push({ key: publishedKey, file: publishedFile, type: "application/json" });
 });
 
 const sqlFile = join(work, "seed.sql");

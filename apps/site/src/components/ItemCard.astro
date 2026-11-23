@@ -1,4 +1,5 @@
 ---
+import { isWideCard } from "@selfgrow/shared";
 import { type Access, type ContentType, contentPath, siteCover } from "../lib/api";
 import ToolCard from "./ToolCard.astro";
 
@@ -35,8 +36,8 @@ const label = item.comingSoon
       : { text: "Premium", cls: "premium" };
 ---
 
-{item.type === "tool" ? (
-  <ToolCard item={{ ...item, type: "tool" }} />
+{isWideCard(item.type) ? (
+  <ToolCard item={{ ...item, type: item.type as "tool" | "template" }} />
 ) : (
 <a href={contentPath(item)} class="book" title={item.summary ?? item.title}>
   <span class:list={["cover", { empty: !cover }]}>

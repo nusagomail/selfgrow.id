@@ -27,7 +27,7 @@ export const INTERACTIVE_SCHEMAS: Record<InteractiveKind, z.ZodType> = {
 
 export const INTERACTIVE_KEYS: Record<InteractiveKind, string[]> = {
   quiz: ["id", "mode", "label", "title", "intro", "ends", "questions", "results"],
-  toolEmbed: ["slug", "title", "intro"],
+  toolEmbed: ["slug", "title", "intro", "kind"],
   animChart: ["title", "kind", "format", "items", "note"],
 };
 
@@ -51,7 +51,7 @@ export const DEFAULT_INTERACTIVE_ATTRS: InteractiveAttrsOf = {
       { min: 1, max: 1, title: "", text: "" },
     ],
   },
-  toolEmbed: { slug: "", title: "", intro: "" },
+  toolEmbed: { slug: "", title: "", intro: "", kind: "tool" },
   animChart: {
     title: "",
     kind: "bars",

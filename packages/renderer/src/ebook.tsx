@@ -26,6 +26,8 @@ export interface RenderOptions {
   transformText?: (text: string) => string;
   /** Tool yang ditanam di bab (D42). Tanpa ini tampil kartu ajakan statis. */
   renderTool?: (attrs: ToolEmbedAttrs, key: string) => ReactNode;
+  /** Alamat halaman template untuk kartu ajakan unduh (D53). Tanpa ini kartu tampil tanpa tautan. */
+  templateHref?: (slug: string) => string;
 }
 
 const SAFE_HREF = /^(https?:\/\/|mailto:)/i;
@@ -191,6 +193,23 @@ function renderNode(node: EbookNode, opts: RenderOptions, key: string): ReactNod
     case "quiz":
       return <Quiz key={key} attrs={node.attrs} t={opts.transformText ?? ((x) => x)} />;
     case "toolEmbed":
+      if (node.attrs.kind === "template") {
+        const href = opts.templateHref?.(node.attrs.slug);
+        return (
+          <aside key={key} className="tool-embed template-embed">
+            <span className="callout-label">Template siap unduh</span>
+            <b>{node.attrs.title ?? "Template"}</b>
+            {node.attrs.intro ? <p>{node.attrs.intro}</p> : null}
+            {href ? (
+              <a className="template-embed-link" href={href}>
+                Isi & unduh template →
+              </a>
+            ) : (
+              <p className="tool-embed-note">Template ini bisa diunduh di aplikasi SelfGrow.</p>
+            )}
+          </aside>
+        );
+      }
       return opts.renderTool ? (
         <div key={key} className="tool-embed">
           {opts.renderTool(node.attrs, key)}

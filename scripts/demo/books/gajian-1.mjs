@@ -96,6 +96,12 @@ export const GAJIAN_1 = [
         "tip",
         "Kalau 20% untuk tujuan terasa mustahil, mulai dari 5% dan naikkan 1% setiap bulan. Kebiasaan memisahkan lebih penting daripada besar angkanya di awal.",
       ],
+      [
+        "template",
+        "anggaran-bulanan-gajian",
+        "Lembar Anggaran Bulanan dari Tanggal Gajian",
+        "Isi nama, penghasilan, dan tanggal gajianmu. Lembar ini sudah memuat pos yang dibayar di hari gajian, jatah mingguan, dan evaluasi akhir bulan.",
+      ],
     ],
   },
   {

@@ -1,5 +1,11 @@
 import type { SubscriptionStatus } from "@selfgrow/shared";
-import { activeTypeTab, availableTypeTabs, rankSearch, readyFirst } from "@selfgrow/shared";
+import {
+  activeTypeTab,
+  availableTypeTabs,
+  isWideCard,
+  rankSearch,
+  readyFirst,
+} from "@selfgrow/shared";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ToolCard } from "../components/tool-card";
@@ -60,7 +66,8 @@ function ItemCard({ item }: { item: Item }) {
           : item.locked
             ? { text: "Terkunci", cls: "locked" }
             : null;
-  if (item.type === "tool") return <ToolCard item={{ ...item, label }} />;
+  if (item.type === "tool" || item.type === "template")
+    return <ToolCard item={{ ...item, type: item.type, label }} />;
   const body = (
     <>
       <span className={`book-cover${item.coverUrl ? "" : " is-empty"}`}>
@@ -97,12 +104,6 @@ function ItemCard({ item }: { item: Item }) {
     case "ebook":
       return (
         <Link to="/baca/$slug" params={{ slug: item.slug }} {...common}>
-          {body}
-        </Link>
-      );
-    case "template":
-      return (
-        <Link to="/template/$slug" params={{ slug: item.slug }} {...common}>
           {body}
         </Link>
       );
@@ -163,6 +164,7 @@ export function HomePage() {
   const allItems = sections.flatMap((s) => s.items);
   const tabs = availableTypeTabs(allItems);
   const tab = activeTypeTab(jenis, allItems);
+  const wide = tab ? isWideCard(tab.type) : false;
   const filled = sections
     .map((s) => ({ ...s, items: tab ? s.items.filter((i) => i.type === tab.type) : s.items }))
     .filter((s) => s.items.length > 0);
@@ -251,19 +253,19 @@ export function HomePage() {
             <p className="muted">Belum ada yang cocok. Coba kata lain.</p>
           ) : (
             <>
-              {hits.some((i) => i.type !== "tool") && (
+              {hits.some((i) => !isWideCard(i.type)) && (
                 <div className="book-grid">
                   {hits
-                    .filter((i) => i.type !== "tool")
+                    .filter((i) => !isWideCard(i.type))
                     .map((i) => (
                       <ItemCard key={`${i.type}-${i.slug}`} item={i} />
                     ))}
                 </div>
               )}
-              {hits.some((i) => i.type === "tool") && (
+              {hits.some((i) => isWideCard(i.type)) && (
                 <div className="tool-grid">
                   {hits
-                    .filter((i) => i.type === "tool")
+                    .filter((i) => isWideCard(i.type))
                     .map((i) => (
                       <ItemCard key={`${i.type}-${i.slug}`} item={i} />
                     ))}
@@ -334,22 +336,21 @@ export function HomePage() {
                 <h2>{s.name}</h2>
                 {s.hook && <p className="muted small">"{s.hook}"</p>}
               </div>
-              {active === "semua" &&
-                s.items.length > (tab?.type === "tool" ? TOOL_MAX : SHELF_MAX - 1) && (
-                  <button
-                    type="button"
-                    className="linklike shelf-more"
-                    onClick={() => setActive(s.slug)}
-                  >
-                    Lihat semua <span className="muted">{s.items.length}</span>
-                  </button>
-                )}
+              {active === "semua" && s.items.length > (wide ? TOOL_MAX : SHELF_MAX - 1) && (
+                <button
+                  type="button"
+                  className="linklike shelf-more"
+                  onClick={() => setActive(s.slug)}
+                >
+                  Lihat semua <span className="muted">{s.items.length}</span>
+                </button>
+              )}
             </div>
             {/* Semua kategori: rak yang digulir ke samping. Satu kategori: grid sampul. Tool
                 bukan buku (D49): selalu grid kartu lebar, enam per kategori di tampilan Semua. */}
             <div
               className={
-                tab?.type === "tool"
+                wide
                   ? active === "semua"
                     ? "book-shelf tool-shelf"
                     : "tool-grid"
@@ -359,7 +360,7 @@ export function HomePage() {
               }
             >
               {(active === "semua"
-                ? readyFirst(s.items).slice(0, tab?.type === "tool" ? TOOL_MAX : SHELF_MAX)
+                ? readyFirst(s.items).slice(0, wide ? TOOL_MAX : SHELF_MAX)
                 : readyFirst(s.items)
               ).map((i) => (
                 <ItemCard key={`${i.type}-${i.slug}`} item={i} />

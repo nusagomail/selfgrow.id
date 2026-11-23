@@ -141,6 +141,12 @@ export const CV_1 = [
         "warn",
         "Jangan menulis keterampilan yang tidak kamu miliki hanya supaya lolos penyaringan. Wawancara akan menguji semua yang tertulis di CV.",
       ],
+      [
+        "template",
+        "cv-ramah-ats",
+        "CV Ramah ATS Satu Kolom",
+        "Kerangka satu kolom tanpa tabel dan grafik, sudah berisi nama, kontak, dan posisi yang kamu lamar. Ada versi untuk lulusan baru.",
+      ],
     ],
   },
   {

@@ -75,6 +75,12 @@ export function toNode(b, ctx = {}) {
   if (kind === "quiz") return { type: "quiz", attrs: value };
   if (kind === "tool")
     return { type: "toolEmbed", attrs: { slug: value, title: b[2] ?? null, intro: b[3] ?? null } };
+  //   ["template", slug, judul, pengantar?] → kartu template siap unduh (D53)
+  if (kind === "template")
+    return {
+      type: "toolEmbed",
+      attrs: { slug: value, title: b[2] ?? null, intro: b[3] ?? null, kind: "template" },
+    };
   if (kind === "chart") return { type: "animChart", attrs: value };
   // Unsur buku (D40):
   //   ["reflect", [pertanyaan..]]        → kotak Renungkan

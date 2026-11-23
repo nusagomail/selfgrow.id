@@ -193,6 +193,12 @@ export const TIDAK_1 = [
           "Empat bagian: hargai, tolak dengan jelas, batasi, dan tawarkan kalau mau.",
         ],
       ],
+      [
+        "template",
+        "kartu-kalimat-menolak",
+        "Kartu Kalimat Menolak dengan Sopan",
+        "Pilih situasi yang paling sering kamu hadapi. Kartunya berisi kalimat siap pakai dan lembar latihan.",
+      ],
     ],
   },
 ];

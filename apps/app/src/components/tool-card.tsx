@@ -1,4 +1,4 @@
-import { TOOL_KIND_LABEL, type ToolKind, toolKind, toolTone } from "@selfgrow/shared";
+import { cardKind, TOOL_KIND_LABEL, type ToolKind, toolTone } from "@selfgrow/shared";
 import { Link } from "@tanstack/react-router";
 
 /** Ikon garis per jenis tool (D49). */
@@ -36,6 +36,12 @@ export function ToolGlyph({ kind }: { kind: ToolKind }) {
           <path d="M8 3v4M16 3v4M4 10h16M8.5 14h3M8.5 17h6" />
         </g>
       )}
+      {kind === "unduh" && (
+        <g {...p}>
+          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+          <path d="M14 3v5h5M12 11v6M9.5 14.5L12 17l2.5-2.5" />
+        </g>
+      )}
       {kind === "catat" && (
         <g {...p}>
           <circle cx="12" cy="12" r="8.5" />
@@ -47,6 +53,7 @@ export function ToolGlyph({ kind }: { kind: ToolKind }) {
 }
 
 type ToolCardItem = {
+  type: "tool" | "template";
   slug: string;
   title: string;
   summary: string | null;
@@ -54,17 +61,14 @@ type ToolCardItem = {
 };
 
 /**
- * Kartu tool (D49): bukan sampul buku. Ikon fungsi, jenis tool, judul, ringkasan, dan ajakan
- * mencoba. Lebar, karena isinya teks dan tindakan, bukan gambar sampul.
+ * Kartu tool (D49) dan template (D53): bukan sampul buku. Ikon fungsi, jenis, judul, ringkasan,
+ * dan ajakan mencoba atau mengunduh. Lebar, karena isinya teks dan tindakan, bukan gambar sampul.
  */
 export function ToolCard({ item }: { item: ToolCardItem }) {
-  const kind = toolKind(item.title);
-  return (
-    <Link
-      to="/tools/$slug"
-      params={{ slug: item.slug }}
-      className={`tool-card tone-${toolTone(item.slug)}`}
-    >
+  const kind = cardKind(item.type, item.title);
+  const className = `tool-card tone-${toolTone(item.slug)}`;
+  const body = (
+    <>
       <span className="tool-card-top">
         <span className="tool-icon">
           <ToolGlyph kind={kind} />
@@ -74,7 +78,16 @@ export function ToolCard({ item }: { item: ToolCardItem }) {
       </span>
       <span className="tool-card-title">{item.title}</span>
       {item.summary && <span className="tool-card-summary">{item.summary}</span>}
-      <span className="tool-card-cta">Coba →</span>
+      <span className="tool-card-cta">{item.type === "template" ? "Isi & unduh →" : "Coba →"}</span>
+    </>
+  );
+  return item.type === "template" ? (
+    <Link to="/template/$slug" params={{ slug: item.slug }} className={className}>
+      {body}
+    </Link>
+  ) : (
+    <Link to="/tools/$slug" params={{ slug: item.slug }} className={className}>
+      {body}
     </Link>
   );
 }

@@ -8,6 +8,20 @@ import { type Block, type DocMeta, type Run, toBlocks } from "./walk";
  * PDF rumit (banyak gambar/layout) bisa beralih ke Browser Rendering kelak (BLUEPRINT bagian 5).
  */
 const WINANSI_EXTRA = new Set("€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ");
+/** Simbol umum di luar WinAnsi yang punya padanan ASCII, supaya rumus tidak rusak (D53). */
+const WINANSI_FALLBACK: Record<string, string> = {
+  "−": "-",
+  "≥": ">=",
+  "≤": "<=",
+  "≠": "!=",
+  "≈": "~",
+  "→": "->",
+  "←": "<-",
+  "✓": "v",
+  "✔": "v",
+  "✗": "x",
+  "☐": "[ ]",
+};
 export function toWinAnsi(s: string): string {
   return [...s.normalize("NFC")]
     .map((ch) => {
@@ -15,7 +29,7 @@ export function toWinAnsi(s: string): string {
       if (ch === "\n") return ch;
       if ((c >= 0x20 && c <= 0x7e) || (c >= 0xa0 && c <= 0xff) || WINANSI_EXTRA.has(ch)) return ch;
       if (ch === "\t") return " ";
-      return "";
+      return WINANSI_FALLBACK[ch] ?? "";
     })
     .join("");
 }

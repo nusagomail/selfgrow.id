@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { TOOL_KINDS, toolKind, toolTone } from "./tool-card";
+import { cardKind, isWideCard, TOOL_KINDS, toolKind, toolTone } from "./tool-card";
 
 describe("toolKind", () => {
   it("menebak jenis dari judul", () => {
@@ -26,5 +26,18 @@ describe("toolTone", () => {
       expect(t).toBeGreaterThanOrEqual(0);
       expect(t).toBeLessThan(6);
     }
+  });
+});
+
+describe("kartu lebar (D53)", () => {
+  it("tool dan template memakai kartu lebar, ebook tidak", () => {
+    expect(isWideCard("tool")).toBe(true);
+    expect(isWideCard("template")).toBe(true);
+    expect(isWideCard("ebook")).toBe(false);
+    expect(isWideCard("program")).toBe(false);
+  });
+  it("template selalu berjenis unduh", () => {
+    expect(cardKind("template", "Kalkulator HPP")).toBe("unduh");
+    expect(cardKind("tool", "Kalkulator HPP")).toBe("hitung");
   });
 });

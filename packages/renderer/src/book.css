@@ -705,6 +705,27 @@
 .book-flow .tool-embed-static p {
   margin: 0.3em 0 0;
 }
+/* Kartu ajakan template (D53): garis putus-putus seperti lembar kerja yang bisa dicetak. */
+.book-flow .template-embed {
+  border-top-style: dashed;
+}
+.book-flow .template-embed b {
+  display: block;
+}
+.book-flow .template-embed p {
+  margin: 0.3em 0 0;
+}
+.book-flow .template-embed-link {
+  display: inline-block;
+  margin-top: 0.6em;
+  padding: 0.45em 0.9em;
+  border-radius: 999px;
+  background: var(--c);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.88em;
+  text-decoration: none;
+}
 .book-flow .tool-embed-note {
   font-size: 0.82em;
   color: var(--book-muted);
