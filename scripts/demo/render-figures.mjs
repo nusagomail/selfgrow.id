@@ -10,6 +10,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { BURNOUT_FIGURE_CSS, BURNOUT_FIGURES } from "./books/burnout-figures.mjs";
 import { CV_FIGURE_CSS, CV_FIGURES } from "./books/cv-figures.mjs";
 import { DARURAT_FIGURE_CSS, DARURAT_FIGURES } from "./books/darurat-figures.mjs";
+import { FOKUS_FIGURE_CSS, FOKUS_FIGURES } from "./books/fokus-figures.mjs";
 import { GAJIAN_FIGURE_CSS, GAJIAN_FIGURES } from "./books/gajian-figures.mjs";
 import { GAWAI_FIGURE_CSS, GAWAI_FIGURES } from "./books/gawai-figures.mjs";
 import { GULA_FIGURE_CSS, GULA_FIGURES } from "./books/gula-figures.mjs";
@@ -29,6 +30,7 @@ import { TERTINGGAL_FIGURE_CSS, TERTINGGAL_FIGURES } from "./books/tertinggal-fi
 import { TIDAK_FIGURE_CSS, TIDAK_FIGURES } from "./books/tidak-figures.mjs";
 import { TUNDA_FIGURE_CSS, TUNDA_FIGURES } from "./books/tunda-figures.mjs";
 import { VALIDASI_FIGURE_CSS, VALIDASI_FIGURES } from "./books/validasi-figures.mjs";
+import { WAWANCARA_FIGURE_CSS, WAWANCARA_FIGURES } from "./books/wawancara-figures.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "../..");
@@ -63,6 +65,8 @@ const SETS = {
   "validasi-ide-sebelum-modal-habis": { figures: VALIDASI_FIGURES, css: VALIDASI_FIGURE_CSS },
   "seni-menabung-tanpa-tersiksa": { figures: MENABUNG_FIGURES, css: MENABUNG_FIGURE_CSS },
   "pagi-yang-menang": { figures: PAGI_FIGURES, css: PAGI_FIGURE_CSS },
+  "fokus-di-era-notifikasi": { figures: FOKUS_FIGURES, css: FOKUS_FIGURE_CSS },
+  "lolos-wawancara-kerja": { figures: WAWANCARA_FIGURES, css: WAWANCARA_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,

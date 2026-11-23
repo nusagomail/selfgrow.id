@@ -6,6 +6,8 @@ import { CV_1 } from "./cv-1.mjs";
 import { CV_FIGURES } from "./cv-figures.mjs";
 import { DARURAT_1 } from "./darurat-1.mjs";
 import { DARURAT_FIGURES } from "./darurat-figures.mjs";
+import { FOKUS_1 } from "./fokus-1.mjs";
+import { FOKUS_FIGURES } from "./fokus-figures.mjs";
 import { GAJIAN_1 } from "./gajian-1.mjs";
 import { GAJIAN_FIGURES } from "./gajian-figures.mjs";
 import { GAWAI_1 } from "./gawai-1.mjs";
@@ -48,6 +50,8 @@ import { TUNDA_1 } from "./tunda-1.mjs";
 import { TUNDA_FIGURES } from "./tunda-figures.mjs";
 import { VALIDASI_1 } from "./validasi-1.mjs";
 import { VALIDASI_FIGURES } from "./validasi-figures.mjs";
+import { WAWANCARA_1 } from "./wawancara-1.mjs";
+import { WAWANCARA_FIGURES } from "./wawancara-figures.mjs";
 
 /** Isi lengkap per slug, dengan tema baca per buku (D51) yang mengikuti identitas infografisnya. */
 export const FULL_BOOKS = {
@@ -314,5 +318,29 @@ export const FULL_BOOKS = {
     },
     chapters: PAGI_1,
     figures: PAGI_FIGURES,
+  },
+  "fokus-di-era-notifikasi": {
+    theme: {
+      accent: "#9c5a1f",
+      second: "#2f6f9e",
+      heading: "sans",
+      callout: "tape",
+      ornament: "line",
+      paper: "grid",
+    },
+    chapters: FOKUS_1,
+    figures: FOKUS_FIGURES,
+  },
+  "lolos-wawancara-kerja": {
+    theme: {
+      accent: "#b3261e",
+      second: "#2b6777",
+      heading: "mono",
+      callout: "card",
+      ornament: "star",
+      paper: "plain",
+    },
+    chapters: WAWANCARA_1,
+    figures: WAWANCARA_FIGURES,
   },
 };
