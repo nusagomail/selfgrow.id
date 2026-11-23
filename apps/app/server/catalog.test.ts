@@ -108,6 +108,7 @@ describe("katalog publik", () => {
         "summary",
         "title",
         "topic",
+        "video",
         "type",
       ].sort(),
     );

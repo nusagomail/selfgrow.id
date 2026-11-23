@@ -1,6 +1,12 @@
 ---
 import type { EbookDoc } from "@selfgrow/shared";
-import { ebookThemeAttrs, ebookThemeSchema, TOOL_KIND_LABEL, toolKind } from "@selfgrow/shared";
+import {
+  ebookThemeAttrs,
+  ebookThemeSchema,
+  formatDuration,
+  TOOL_KIND_LABEL,
+  toolKind,
+} from "@selfgrow/shared";
 import Base from "../layouts/Base.astro";
 import {
   ACCESS_LABEL,
@@ -8,6 +14,7 @@ import {
   type ContentDetail,
   contentPath,
   siteCover,
+  sitePoster,
   siteVideo,
 } from "../lib/api";
 import "@selfgrow/renderer/book.css";
@@ -22,6 +29,11 @@ const base = Astro.site ?? new URL(Astro.url.origin);
 const url = new URL(contentPath(data), base).toString();
 const cover = siteCover(data.coverUrl);
 const intro = siteVideo(data.introVideo);
+// Video Edukasi (D54): berkas hanya diputar di sini bila gratis; berbayar ditonton di app.
+const edu = data.type === "video" ? (data.video ?? null) : null;
+const eduPoster = sitePoster(edu?.posterUrl);
+const eduSrc = edu?.streamUrl ? siteVideo({ url: edu.streamUrl, posterUrl: null })?.src : null;
+const eduDuration = formatDuration(edu?.durationSeconds);
 // Tema baca per ebook (D51), juga untuk bab gratis di halaman publik.
 // Divalidasi ulang di sini (pertahanan berlapis) sebelum dipakai di atribut style.
 const themeParsed = ebookThemeSchema.safeParse(data.theme);
@@ -30,8 +42,20 @@ const bookThemeStyle = Object.entries(bookTheme.vars)
   .map(([k, v]) => `${k}:${v}`)
   .join(";");
 
-const TYPE_LABEL = { ebook: "Ebook", tool: "Tool", template: "Template", program: "Program" };
-const APP_PATH = { ebook: "/baca", tool: "/tools", template: "/template", program: "/program" };
+const TYPE_LABEL = {
+  ebook: "Ebook",
+  tool: "Tool",
+  template: "Template",
+  program: "Program",
+  video: "Video Edukasi",
+};
+const APP_PATH = {
+  ebook: "/baca",
+  tool: "/tools",
+  template: "/template",
+  program: "/program",
+  video: "/tonton",
+};
 const appLink = appUrl(`${APP_PATH[data.type]}/${encodeURIComponent(data.slug)}`);
 const loginThen = appUrl("/masuk?auto=1");
 const verb = {
@@ -39,6 +63,7 @@ const verb = {
   tool: "Pakai tool ini",
   template: "Isi & unduh template",
   program: "Ikuti program",
+  video: data.access === "free" ? "Tonton di aplikasi" : "Tonton setelah berlangganan",
 }[data.type];
 
 // Data terstruktur per jenis (BLUEPRINT bagian 10), termasuk penanda paywall agar tidak dianggap
@@ -48,6 +73,7 @@ const schemaType = {
   tool: "SoftwareApplication",
   template: "DigitalDocument",
   program: "Course",
+  video: "VideoObject",
 }[data.type];
 const ld: Record<string, unknown> = {
   "@context": "https://schema.org",
@@ -63,6 +89,14 @@ const ld: Record<string, unknown> = {
   ...(cover ? { image: new URL(cover, base).toString() } : {}),
   ...(data.type === "tool"
     ? { applicationCategory: "LifestyleApplication", operatingSystem: "Web" }
+    : {}),
+  ...(edu
+    ? {
+        uploadDate: data.publishedAt ?? undefined,
+        ...(eduPoster ? { thumbnailUrl: new URL(eduPoster, base).toString() } : {}),
+        ...(edu.durationSeconds ? { duration: `PT${edu.durationSeconds}S` } : {}),
+        ...(eduSrc ? { contentUrl: new URL(eduSrc, base).toString() } : {}),
+      }
     : {}),
   ...(preview
     ? {
@@ -140,6 +174,29 @@ const crumbs = {
     </div>
   </section>
 
+  {edu && (
+    <section class="container intro-video edu-video" aria-label={`Video: ${data.title}`}>
+      {eduSrc ? (
+        <video controls playsinline preload="metadata" poster={eduPoster ?? undefined} controlslist="nodownload">
+          <source src={eduSrc} />
+          Peramban kamu tidak bisa memutar video ini.
+        </video>
+      ) : (
+        <a class="edu-locked" href={appLink}>
+          {eduPoster && <img src={eduPoster} alt="" width="900" height="506" />}
+          <span class="edu-locked-text">
+            <span class="edu-play" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="26" height="26"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
+            </span>
+            <strong>Video Premium</strong>
+            <span>Tonton lengkap di aplikasi setelah berlangganan.</span>
+          </span>
+        </a>
+      )}
+      {eduDuration && <p class="muted edu-meta">Durasi {eduDuration}</p>}
+    </section>
+  )}
+
   {intro && (
     <section class="container intro-video" aria-labelledby="intro-title">
       <h2 id="intro-title">Kenali buku ini dalam 1 menit</h2>
@@ -191,7 +248,7 @@ const crumbs = {
           <ol>
             <li><a href={loginThen}>Masuk dengan Google</a> (satu klik, tanpa password).</li>
             <li>Buka {TYPE_LABEL[data.type].toLowerCase()} ini dari Beranda atau tombol di atas.</li>
-            <li>{data.type === "tool" ? "Isi angka-angkamu dan lihat hasilnya langsung." : data.type === "template" ? "Isi formulir singkat, lalu unduh sebagai Word, PDF, atau Excel." : "Ikuti satu langkah setiap hari dan tandai yang sudah selesai."}</li>
+            <li>{data.type === "tool" ? "Isi angka-angkamu dan lihat hasilnya langsung." : data.type === "template" ? "Isi formulir singkat, lalu unduh sebagai Word, PDF, atau Excel." : data.type === "video" ? "Tonton kapan saja dari HP atau laptop, lalu praktikkan satu hal yang paling cocok." : "Ikuti satu langkah setiap hari dan tandai yang sudah selesai."}</li>
           </ol>
         </div>
       )}
@@ -422,6 +479,46 @@ const crumbs = {
     border-radius: var(--radius);
     background: #04260f;
     box-shadow: var(--shadow);
+  }
+  .edu-locked {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--primary, #1d7a34), #04260f);
+    box-shadow: var(--shadow);
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+  }
+  .edu-locked img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.45);
+  }
+  .edu-locked-text {
+    position: relative;
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    padding: 16px;
+  }
+  .edu-play {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 55%);
+  }
+  .edu-meta {
+    margin: 0;
+    font-size: 0.9rem;
   }
   .preview {
     display: flex;

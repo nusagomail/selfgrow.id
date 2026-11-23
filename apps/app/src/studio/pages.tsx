@@ -64,7 +64,7 @@ export function StudioHome() {
   const [slug, setSlug] = useState("");
   const [slugEdited, setSlugEdited] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [kind, setKind] = useState<"ebook" | "tool" | "template" | "program">("ebook");
+  const [kind, setKind] = useState<"ebook" | "tool" | "template" | "program" | "video">("ebook");
   const [preset, setPreset] = useState<"budget_503020" | "habit_daily" | "blank">("budget_503020");
   useAdminGuard(err);
 
@@ -91,6 +91,12 @@ export function StudioHome() {
           body: JSON.stringify({ title, slug, durationDays: 30 }),
         });
         navigate({ to: "/studio/program/$id", params: { id } });
+      } else if (kind === "video") {
+        const { id } = await api<{ id: string }>("/studio/videos", {
+          method: "POST",
+          body: JSON.stringify({ title, slug }),
+        });
+        navigate({ to: "/studio/video/$id", params: { id } });
       } else if (kind === "template") {
         const { id } = await api<{ id: string }>("/studio/templates", {
           method: "POST",
@@ -144,6 +150,10 @@ export function StudioHome() {
             <input type="radio" checked={kind === "program"} onChange={() => setKind("program")} />
             Program
           </label>
+          <label className="check">
+            <input type="radio" checked={kind === "video"} onChange={() => setKind("video")} />
+            Video edukasi
+          </label>
         </div>
         <label className="field">
           <span>Judul</span>
@@ -158,7 +168,7 @@ export function StudioHome() {
           />
         </label>
         <label className="field">
-          <span>Slug (alamat: /{kind}/slug)</span>
+          <span>Slug (alamat: /{kind === "video" ? "tonton" : kind}/slug)</span>
           <input
             value={slug}
             required
@@ -217,6 +227,11 @@ export function StudioHome() {
               )}
               {it.type === "program" && (
                 <Link to="/studio/program/$id" params={{ id: it.id }} className="btn">
+                  Edit
+                </Link>
+              )}
+              {it.type === "video" && (
+                <Link to="/studio/video/$id" params={{ id: it.id }} className="btn">
                   Edit
                 </Link>
               )}

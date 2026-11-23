@@ -35,6 +35,7 @@ describe("kartu lebar (D53)", () => {
     expect(isWideCard("template")).toBe(true);
     expect(isWideCard("ebook")).toBe(false);
     expect(isWideCard("program")).toBe(false);
+    expect(isWideCard("video")).toBe(true);
   });
   it("template selalu berjenis unduh", () => {
     expect(cardKind("template", "Kalkulator HPP")).toBe("unduh");

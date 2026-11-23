@@ -1,0 +1,106 @@
+---
+import { formatDuration } from "@selfgrow/shared";
+import { type Access, contentPath, sitePoster, type VideoInfo } from "../lib/api";
+
+/** Kartu Video Edukasi (D54): poster 16:9 dengan durasi, judul, dan label akses. */
+interface Props {
+  item: {
+    slug: string;
+    title: string;
+    summary: string | null;
+    access: Access;
+    video?: VideoInfo | null;
+  };
+}
+const { item } = Astro.props;
+const poster = sitePoster(item.video?.posterUrl);
+const duration = formatDuration(item.video?.durationSeconds);
+const free = item.access === "free";
+---
+
+<a href={contentPath({ type: "video", slug: item.slug })} class="video" title={item.summary ?? item.title}>
+  <span class="thumb">
+    {poster && <img src={poster} alt="" width="320" height="180" loading="lazy" decoding="async" />}
+    <span class="play" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
+    </span>
+    {duration && <span class="dur">{duration}</span>}
+  </span>
+  <span class="title">{item.title}</span>
+  <span class:list={["label", free ? "free" : "premium"]}>{free ? "Gratis" : "Premium"}</span>
+</a>
+
+<style>
+  .video {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .thumb {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--primary, #1d7a34), var(--green-900, #073e1f));
+    box-shadow: 0 10px 22px -12px rgb(7 62 31 / 40%);
+  }
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease;
+  }
+  .video:hover .thumb img,
+  .video:focus-visible .thumb img {
+    transform: scale(1.03);
+  }
+  .play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 55%);
+    color: #fff;
+  }
+  .dur {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: rgb(0 0 0 / 72%);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .label.free {
+    color: var(--primary);
+  }
+  .label.premium {
+    color: var(--muted);
+  }
+</style>

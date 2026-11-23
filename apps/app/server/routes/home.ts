@@ -8,6 +8,7 @@ import { coverPath } from "../services/covers";
 import { getAccessStatus } from "../services/entitlements";
 import { inChunks } from "../services/programs";
 import { currentPeriod } from "../services/usage";
+import { videoInfo } from "./watch";
 
 type Db = AppEnv["Variables"]["db"];
 const MAX_ITEMS = 500;
@@ -139,7 +140,10 @@ export const home = new Hono<AppEnv>()
     ]);
 
     const free = new Set(freeRows.map((r) => r.contentId));
-    const filled = await ebooksWithChapters(c.var.db, items);
+    const [filled, video] = await Promise.all([
+      ebooksWithChapters(c.var.db, items),
+      videoInfo(c.var.db, items),
+    ]);
     const rootOf = new Map<string, string>();
     for (const cat of categories) rootOf.set(cat.id, cat.parentId ?? cat.id);
     const view = items.map((i) => {
@@ -154,6 +158,7 @@ export const home = new Hono<AppEnv>()
         free: isFree,
         coverUrl: coverPath(i.coverAssetId),
         comingSoon: isComingSoon(i, filled),
+        video: video.get(i.id) ?? null,
         // Terkunci = belum berlangganan, bukan konten gratis, dan tidak ada bagian gratis.
         locked: !access.active && !isFree && !freePreview,
         category: i.categoryId ? (rootOf.get(i.categoryId) ?? null) : null,

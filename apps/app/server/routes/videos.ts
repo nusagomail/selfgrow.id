@@ -1,13 +1,19 @@
 import { and, eq, schema } from "@selfgrow/db";
 import { Hono } from "hono";
 import type { AppEnv } from "../env";
-import { rateLimit } from "../services/protection";
+import { loadSession } from "../middleware/context";
+import { FREE_TIER } from "../middleware/guards";
+import { getAccessStatus } from "../services/entitlements";
+import { getFreeze, rateLimit } from "../services/protection";
 
 /**
- * Video pengantar ebook (D41): `GET /api/v1/videos/:assetId`, publik seperti sampul. Hanya video
- * yang tercatat sebagai `intro_video_asset_id` milik konten TERBIT, berawalan
- * `content-videos/{contentId}/`, bertipe video. Mendukung permintaan rentang (Range) supaya
- * pemutar bisa memutar sebagian dan menggeser posisi tanpa mengunduh seluruh berkas.
+ * Berkas video: `GET /api/v1/videos/:assetId`, berawalan `content-videos/{contentId}/`, bertipe
+ * video, milik konten TERBIT. Dua jenis:
+ * - video pengantar ebook (D41, `intro_video_asset_id`): publik seperti sampul;
+ * - Video Edukasi (D54, `video_definitions.video_asset_id`): publik bila kontennya gratis, selain
+ *   itu WAJIB login + langganan aktif (seperti requireActiveSubscription) dan tidak di-cache publik.
+ * Mendukung permintaan rentang (Range) supaya pemutar bisa memutar sebagian dan menggeser posisi
+ * tanpa mengunduh seluruh berkas.
  */
 export const CONTENT_VIDEO_PREFIX = "content-videos/";
 export const contentVideoKey = (contentId: string, assetId: string, ext: "mp4" | "webm") =>
@@ -63,25 +69,59 @@ export const videos = new Hono<AppEnv>().use(rateLimit("media")).get("/:assetId"
   }
   const contentId = asset.r2Key.slice(CONTENT_VIDEO_PREFIX.length).split("/")[0] ?? "";
   const content = await c.var.db.query.contentItems.findFirst({
-    columns: { id: true },
-    where: and(
-      eq(schema.contentItems.id, contentId),
-      eq(schema.contentItems.status, "published"),
-      eq(schema.contentItems.introVideoAssetId, id),
-    ),
+    columns: { type: true, tier: true, introVideoAssetId: true },
+    where: and(eq(schema.contentItems.id, contentId), eq(schema.contentItems.status, "published")),
   });
   if (!content) return c.json({ error: "not_found" }, 404);
+  let cacheControl = "public, max-age=31536000, immutable";
+  if (content.introVideoAssetId !== id) {
+    if (content.type !== "video") return c.json({ error: "not_found" }, 404);
+    const def = await c.var.db.query.videoDefinitions.findFirst({
+      columns: { videoAssetId: true },
+      where: eq(schema.videoDefinitions.contentId, contentId),
+    });
+    if (def?.videoAssetId !== id) return c.json({ error: "not_found" }, 404);
+    if (content.tier !== FREE_TIER) {
+      await loadSession(c);
+      const user = c.var.user;
+      if (!user) return c.json({ error: "unauthorized" }, 401);
+      const [status, frozen] = await Promise.all([
+        getAccessStatus(c.env.KV, c.var.db, user),
+        getFreeze(c.env.KV, user.id),
+      ]);
+      if (frozen) return c.json({ error: "account_frozen", until: frozen.until }, 423);
+      if (!status.active) return c.json({ error: "subscription_required" }, 403);
+      cacheControl = "private, no-store";
+    }
+  }
 
-  const head = await c.env.CONTENT.head(asset.r2Key);
-  if (!head) return c.json({ error: "not_found" }, 404);
+  return serveVideoObject(
+    c.env.CONTENT,
+    asset.r2Key,
+    asset.mime,
+    cacheControl,
+    c.req.header("range"),
+  );
+});
+
+/** Kirim objek video dari R2, utuh (200) atau sebagian sesuai header Range (206/416). */
+export async function serveVideoObject(
+  bucket: R2Bucket,
+  key: string,
+  mime: string,
+  cacheControl: string,
+  rangeHeader: string | undefined,
+): Promise<Response> {
+  const notFound = () => Response.json({ error: "not_found" }, { status: 404 });
+  const head = await bucket.head(key);
+  if (!head) return notFound();
   const size = head.size;
   const headers = new Headers({
-    "Content-Type": asset.mime,
+    "Content-Type": mime,
     "Accept-Ranges": "bytes",
-    "Cache-Control": "public, max-age=31536000, immutable",
+    "Cache-Control": cacheControl,
     "X-Content-Type-Options": "nosniff",
   });
-  const rangeHeader = c.req.header("range");
   if (rangeHeader) {
     const range = parseRange(rangeHeader, size);
     if (!range) {
@@ -89,8 +129,8 @@ export const videos = new Hono<AppEnv>().use(rateLimit("media")).get("/:assetId"
       headers.set("Cache-Control", "no-store");
       return new Response(null, { status: 416, headers });
     }
-    const obj = await c.env.CONTENT.get(asset.r2Key, { range });
-    if (!obj) return c.json({ error: "not_found" }, 404);
+    const obj = await bucket.get(key, { range });
+    if (!obj) return notFound();
     headers.set(
       "Content-Range",
       `bytes ${range.offset}-${range.offset + range.length - 1}/${size}`,
@@ -98,8 +138,8 @@ export const videos = new Hono<AppEnv>().use(rateLimit("media")).get("/:assetId"
     headers.set("Content-Length", String(range.length));
     return new Response(obj.body, { status: 206, headers });
   }
-  const obj = await c.env.CONTENT.get(asset.r2Key);
-  if (!obj) return c.json({ error: "not_found" }, 404);
+  const obj = await bucket.get(key);
+  if (!obj) return notFound();
   headers.set("Content-Length", String(size));
   return new Response(obj.body, { status: 200, headers });
-});
+}

@@ -1,5 +1,5 @@
 ---
-import { availableTypeTabs, searchTokens } from "@selfgrow/shared";
+import { availableTypeTabs, isWideCard, searchTokens } from "@selfgrow/shared";
 import ItemCard from "../components/ItemCard.astro";
 import Base from "../layouts/Base.astro";
 import { getCategories, searchItems } from "../lib/api";
@@ -8,7 +8,7 @@ import { getCategories, searchItems } from "../lib/api";
 const q = (Astro.url.searchParams.get("q") ?? "").trim().slice(0, 60);
 const valid = searchTokens(q).length > 0 && q.length >= 2;
 const [categories, items] = await Promise.all([getCategories(), valid ? searchItems(q) : []]);
-const groups = availableTypeTabs(items).map((t) => ({
+const groups = availableTypeTabs(items, { anyCount: true }).map((t) => ({
   ...t,
   items: items.filter((i) => i.type === t.type),
 }));
@@ -38,7 +38,7 @@ const popular = categories
     {groups.map((g) => (
       <section class="group">
         <h2>{g.label} <span class="count">{g.count}</span></h2>
-        <div class:list={[g.type === "tool" ? "tool-grid" : "book-grid"]}>
+        <div class:list={[isWideCard(g.type) ? "tool-grid" : "book-grid"]}>
           {g.items.map((i) => <ItemCard item={i} />)}
         </div>
       </section>

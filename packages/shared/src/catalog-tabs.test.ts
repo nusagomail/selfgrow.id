@@ -19,4 +19,15 @@ describe("tab jenis katalog (D44)", () => {
     expect(activeTypeTab(null, [{ type: "tool" }])?.type).toBe("tool");
     expect(activeTypeTab(null, [])).toBeNull();
   });
+
+  it("tab Video baru tampil setelah minimal 3 video terbit (D54)", () => {
+    const two = [...items, { type: "video" }, { type: "video" }];
+    expect(availableTypeTabs(two).some((t) => t.type === "video")).toBe(false);
+    expect(activeTypeTab("video", two)?.type).toBe("ebook");
+    const three = [...two, { type: "video" }];
+    expect(availableTypeTabs(three).at(-1)).toMatchObject({ param: "video", count: 3 });
+    expect(activeTypeTab("video", three)?.type).toBe("video");
+    // Halaman kategori & hasil cari: satu video pun tetap dikelompokkan.
+    expect(availableTypeTabs([{ type: "video" }], { anyCount: true })).toHaveLength(1);
+  });
 });

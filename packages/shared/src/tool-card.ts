@@ -16,10 +16,11 @@ export const TOOL_KIND_LABEL: Record<ToolKind, string> = {
 };
 
 /**
- * Jenis konten yang tampil sebagai kartu lebar, bukan sampul buku (D49, D53): tool dan template.
- * Keduanya dipakai (diisi, diunduh), bukan dibaca.
+ * Jenis konten yang tampil sebagai kartu lebar, bukan sampul buku tegak (D49, D53, D54): tool dan
+ * template (dipakai, bukan dibaca) serta Video Edukasi (gambar 16:9).
  */
-export const isWideCard = (type: string): boolean => type === "tool" || type === "template";
+export const isWideCard = (type: string): boolean =>
+  type === "tool" || type === "template" || type === "video";
 
 /** Jenis kartu dari tipe dan judul: template selalu "unduh". */
 export function cardKind(type: string, title: string): ToolKind {

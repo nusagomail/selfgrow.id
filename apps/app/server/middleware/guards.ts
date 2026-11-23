@@ -1,4 +1,5 @@
 import { and, eq, schema } from "@selfgrow/db";
+import type { ContentType } from "@selfgrow/shared";
 import { createMiddleware } from "hono/factory";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { AppEnv } from "../env";
@@ -34,7 +35,7 @@ export const FREE_TIER = "free";
 /** Apakah konten terbit (jenis + slug) ditandai gratis di Studio. */
 export async function isFreeContent(
   db: AppEnv["Variables"]["db"],
-  type: "ebook" | "tool" | "template" | "program",
+  type: ContentType,
   slug: string,
 ): Promise<boolean> {
   const item = await db.query.contentItems.findFirst({
@@ -53,9 +54,7 @@ export async function isFreeContent(
  * user login tanpa langganan. Pembekuan akun (D28) tetap berlaku untuk semua.
  * Dipakai di route konten yang punya parameter `:slug`.
  */
-export function requireActiveSubscriptionUnlessFree(
-  type: "ebook" | "tool" | "template" | "program",
-) {
+export function requireActiveSubscriptionUnlessFree(type: ContentType) {
   return createMiddleware<AppEnv>(async (c, next) => {
     const user = c.var.user;
     if (!user) return c.json({ error: "unauthorized" }, 401);

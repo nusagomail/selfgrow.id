@@ -1,7 +1,8 @@
 ---
 import { isWideCard } from "@selfgrow/shared";
-import { type Access, type ContentType, contentPath, siteCover } from "../lib/api";
+import { type Access, type ContentType, contentPath, siteCover, type VideoInfo } from "../lib/api";
 import ToolCard from "./ToolCard.astro";
+import VideoCard from "./VideoCard.astro";
 
 /**
  * Kartu buku di etalase (D38): sampul tegak seperti di rak toko buku, judul di bawahnya, dan satu
@@ -17,6 +18,7 @@ interface Props {
     comingSoon?: boolean;
     coverUrl?: string | null;
     category?: { slug: string; name: string } | null;
+    video?: VideoInfo | null;
   };
 }
 const { item } = Astro.props;
@@ -26,6 +28,7 @@ const TYPE_LABEL: Record<ContentType, string> = {
   tool: "Tool",
   template: "Template",
   program: "Program",
+  video: "Video",
 };
 const label = item.comingSoon
   ? { text: "Segera", cls: "soon" }
@@ -36,7 +39,9 @@ const label = item.comingSoon
       : { text: "Premium", cls: "premium" };
 ---
 
-{isWideCard(item.type) ? (
+{item.type === "video" ? (
+  <VideoCard item={item} />
+) : isWideCard(item.type) ? (
   <ToolCard item={{ ...item, type: item.type as "tool" | "template" }} />
 ) : (
 <a href={contentPath(item)} class="book" title={item.summary ?? item.title}>

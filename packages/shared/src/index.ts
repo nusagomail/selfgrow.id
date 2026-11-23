@@ -13,4 +13,5 @@ export * from "./template";
 export * from "./tool";
 export * from "./tool-card";
 export * from "./tracker";
+export * from "./video";
 export * from "./watermark";

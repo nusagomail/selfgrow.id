@@ -10,7 +10,7 @@ const { data } = Astro.props;
 const { category, topic, topics, items } = data;
 const total = topics.reduce((n, t) => n + t.count, 0);
 // Dikelompokkan per jenis konten (D44), tidak dicampur dalam satu grid.
-const groups = availableTypeTabs(items).map((t) => ({
+const groups = availableTypeTabs(items, { anyCount: true }).map((t) => ({
   ...t,
   items: readyFirst(items.filter((i) => i.type === t.type)),
 }));
@@ -240,6 +240,10 @@ const byTopic = (list: typeof items) =>
   .type.program {
     background: #ece4f7;
     color: #4f347a;
+  }
+  .type.video {
+    background: #fbe4e6;
+    color: #8a2433;
   }
   .topic {
     margin-top: auto;
