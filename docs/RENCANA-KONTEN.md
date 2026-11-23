@@ -56,8 +56,8 @@ Tanda: ✓ sudah terbit, ✗ belum. Setiap putaran berisi satu judul per kategor
 
 | Kategori | Putaran 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
 |---|---|---|---|---|---|---|---|---|
-| Keuangan | Seni Menabung ✗ | Investasi Pertamamu ✗ | Generasi Sandwich ✗ | Rencana 12 Bulan Bebas Cicilan ✗ | Anti FOMO Investasi ✗ | Menuju Rumah Pertama ✗ | Melek Pajak ✗ | (cadangan) |
-| Kebiasaan | Pagi yang Menang ✗ | Satu Persen ✗ | Ritual Malam ✗ | Disiplin Tanpa Drama ✗ | Konsisten ✗ | Gagal Lagi? ✗ | Lingkungan ✗ | Kembali ke Buku ✗ |
+| Keuangan | Seni Menabung ✓ | Investasi Pertamamu ✗ | Generasi Sandwich ✗ | Rencana 12 Bulan Bebas Cicilan ✗ | Anti FOMO Investasi ✗ | Menuju Rumah Pertama ✗ | Melek Pajak ✗ | (cadangan) |
+| Kebiasaan | Pagi yang Menang ✓ | Satu Persen ✗ | Ritual Malam ✗ | Disiplin Tanpa Drama ✗ | Konsisten ✗ | Gagal Lagi? ✗ | Lingkungan ✗ | Kembali ke Buku ✗ |
 | Produktivitas | Fokus di Era Notifikasi ✗ | Kerja Cerdas dengan AI ✗ | To-Do List ✗ | Belajar Cepat ✗ | Kerja Dalam ✗ | Prompt yang Bekerja ✗ | Energi ✗ | Catatan ✗ · Resolusi ✗ |
 | Karier | Lolos Wawancara ✗ | Fresh Graduate ✗ | Setelah PHK ✗ | Banting Setir ✗ | Naik Level ✗ | LinkedIn ✗ | Bertahan di Kantor ✗ | Skill 2030 ✗ |
 | Mental | Cemas Itu Wajar ✗ | Percaya Diri ✗ | Istirahat Tanpa Rasa Bersalah ✗ | Marah Tanpa Menyesal ✗ | Berhenti Membandingkan ✗ | Menulis untuk Pulih ✗ | Tenang di Tengah Kesibukan ✗ | Tidak Harus Menyenangkan Semua ✗ |
@@ -68,6 +68,13 @@ Tanda: ✓ sudah terbit, ✗ belum. Setiap putaran berisi satu judul per kategor
 | Mindset | Memutuskan dengan Kepala Dingin ✗ | Menemukan Arah Hidup ✗ | Tenang Menghadapi Tak Pasti ✗ | Berdamai dengan Masa Lalu ✗ | Mengenal Diri ✗ | Hidup Bukan Lomba ✗ | Bahagia Sederhana ✗ | Pelan-Pelan Saja ✗ |
 
 Urutan di setiap kategori mendahulukan judul yang paling dicari dan paling mudah dijual.
+
+### Catatan pilihan per buku
+
+| Buku | Bentuk | Gambar (gaya) | Interaktif | Tema baca |
+|---|---|---|---|---|
+| Seni Menabung Tanpa Tersiksa | Tanya-jawab: surat pembaca per bab | Denah pipa: kertas krem bertitik, pipa toska, tangki terakota (4 gambar) | Skala "Cek pipa" (Bab 1, tes ulang Bab 8), grafik Save More Tomorrow, skenario THR, uji pengetahuan "Pakai atau tahan?", tool Pencari Kebocoran, template anggaran | condensed / soft / wave / dots |
+| Pagi yang Menang | Jurnal harian Sari (27, komuter KRL) | Halaman jurnal fajar: gradasi jingga, judul tulisan tangan, kertas tempel (4 gambar) | Tes diri "Pagi tadi" (Bab 1, tes ulang Bab 8), uji mitos pagi, skenario telat bangun, angka 66 hari, tool Langkah Dua Menit, template pelacak 30 hari | hand / outline / star / lined |
 
 ## Template (Fase 1)
 

@@ -15,9 +15,11 @@ import { GAWAI_FIGURE_CSS, GAWAI_FIGURES } from "./books/gawai-figures.mjs";
 import { GULA_FIGURE_CSS, GULA_FIGURES } from "./books/gula-figures.mjs";
 import { HARGA_FIGURE_CSS, HARGA_FIGURES } from "./books/harga-figures.mjs";
 import { LARI_FIGURE_CSS, LARI_FIGURES } from "./books/lari-figures.mjs";
+import { MENABUNG_FIGURE_CSS, MENABUNG_FIGURES } from "./books/menabung-figures.mjs";
 import { MINGGU_FIGURE_CSS, MINGGU_FIGURES } from "./books/minggu-figures.mjs";
 import { NEGO_FIGURE_CSS, NEGO_FIGURES } from "./books/nego-figures.mjs";
 import { OVERTHINKING_FIGURE_CSS, OVERTHINKING_FIGURES } from "./books/overthinking-figures.mjs";
+import { PAGI_FIGURE_CSS, PAGI_FIGURES } from "./books/pagi-figures.mjs";
 import { PANGGUNG_FIGURE_CSS, PANGGUNG_FIGURES } from "./books/panggung-figures.mjs";
 import { FIGURE_CSS, FIGURES } from "./books/paylater-figures.mjs";
 import { SCROLL_FIGURE_CSS, SCROLL_FIGURES } from "./books/scroll-figures.mjs";
@@ -59,6 +61,8 @@ const SETS = {
   "anak-dan-gawai": { figures: GAWAI_FIGURES, css: GAWAI_FIGURE_CSS },
   "umur-25-dan-merasa-tertinggal": { figures: TERTINGGAL_FIGURES, css: TERTINGGAL_FIGURE_CSS },
   "validasi-ide-sebelum-modal-habis": { figures: VALIDASI_FIGURES, css: VALIDASI_FIGURE_CSS },
+  "seni-menabung-tanpa-tersiksa": { figures: MENABUNG_FIGURES, css: MENABUNG_FIGURE_CSS },
+  "pagi-yang-menang": { figures: PAGI_FIGURES, css: PAGI_FIGURE_CSS },
   "keluar-dari-lingkaran-overthinking": {
     figures: OVERTHINKING_FIGURES,
     css: OVERTHINKING_FIGURE_CSS,

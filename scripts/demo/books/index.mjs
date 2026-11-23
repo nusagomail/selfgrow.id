@@ -16,12 +16,16 @@ import { HARGA_1 } from "./harga-1.mjs";
 import { HARGA_FIGURES } from "./harga-figures.mjs";
 import { LARI_1 } from "./lari-1.mjs";
 import { LARI_FIGURES } from "./lari-figures.mjs";
+import { MENABUNG_1 } from "./menabung-1.mjs";
+import { MENABUNG_FIGURES } from "./menabung-figures.mjs";
 import { MINGGU_1 } from "./minggu-1.mjs";
 import { MINGGU_FIGURES } from "./minggu-figures.mjs";
 import { NEGO_1 } from "./nego-1.mjs";
 import { NEGO_FIGURES } from "./nego-figures.mjs";
 import { OVERTHINKING_1 } from "./overthinking-1.mjs";
 import { OVERTHINKING_FIGURES } from "./overthinking-figures.mjs";
+import { PAGI_1 } from "./pagi-1.mjs";
+import { PAGI_FIGURES } from "./pagi-figures.mjs";
 import { PANGGUNG_1 } from "./panggung-1.mjs";
 import { PANGGUNG_FIGURES } from "./panggung-figures.mjs";
 import { PAYLATER_1 } from "./paylater-1.mjs";
@@ -286,5 +290,29 @@ export const FULL_BOOKS = {
     },
     chapters: VALIDASI_1,
     figures: VALIDASI_FIGURES,
+  },
+  "seni-menabung-tanpa-tersiksa": {
+    theme: {
+      accent: "#0e7c86",
+      second: "#d2691e",
+      heading: "condensed",
+      callout: "soft",
+      ornament: "wave",
+      paper: "dots",
+    },
+    chapters: MENABUNG_1,
+    figures: MENABUNG_FIGURES,
+  },
+  "pagi-yang-menang": {
+    theme: {
+      accent: "#c8641a",
+      second: "#3d6fb6",
+      heading: "hand",
+      callout: "outline",
+      ornament: "star",
+      paper: "lined",
+    },
+    chapters: PAGI_1,
+    figures: PAGI_FIGURES,
   },
 };
