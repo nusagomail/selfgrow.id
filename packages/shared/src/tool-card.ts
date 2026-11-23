@@ -3,7 +3,7 @@
  * Kartu menampilkan ikon sesuai fungsi tool, yang ditebak dari judulnya (konfigurasi tool tidak
  * pernah dikirim ke klien), dan warna yang stabil per slug.
  */
-export const TOOL_KINDS = ["hitung", "susun", "cek", "jadwal", "catat"] as const;
+export const TOOL_KINDS = ["hitung", "susun", "cek", "jadwal", "catat", "unduh"] as const;
 export type ToolKind = (typeof TOOL_KINDS)[number];
 
 export const TOOL_KIND_LABEL: Record<ToolKind, string> = {
@@ -12,7 +12,19 @@ export const TOOL_KIND_LABEL: Record<ToolKind, string> = {
   cek: "Cek cepat",
   jadwal: "Perencana",
   catat: "Refleksi",
+  unduh: "Siap unduh",
 };
+
+/**
+ * Jenis konten yang tampil sebagai kartu lebar, bukan sampul buku (D49, D53): tool dan template.
+ * Keduanya dipakai (diisi, diunduh), bukan dibaca.
+ */
+export const isWideCard = (type: string): boolean => type === "tool" || type === "template";
+
+/** Jenis kartu dari tipe dan judul: template selalu "unduh". */
+export function cardKind(type: string, title: string): ToolKind {
+  return type === "template" ? "unduh" : toolKind(title);
+}
 
 const RULES: [RegExp, ToolKind][] = [
   [/\b(cek|termometer|tanda|empat tuas)\b/, "cek"],

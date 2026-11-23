@@ -155,6 +155,12 @@ export const OVERTHINKING_1 = [
       "Satu lagi alat untuk dipakai di waktu khawatir: pisahkan apa yang bisa kamu kendalikan, apa yang hanya bisa kamu pengaruhi, dan apa yang benar-benar di luar kendalimu.",
       ["img", "lingkar-kendali", "Tiga lingkaran."],
       "Overthinking sering menghabiskan tenaga di lingkaran terluar: keputusan orang lain, masa lalu, hal-hal yang belum terjadi. Padahal tenaga itu jauh lebih berguna di lingkaran paling dalam.",
+      [
+        "template",
+        "jurnal-pikiran-overthinking",
+        "Jurnal Pikiran Tujuh Hari",
+        "Tabel untuk menangkap pikiran, memilahnya di jam khawatir, dan menguji satu pikiran paling berat.",
+      ],
     ],
   },
   {

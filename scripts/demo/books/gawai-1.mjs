@@ -118,6 +118,12 @@ export const GAWAI_1 = [
         "tip",
         "Mulai dengan dua zona merah saja: meja makan dan satu jam sebelum tidur. Tambah zona lain setelah dua zona ini berjalan dua minggu.",
       ],
+      [
+        "template",
+        "kesepakatan-gawai-keluarga",
+        "Kesepakatan Gawai Keluarga",
+        "Tuliskan zona merah, kuning, dan hijau bersama anak, lalu tanda tangani bersama. Ada bagian tambahan kalau anak sudah punya HP sendiri.",
+      ],
     ],
   },
   {

@@ -19,7 +19,7 @@ Setiap sesi kerja cukup membaca dokumen ini dan melanjutkan dari baris ✗ perta
 
 | Fase | Isi | Perkiraan sesi | Status |
 |---|---|---|---|
-| 1 | Template unduhan: 10 template, satu per kategori, masing-masing ditautkan ke ebook terkait | 1–2 | ✗ |
+| 1 | Template unduhan: 10 template, satu per kategori, masing-masing ditautkan ke ebook terkait | 1–2 | ✓ (D53) |
 | 2 | Kanal Video Edukasi: tipe konten `video`, rak di beranda dan situs, halaman tonton, unggah di Studio, aturan gratis/berbayar sama dengan ebook | 2 | ✗ |
 | 3 | 80 ebook: 8 putaran × 10 kategori (satu judul per kategori per putaran) | ±40 | ✗ |
 | 4 | Isi video edukasi, dibuat setelah langganan ElevenLabs aktif | per video | tertunda |
@@ -71,7 +71,7 @@ Urutan di setiap kategori mendahulukan judul yang paling dicari dan paling mudah
 
 ## Template (Fase 1)
 
-Satu template per kategori, dibuat dengan mesin template yang sudah ada (DOCX/PDF/XLSX) dan ditautkan dari ebook terkait:
+✓ Selesai (D53). Satu template per kategori, dibuat dengan mesin template yang sudah ada (DOCX/PDF/XLSX) dan ditautkan dari ebook terkait. Ebook baru di Fase 3 boleh menambah template sendiri di `scripts/demo/templates.mjs` (blok `["template", slug, judul, pengantar]`), hanya bila memang ada lembar yang berguna dicetak atau diisi.
 
 | Kategori | Template | Format | Ebook terkait |
 |---|---|---|---|

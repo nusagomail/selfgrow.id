@@ -120,6 +120,13 @@ const imgSrc = (src: string) =>
         <div class="quiz-result" aria-live="polite" hidden></div>
         <p class="quiz-hint">{quizHint(n.attrs)}</p>
       </form>
+    ) : n.type === "toolEmbed" && n.attrs.kind === "template" ? (
+      <aside class="tool-embed template-embed">
+        <span class="callout-label">Template siap unduh</span>
+        <b>{n.attrs.title ?? "Template"}</b>
+        {n.attrs.intro && <p>{n.attrs.intro}</p>}
+        <a class="template-embed-link" href={appUrl(`/template/${encodeURIComponent(n.attrs.slug)}`)}>Isi & unduh template →</a>
+      </aside>
     ) : n.type === "toolEmbed" ? (
       <aside class="tool-embed tool-embed-static">
         <span class="callout-label">Coba langsung</span>

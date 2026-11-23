@@ -133,6 +133,12 @@ export const STOIK_1 = [
         ],
         "Latihan: tujuh hari, dua halaman",
       ],
+      [
+        "template",
+        "refleksi-mingguan-stoik",
+        "Lembar Refleksi Mingguan ala Stoik",
+        "Halaman pagi dan malam untuk tujuh hari, ditambah pemilahan kendali di tengah hari.",
+      ],
     ],
   },
   {

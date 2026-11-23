@@ -25,6 +25,14 @@ const filled = (nama: string, catatan: string | null = null) =>
     parseTemplateInput(cfg, { nama, minggu: 2, target: "Lari 5K 🏃", catatan }),
   );
 
+describe("toWinAnsi: simbol rumus", () => {
+  it("mengganti simbol di luar WinAnsi dengan padanan ASCII, bukan membuangnya", () => {
+    expect(toWinAnsi("HPP ÷ (1 − 30%)")).toBe("HPP ÷ (1 - 30%)");
+    expect(toWinAnsi("IPK ≥ 3,00 → ✓")).toBe("IPK >= 3,00 -> v");
+    expect(toWinAnsi("emoji 🏃 dibuang")).toBe("emoji  dibuang");
+  });
+});
+
 describe("generator dokumen", () => {
   it("DOCX: isi terisi dan ID pelanggan di metadata", async () => {
     const bytes = await renderDocument("docx", filled("Dhuha"), meta);

@@ -229,6 +229,12 @@ export const SCROLL_2 = [
           "Setiap jam yang kembali setiap hari bernilai sekitar 15 hari setahun. Itu waktumu.",
         ],
       ],
+      [
+        "template",
+        "pelacak-kebiasaan-30-hari",
+        "Pelacak Kebiasaan 30 Hari",
+        "Tulis kebiasaan pengganti scroll-mu, versi dua menitnya, dan pemicunya. Cetak dan tempel di dekat tempat HP diisi daya.",
+      ],
     ],
   },
 ];

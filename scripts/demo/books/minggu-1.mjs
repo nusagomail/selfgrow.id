@@ -104,6 +104,12 @@ export const MINGGU_1 = [
         ],
         "Lembar kerja: 25 menit terakhir",
       ],
+      [
+        "template",
+        "lembar-rencana-mingguan",
+        "Lembar Rencana Mingguan Satu Jam",
+        "Lima bagian sesi perencanaan dalam satu lembar, sudah diisi tiga hasil minggu ini dan jam fokusmu.",
+      ],
     ],
   },
   {

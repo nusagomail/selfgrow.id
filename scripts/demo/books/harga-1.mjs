@@ -133,6 +133,12 @@ export const HARGA_1 = [
         "tip",
         "Bulatkan harga ke atas, ke kelipatan Rp500 atau Rp1.000. Selain lebih mudah dibayar, pembulatan ke atas memberi bantalan kecil untuk kenaikan harga bahan.",
       ],
+      [
+        "template",
+        "lembar-hitung-hpp",
+        "Lembar Hitung HPP dan Harga Jual",
+        "Langkah 1 sampai 3 dalam satu lembar kerja: bahan, kemasan, biaya tetap, lalu harga jual dengan margin yang kamu pilih.",
+      ],
     ],
   },
   {

@@ -10,9 +10,18 @@ import { FULL_BOOKS as FULL_JS } from "../../../scripts/demo/books/index.mjs";
 // @ts-expect-error -- modul JS di luar paket, tanpa deklarasi tipe
 import { catalogBooks as catalogJs } from "../../../scripts/demo/catalog.mjs";
 // @ts-expect-error -- modul JS di luar paket, tanpa deklarasi tipe
+import { DEMO_TEMPLATES as TEMPLATES_JS } from "../../../scripts/demo/templates.mjs";
+// @ts-expect-error -- modul JS di luar paket, tanpa deklarasi tipe
 import { DEMO_TOOLS as TOOLS_JS } from "../../../scripts/demo/tools.mjs";
 import { ebookDocSchema } from "./ebook";
 import { ebookThemeSchema } from "./ebook-theme";
+import {
+  buildFileName,
+  checkTemplate,
+  fillTemplate,
+  parseTemplateInput,
+  saveTemplateBodySchema,
+} from "./template";
 import { toolConfigSchema } from "./tool";
 
 type Book = { slug: string; title: string; category: string; topic: string };
@@ -102,5 +111,54 @@ describe("katalog demo", () => {
     expect(para?.content.map((n) => n.marks?.length ?? 0)).toEqual([0, 1, 0]);
     expect(table?.type).toBe("table");
     expect(table?.content).toHaveLength(2);
+  });
+
+  it("template demo valid, bisa diisi, dan setiap template yang ditautkan di ebook tersedia (D53)", () => {
+    type Tpl = {
+      slug: string;
+      title: string;
+      topic: string;
+      tier: string;
+      book: string;
+      config: unknown;
+      body: unknown;
+    };
+    const tpls = TEMPLATES_JS as Tpl[];
+    expect(tpls).toHaveLength(10);
+    expect(new Set(tpls.map((t) => t.slug)).size).toBe(10);
+    // Satu per kategori, dan setiap template punya ebook pendamping yang sudah ditulis.
+    const bookCat = new Map(books.map((b) => [b.slug, b.category]));
+    expect(new Set(tpls.map((t) => bookCat.get(t.book))).size).toBe(10);
+    for (const t of tpls) {
+      expect(FULL[t.book], `${t.slug}: ebook ${t.book} belum ditulis`).toBeDefined();
+      expect(["free", "premium"]).toContain(t.tier);
+      expect(t.topic).toMatch(/^top_[a-z0-9-]+$/);
+      const r = saveTemplateBodySchema.safeParse({ config: t.config, body: t.body });
+      expect(r.success, `${t.slug}: ${JSON.stringify(r.error?.issues?.slice(0, 3))}`).toBe(true);
+      if (!r.success) continue;
+      expect(checkTemplate(r.data.body, r.data.config.variables), t.slug).toEqual([]);
+      // Isi contoh: semua isian wajib terisi, opsional dikosongkan.
+      const sample: Record<string, unknown> = {};
+      for (const v of r.data.config.variables) {
+        if (!v.required) continue;
+        sample[v.key] =
+          v.type === "number"
+            ? (v.min ?? 1)
+            : v.type === "select"
+              ? v.options?.[0]?.value
+              : "Contoh";
+      }
+      const filled = JSON.stringify(
+        fillTemplate(r.data.body, r.data.config, parseTemplateInput(r.data.config, sample)),
+      );
+      expect(filled, t.slug).not.toMatch(/\{\{/);
+      expect(buildFileName(r.data.config, t.title, {}, "pdf")).toMatch(/\.pdf$/);
+    }
+    // Setiap ebook pendamping menautkan templatenya.
+    const linked = JSON.stringify(FULL).match(/"template","([a-z0-9-]+)"/g) ?? [];
+    const linkedSlugs = new Set(linked.map((m) => m.split('"')[3]));
+    const slugs = new Set(tpls.map((t) => t.slug));
+    for (const s of linkedSlugs) expect(slugs.has(s ?? ""), `${s}`).toBe(true);
+    for (const t of tpls) expect(linkedSlugs.has(t.slug), `${t.book} → ${t.slug}`).toBe(true);
   });
 });

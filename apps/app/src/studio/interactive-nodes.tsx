@@ -36,7 +36,8 @@ function summary(kind: InteractiveKind, a: Record<string, unknown>): string {
     const n = Array.isArray(a.questions) ? a.questions.length : 0;
     return `${a.title || "(tanpa judul)"} · ${n} pertanyaan`;
   }
-  if (kind === "toolEmbed") return `${a.title || a.slug || "(belum dipilih)"}`;
+  if (kind === "toolEmbed")
+    return `${a.kind === "template" ? "Template: " : ""}${a.title || a.slug || "(belum dipilih)"}`;
   const n = Array.isArray(a.items) ? a.items.length : 0;
   return `${a.title || "(tanpa judul)"} · ${a.kind === "counter" ? "angka" : "batang"} · ${n} data`;
 }
@@ -525,7 +526,7 @@ function QuizForm({ value, onChange }: { value: QuizAttrs; onChange: (v: QuizAtt
   );
 }
 
-type ToolOption = { slug: string; title: string; status: string };
+type ToolOption = { slug: string; title: string; status: string; type: string };
 
 function ToolForm({
   value,
@@ -537,9 +538,9 @@ function ToolForm({
   const [tools, setTools] = useState<ToolOption[] | null>(null);
   useEffect(() => {
     let alive = true;
-    api<{ items: (ToolOption & { type: string })[] }>("/studio/content")
+    api<{ items: ToolOption[] }>("/studio/content")
       .then((r) => {
-        if (alive) setTools(r.items.filter((x) => x.type === "tool"));
+        if (alive) setTools(r.items.filter((x) => x.type === "tool" || x.type === "template"));
       })
       .catch(() => {
         if (alive) setTools([]);
@@ -549,17 +550,37 @@ function ToolForm({
     };
   }, []);
   const set = (patch: Partial<ToolEmbedAttrs>) => onChange({ ...value, ...patch });
+  // Template ditautkan sebagai kartu ajakan unduh (D53); tool diisi langsung di bab.
+  const kind = value.kind === "template" ? "template" : "tool";
   return (
     <>
-      <Field label="Tool" hint="Hanya tool yang sudah terbit yang bisa dipakai pembaca.">
+      <Field label="Jenis">
+        <select
+          value={kind}
+          onChange={(e) =>
+            set({ kind: e.target.value === "template" ? "template" : "tool", slug: "" })
+          }
+        >
+          <option value="tool">Tool (diisi di dalam bab)</option>
+          <option value="template">Template (kartu ajakan unduh)</option>
+        </select>
+      </Field>
+      <Field
+        label={kind === "template" ? "Template" : "Tool"}
+        hint="Hanya yang sudah terbit yang bisa dipakai pembaca."
+      >
         <select value={value.slug} onChange={(e) => set({ slug: e.target.value })}>
-          <option value="">{tools === null ? "Memuat…" : "Pilih tool…"}</option>
-          {(tools ?? []).map((t) => (
-            <option key={t.slug} value={t.slug}>
-              {t.title}
-              {t.status === "published" ? "" : " (belum terbit)"}
-            </option>
-          ))}
+          <option value="">
+            {tools === null ? "Memuat…" : kind === "template" ? "Pilih template…" : "Pilih tool…"}
+          </option>
+          {(tools ?? [])
+            .filter((t) => t.type === kind)
+            .map((t) => (
+              <option key={t.slug} value={t.slug}>
+                {t.title}
+                {t.status === "published" ? "" : " (belum terbit)"}
+              </option>
+            ))}
         </select>
       </Field>
       <Field label="Judul di bab (opsional)">

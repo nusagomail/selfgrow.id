@@ -92,6 +92,12 @@ export const LARI_1 = [
         "info",
         "Pegal di betis dan paha selama satu-dua hari setelah latihan itu wajar untuk pemula. Nyeri tajam di satu titik, atau nyeri yang makin parah saat berlari, bukan hal wajar: istirahat dan periksakan.",
       ],
+      [
+        "template",
+        "jadwal-lari-5k-8-minggu",
+        "Jadwal Lari 5K Delapan Minggu",
+        "Pilih hari dan jam latihanmu. Kalendernya berisi 24 sesi, kolom centang, dan catatan rasa seperti catatan Rio.",
+      ],
     ],
   },
   {

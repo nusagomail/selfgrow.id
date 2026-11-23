@@ -76,6 +76,7 @@ pakai hanya kalau topiknya memintanya. Banyak bab yang lebih kuat tanpa satu pun
 | **Kuis / tes diri** (＋ Kuis) | Melihat posisinya sendiri dengan skor, langsung | Mengukur kondisi: jerat utang, tingkat stres, gaya komunikasi, kesiapan usaha | Bukan diagnosis; hasil ditulis hangat dan memberi langkah. Topik kesehatan mental: sebut kapan perlu bantuan profesional |
 | **Tes ulang** | Melihat kemajuan ("naik 3 poin") | Kuis yang sama di bab penutup, memakai **id kuis yang sama** | Hanya bermakna kalau pembaca benar-benar menjalankan isi buku |
 | **Tool di dalam bab** (＋ Tool) | Menghitung angkanya sendiri tanpa keluar dari buku | Keuangan, kebugaran, target, jadwal: tepat setelah rumus dijelaskan | Tool harus sudah terbit; satu tool per gagasan |
+| **Template siap unduh** (＋ Tool → Jenis: Template) | Lembar yang dicetak atau diisi di luar buku (anggaran, jadwal, kesepakatan) | Di akhir bab yang mengajarkan cara membuat lembar itu | Template harus sudah terbit; kartu hanya mengajak ke halaman template (D53) |
 | **Grafik bergerak** (＋ Grafik) | Angka penting "terasa" lewat batang atau angka yang berhitung naik | Satu angka kejutan, atau perbandingan 2–8 hal | Jangan menggantikan tabel yang perlu dibaca teliti; data tetap bersumber |
 
 Tidak semua kategori butuh unsur interaktif yang sama. Keuangan cocok dengan tool dan grafik;

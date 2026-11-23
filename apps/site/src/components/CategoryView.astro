@@ -1,5 +1,5 @@
 ---
-import { availableTypeTabs, readyFirst } from "@selfgrow/shared";
+import { availableTypeTabs, isWideCard, readyFirst } from "@selfgrow/shared";
 import { appUrl, type CategoryDetail } from "../lib/api";
 import ItemCard from "./ItemCard.astro";
 
@@ -65,7 +65,7 @@ const byTopic = (list: typeof items) =>
                     <a href={`/kategori/${category.slug}/${t.slug}`} class="more">Lihat semua</a>
                   )}
                 </div>
-                <div class:list={[g.type === "tool" ? "tool-grid" : "book-grid"]}>
+                <div class:list={[isWideCard(g.type) ? "tool-grid" : "book-grid"]}>
                   {t.items.slice(0, PER_TOPIC).map((i) => (
                     <ItemCard item={{ ...i, category: null }} />
                   ))}
@@ -73,7 +73,7 @@ const byTopic = (list: typeof items) =>
               </div>
             ))
           ) : (
-            <div class:list={[g.type === "tool" ? "tool-grid" : "book-grid"]}>
+            <div class:list={[isWideCard(g.type) ? "tool-grid" : "book-grid"]}>
               {g.items.map((i) => (
                 <ItemCard item={{ ...i, category: null }} />
               ))}

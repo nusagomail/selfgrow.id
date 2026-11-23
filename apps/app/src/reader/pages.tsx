@@ -304,7 +304,10 @@ export function ChapterReader() {
       doc ? (
         <EbookContent
           doc={doc}
-          options={{ renderTool: (attrs) => <EmbeddedTool attrs={attrs} /> }}
+          options={{
+            renderTool: (attrs) => <EmbeddedTool attrs={attrs} />,
+            templateHref: (slug) => `/template/${encodeURIComponent(slug)}`,
+          }}
         />
       ) : null,
     [doc],

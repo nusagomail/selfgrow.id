@@ -182,6 +182,8 @@ export const toolEmbedAttrsSchema = z.object({
     .max(120),
   title: z.string().max(200).nullish(),
   intro: z.string().max(1000).nullish(),
+  /** "template": kartu ajakan mengunduh template (D53), bukan tool yang diisi di tempat. */
+  kind: z.enum(["tool", "template"]).nullish(),
 });
 export type ToolEmbedAttrs = z.infer<typeof toolEmbedAttrsSchema>;
 
